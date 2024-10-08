@@ -1,8 +1,10 @@
 
-import { Label } from "@/components/ui/label";
 import { getSong } from "../getSong";
-import { Input } from "@/components/ui/input";
-import { SubmitButton } from "@/components/submit-button";
+import {Input} from "@nextui-org/react";
+import {Button} from "@nextui-org/react";
+import {Textarea} from "@nextui-org/react";
+
+
 import { updateSong } from "./updateSong";
 
 export default async function Page({ params }: {params:{songId: string}}) {
@@ -16,26 +18,37 @@ export default async function Page({ params }: {params:{songId: string}}) {
         <h1 className="text-2xl font-medium">Update Song</h1>
         
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Label htmlFor="song-title">Song Title</Label>
-          <Input name="song-title" value={song.song_title} required />
+          <Input label="song-title" name="song-title" defaultValue={song.song_title} required />
           
           
-          <Label htmlFor="author">author</Label>
-          <Input name="author" value={song.author}  required />
+          <Input name="author" label="author" defaultValue={song.author}  required />
 
 
-          <Label htmlFor="key">Key</Label>
-          <Input name="key" required value={song.upload_key} />
+          <Input label="key"  name="key" required defaultValue={song.upload_key} />
 
 
-          <Label htmlFor="lyrics">Lyrics</Label>
-          <textarea style={{border: "1px solid black"}} name="lyrics" rows={50} cols={70}  >{song.lyrics}</textarea>
+          {/* <Textarea
+            label="Lyrics"
+            name="lyrics"
+            placeholder="Enter your description"
+            className="max-w-xs"
+            defaultValue={{song.lyrics}}
+          /> */}
+          
+          <Textarea
+            label="Lyrics"
+            name="lyrics"
+            labelPlacement="inside"
+            placeholder="inserisci testo"
+            defaultValue={song.lyrics}
+            minRows={90}
+            
+          />
+          <Input label="author"  name="id" required value={song.id} />
 
-          <Input name="id" required value={song.id} />
-
-          <SubmitButton formAction={updateSong} >
+          <Button size="sm" onClick={updateSong} >
           Update Song
-          </SubmitButton>
+          </Button>
         </div>
       </form >
 

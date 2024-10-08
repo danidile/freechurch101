@@ -67,10 +67,8 @@
 
 
 
-import Link from "next/link";
 import { getSong } from "./getSong";
 import Song from "./transpose";
-import ChordSheetJS from 'chordsheetjs';
 
 
 export default async function Page({ params }: {params:{songId: string}}) {
@@ -78,7 +76,7 @@ export default async function Page({ params }: {params:{songId: string}}) {
 
     return (
     <div>
-
+      
       <Song songData={songData} />
 
 

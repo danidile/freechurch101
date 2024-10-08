@@ -117,7 +117,6 @@
 "use client"
 import ChordSheetJS from 'chordsheetjs';
 
-import { Chord } from 'chordsheetjs';
 import Link from "next/link";
 import { useState } from "react"
 
@@ -125,7 +124,7 @@ export default function  Song({ songData } : { songData: any }) {
     
     const chordSheet = songData.lyrics.substring(1);
     const parser = new ChordSheetJS.ChordProParser();
-    let song = parser.parse(chordSheet);
+    const song = parser.parse(chordSheet);
     const formatter = new ChordSheetJS.TextFormatter();
     const disp = formatter.format(song);
     const [state, setState] = useState(disp);
@@ -135,14 +134,14 @@ export default function  Song({ songData } : { songData: any }) {
     
     const transposeUp = ()=>{
         transpose = transpose + 1 ;
-        let newchords = song.transpose(transpose);
-        let disp = formatter.format(newchords);
+        const newchords = song.transpose(transpose);
+        const disp = formatter.format(newchords);
         console.log(transpose);
         setState(disp);
     };
 
     const transposeDown = ()=>{
-        output = "";
+        const output = "";
         
         
         setState(output);
@@ -157,14 +156,14 @@ export default function  Song({ songData } : { songData: any }) {
         <>  
             
             <div className="transpose-button-container">
-            <button className="button-transpose"><Link href={`/songs/updateSong`}>Update Song</Link></button>
+            <button className="button-transpose"><Link href={`/songs/${songData.id}/updateSong`}>Update Song</Link></button>
 
 
                 <button className="button-transpose" onClick={transposeDown} >-</button>
                 <button className="button-transpose" onClick={transposeUp}>+</button>
             </div>
-            <h3>  {song.author}</h3>
-            <p>This song was uploaded in the Key of {song.upload_key}</p><br/><br/>
+            <h3>  {songData.author}</h3>
+            <p>This song was uploaded in the Key of {songData.upload_key}</p><br/><br/>
             <div id="song-chords" dangerouslySetInnerHTML={{ __html: state }} style={{whiteSpace: 'pre-wrap'}}/>
 
             
