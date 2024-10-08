@@ -31,8 +31,8 @@ export default function MenuBar() {
           <p className="font-bold text-inherit">ACME</p>
         </NavbarBrand>
         <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
+          <Link color="foreground" href="/songs">
+            Songs
           </Link>
         </NavbarItem>
         <NavbarItem isActive>
