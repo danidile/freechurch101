@@ -118,9 +118,6 @@ small{
   text-transform: capitalize;
   font-size: 1.1rem;
 }
-.lyrics{
-
-}
 
 
 
@@ -200,12 +197,9 @@ small{
   display: none;
 }
 
-
-
-
-
-
-
+#textarea-wrapper > div > div {
+  height: auto !important;
+}
 
 
 
