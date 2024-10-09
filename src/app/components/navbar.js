@@ -2,7 +2,7 @@ import {Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Navba
 
 export default function MenuBar() {
   const menuItems = [
-    "Profile",
+    "songs",
     "Dashboard",
     "Activity",
     "Analytics",
@@ -66,7 +66,7 @@ export default function MenuBar() {
               color={
                 index === 2 ? "warning" : index === menuItems.length - 1 ? "danger" : "foreground"
               }
-              href="#"
+              href="/songs"
               size="lg"
             >
               {item}
