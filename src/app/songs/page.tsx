@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default async function Page() {
   const supabase = createClient()
-  const { data: songs, error } = await supabase
+  const { data: songs } = await supabase
   .from('songs')
   .select('*');
   
