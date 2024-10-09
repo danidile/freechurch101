@@ -8,7 +8,7 @@ export default async function songs() {
   return (<>
     
 
-    <form  action={addSong}>
+     <form  /*action={addSong}*/ > 
         <h1 className="text-2xl font-medium">Add Song</h1>
         
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
