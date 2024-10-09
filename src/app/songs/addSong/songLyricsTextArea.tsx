@@ -3,8 +3,6 @@ import ChordSheetJS from 'chordsheetjs';
 import { Textarea } from '@nextui-org/input';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
 
-
-import Link from "next/link";
 import { useState } from "react"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

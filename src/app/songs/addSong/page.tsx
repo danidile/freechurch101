@@ -4,7 +4,7 @@ import {Button} from "@nextui-org/react";
 import { addSong } from './addSongAction';
 import { Input, Textarea } from '@nextui-org/input';
 import SongTextArea from './songLyricsTextArea';
-export default async function songs({ searchParams }: { searchParams: Message }) {
+export default async function songs() {
   return (<>
     
 
