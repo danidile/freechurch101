@@ -3,7 +3,7 @@ import ChordSheetJS from 'chordsheetjs';
 import { Textarea } from '@nextui-org/input';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
 
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function  SongTextArea() {
@@ -30,7 +30,7 @@ export default function  SongTextArea() {
         setChords(disp2);
 
     };
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: { target: { value: SetStateAction<string>; }; }) => {
         console.log(event.target.value);
         setState(event.target.value);
         setChords(event.target.value);
