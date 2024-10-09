@@ -11,9 +11,10 @@ export default async function Page({ params }: {params:{songId: string}}) {
 
     const song = await getSong(params.songId);
     console.log(song);
+
    return( <>
     
-    <form action={updateSong}>
+    <form>
         <h1 className="text-2xl font-medium">Update Song</h1>
         
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
