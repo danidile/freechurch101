@@ -3,7 +3,6 @@ import { TsignUpSchema, signUpSchema } from "@/utils/types/types";
 import {Button} from "@nextui-org/react";
 import { addSong } from './addSongAction';
 import { Input, Textarea } from '@nextui-org/input';
-import SongTextArea from './songLyricsTextArea';
 import { FieldValues, useForm } from "react-hook-form";
 import z from "zod";
 import { createClient } from "@/utils/supabase/server";
