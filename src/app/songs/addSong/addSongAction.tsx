@@ -11,26 +11,22 @@ export const addSong = async (data: TsignUpSchema) => {
       .from('songs')
       .insert({ song_title: data.songtitle,
         author: data.author,
-        lyrics: data.author,
+        lyrics: data.lyrics,
         upload_key: data.key })
       .select();
     
     // if (!songName || !author) {
     //   return { error: "Email and password are required" };
     // }
-   
-    
     if (error) {
       console.error(error.code + " " + error.message);
-      return encodedRedirect("error", "/sign-up", error.message);
+      return encodedRedirect("error", "/", error.message);
     } else {
       return encodedRedirect(
         "success",
-        "/sign-up",
-        "Thanks for signing up! Please check your email for a verification link.",
+        "/songs",
+        "Grazie per aver aggiunto la canzone!",
       );
     }
   };
 
-
- 
