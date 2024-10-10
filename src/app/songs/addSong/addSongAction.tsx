@@ -1,25 +1,24 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
+import { TsignUpSchema } from "@/utils/types/types";
 
 
-export const addSong = async (formData: FormData) => {
-    const songName = formData.get("song-title")?.toString();
-    const author = formData.get("author")?.toString();
-    const key = formData.get("key")?.toString();
-    const lyrics = formData.get("lyrics")?.toString();
+export const addSong = async (data: TsignUpSchema) => {
+    console.log("jfjer");
     const supabase = createClient();  
-    if (!songName || !author) {
-      return { error: "Email and password are required" };
-    }
     const { error } = await supabase
-    .from('songs')
-    .insert({ song_title: songName,
-      lyrics: lyrics,
-      author: author,
-      upload_key: key })
-    .select()
-        
+      .from('songs')
+      .insert({ song_title: data.songtitle,
+        author: data.author,
+        lyrics: data.author,
+        upload_key: data.key })
+      .select();
+    
+    // if (!songName || !author) {
+    //   return { error: "Email and password are required" };
+    // }
+   
     
     if (error) {
       console.error(error.code + " " + error.message);

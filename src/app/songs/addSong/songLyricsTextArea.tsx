@@ -2,7 +2,7 @@
 import ChordSheetJS from 'chordsheetjs';
 import { Textarea } from '@nextui-org/input';
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
-
+import { useForm } from "react-hook-form";
 import { SetStateAction, useState } from "react"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,6 +45,7 @@ export default function  SongTextArea() {
             Convert into ChordPro          </Button>
             </div>
             <Textarea
+            
             label="Lyrics"
             name="lyrics"
             placeholder="inserisci testo"
