@@ -2,10 +2,26 @@
 
 Church will start as a platform for worship leaders and pastors to plan theor sunday service.
 We want to provide for them all the tools to serve and make it easy for the volunteers and offer a playform easy for anyone to use.
-### phase1
+### Phase1
 The first service that ChurchLab will offer is a simple databse woth all the lyrics anf chirds from all the italian worship leqders.
 ### Phase2
 offer a sistem to plan sunsay services.
+
+
+
+#### Phase 1
+songs fields:
+- Song Title
+- Author
+- Key
+- Lyrics
+- Youtube link to listen to original Song
+- 
+
+
+
+
+
 
 # features to add and work on:
 1. add event page.
