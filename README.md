@@ -6,6 +6,8 @@ We want to provide for them all the tools to serve and make it easy for the volu
 The first service that ChurchLab will offer is a simple databse woth all the lyrics anf chirds from all the italian worship leqders.
 ### Phase2
 offer a sistem to plan sunsay services.
+### Phase3
+a platform to plan youth meetings. who leads worship? presents, games budget?? food? who is available for car rides?
 
 
 
