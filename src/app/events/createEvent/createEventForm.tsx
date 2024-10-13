@@ -47,8 +47,6 @@ export default function CreateEventForm( songsList: any ) {
   });
 
 const convertData = async (data: TeventSchema) =>{
-  data.lyrics = state;
-  updateSong(data);
 }
 
   
