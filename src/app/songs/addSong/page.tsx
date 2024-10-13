@@ -1,5 +1,5 @@
 "use client"; 
-import { TsignUpSchema, signUpSchema } from "@/utils/types/types";
+import { TsongSchema, songSchema } from "@/utils/types/types";
 import {Button} from "@nextui-org/react";
 import { addSong } from './addSongAction';
 import { Input, Textarea } from '@nextui-org/input';
@@ -18,11 +18,11 @@ export default function App() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<TsignUpSchema>({
-    resolver: zodResolver(signUpSchema),
+  } = useForm<TsongSchema>({
+    resolver: zodResolver(songSchema),
   });
 
-const convertData = async (data: TsignUpSchema) =>{
+const convertData = async (data: TsongSchema) =>{
   data.lyrics = state;
   addSong(data);
 }
@@ -53,29 +53,36 @@ return (<>
      <div className="flex gap-4 items-center">
      <Input 
      {...register("songtitle",)}
-label="Song Title"
+      label="Song Title"
+      variant="bordered"
+       size="sm"
 
+      isInvalid={errors.songtitle}
+      color={errors.songtitle ? "danger" : "default"}
+      errorMessage={errors.songtitle?.message}
       />
-       {errors.songtitle && (
-     <p className="text-red-500">{`${errors.songtitle.message}`}</p>
-   )}
+      
        
        <Input 
        {...register("author", { required: "Song Title is required", })}
        name="author"
        label="Author"
+       variant="bordered"
+       size="sm"
+       
         />
         </div>
        
 
        <Input
        {...register("key", { required: "A key is required", })}
-       label="Key"  name="key"  />
-       {errors.key && (
-         <p className="text-red-500">{`${errors.key.message}`}</p>
-       )}
+       label="Key"  name="key" 
+       variant="bordered"
+       size="sm"
+       
+       />
 
-        <Button type="button" onClick={convertIntoChordPro} color="primary" variant="flat">
+        <Button  type="button" onClick={convertIntoChordPro}  color="primary" variant="flat">
             Convert into ChordPro          
         </Button>
        <Textarea
@@ -85,9 +92,11 @@ label="Song Title"
        maxRows={25}
        minRows={25}
        cols={60}
+       variant="bordered"
+       size="sm"
        />
        
-       <Button type='submit' disabled={isSubmitting}>
+       <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
          Add Song
        </Button>
 

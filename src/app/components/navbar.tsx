@@ -1,17 +1,11 @@
-import {Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, NavbarContent, NavbarItem, Link, Button} from "@nextui-org/react";
+import {Navbar, NavbarBrand, Image, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, NavbarContent, NavbarItem, Link, Button} from "@nextui-org/react";
 
 export default function MenuBar() {
   const menuItems = [
     "songs",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
+    "events",
+    "churches",
+    "Dashboard"
   ];
 
   return (
@@ -22,13 +16,16 @@ export default function MenuBar() {
 
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
-          <p className="font-bold text-inherit">ACME</p>
+        <img className="max-h-8" src="/images/brand/LOGO_.png" />
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
-          <p className="font-bold text-inherit">ACME</p>
+        <Link color="foreground" href="/">
+        <Image className="max-h-8" src="/images/brand/LOGO_.png" />
+        </Link>
+        
         </NavbarBrand>
         <NavbarItem>
           <Link color="foreground" href="/songs">
@@ -36,20 +33,20 @@ export default function MenuBar() {
           </Link>
         </NavbarItem>
         <NavbarItem isActive>
-          <Link href="#" aria-current="page" color="warning">
-            Customers
+          <Link href="/events" aria-current="page" >
+            Events
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
+          <Link color="foreground" href="/churches">
+            Churches
           </Link>
         </NavbarItem>
       </NavbarContent>
 
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
+          <Link href="/sign-in">Login</Link>
         </NavbarItem>
         <NavbarItem>
           <Button as={Link} color="warning" href="#" variant="flat">
@@ -66,7 +63,7 @@ export default function MenuBar() {
               color={
                 index === 2 ? "warning" : index === menuItems.length - 1 ? "danger" : "foreground"
               }
-              href="/songs"
+              href={"/"+ item}
               size="lg"
             >
               {item}

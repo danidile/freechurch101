@@ -1,4 +1,5 @@
 "use client"
+import { Button } from '@nextui-org/react';
 import ChordSheetJS from 'chordsheetjs';
 
 import Link from "next/link";
@@ -37,20 +38,18 @@ export default function  Song({ songData } : { songData: any }) {
 
 
     return (
-        <>  
+        <div className='max-w-md w-full'>  
             
             <div className="transpose-button-container">
-            <button className="button-transpose"><Link href={`/songs/${songData.id}/updateSong`}>Update Song</Link></button>
-
-
-                <button className="button-transpose" onClick={transposeDown} >-</button>
-                <button className="button-transpose" onClick={transposeUp}>+</button>
+                <Button variant="flat"><Link href={`/songs/${songData.id}/updateSong`}>Aggiorna Canzone</Link></Button>
+                <Button variant="flat" onClick={transposeDown} >-</Button>
+                <Button variant="flat" onClick={transposeUp}>+</Button>
             </div>
             <h3>  {songData.author}</h3>
-            <p>This song was uploaded in the Key of {songData.upload_key}</p><br/><br/>
+            <p>Questa canzone è stata caricata nella tonalità di {songData.upload_key}</p><br/><br/>
             <div id="song-chords" dangerouslySetInnerHTML={{ __html: state }} style={{whiteSpace: 'pre-wrap'}}/>
 
             
-        </>
+        </div>
 )
 }

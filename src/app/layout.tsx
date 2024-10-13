@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import MenuBar from "./components/navbar"
 
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -26,7 +27,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
+      <head>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      />
+      </head>
+   <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <MenuBar/>

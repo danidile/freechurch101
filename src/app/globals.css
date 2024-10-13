@@ -66,6 +66,9 @@ button{
   width: fit-content;
 
 }
+main{
+  padding: 3vh 5vw;
+}
 a{
   color: inherit;
   text-decoration: none;
@@ -124,7 +127,8 @@ small{
 .song-list{
   padding: 1rem ;
   border-bottom: 1px solid grey;
-  width: 400px;
+  width: 100%;
+  max-width: 500px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -149,7 +153,7 @@ small{
 }
 .transpose-button-container{
   display: flex;
-  gap: 30px;
+  gap: 15px;
   justify-content: center;
 }
 
