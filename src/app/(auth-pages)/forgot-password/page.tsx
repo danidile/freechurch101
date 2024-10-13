@@ -6,7 +6,7 @@ import { FormMessage } from "@/app/components/form-message";
 import { Input, Button } from "@nextui-org/react";
 
 import { TlostPasswordSchema, lostPasswordSchema } from "@/utils/types/auth";
-import {TalertMessage} from "@/utils/types/auth";
+import {TalertMessage} from "@/utils/types/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 

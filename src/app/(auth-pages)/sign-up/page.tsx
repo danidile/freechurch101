@@ -6,9 +6,10 @@ import Link from "next/link";
 import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
+import {TalertMessage} from "@/utils/types/types";
 
 
-export default function Signup({ searchParams }: { searchParams: Message }) {
+export default function Signup({ searchParams }: { searchParams: TalertMessage }) {
 
   const {
     register,
