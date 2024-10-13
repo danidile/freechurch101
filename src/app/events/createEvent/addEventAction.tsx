@@ -1,29 +1,29 @@
 "use server";
+import userData from "@/app/actions";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from 'next/navigation'
 
 
-export const updateSong = async (formData: FormData) => {
+export const addEvent = async (formData: FormData) => {
+
     const songName = formData.get("song-title")?.toString();
     const author = formData.get("author")?.toString();
+    const key = formData.get("key")?.toString();
     const lyrics = formData.get("lyrics")?.toString();
-    const songId = formData.get("id")?.toString();
-    console.log("Lyrics Are: " + songId);
-    
-    const supabase = createClient();  
+    const supabase = createClient();
+    console.log(formData);  
     if (!songName || !author) {
       return { error: "Email and password are required" };
     }
-
-
-
-
-
-    const { error } = await supabase
-    .from('songs')
-    .update({ lyrics: lyrics })
-      .eq('id', songId)
-    .select();
+    const { data, error } = await supabase
+    .from('events')
+    .insert({ song_title: songName,
+      lyrics: lyrics,
+      author: author,
+      upload_key: key })
+    .select()
+        
     
     if (error) {
       console.error(error.code + " " + error.message);
@@ -31,9 +31,11 @@ export const updateSong = async (formData: FormData) => {
     } else {
       return encodedRedirect(
         "success",
-        `/songs/${songId}`,
+        "/sign-up",
         "Thanks for signing up! Please check your email for a verification link.",
       );
     }
   };
-  
+
+
+ 

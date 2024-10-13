@@ -1,11 +1,11 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { TsignUpSchema } from "@/utils/types/types";
+import { TsongSchema } from "@/utils/types/types";
 
 
-export const addSong = async (data: TsignUpSchema) => {
-    console.log("jfjer");
+export const addSong = async (data: TsongSchema) => {
+    console.log(data.id);
     const supabase = createClient();  
     const { error } = await supabase
       .from('songs')

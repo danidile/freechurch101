@@ -1,12 +1,12 @@
 "use client"; 
-import { TsignUpSchema, signUpSchema } from "@/utils/types/types";
+import { TsongSchema, songSchema } from "@/utils/types/types";
 import {Button} from "@nextui-org/react";
-import { addSong } from '../../addSong/addSongAction';
 import { Input, Textarea } from '@nextui-org/input';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState,SetStateAction } from "react";
 import { toChordPro, toChordsOverWords } from '@/utils/chordProFunctions/chordProFuncs';
+import { updateSong } from "./updateSongAction";
 
 
 export default function UpdateSongForm({ songData } : { songData: any }) {
@@ -15,21 +15,20 @@ export default function UpdateSongForm({ songData } : { songData: any }) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
-  } = useForm<TsignUpSchema>({
-    resolver: zodResolver(signUpSchema),
+  } = useForm<TsongSchema>({
+    resolver: zodResolver(songSchema),
   });
 
-const convertData = async (data: TsignUpSchema) =>{
+const convertData = async (data: TsongSchema) =>{
   data.lyrics = state;
-  addSong(data);
+  updateSong(data);
 }
 
 
 
 
     const disp = '';
-    const [state, setState] = useState(disp);
+    const [state, setState] = useState(songData.lyrics);
 
     const convertIntoChordPro = ()=>{
       setState(toChordPro(state));  
@@ -53,6 +52,8 @@ return (<>
      {...register("songtitle",)}
     label="Song Title"
     defaultValue={songData.song_title}
+    variant="bordered"
+       size="sm"
       />
        {errors.songtitle && (
      <p className="text-red-500">{`${errors.songtitle.message}`}</p>
@@ -63,6 +64,8 @@ return (<>
        name="author"
        label="Author"
        defaultValue={songData.author}
+       variant="bordered"
+       size="sm"
 
         />
         </div>
@@ -72,17 +75,30 @@ return (<>
        {...register("key", { required: "A key is required", })}
        label="Key"  name="key" 
        defaultValue={songData.key}
+       variant="bordered"
+       size="sm"
        />
        {errors.key && (
          <p className="text-red-500">{`${errors.key.message}`}</p>
        )}
+
+
+       <Input 
+       {...register("id", { required: "", })}
+       name="id"
+       label="id"
+       defaultValue={songData.id}
+       className="hidden"
+        />
 
         <Button type="button" onClick={convertIntoChordPro} color="primary" variant="flat">
             Convert into ChordPro          
         </Button>
        <Textarea
        {...register("lyrics")}
-       defaultValue={songData.lyrics}
+       value={state}
+       variant="bordered"
+       size="sm"
 
        onChange={handleInputChange}
        maxRows={25}
@@ -90,8 +106,8 @@ return (<>
        cols={60}
        />
        
-       <Button type='submit' disabled={isSubmitting}>
-         Add Song
+       <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
+         Aggiorna Canzone
        </Button>
 
      </div>
