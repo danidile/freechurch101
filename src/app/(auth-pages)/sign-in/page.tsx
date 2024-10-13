@@ -40,9 +40,7 @@ export default function Login({ searchParams }: { searchParams: TalertMessage })
       <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
         <Input 
         {...register("email",)}
-        isInvalid={errors.email}
-        color={errors.email ? "danger" : "default"}
-        errorMessage={errors.email?.message}
+        
         label="Email" name="email" placeholder="you@example.com" required />
         <div className="flex justify-between items-center">
           <Link
@@ -59,9 +57,7 @@ export default function Login({ searchParams }: { searchParams: TalertMessage })
           name="password"
           placeholder="Your password"
           required
-          isInvalid={errors.password}
-          color={errors.password ? "danger" : "default"}
-          errorMessage={errors.password?.message}
+          
         />
         <FormMessage message={searchParams} />
 
