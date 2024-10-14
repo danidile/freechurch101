@@ -8,7 +8,7 @@ export default async function Page({ params }: {params:{songId: string}}) {
 
     return (
     <div>
-      <UpdateSongForm songData={songData}/>
+      <UpdateSongForm {...songData}/>
     </div>
     )
   }
