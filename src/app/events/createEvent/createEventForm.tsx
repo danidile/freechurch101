@@ -7,31 +7,56 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from "react";
 
 import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
+interface Tsections {
+  id: string;
+  key: string;
+}
+
+interface Tsong {
+  id: string;
+  song_title: string;
+}
+
+interface TsongList {
+  author: string;
+  created_at: string;
+  id: string;
+  lyrics: string;
+  song_title: string;
+  upload_key: string;
+}
 
 
-export default function CreateEventForm( songsList: unknown ) {
+export default function CreateEventForm( newSongList: Array<TsongList> ) {
 
-    
-    const [state, setState] = useState([]);
-    let x;
+    console.log(newSongList);
+    const [state, setState] = useState<Tsections[]>([]);
+    let x: string;
 
-    const AddSection = (event: { target: { id: any; }; }) => {
-        x = Math.floor((Math.random() * 10000000) + 1);
-        console.log(event.target.id);
-        setState([
-            ...state,
-            [event.target.id, x ]
+
+
+    const AddSection = (event: React.MouseEvent<HTMLButtonElement>) => {
+      const target = event.currentTarget as HTMLInputElement 
+      if(target){
+
+      x = JSON.stringify(Math.floor((Math.random() * 10000000) + 1));
+        const id = target.id;
+        setState((section) => [
+            ...section,
+            {id: id, key: x }
             
           ]);
+        }
     };
 
     // section => section[1] === event.target.id)
-    const removeSection = (event: { target: { id: any; }; })=>{
-        const array = state.filter(section => section[1] != event.target.id);
-        console.log(event.target.id);
-        console.log(array);
+    const removeSection = (event: React.MouseEvent<HTMLButtonElement>)=>{
+      const target = event.currentTarget as HTMLInputElement 
+      if(target){
+        const array = state.filter(section => section.key != target.id);
 
         setState(array);
+      }
     };
     
   const {
@@ -81,13 +106,12 @@ return (<>
             
             {
                 state.map((element) =>{
-                    console.log("Element" + element);
                     return (
-                    <div key="" className='flex flex-col gap-1.5 bg-gray-200 rounded-2xl p-4'>
-                        <p><strong>{element[0]}</strong></p>
+                    <div key={element.key} className='flex flex-col gap-1.5 bg-gray-200 rounded-2xl p-4'>
+                        <p><strong>{element.id}</strong></p>
 
                         <div className="container-input-2col flex gap-1.5">
-                             <Input  name={"type"+element[1]} key={element[1]} value={element} className='hide-input' />
+                             <Input  name={"type"+element.key} key={element.key} value={element.id} className='hide-input' />
                                 <div>
                                     <Input label="Duration:"  type="time" name="duration"  />
                                 </div>
@@ -100,7 +124,7 @@ return (<>
                                         label="Select an animal" 
                                         className="max-w-xs" 
                                     >
-                                        {songsList.songsList.map((song) => (
+                                        {newSongList.map((song: Tsong) => (
                                             
                                         <AutocompleteItem key={song.id} value={song.song_title}>
                                             {song.song_title}
@@ -108,7 +132,7 @@ return (<>
                                         ))}
                                     </Autocomplete>
                         </div>
-                        <Button isIconOnly type='button' id={element[1]} onClick={removeSection}>X</Button>
+                        <Button isIconOnly type='button' id={element.key} onClick={removeSection}>X</Button>
                 </div>)
                 })
             }
