@@ -54,9 +54,7 @@ return (<>
       variant="bordered"
        size="sm"
 
-      isInvalid={errors.songtitle}
-      color={errors.songtitle ? "danger" : "default"}
-      errorMessage={errors.songtitle?.message}
+
       />
       
        
