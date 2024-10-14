@@ -9,8 +9,8 @@ import { toChordPro } from '@/utils/chordProFunctions/chordProFuncs';
 import { updateSong } from "./updateSongAction";
 
 
-export default function UpdateSongForm({ songData } : { songData: any }) {
-  console.log(songData);
+export default function UpdateSongForm(songData :  TsongSchema) {
+  console.log("songData"+songData.songtitle);
   const {
     register,
     handleSubmit,
@@ -47,7 +47,7 @@ return (<>
      <Input 
      {...register("songtitle",)}
     label="Song Title"
-    defaultValue={songData.song_title}
+    defaultValue={songData.songtitle}
     variant="bordered"
        size="sm"
       />
