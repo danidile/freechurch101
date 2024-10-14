@@ -16,7 +16,7 @@ export default function Login({ searchParams }: { searchParams: TalertMessage })
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<TauthSchema>({
     resolver: zodResolver(authSchema),
   });

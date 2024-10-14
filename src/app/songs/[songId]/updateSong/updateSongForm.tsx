@@ -5,7 +5,7 @@ import { Input, Textarea } from '@nextui-org/input';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState,SetStateAction } from "react";
-import { toChordPro, toChordsOverWords } from '@/utils/chordProFunctions/chordProFuncs';
+import { toChordPro } from '@/utils/chordProFunctions/chordProFuncs';
 import { updateSong } from "./updateSongAction";
 
 
@@ -24,10 +24,6 @@ const convertData = async (data: TsongSchema) =>{
   updateSong(data);
 }
 
-
-
-
-    const disp = '';
     const [state, setState] = useState(songData.lyrics);
 
     const convertIntoChordPro = ()=>{

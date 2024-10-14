@@ -1,4 +1,5 @@
-import {Navbar, NavbarBrand, Image, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, NavbarContent, NavbarItem, Link, Button} from "@nextui-org/react";
+import {Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, NavbarContent, NavbarItem, Link, Button} from "@nextui-org/react";
+import Image from "next/image";
 
 export default function MenuBar() {
   const menuItems = [
@@ -16,14 +17,14 @@ export default function MenuBar() {
 
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
-        <img className="max-h-8" src="/images/brand/LOGO_.png" />
+        <Image className="max-h-8" src="/images/brand/LOGO_.png" alt="" />
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
         <Link color="foreground" href="/">
-        <Image className="max-h-8" src="/images/brand/LOGO_.png" />
+        <Image className="max-h-8" src="/images/brand/LOGO_.png" alt="" />
         </Link>
         
         </NavbarBrand>

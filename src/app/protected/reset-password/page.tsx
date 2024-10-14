@@ -14,14 +14,13 @@ export default function ResetPassword({ searchParams }: { searchParams: Message 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
+    formState: { isSubmitting },
   } = useForm<TresetPasswordSchema>({
     resolver: zodResolver(resetPasswordSchema),
   });
 
 
-  const convertData = async (data: TauthSchema) =>{
+  const convertData = async (data: TresetPasswordSchema) =>{
     console.log(data);
     resetPasswordAction(data);
     console.log(data);

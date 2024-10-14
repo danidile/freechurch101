@@ -1,7 +1,7 @@
 import ChordSheetJS from 'chordsheetjs';
 
 
-export const toChordPro = (lyrics: any) =>{
+export const toChordPro = (lyrics: string) =>{
     const chordSheet = lyrics;
     const parser = new ChordSheetJS.ChordsOverWordsParser();
     const song = parser.parse(chordSheet);
@@ -11,7 +11,7 @@ export const toChordPro = (lyrics: any) =>{
     return disp;
 };
 
-export const toChordsOverWords = (lyrics: any) =>{
+export const toChordsOverWords = (lyrics: string) =>{
     const chordSheet = lyrics;
     const parserPro = new ChordSheetJS.ChordProParser();
     const songPro = parserPro.parse(chordSheet);

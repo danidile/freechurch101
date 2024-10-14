@@ -1,5 +1,7 @@
 "use client"; 
 
+import { FormMessage } from "@/app/components/form-message";
+
 import { signUpAction } from "@/app/actions";
 import { Input, Button } from "@nextui-org/react";
 import Link from "next/link";
@@ -14,8 +16,8 @@ export default function Signup({ searchParams }: { searchParams: TalertMessage }
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
+    formState: { isSubmitting },
+  
   } = useForm<TauthSchema>({
     resolver: zodResolver(authSchema),
   });

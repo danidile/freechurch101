@@ -12,7 +12,6 @@ export default function  Song({ songData } : { songData: any }) {
     const song = parser.parse(chordSheet);
     const formatter = new ChordSheetJS.TextFormatter();
     
-    const proFormatter = new ChordSheetJS.ChordProFormatter();
     const disp = formatter.format(song);
 
     const [state, setState] = useState(disp);
