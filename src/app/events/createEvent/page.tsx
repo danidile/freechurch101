@@ -16,15 +16,18 @@ export default async function songs() {
   const { data: songs  } = await supabase
   .from('songs')
   .select('*');
+  if(songs){
+    const newSongList: Array<TsongList> | null = songs;
+    console.log("New Song List " + newSongList);
+    return (<>
+      
+      
+       {/* <CreateEventForm {...newSongList} />  */}
   
-  const newSongList: Array<TsongList> | null = songs;
-  return (<>
-    
-    
-     <CreateEventForm {...newSongList} /> 
-
-
-
-
-</>);
+  
+  
+  
+  </>);
+  }
+  
 }
