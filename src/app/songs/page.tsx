@@ -11,7 +11,6 @@ export default async function Page() {
   if(songs){
     return (
       <>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=lyrics" />
       <h5>Lista di tutte le canzoni</h5>
       <Button color="primary" variant="ghost"><a href="/songs/addSong">Aggiungi una canzone!</a></Button>
 
