@@ -22,7 +22,7 @@ export default async function songs() {
     return (<>
       
       
-       {/* <CreateEventForm {...newSongList} />  */}
+       <CreateEventForm {...newSongList} /> 
   
   
   

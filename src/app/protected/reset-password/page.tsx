@@ -8,8 +8,9 @@ import { Input, Button } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TresetPasswordSchema, resetPasswordSchema } from "@/utils/types/auth";
+import {TalertMessage} from "@/utils/types/types";
 
-export default function ResetPassword({ searchParams }: { searchParams: Message }) {
+export default function ResetPassword({ searchParams }: { searchParams: TalertMessage }) {
 
   const {
     register,
