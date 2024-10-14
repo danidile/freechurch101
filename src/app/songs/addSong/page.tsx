@@ -3,12 +3,10 @@ import { TsongSchema, songSchema } from "@/utils/types/types";
 import {Button} from "@nextui-org/react";
 import { addSong } from './addSongAction';
 import { Input, Textarea } from '@nextui-org/input';
-import { FieldValues, useForm } from "react-hook-form";
-import z from "zod";
-import { createClient } from "@/utils/supabase/server";
+import {  useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState,SetStateAction } from "react";
-import { toChordPro, toChordsOverWords } from '@/utils/chordProFunctions/chordProFuncs';
+import { toChordPro } from '@/utils/chordProFunctions/chordProFuncs';
 
 
 export default function App() {
@@ -17,7 +15,6 @@ export default function App() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<TsongSchema>({
     resolver: zodResolver(songSchema),
   });

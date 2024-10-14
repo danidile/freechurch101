@@ -19,10 +19,7 @@ export default function Sections (){
 
     // section => section[1] === event.target.id)
     const removeSection = (event: { target: { id: any; }; })=>{
-        let array = state.filter(section => section[1] != event.target.id);
-        console.log(event.target.id);
-        console.log(array);
-
+        const array = state.filter(section => section[1] != event.target.id);
         setState(array);
     };
 
@@ -40,7 +37,7 @@ export default function Sections (){
                 state.map((element) =>{
                     console.log("Element" + element);
                     return (
-                    <div className='flex flex-col gap-1.5 bg-gray-200 rounded-2xl p-4'>
+                    <div key="" className='flex flex-col gap-1.5 bg-gray-200 rounded-2xl p-4'>
                         <p><strong>{element[0]}</strong></p>
 
                         <div className="container-input-2col flex gap-1.5">

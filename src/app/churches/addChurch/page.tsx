@@ -1,36 +1,49 @@
-import { createClient } from '@/utils/supabase/server'
+"use client"; 
+
 import { Input, Button } from '@nextui-org/react';
-import { addSong } from './addChurchAction';
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Tchurch, church } from "@/utils/types/types";
 
-export default async function songs({ searchParams }: { searchParams: Message }) {
-  const supabase = createClient()
 
-  let { data: songs, error } = await supabase
-  .from('songs')
-  .select('*');
+export default  function AddChurch() {
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<Tchurch>({
+    resolver: zodResolver(church),
+  });
+  
 
+
+
+  const convertData = async (data: Tchurch) =>{
+    console.log(data);
+  }
+  
 
   return (<>
     
 
-    <form className="flex flex-col min-w-64 max-w-64 mx-auto">
+    <form onSubmit={handleSubmit(convertData)} className="flex flex-col min-w-64 max-w-64 mx-auto">
         <h1 className="text-2xl font-medium">Add Church</h1>
         <p className="text-sm text text-foreground">
         </p>
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Input label="Church Name" name="church-name" placeholder="La mia chiesa "  required />
+          <Input {...register("churchName",)} label="Church Name" name="church-name" placeholder="La mia chiesa "  required />
           
-          <Input label="Pastor" name="pastor" placeholder="Paolo " required />
+          <Input {...register("pastor",)} label="Pastor" name="pastor" placeholder="Paolo " required />
 
-          <Input label="Address" name="address" placeholder="Via XII Sett.."  />
+          <Input {...register("address",)} label="Address" name="address" placeholder="Via XII Sett.."  />
 
-          <Input label="Sito Web" name="website" placeholder="www.lamiachiesa.it"  />
+          <Input {...register("website",)} label="Sito Web" name="website" placeholder="www.lamiachiesa.it"  />
 
-          <Input label="handle Instagram" name="ig-handle" placeholder="@my_church" />
+          <Input {...register("igHandle",)} label="handle Instagram" name="ig-handle" placeholder="@my_church" />
 
          
           
-          <Button formAction={addSong}>
+          <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
           Add Song
           </Button>
         </div>

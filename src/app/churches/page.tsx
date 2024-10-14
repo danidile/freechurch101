@@ -5,7 +5,7 @@ export default async function Page() {
   const supabase = createClient()
 
   
-let { data: churches, error } = await supabase
+const { data: churches } = await supabase
 .from('churches')
 .select();
         

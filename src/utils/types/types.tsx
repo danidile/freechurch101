@@ -15,11 +15,10 @@ export const songSchema = z.object({
 
 
   export const eventSchema = z.object({
-    id: z.string(),
-    songtitle: z.string().min(5,"Song Title must be at least 5 characters long"),
-    author: z.string(),
-    key: z.string(),
-    lyrics: z.string()
+    eventTitle: z.string(),
+    date: z.date(),
+    start: z.string(),
+    location: z.string(),
     
 
   })
@@ -34,3 +33,15 @@ export const songSchema = z.object({
 
   })
   export type TalertMessage = z.infer<typeof alertMessage>;
+
+
+
+
+  export const church = z.object({
+    churchName: z.string(),
+    pastor: z.string(),
+    address: z.string(),
+    website: z.string(),
+    igHandle: z.string()
+  })
+  export type Tchurch = z.infer<typeof church>;

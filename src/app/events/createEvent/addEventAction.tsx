@@ -1,8 +1,6 @@
 "use server";
-import userData from "@/app/actions";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from 'next/navigation'
 
 
 export const addEvent = async (formData: FormData) => {
@@ -16,7 +14,7 @@ export const addEvent = async (formData: FormData) => {
     if (!songName || !author) {
       return { error: "Email and password are required" };
     }
-    const { data, error } = await supabase
+    const { error } = await supabase
     .from('events')
     .insert({ song_title: songName,
       lyrics: lyrics,

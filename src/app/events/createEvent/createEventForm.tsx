@@ -1,20 +1,17 @@
 "use client"; 
 import { TeventSchema, eventSchema } from "@/utils/types/types";
 import {Button} from "@nextui-org/react";
-import { Input, Textarea } from '@nextui-org/input';
+import { Input } from '@nextui-org/input';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState,SetStateAction } from "react";
-import { toChordPro, toChordsOverWords } from '@/utils/chordProFunctions/chordProFuncs';
-import { updateSong } from "./addEventAction";
-import { createClient } from '@/utils/supabase/server'
-import getSongs from "./getSongs";
+import { useState } from "react";
+
 import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
 
 
-export default function CreateEventForm( songsList: any ) {
+export default function CreateEventForm( songsList: unknown ) {
 
-    console.log(songsList.songsList);
+    
     const [state, setState] = useState([]);
     let x;
 
@@ -30,7 +27,7 @@ export default function CreateEventForm( songsList: any ) {
 
     // section => section[1] === event.target.id)
     const removeSection = (event: { target: { id: any; }; })=>{
-        let array = state.filter(section => section[1] != event.target.id);
+        const array = state.filter(section => section[1] != event.target.id);
         console.log(event.target.id);
         console.log(array);
 
@@ -40,36 +37,37 @@ export default function CreateEventForm( songsList: any ) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
+    formState: { isSubmitting },
   } = useForm<TeventSchema>({
     resolver: zodResolver(eventSchema),
   });
 
 const convertData = async (data: TeventSchema) =>{
+  console.log(data);
+
 }
 
   
 return (<>
     
 
-    <form >
+    <form  onSubmit={handleSubmit(convertData)}>
         <h1 className="text-2xl font-medium">Create Event</h1>
         
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
         <div>
-        <Input label="Event title" name="event-title" required />
+        <Input {...register("eventTitle")} label="Event title" name="event-title" required />
         </div>
        <div className="container-input-2col">
             <div>
-            <Input label="Date" type="date" name="date"  />
+            <Input {...register("date")} label="Date" type="date" name="date"  />
             </div>
             <div>
-            <Input label="Start" type="time" name="start-hour"  />
+            <Input {...register("start")} label="Start" type="time" name="start-hour"  />
             </div>
         </div>
 
-          <Input label="Location" name="location"   />
+          <Input {...register("location")} label="Location" name="location"   />
           
 
           <p>Aggingi sezione</p>
@@ -85,7 +83,7 @@ return (<>
                 state.map((element) =>{
                     console.log("Element" + element);
                     return (
-                    <div className='flex flex-col gap-1.5 bg-gray-200 rounded-2xl p-4'>
+                    <div key="" className='flex flex-col gap-1.5 bg-gray-200 rounded-2xl p-4'>
                         <p><strong>{element[0]}</strong></p>
 
                         <div className="container-input-2col flex gap-1.5">
@@ -119,7 +117,7 @@ return (<>
           
 
           <br/><br/>
-          <Button>
+          <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
           Add Song
           </Button>
         </div>

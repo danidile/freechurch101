@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default async function Page() {
   const supabase = createClient()
 
-  let { data: events, error } = await supabase
+  const { data: events } = await supabase
   .from('events')
   .select('*');
   if(events){

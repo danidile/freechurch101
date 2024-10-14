@@ -1,5 +1,4 @@
 "use server";
-import userData from "@/app/actions";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 
@@ -14,9 +13,8 @@ export const addSong = async (formData: FormData) => {
     if (!churchName || !pastor) {
       return { error: "Email and password are required" };
     }
-    const uData =  await userData();
 
-    const { data, error } = await supabase
+    const { error } = await supabase
     .from('churches')
     .insert({ church_name: churchName,
       pastor: pastor,

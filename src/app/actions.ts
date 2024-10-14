@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { TauthSchema,TlostPasswordSchema } from "@/utils/types/auth";
-import { TresetPasswordSchema, resetPasswordSchema } from "@/utils/types/auth";
+import { TresetPasswordSchema } from "@/utils/types/auth";
 
 
 export const signUpAction = async (data : TauthSchema) => {
