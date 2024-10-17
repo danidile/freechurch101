@@ -55,3 +55,5 @@ export const songSchema = z.object({
   )
   })
   export type TchurchMinimalData = z.infer<typeof churchMinimalData>["posts"][number];
+
+  
