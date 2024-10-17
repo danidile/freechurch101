@@ -28,7 +28,7 @@ export default async function Dashboard() {
             <Sidebar />
             <div className="dashboard-container">
               <h6 className="text-md">Benvenuto {user.email}</h6>
-              <CompleteAccount churchList={churchList} userId={userId} />
+              <CompleteAccount churchList={churchList} />
             </div>
     
     </div>

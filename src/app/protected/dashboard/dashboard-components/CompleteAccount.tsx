@@ -7,8 +7,9 @@ import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
 import {completeAccountAction} from './completeAccountAction';
 
 
-export default function CompleteAccount(churchList : Array<{ id: string, churchName: string }> , userId: string){
-    const id = userId;
+export default function CompleteAccount({churchList}:{churchList : Array<{ id: string, churchName: string }>}){
+    
+  const id = "d8c5266d-4b5f-447a-bf8d-9e5d8575e5d3";
     const {
         register,
         handleSubmit,
