@@ -22,12 +22,13 @@ export default async function Dashboard() {
       }
     }
     if(user){
+      const userId: string = user.id;
       return (
         <div className="flex flex-row w-full gap-12">  
             <Sidebar />
             <div className="dashboard-container">
               <h6 className="text-md">Benvenuto {user.email}</h6>
-              <CompleteAccount churchList={churchList} userId={user.id} />
+              <CompleteAccount churchList={churchList} userId={userId} />
             </div>
     
     </div>

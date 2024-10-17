@@ -5,10 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TuserData, userData } from "@/utils/types/userData";
 import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
 import {completeAccountAction} from './completeAccountAction';
-import { TchurchMinimalData } from "@/utils/types/types";
 
 
-export default function CompleteAccount({ churchList, userId }){
+export default function CompleteAccount({ churchList}: {churchList : Array<{ id: string, churchName: string }>}, {userId}:{userId: string}){
     const id = userId;
     const {
         register,
@@ -60,7 +59,7 @@ export default function CompleteAccount({ churchList, userId }){
 
         label="Seleziona la tua chiesa" 
         >
-            {churchList.map((church: TchurchMinimalData) => (
+            {churchList.map((church: {id: string, churchName: string}) => (
                 
             <AutocompleteItem key={church.id} value={church.id}>
                 {church.churchName}
