@@ -10,7 +10,7 @@ import { updateSong } from "./updateSongAction";
 
 
 export default function UpdateSongForm(songData :  TsongSchema) {
-  console.log("songData"+songData.songtitle);
+  console.log("songData"+songData.song_title);
   const {
     register,
     handleSubmit,
@@ -25,7 +25,6 @@ const convertData = async (data: TsongSchema) =>{
 }
 
     const [state, setState] = useState(songData.lyrics);
-
     const convertIntoChordPro = ()=>{
       setState(toChordPro(state));  
       console.log(state);
@@ -45,14 +44,14 @@ return (<>
 
      <div className="flex gap-4 items-center">
      <Input 
-     {...register("songtitle",)}
+     {...register("song_title",)}
     label="Song Title"
     defaultValue={songData.song_title}
     variant="bordered"
        size="sm"
       />
-       {errors.songtitle && (
-     <p className="text-red-500">{`${errors.songtitle.message}`}</p>
+       {errors.song_title && (
+     <p className="text-red-500">{`${errors.song_title.message}`}</p>
         )}
        
        <Input 
@@ -68,14 +67,14 @@ return (<>
        
 
        <Input
-       {...register("key", { required: "A key is required", })}
+       {...register("upload_key", { required: "A key is required", })}
        label="Key"  name="key" 
        defaultValue={songData.upload_key}
        variant="bordered"
        size="sm"
        />
-       {errors.key && (
-         <p className="text-red-500">{`${errors.key.message}`}</p>
+       {errors.upload_key && (
+         <p className="text-red-500">{`${errors.upload_key.message}`}</p>
        )}
 
 
