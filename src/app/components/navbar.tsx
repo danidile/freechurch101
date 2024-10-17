@@ -1,29 +1,58 @@
-import {Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, NavbarContent, NavbarItem, Link, Button} from "@nextui-org/react";
+import {Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, NavbarContent, NavbarItem, Link} from "@nextui-org/react";
+import { createClient } from "@/utils/supabase/server";
+import LogInOutButton from '@/app/components/logInOutButton';
+import {Image} from "@nextui-org/react";
 
-export default function MenuBar() {
+
+export default async function MenuBar() {
+
+
   const menuItems = [
     "songs",
     "events",
     "churches",
-    "Dashboard"
+    "dashboard"
   ];
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+
+  
+  let loggedIn = 0;
+
+  let profileName = "";
+  let profileEmail = "";
+
+  if(user){
+    loggedIn = 1;
+    
+const { data: profile } = await supabase
+.from('profiles')
+.select()
+.eq('id', user.id)
+    if(profile){
+      profileName = profile[0].username;
+       profileEmail = profile[0].email;
+    }
+     
+  }
 
   return (
-    <Navbar disableAnimation isBordered>
+    <Navbar disableAnimation isBordered className="navbar-top">
       <NavbarContent className="sm:hidden" justify="start">
         <NavbarMenuToggle />
       </NavbarContent>
 
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
-        <img className="max-h-8" src="/images/brand/LOGO_.png" alt="" />
+        <Image className="max-h-8" src="/images/brand/LOGO_.png" alt="" />
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
         <Link color="foreground" href="/">
-        <img className="max-h-8" src="/images/brand/LOGO_.png" alt="" />
+        <Image className="max-h-8 overflow-visible" src="/images/brand/LOGO_.png" alt="" />
         </Link>
         
         </NavbarBrand>
@@ -42,22 +71,26 @@ export default function MenuBar() {
             Churches
           </Link>
         </NavbarItem>
+        {loggedIn === 1 && (
+          <NavbarItem>
+          <Link color="foreground" href="/protected/dashboard">
+            Dashboard
+          </Link>
+        </NavbarItem>
+        )}
+        
+
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="/sign-in">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="warning" href="#" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
+      
+        <LogInOutButton isLoggedIn={loggedIn} username={profileName} email={profileEmail} />
+        
       </NavbarContent>
 
       <NavbarMenu>
         {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
+          <NavbarMenuItem key={`${item}-${index}`} >
             <Link
               className="w-full"
               color={

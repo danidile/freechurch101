@@ -10,7 +10,7 @@ export default function  Song({ songData } : { songData: any }) {
     const chordSheet = songData.lyrics;
     const parser = new ChordSheetJS.ChordProParser();
     const song = parser.parse(chordSheet);
-    const formatter = new ChordSheetJS.TextFormatter();
+    const formatter = new ChordSheetJS.HtmlTableFormatter();
     
     const disp = formatter.format(song);
 
@@ -22,7 +22,6 @@ export default function  Song({ songData } : { songData: any }) {
         setCount(count+1);
         const newchords = song.transpose(count);
         const disp = formatter.format(newchords);
-        console.log(count);
         
         setState(disp);
     };

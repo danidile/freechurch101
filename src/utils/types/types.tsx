@@ -2,7 +2,7 @@ import z from "zod";
 
 
 export const songSchema = z.object({
-    id: z.string(),
+    id: z.string().optional(),
     songtitle: z.string().min(5,"Song Title must be at least 5 characters long"),
     author: z.string(),
     key: z.string(),
@@ -45,3 +45,13 @@ export const songSchema = z.object({
     igHandle: z.string()
   })
   export type Tchurch = z.infer<typeof church>;
+
+  export const churchMinimalData = z.object({
+    posts: z.array(
+    z.object({
+      id: z.string(),
+      churchName: z.string()
+    }),
+  )
+  })
+  export type TchurchMinimalData = z.infer<typeof churchMinimalData>["posts"][number];

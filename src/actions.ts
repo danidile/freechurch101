@@ -4,6 +4,8 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { cookies } from 'next/headers'
+
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -124,6 +126,7 @@ export const resetPasswordAction = async (formData: FormData) => {
 };
 
 export const signOutAction = async () => {
+  console.log("Logginf out");
   const supabase = createClient();
   await supabase.auth.signOut();
   return redirect("/sign-in");
@@ -141,4 +144,14 @@ export default async function userData() {
   }
 
   return data;
+}
+
+
+export async function logout() {
+  console.log("working till here");
+  const supabase = createClient()
+
+  await supabase.auth.signOut()
+
+  redirect('/auth')
 }

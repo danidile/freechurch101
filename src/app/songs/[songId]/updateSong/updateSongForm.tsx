@@ -34,7 +34,7 @@ const convertData = async (data: TsongSchema) =>{
       console.log(event.target.value);
       setState(event.target.value);
     };
-  
+  console.log(songData);
 return (<>
     
 
@@ -47,7 +47,7 @@ return (<>
      <Input 
      {...register("songtitle",)}
     label="Song Title"
-    defaultValue={songData.songtitle}
+    defaultValue={songData.song_title}
     variant="bordered"
        size="sm"
       />
@@ -70,7 +70,7 @@ return (<>
        <Input
        {...register("key", { required: "A key is required", })}
        label="Key"  name="key" 
-       defaultValue={songData.key}
+       defaultValue={songData.upload_key}
        variant="bordered"
        size="sm"
        />
@@ -97,8 +97,8 @@ return (<>
        size="sm"
 
        onChange={handleInputChange}
-       maxRows={25}
-       minRows={25}
+       maxRows={50}
+       minRows={35}
        cols={60}
        />
        

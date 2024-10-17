@@ -38,7 +38,7 @@ body {
 }
 
 * {
-  box-sizing: border-box;
+
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -68,6 +68,7 @@ button{
 }
 main{
   padding: 3vh 5vw;
+  min-height: 93vh;
 }
 a{
   color: inherit;
@@ -208,6 +209,11 @@ small{
 
 
 
+.navbar-top{
+  min-height: 7vh;
+  background-color: #ffffff;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
 
 
 
@@ -215,4 +221,67 @@ small{
 
 
 
+.chord-sheet .chord{
+  font-size: 1.1rem;
+  color: rgb(39, 30, 96);
+  font-weight: 700;
+  line-height: 0.9rem;
+padding: 0px;
+margin: 0px;
+}
+.chord-sheet .lyrics{
+  font-size: 0.95rem;
+}
+.chord-sheet .comment{
+font-weight: 800;
+line-height: 3rem;
+text-decoration: underline;
 
+}
+
+.dashboard-sidebar-container{
+  position: fixed;
+  min-height: 87vh;
+  height: 100%;
+  min-width: 250px;
+  border-radius: 12px;
+  padding: 3vh 1rem;
+}
+.dashboard-ul{
+
+}
+
+.dashboard-li{
+  padding: 0.8rem 2rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  transition: 0.4s;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  font-weight: 500;
+}
+
+
+.dashboard-li:hover{
+  background-color: #f0f0f0;
+  box-shadow: #0a0a0a;
+}
+
+
+.dashboard-container{
+  box-shadow: rgba(17, 12, 46, 0.08) 0px 48px 100px 0px;
+  position: relative;
+  margin-left: 270px;
+  padding: 3rem;
+  height: 200vh;
+  width: 100%;
+}
+
+.dashboard-icon{
+  width: 20px;
+  overflow: visible;
+
+}
