@@ -25,6 +25,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
+
   return (
     <html lang="en">
       <head>
@@ -34,10 +37,10 @@ export default function RootLayout({
       />
       </head>
    <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
         <MenuBar/>
-        <main className="flex-1 w-full flex flex-col items-center">
+        <main className="flex flex-col items-center">
         {children}
         </main>
         

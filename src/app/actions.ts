@@ -61,7 +61,7 @@ export const signInAction = async (data : TauthSchema) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/protected");
+  return redirect("/protected/dashboard");
 };
 
 
@@ -166,4 +166,13 @@ export default async function userData() {
   }
 
   return data;
+}
+
+export async function logout() {
+  console.log("working till here");
+  const supabase = createClient()
+
+  await supabase.auth.signOut()
+
+  redirect('/auth')
 }

@@ -36,7 +36,7 @@ export default function Login({ searchParams }: { searchParams: TalertMessage })
         <Link className="text-foreground font-medium underline" href="/sign-up">
           Registrati
         </Link>
-      </p>
+      </p> 
       <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
         <Input 
         {...register("email",)}

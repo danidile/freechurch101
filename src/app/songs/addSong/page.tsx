@@ -11,18 +11,19 @@ import { toChordPro } from '@/utils/chordProFunctions/chordProFuncs';
 
 export default function App() {
   
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<TsongSchema>({
-    resolver: zodResolver(songSchema),
-  });
+    const {
+      register,
+      handleSubmit,
+      formState: {  isSubmitting },
+    } = useForm<TsongSchema>({
+      resolver: zodResolver(songSchema),
+    });
 
-const convertData = async (data: TsongSchema) =>{
-  data.lyrics = state;
-  addSong(data);
-}
+    const convertData = async (data: TsongSchema) =>{
+      data.lyrics = state;
+      console.log(data.lyrics);
+      addSong(data);
+    }
 
 
 
@@ -30,12 +31,13 @@ const convertData = async (data: TsongSchema) =>{
     const disp = '';
     const [state, setState] = useState(disp);
 
+
     const convertIntoChordPro = ()=>{
       setState(toChordPro(state));  
-      console.log(state);
     };
+
+
     const handleInputChange = (event: { target: { value: SetStateAction<string>; }; }) => {
-      console.log(event.target.value);
       setState(event.target.value);
     };
   
@@ -84,9 +86,9 @@ return (<>
        {...register("lyrics")}
        value={state}
        onChange={handleInputChange}
-       maxRows={25}
-       minRows={25}
-       cols={60}
+       maxRows={65}
+       minRows={45}
+       cols={100}
        variant="bordered"
        size="sm"
        />
