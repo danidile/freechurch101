@@ -22,7 +22,6 @@ export default async function Dashboard() {
       }
     }
     if(user){
-      const userId: string = user.id;
       return (
         <div className="flex flex-row w-full gap-12">  
             <Sidebar />
