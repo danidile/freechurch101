@@ -9,10 +9,10 @@ export const addSong = async (data: TsongSchema) => {
     const supabase = createClient();  
     const { error } = await supabase
       .from('songs')
-      .insert({ song_title: data.songtitle,
+      .insert({ song_title: data.song_title,
         author: data.author,
         lyrics: data.lyrics,
-        upload_key: data.key })
+        upload_key: data.upload_key })
       .select();
     
     // if (!songName || !author) {

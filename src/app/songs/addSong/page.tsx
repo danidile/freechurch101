@@ -51,7 +51,7 @@ return (<>
 
      <div className="flex gap-4 items-center">
      <Input 
-     {...register("songtitle",)}
+     {...register("song_title",)}
       label="Song Title"
       variant="bordered"
        size="sm"
@@ -72,7 +72,7 @@ return (<>
        
 
        <Input
-       {...register("key", { required: "A key is required", })}
+       {...register("upload_key", { required: "A key is required", })}
        label="Key"  name="key" 
        variant="bordered"
        size="sm"
