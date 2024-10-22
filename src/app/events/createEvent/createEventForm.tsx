@@ -17,7 +17,7 @@ interface Tsections {
   description: string;
 }
 interface TeventBasics {
-  type: number;
+  type: string;
   title: string;
   date: string;
 }
@@ -35,7 +35,7 @@ interface TsongNameAuthor {
 export default function CreateEventForm({songsList}: {songsList : TsongNameAuthor[]}) {
     const newSongList = songsList;
     const [state, setState] = useState<Tsections[]>([{id: "Titolo", key:"542908453", isSong: false, isTitle:true, description:""}]);
-    const [eventDetails, setEventDetails] = useState<TeventBasics>({type: 0, title: "Culto domenicale", date: ""});
+    const [eventDetails, setEventDetails] = useState<TeventBasics>({type: '0', title: "Culto domenicale", date: ""});
     const [eventIsOther, setEventIsOther] = useState(false);
     let x: string;
     const durata = ["5min","10min","15min","20min","30min","40min","50min","1h","1:30h"];
@@ -86,26 +86,27 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
 
     };
     
-    const istypeother = (event: React.ChangeEventHandler<HTMLSelectElement>) =>{
-      console.log(event);
+    const istypeother = (event: React.ChangeEvent<HTMLSelectElement>) =>{
+
+      console.log(event.target.value);
       setEventDetails({ ...eventDetails, type: event.target.value });
-      if(event.target.value == 4){
+      if(event.target.value == '4'){
         setEventIsOther(true);
       }else{
         setEventIsOther(false);
       }
     }
-    const editTitle =(event: React.MouseEvent<HTMLButtonElement>)=>{
+    const editTitle =(event: React.ChangeEvent<HTMLInputElement>)=>{
       const target = event.currentTarget as HTMLInputElement 
 
       setEventDetails({ ...eventDetails, title: target.value });
     }
-    const editDate = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const editDate = (event: React.ChangeEvent<HTMLInputElement>) => {
       const target = event.currentTarget as HTMLInputElement 
 
       setEventDetails({ ...eventDetails, date: target.value });
     }
-    const editDescription = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const editDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
       const target = event.currentTarget as HTMLInputElement 
 
         setState(
@@ -148,7 +149,8 @@ return (<>
                                             </SelectItem>
                                             ))}
         </Select>
-        {eventIsOther && (<Input
+        {eventIsOther && (
+          <Input
         type="text"
         label="Aggiungi Titolo evento"
         variant="bordered"
