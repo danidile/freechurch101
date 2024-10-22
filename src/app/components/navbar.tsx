@@ -88,7 +88,7 @@ const { data: profile } = await supabase
         
       </NavbarContent>
 
-      <NavbarMenu>
+      <NavbarMenu className="mobile-top-menu">
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`} >
             <Link
