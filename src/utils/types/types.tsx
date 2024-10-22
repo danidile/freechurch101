@@ -14,15 +14,73 @@ export const songSchema = z.object({
 
 
 
+
+
+
+
+
   export const eventSchema = z.object({
-    eventTitle: z.string(),
-    date: z.date(),
-    start: z.string(),
-    location: z.string(),
+    eventType: z.number().optional().default(1),
+    eventTitle: z.string().optional().default(""),
+    date: z.string().date().optional().default("2025-01-01"),
+    start: z.string().optional().default("todo"),
+    sections: z.
+                object({
+                        sectionId: z.string().optional().default(""),
+                        sectionType: z.string().optional().default(""),
+                        duration: z.string().optional().default(""),
+                        description: z.string().optional().default(""),
+                        song: z.string().optional().default("")
+                      }).array().optional()
+                      // .default({
+                      //   sectionId: "",
+                      //   sectionType: "",
+                      //   duration: "",
+                      //   description: "",
+                      //   song: ""
+                      // })
     
 
   })
   export type TeventSchema = z.infer<typeof eventSchema>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   export const alertMessage = z.object({
@@ -57,3 +115,8 @@ export const songSchema = z.object({
   export type TchurchMinimalData = z.infer<typeof churchMinimalData>["posts"][number];
 
   
+
+
+
+
+

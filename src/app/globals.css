@@ -124,6 +124,10 @@ small{
 }
 
 
+Image{
+  overflow: visible;
+}
+
 
 .song-list{
   padding: 1rem ;
@@ -210,11 +214,9 @@ small{
 
 
 .navbar-top{
-  min-height: 7vh;
   background-color: #ffffff;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
-
 
 
 
@@ -284,4 +286,21 @@ text-decoration: underline;
   width: 20px;
   overflow: visible;
 
+}
+
+.schedule-presentation{
+  width: 600px;
+  padding: 3rem;
+
+}
+
+
+.event-section-titolo{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 0.4rem;
+  text-decoration: underline;
+  font-weight: 600 !important;
+  background-color: #dedede;
 }

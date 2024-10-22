@@ -1,6 +1,10 @@
 import { createClient } from '@/utils/supabase/server'
 import CreateEventForm from './createEventForm';
-
+interface TsongNameAuthor {
+  id: string;
+  author: string;
+  song_title: string;
+}
 export default async function songs() {
   
 
@@ -9,17 +13,16 @@ export default async function songs() {
   .from('songs')
   .select('*');
   if(songs){
-    const newSongList = songs;
+    const newSongList: TsongNameAuthor[] = [];
+    let newSong: TsongNameAuthor = {id: "", author: "", song_title:""};
+    for(let i = 0; i< songs.length; i++){
+      newSong = {id: songs[i].id, author: songs[i].author, song_title: songs[i].song_title};
+      newSongList.unshift(newSong);
+    }    
+    console.log(newSongList);
 
-    console.log("New Song List " + newSongList);
     return (<>
-      
-      
-       <CreateEventForm {...newSongList} /> 
-  
-  
-  
-  
+      <CreateEventForm songsList={newSongList}/>
   </>);
   }
   
