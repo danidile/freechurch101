@@ -317,7 +317,7 @@ return (<>
       <div className="schedule-presentation bg-slate-100 ">
       
       <h4 className="border-b border-black">
-      {!eventIsOther && tipoEvento[eventDetails.type]}
+      {!eventIsOther && tipoEvento[Number(eventDetails.type)]}
       {eventIsOther && eventDetails.title}
       </h4>
       <p className="mb-6">{eventDetails.date}</p>
