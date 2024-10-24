@@ -5,6 +5,9 @@ import ChordSheetJS from 'chordsheetjs';
 import Link from "next/link";
 import { useState } from "react"
 
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function  Song({ songData } : { songData: any }) {
     const chordSheet = songData.lyrics;
@@ -40,8 +43,8 @@ export default function  Song({ songData } : { songData: any }) {
             
             <div className="transpose-button-container">
                 <Button variant="flat"><Link href={`/songs/${songData.id}/updateSong`}>Aggiorna Canzone</Link></Button>
-                <Button variant="flat" onClick={transposeDown} >-</Button>
-                <Button variant="flat" onClick={transposeUp}>+</Button>
+                <Button variant="flat" onClick={transposeDown} ><RemoveCircleOutlineIcon/></Button>
+                <Button variant="flat" onClick={transposeUp}><AddCircleOutlineIcon/></Button>
             </div>
             <h3>  {songData.author}</h3>
             <p>Questa canzone è stata caricata nella tonalità di {songData.upload_key}</p><br/><br/>

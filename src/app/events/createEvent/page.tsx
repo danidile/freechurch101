@@ -19,7 +19,6 @@ export default async function songs() {
       newSong = {id: songs[i].id, author: songs[i].author, song_title: songs[i].song_title};
       newSongList.unshift(newSong);
     }    
-    console.log(newSongList);
 
     return (<>
       <CreateEventForm songsList={newSongList}/>

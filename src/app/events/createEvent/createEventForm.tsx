@@ -6,8 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from "react";
 import { Select, SelectItem, Textarea} from "@nextui-org/react";
-import { Image } from "@nextui-org/react";
-
+import { ErrorMessage } from "@hookform/error-message"
+// import {addEvent} from './addEventAction';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
 interface Tsections {
   id: string;
@@ -15,6 +16,7 @@ interface Tsections {
   isSong: boolean;
   isTitle: boolean;
   description: string;
+  duration: string;
 }
 interface TeventBasics {
   type: string;
@@ -34,12 +36,14 @@ interface TsongNameAuthor {
 
 export default function CreateEventForm({songsList}: {songsList : TsongNameAuthor[]}) {
     const newSongList = songsList;
-    const [state, setState] = useState<Tsections[]>([{id: "Titolo", key:"542908453", isSong: false, isTitle:true, description:""}]);
+    const [state, setState] = useState<Tsections[]>([{id: "Titolo", key:"542908453", isSong: false, isTitle:true, description:"", duration: ""}]);
     const [eventDetails, setEventDetails] = useState<TeventBasics>({type: '0', title: "Culto domenicale", date: ""});
     const [eventIsOther, setEventIsOther] = useState(false);
     let x: string;
     const durata = ["5min","10min","15min","20min","30min","40min","50min","1h","1:30h"];
     const tipoEvento = ["Culto domenicale","Riunione di Preghiera","Studio biblico","Riunione Giovani","Altro..."];
+
+
 
     const AddSection = (event: React.MouseEvent<HTMLButtonElement>) => {
       const target = event.currentTarget as HTMLInputElement 
@@ -50,19 +54,19 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
         if(target.id === "Canzone"){
           setState((section) => [
             ...section,
-            {id: id, key: x ,isSong: true, isTitle: false, description: ""}
+            {id: id, key: x ,isSong: true, isTitle: false, description: "", duration: "10min"}
             
           ]);
         } else if(target.id === "Titolo"){
           setState((section) => [
             ...section,
-            {id: id, key: x , isSong: false, isTitle: true, description: ""}
+            {id: id, key: x , isSong: false, isTitle: true, description: "", duration: "10min"}
             
           ]);
         }else{
           setState((section) => [
             ...section,
-            {id: id, key: x , isSong: false, isTitle: false, description: ""}
+            {id: id, key: x , isSong: false, isTitle: false, description: "", duration: "10min"}
             
           ]);
         }
@@ -72,10 +76,11 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
     const {
       register,
       handleSubmit,
+      setValue,
       formState: { isSubmitting, errors },
     } = useForm<TeventSchema>({
-      resolver: zodResolver(eventSchema),
-    });
+      resolver: zodResolver(eventSchema)
+        });
 
     // section => section[1] === event.target.id)
     const removeSection = (event: React.MouseEvent<HTMLButtonElement>)=>{
@@ -83,7 +88,6 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
       if(target){
         setState(state.filter(section => section.key != target.id));
       }
-
     };
     
     const istypeother = (event: React.ChangeEvent<HTMLSelectElement>) =>{
@@ -95,9 +99,14 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
       }else{
         setEventIsOther(false);
       }
+      setValue("eventType", event.target.value);
+      setValue("eventTitle", tipoEvento[Number(event.target.value)]);
     }
+
+
     const editTitle =(event: React.ChangeEvent<HTMLInputElement>)=>{
       const target = event.currentTarget as HTMLInputElement 
+      setValue("eventTitle", target.value);
 
       setEventDetails({ ...eventDetails, title: target.value });
     }
@@ -108,7 +117,7 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
     }
     const editDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
       const target = event.currentTarget as HTMLInputElement 
-
+      console.log(event);
         setState(
           state.map((section) => {
             if(section.key == target.id){
@@ -117,13 +126,20 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
             }else{
               return section;
             }
-            
           })
         );
     }
 
   const convertData = async (data: TeventSchema) =>{
-  console.log(data);
+    const formData= {
+    eventType: eventDetails.type,
+    eventTitle: eventDetails.title,
+    date: eventDetails.date,
+    start: "Hello",
+      sections: state};
+    console.log(formData);  
+
+    // addEvent(formData);
 }
 
 return (<>
@@ -158,6 +174,7 @@ return (<>
         {...register("eventTitle")}
         onChange={editTitle}
         />)}
+
         
         </div>
        <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
@@ -171,10 +188,19 @@ return (<>
 
         />
 
+<ErrorMessage errors={errors} name="date" />
+<ErrorMessage errors={errors} name="eventTitle" />
+<ErrorMessage errors={errors} name="eventType" />
+<ErrorMessage errors={errors} name="start" />
 
-      {errors.date && <p>{errors.date.message}</p>}
+
+{/* 
+{errors.eventType && <p>{errors.eventType.message}</p>}
+{errors.eventTitle && <p>{errors.eventTitle.message}</p>}
+ */}
 
         </div>
+       
         <h6>Aggingi sezione</h6>
           
 
@@ -196,13 +222,13 @@ return (<>
                           <Button size="sm"
                           className="float-right"
                           isIconOnly type='button'
-                          color="danger"
                           variant="bordered"
                           id={element.key}
                           onClick={removeSection}
+                          accessKey={String(index)}
                           >
-                              <Image 
-                              src="/images/utils/close-button.png" className="overflow-visible" alt=""/>
+                            {index}
+                            <HighlightOffIcon/>
                           </Button>
                         </p>
 
@@ -212,6 +238,8 @@ return (<>
                             
                             name={"type"+element.key} 
                             key={index}  value={element.id} className='hide-input' />
+                            {/* <ErrorMessage errors={errors} name={`sections.${index}.sectionId`} /> */}
+
                                         
                                         
                             </div> 
@@ -223,9 +251,10 @@ return (<>
                                     onChange={editDescription}
                                     id={element.key}
                                     label="Descrizione"
-                                    labelPlacement="inside"
                                     placeholder="Inserisci informazioni utili..."
                                   />
+                                  <ErrorMessage errors={errors} name={`sections.${index}.description`} />
+
                     </div>)
                     }else{
                       return (
@@ -235,14 +264,14 @@ return (<>
                               <Button size="sm"
                               className="float-right"
                               isIconOnly type='button'
-                              color="danger"
                               variant="bordered"
                               id={element.key}
                               onClick={removeSection}
+                              accessKey={String(index)}
+
                               >
-                                  <Image 
-                                  className="overflow-visible text-gray-400"
-                                  src="/images/utils/close-button.png" alt=""/>
+                                {index}
+                                <HighlightOffIcon/>
                               </Button>
                             </p>
     
@@ -326,10 +355,13 @@ return (<>
         if(element.id === "Titolo"){
           return (<div key={element.key} className="event-section-titolo"><p>{element.description}</p><small></small></div>);
         }
-        return <p key={element.key}>{element.id}</p>;
+        return (<div key={element.key}>
+        <p>{element.id}<small>{element.duration}</small></p>
+        {element.isSong && ( <p>{element.song}</p>)}
+        <small>{element.description}</small>
+        </div>
+      );
       })}
-
-
 
 
       </div>
