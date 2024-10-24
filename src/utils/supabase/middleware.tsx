@@ -1,6 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-import { secret } from '@aws-amplify/backend';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -9,8 +8,8 @@ export async function updateSession(request: NextRequest) {
 
 
   const supabase = createServerClient( 
-    secret('NEXT_PUBLIC_SUPABASE_URL'),
-    secret('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
+    "https://kadorwmjhklzakafowpu.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthZG9yd21qaGtsemFrYWZvd3B1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc2OTAzODYsImV4cCI6MjA0MzI2NjM4Nn0.HATaPSw8lCH1I1ETvbK-omIYeW1tzSHOEaAg821PygA",
     {
       cookies: {
         getAll() {
