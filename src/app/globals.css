@@ -291,6 +291,7 @@ text-decoration: underline;
 .schedule-presentation{
   width: 600px;
   padding: 3rem;
+  aspect-ratio: 1 / 1.414;
 
 }
 

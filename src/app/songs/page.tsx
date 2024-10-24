@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { Button } from '@nextui-org/react';
 import Link from 'next/link';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 
 export default async function Page() {
   const supabase = createClient()
@@ -20,12 +21,13 @@ export default async function Page() {
           <p key={song.id}>{song.song_title}<br/><small>{song.author}</small> </p>
           <Link href={`/songs/${song.id}`}>
               <span className="material-symbols-outlined">
-              lyrics
+              <QueueMusicIcon/>
               </span>
           </Link>
         </div> )
       } )
-      }
+    }
+      
       </>
     )
   }else{

@@ -20,7 +20,7 @@ export const songSchema = z.object({
 
 
   export const eventSchema = z.object({
-    eventType: z.number().optional().default(1),
+    eventType: z.string().optional().default('1'),
     eventTitle: z.string().optional().default(""),
     date: z.string().date().optional().default("2025-01-01"),
     start: z.string().optional().default("todo"),
@@ -32,15 +32,6 @@ export const songSchema = z.object({
                         description: z.string().optional().default(""),
                         song: z.string().optional().default("")
                       }).array().optional()
-                      // .default({
-                      //   sectionId: "",
-                      //   sectionType: "",
-                      //   duration: "",
-                      //   description: "",
-                      //   song: ""
-                      // })
-    
-
   })
   export type TeventSchema = z.infer<typeof eventSchema>;
 

@@ -16,7 +16,7 @@ export default async function Page() {
       {events.map( (event) =>{
         return (
         <div className='song-list' key={event.id}>
-          <p key={event.id}>{event.song_title}<br/><small>{event.author}</small> </p>
+          <p key={event.id}>{event.title}<br/><small>{event.author}</small> </p>
           <Link href={`/songs/${event.id}`}>View Song</Link>
         </div> )
       } )
