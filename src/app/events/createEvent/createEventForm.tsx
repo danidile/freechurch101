@@ -357,7 +357,6 @@ return (<>
         }
         return (<div key={element.key}>
         <p>{element.id}<small>{element.duration}</small></p>
-        {element.isSong && ( <p>{element.song}</p>)}
         <small>{element.description}</small>
         </div>
       );
