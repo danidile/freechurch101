@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { secret } from '@aws-amplify/backend';
 
 export default function Home() {
-    console.log("This is a secret:"+secret('NEXT_PUBLIC_SUPABASE_URL'));
 
   return (
      <section className="dark:bg-gray-900">
