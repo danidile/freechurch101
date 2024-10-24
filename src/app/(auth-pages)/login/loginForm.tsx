@@ -8,12 +8,10 @@ import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import {TalertMessage} from "@/utils/types/types";
-import isLoggedIn from "@/utils/supabase/getuser";
 
 
 
-export default async function LoginForm({ searchParams }: { searchParams: TalertMessage }) {
-  // const loggedIn = await isLoggedIn();
+export default function LoginForm({ searchParams }: { searchParams: TalertMessage }) {
   const {
     register,
     handleSubmit,
