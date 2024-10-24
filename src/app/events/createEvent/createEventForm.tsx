@@ -130,7 +130,7 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
         );
     }
 
-  const convertData = async (data: TeventSchema) =>{
+  const convertData = async () =>{
     const formData= {
     eventType: eventDetails.type,
     eventTitle: eventDetails.title,
