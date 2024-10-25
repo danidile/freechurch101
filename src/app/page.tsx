@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { secret } from '@aws-amplify/backend';
 
 
 export default function Home() {
-    console.log(secret('NEXT_PUBLIC_SUPABASE_ANON_KEY'));
   return (
      <section className="dark:bg-gray-900">
     <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
@@ -25,6 +23,7 @@ export default function Home() {
             </a>  
             <Link href="https://www.captayn.com/en"></Link>
         </div>
+        
 
     </div>
 </section>
