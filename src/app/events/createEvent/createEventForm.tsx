@@ -6,17 +6,23 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from "react";
 import { Select, SelectItem, Textarea} from "@nextui-org/react";
-import { ErrorMessage } from "@hookform/error-message"
 // import {addEvent} from './addEventAction';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForever';
+import TocIcon from '@mui/icons-material/Toc';
+import Script from "next/script";
+import {Accordion, AccordionItem} from "@nextui-org/accordion";
+import TextFieldsIcon from '@mui/icons-material/TextFields';
+import ArticleIcon from '@mui/icons-material/Article';
 interface Tsections {
   id: string;
   key: string;
   isSong: boolean;
   isTitle: boolean;
-  description: string;
-  duration: string;
+  titleText?: string
+  description?: string;
+  duration?: string;
+  songId?: string;
 }
 interface TeventBasics {
   type: string;
@@ -36,12 +42,12 @@ interface TsongNameAuthor {
 
 export default function CreateEventForm({songsList}: {songsList : TsongNameAuthor[]}) {
     const newSongList = songsList;
-    const [state, setState] = useState<Tsections[]>([{id: "Titolo", key:"542908453", isSong: false, isTitle:true, description:"", duration: ""}]);
+    const [state, setState] = useState <Tsections[]>([{id: "Titolo", key:"542908453", isSong: false, isTitle:true, titleText:"Inizio Life Celebration", duration: "", songId: ""}]);
     const [eventDetails, setEventDetails] = useState<TeventBasics>({type: '0', title: "Culto domenicale", date: ""});
     const [eventIsOther, setEventIsOther] = useState(false);
     let x: string;
     const durata = ["5min","10min","15min","20min","30min","40min","50min","1h","1:30h"];
-    const tipoEvento = ["Culto domenicale","Riunione di Preghiera","Studio biblico","Riunione Giovani","Altro..."];
+    const tipoEvento = ["Life Celebration","Riunione di Preghiera","Studio biblico","Youth Group","Concerto","Altro..."];
 
 
 
@@ -54,19 +60,19 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
         if(target.id === "Canzone"){
           setState((section) => [
             ...section,
-            {id: id, key: x ,isSong: true, isTitle: false, description: "", duration: "10min"}
+            {id: id, key: x ,isSong: true, isTitle: false, duration: "10min"}
             
           ]);
         } else if(target.id === "Titolo"){
           setState((section) => [
             ...section,
-            {id: id, key: x , isSong: false, isTitle: true, description: "", duration: "10min"}
+            {id: id, key: x , isSong: false, isTitle: true, duration: "10min"}
             
           ]);
         }else{
           setState((section) => [
             ...section,
-            {id: id, key: x , isSong: false, isTitle: false, description: "", duration: "10min"}
+            {id: id, key: x , isSong: false, isTitle: false, duration: "10min"}
             
           ]);
         }
@@ -74,10 +80,9 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
     };
 
     const {
-      register,
       handleSubmit,
       setValue,
-      formState: { isSubmitting, errors },
+      formState: { isSubmitting },
     } = useForm<TeventSchema>({
       resolver: zodResolver(eventSchema)
         });
@@ -129,6 +134,34 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
           })
         );
     }
+    const editSong = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const target = event.currentTarget as HTMLInputElement 
+      console.log(event);
+        setState(
+          state.map((section) => {
+            if(section.key == target.id){
+              section.description = target.value;
+              return section;
+            }else{
+              return section;
+            }
+          })
+        );
+    }
+    const editTitleText = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const target = event.currentTarget as HTMLInputElement 
+      console.log(event);
+        setState(
+          state.map((section) => {
+            if(section.key == target.id){
+              section.titleText = target.value;
+              return section;
+            }else{
+              return section;
+            }
+          })
+        );
+    }
 
   const convertData = async () =>{
     const formData= {
@@ -144,6 +177,8 @@ export default function CreateEventForm({songsList}: {songsList : TsongNameAutho
 
 return (<>
 
+{/* <Script  type="text/javascript" src='/snippets/accordian.js' /> */}
+
     <div className=" flex flex-row rounded-xl gap-3">
     <div className="form-div">
     <form onSubmit={handleSubmit(convertData)} >
@@ -152,7 +187,6 @@ return (<>
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
         <div className="gap-1.5">
         <Select
-                                    {...register(`eventType`)}
                                       label="Tipo di evento"
                                       size="sm"
                                       placeholder="Riunione dei Giovani..."
@@ -171,7 +205,6 @@ return (<>
         label="Aggiungi Titolo evento"
         variant="bordered"
         size="sm"
-        {...register("eventTitle")}
         onChange={editTitle}
         />)}
 
@@ -183,16 +216,9 @@ return (<>
             label="Event Date"
             variant="bordered"
             size="sm"
-            {...register("date")}
             onChange={editDate}
 
         />
-
-<ErrorMessage errors={errors} name="date" />
-<ErrorMessage errors={errors} name="eventTitle" />
-<ErrorMessage errors={errors} name="eventType" />
-<ErrorMessage errors={errors} name="start" />
-
 
 {/* 
 {errors.eventType && <p>{errors.eventType.message}</p>}
@@ -201,7 +227,7 @@ return (<>
 
         </div>
        
-        <h6>Aggingi sezione</h6>
+        <h6 className="mt-6">Aggingi sezione</h6>
           
 
           <div  className="transpose-button-container">
@@ -209,82 +235,62 @@ return (<>
                 <Button color="primary" variant="flat" type="button" id="Predica"  onClick={AddSection}>Predica</Button>
                 <Button color="primary" variant="flat" type="button" id="Generico"  onClick={AddSection}>Generico</Button>
                 <Button color="primary" variant="flat" type="button" id="Titolo"  onClick={AddSection}>Titolo</Button>
+          </div>
+            <div >
+            <Accordion variant="light" className="gap-4" keepContentMounted={true}>
 
-            </div>
-            
             {   
                 state.map((element,index) =>{
                     if(element.isTitle){
                       return (
-                        <div key={element.key} className='flex flex-col gap-1.5 bg-slate-300 rounded-2xl p-4'>
-                            <p className="flex flex-row justify-between justify-items-center">
-                          <strong>{element.id}</strong>
-                          <Button size="sm"
-                          className="float-right"
-                          isIconOnly type='button'
-                          variant="bordered"
-                          id={element.key}
-                          onClick={removeSection}
-                          accessKey={String(index)}
-                          >
-                            {index}
-                            <HighlightOffIcon/>
-                          </Button>
-                        </p>
-
-                            <div className="container-input-2col flex gap-1.5">
-                            <Input  
-                            {...register(`sections.${index}.sectionId`)}
-                            
+                        <AccordionItem
+                        startContent={<TextFieldsIcon/>}
+                        key={element.key} aria-label="Accordion 1" title={element.id} >
+                            <Input                              
                             name={"type"+element.key} 
-                            key={index}  value={element.id} className='hide-input' />
-                            {/* <ErrorMessage errors={errors} name={`sections.${index}.sectionId`} /> */}
-
-                                        
-                                        
-                            </div> 
+                            key={index}  value={element.id} className='hide-input'
+                            />
+                            
                                     
-                                    <Textarea
+                            <Input
                                     size="sm"
-                                    
-                                    {...register(`sections.${index}.description`)}
+                                    onChange={editTitleText}
+                                    id={element.key}
+                                    label="Titolo"
+                                    defaultValue="Inizio Life Celebration"
+                            />
+                             <Textarea
+                                     className="my-2"
+                                    size="sm"
                                     onChange={editDescription}
                                     id={element.key}
                                     label="Descrizione"
                                     placeholder="Inserisci informazioni utili..."
-                                  />
-                                  <ErrorMessage errors={errors} name={`sections.${index}.description`} />
-
-                    </div>)
-                    }else{
-                      return (
-                        <div key={element.key} className='flex flex-col gap-1.5 bg-slate-200 rounded-2xl p-4'>
-                            <p className="flex flex-row justify-between justify-items-center">
-                              <strong>{element.id}</strong>
-                              <Button size="sm"
-                              className="float-right"
+                            />
+                            <Button size="sm"
+                              className="float-right my-2"
                               isIconOnly type='button'
                               variant="bordered"
                               id={element.key}
                               onClick={removeSection}
                               accessKey={String(index)}
-
                               >
-                                {index}
-                                <HighlightOffIcon/>
+                                <DeleteForeverOutlinedIcon/>
                               </Button>
-                            </p>
-    
-                            <div className="container-input-2col flex gap-1.5">
+                    </AccordionItem>
+)
+                    }else{
+                      return (
+                        <AccordionItem 
+                        startContent={<ArticleIcon/>}
+                        key={element.key} aria-label="Accordion 1" title={element.id}>
 
                             <Input  
-                            {...register(`sections.${index}.sectionId`)}
                             name={"type"+element.key} key={element.key} value={element.id} className='hide-input' />
-                             
 
                                         <Select
+                                        className="my-2"
                                         size="sm"
-                                        {...register(`sections.${index}.duration`)}
                                           label="Durata sezione"
                                           placeholder="10min..."
                                         >
@@ -296,14 +302,14 @@ return (<>
                                                 ))}
                                         </Select>
                                         
-                            </div> 
                                     {element.isSong && (
                                       <Autocomplete 
+                                      
                                             size="sm"
                                             fullWidth={true}
                                             label="Seleziona la canzone" 
                                             className="max-w-lg"
-                                            {...register(`sections.${index}.song`)}
+                                            onChange={editSong}
                                         >
                                             {newSongList.map((song: Tsong) => (
                                                 
@@ -316,7 +322,7 @@ return (<>
     
                                     )}
                                     <Textarea
-                                          {...register(`sections.${index}.description`)}
+                                          className="my-2"
                                           label="Descrizione"
                                           onChange={editDescription}
                                           id={element.key}
@@ -324,11 +330,27 @@ return (<>
                                           labelPlacement="inside"
                                           placeholder="Inserisci informazioni utili..."
                                         />
-                    </div>)
+                                     <Button size="sm"
+                              className="float-right my-2"
+                              isIconOnly type='button'
+                              variant="bordered"
+                              id={element.key}
+                              onClick={removeSection}
+                              accessKey={String(index)}
+                              >
+                                <DeleteForeverOutlinedIcon/>
+                              </Button>   
+                          </AccordionItem>
+
+                            )
                     }
                     
                 })
+                
             }
+                </Accordion>
+
+            </div>
 
           
 
@@ -353,7 +375,13 @@ return (<>
       
       {state.map((element) => {
         if(element.id === "Titolo"){
-          return (<div key={element.key} className="event-section-titolo"><p>{element.description}</p><small></small></div>);
+          return (
+          <div key={element.key}>
+          <div  className="event-section-titolo">
+            <p>{element.titleText}</p>
+            </div>
+            {element.description}
+          </div>);
         }
         return (<div key={element.key}>
         <p>{element.id}<small>{element.duration}</small></p>
