@@ -3,7 +3,7 @@ import { TsongSchema } from "@/utils/types/types";
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
-export default function ModalLyrics( {songData}:{songData:Array<TsongSchema>}) {
+export default function ModalLyrics( {songData}:{songData:Array<TsongSchema>},{size}:{size: string} ) {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 console.log(songData);
   return (
@@ -15,7 +15,7 @@ console.log(songData);
         onOpenChange={onOpenChange}
         scrollBehavior="inside"
         isDismissable={true}
-        size="2xl"
+        size="full"
         classNames={{
             backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20"
           }}

@@ -5,15 +5,15 @@ import Link from 'next/link';
 
 export default async function Page() {
   const supabase = createClient()
-
   const { data: setlist } = await supabase
   .from('setlist')
   .select('id, church("church_name")');
 
+
   if(setlist){
     return (
       <>
-      <button className="button-transpose" ><a  href="/events/createEvent">Create a New Event!</a></button>
+      <button className="button-transpose"><a  href="/events/createEvent">Create a New Event!</a></button>
       <br/><br/><br/>
       <h5>List of all Events</h5>
       {setlist.map( (setlist) =>{
