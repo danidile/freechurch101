@@ -1,5 +1,4 @@
 
-import { Button } from "@nextui-org/react";
 import { getSetList } from "./getSetList";
 import { getSetListSongs } from "./getSetListSongs";
 import ModalLyrics from "./modalLyrics";
