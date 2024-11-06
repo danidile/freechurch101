@@ -1,18 +1,12 @@
 // @ts-nocheck
-
 import { getSetList } from "./getSetList";
 import { getSetListSongs } from "./getSetListSongs";
 import ModalLyrics from "./modalLyrics";
-
-
-
 interface Setlist {
   id: string;
   church_name: string; // nested object from the `church` table
   date: Date; // or `Date` if it's a date object
 }
-
-
 
 export default async function Page({ params }: {params:{setListId: string}}) {
   const setlistData = await getSetList(params.setListId) ;
@@ -35,9 +29,7 @@ export default async function Page({ params }: {params:{setListId: string}}) {
             <p><strong>{song.songTitle}</strong></p>
             <div className="key-button">{song.key}</div>
             <ModalLyrics songData={songData}/>
-
           </div>
-
         )
       })}
 
