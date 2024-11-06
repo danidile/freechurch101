@@ -228,8 +228,8 @@ Image{
   color: rgb(39, 30, 96);
   font-weight: 700;
   line-height: 0.9rem;
-padding: 0px;
-margin: 0px;
+  padding: 0px;
+  margin: 0px;
 }
 .chord-sheet .lyrics{
   font-size: 0.95rem;
@@ -242,6 +242,21 @@ text-decoration: underline;
 .comment::before{
   content: '\A';
   white-space: pre;
+}
+@media only screen and (max-width: 850px) {
+
+  .chord-sheet .lyrics{
+    font-size: 0.8rem;
+    line-height: 0.9rem;
+  }
+  .chord-sheet .chord{
+    font-size: 0.9rem;
+
+  }
+  .chord-sheet .comment{
+  font-weight: 800;
+  text-decoration: underline;
+  }
 }
 
 .dashboard-sidebar-container{
@@ -354,14 +369,4 @@ text-decoration: underline;
 
 
 
-@media only screen and (max-width: 850px) {
 
-  .chord-sheet .lyrics{
-    font-size: 0.8rem;
-  }
-  .chord-sheet .comment{
-
-  font-weight: 800;
-  text-decoration: underline;
-  }
-}
