@@ -43,7 +43,7 @@ export default function  ChordProViewComponent({songData}: {songData: any}) {
                 <Button variant="flat" onClick={transposeDown} ><RemoveCircleOutlineIcon/></Button>
                 <Button variant="flat" onClick={transposeUp}><AddCircleOutlineIcon/></Button>
             </div>
-            <h4>{songData[0]}</h4>
+            <h6>{songData[0]}</h6>
             <div id="song-chords" dangerouslySetInnerHTML={{ __html: state }} style={{whiteSpace: 'pre-wrap'}}/>
 
         </div>
