@@ -1,15 +1,14 @@
 "use client"
 import { Button } from '@nextui-org/react';
 import ChordSheetJS from 'chordsheetjs';
-import { TsongSchema } from "@/utils/types/types";
 import { useState } from "react"
 
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function  ChordProViewComponent({songData}:{songData: Array<TsongSchema>}) {
-    const chordSheet = songData[1].lyrics;
+export default function  ChordProViewComponent({songData}: {songData: any}) {
+    const chordSheet = songData[1];
     const parser = new ChordSheetJS.ChordProParser();
     const song = parser.parse(chordSheet);
     const formatter = new ChordSheetJS.HtmlTableFormatter();
@@ -44,7 +43,7 @@ export default function  ChordProViewComponent({songData}:{songData: Array<Tsong
                 <Button variant="flat" onClick={transposeDown} ><RemoveCircleOutlineIcon/></Button>
                 <Button variant="flat" onClick={transposeUp}><AddCircleOutlineIcon/></Button>
             </div>
-            <h3>{songData[0].song_title}</h3>
+            <h4>{songData[0]}</h4>
             <div id="song-chords" dangerouslySetInnerHTML={{ __html: state }} style={{whiteSpace: 'pre-wrap'}}/>
 
         </div>

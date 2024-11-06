@@ -1,34 +1,45 @@
+// @ts-nocheck
 
 import { getSetList } from "./getSetList";
 import { getSetListSongs } from "./getSetListSongs";
 import ModalLyrics from "./modalLyrics";
-import { TsetlistData } from "@/utils/types/types";
+
+
+
+interface Setlist {
+  id: string;
+  church_name: string; // nested object from the `church` table
+  date: Date; // or `Date` if it's a date object
+}
+
+
 
 export default async function Page({ params }: {params:{setListId: string}}) {
-  const setlistData = await getSetList(params.setListId) as TsetlistData;
+  const setlistData = await getSetList(params.setListId) ;
   const setlistsongs = await getSetListSongs(params.setListId);
+  console.log("This is my result" + setlistsongs +setlistData);
     return (
     <div>
-      <h6><strong>{setlistData[0].church.church_name}</strong></h6>
-      <p>{setlistData[0].date}</p>
+      <h6><strong>{setlistData.church.church_name}</strong></h6>
+      <p>{setlistData.date}</p>
       <div className="setlist-song">
           <p>Titolo Canzone</p>
           <p>Tonalità</p>
           <p>Visualizza</p>
       </div>
       {setlistsongs.map((song) =>{
-        const songData = [ song.song.song_title , song.song.lyrics]
+        const songData = [ song.songTitle , song.lyrics]
         return (
           <div key={song.id} className="setlist-song">
             
-            <p><strong>{song.song.song_title}</strong></p>
+            <p><strong>{song.songTitle}</strong></p>
             <div className="key-button">{song.key}</div>
             <ModalLyrics songData={songData}/>
+
           </div>
 
         )
       })}
-
 
     </div>
     )
