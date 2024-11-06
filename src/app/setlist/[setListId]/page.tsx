@@ -2,6 +2,8 @@
 import { getSetList } from "./getSetList";
 import { getSetListSongs } from "./getSetListSongs";
 import ModalLyrics from "./modalLyrics";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
 interface Setlist {
   id: string;
   church_name: string; // nested object from the `church` table
@@ -25,8 +27,8 @@ export default async function Page({ params }: {params:{setListId: string}}) {
           <>
           {toggle && <div className="setlist-song">
               <p>Titolo Canzone</p>
-              <p>Tonalità</p>
-              <p>Visualizza</p>
+              <p className="center-"><MusicNoteIcon fontSize="small"/></p>
+              <p className="center-"><RemoveRedEyeIcon fontSize="small"/></p>
           </div>}
           <div key={song.id} className="setlist-song">
             
