@@ -16,20 +16,25 @@ export default async function Page({ params }: {params:{setListId: string}}) {
     <div>
       <h6><strong>{setlistData.church.church_name}</strong></h6>
       <p>{setlistData.date}</p>
-      <div className="setlist-song">
-          <p>Titolo Canzone</p>
-          <p>Tonalità</p>
-          <p>Visualizza</p>
-      </div>
-      {setlistsongs.map((song) =>{
+      
+      {setlistsongs.map((song, index) =>{
         const songData = [ song.songTitle , song.lyrics]
+        let toggle = true;
+        if(index>0){toggle=false}
         return (
+          <>
+          {toggle && <div className="setlist-song">
+              <p>Titolo Canzone</p>
+              <p>Tonalità</p>
+              <p>Visualizza</p>
+          </div>}
           <div key={song.id} className="setlist-song">
             
             <p><strong>{song.songTitle}</strong></p>
             <div className="key-button">{song.key}</div>
             <ModalLyrics songData={songData}/>
           </div>
+          </>
         )
       })}
 
