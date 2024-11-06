@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { TsetlistData } from "@/utils/types/types";
 
 export const getSetList = async (setlistId: unknown) => {
   const supabase = createClient();
@@ -16,4 +15,3 @@ export const getSetList = async (setlistId: unknown) => {
     return data;
   }
   };
-
