@@ -1,4 +1,6 @@
 "use client"
+import useWindowSize from "@/utils/hooks/useWindowDimensions";
+
 import { TsongSchema } from "@/utils/types/types";
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
 import AudioFileIcon from '@mui/icons-material/AudioFile';
@@ -6,16 +8,23 @@ import ChordProViewComponent from "@/app/components/chordProViewComponent";
 export default function ModalLyrics( {songData}:{songData:Array<TsongSchema>},{size}:{size: string} ) {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 console.log(songData);
+const { width }: any = useWindowSize();
+if(width > 1100){
+    const size =  '4xl';
+}else{
+    const size = 'full';
+}
   return (
     <>
       <button onClick={onOpen}><AudioFileIcon/></button>
+      
       <Modal 
         backdrop="opaque" 
         isOpen={isOpen} 
         onOpenChange={onOpenChange}
         scrollBehavior="inside"
         isDismissable={true}
-        size="full"
+        size={String(size)}
         classNames={{
             backdrop: "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20"
           }}
