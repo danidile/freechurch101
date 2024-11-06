@@ -18,7 +18,7 @@ if(width > 1100){
 }
   return (
     <>
-      <button onClick={onOpen}><AudioFileIcon/></button>
+      <button onClick={onOpen}><AudioFileIcon  fontSize="small"/></button>
       {
         width> 1000 && <Modal 
         backdrop="opaque" 
