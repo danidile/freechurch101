@@ -9,7 +9,7 @@ export default async function MenuBar() {
 
   const menuItems = [
     "songs",
-    "events",
+    "setlist",
     "churches",
     "dashboard",
     "testForm"
@@ -60,6 +60,11 @@ const { data: profile } = await supabase
         <NavbarItem>
           <Link color="foreground" href="/songs">
             Songs
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="/setlist">
+            SetList
           </Link>
         </NavbarItem>
         <NavbarItem isActive>

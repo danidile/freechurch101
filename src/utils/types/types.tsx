@@ -38,6 +38,17 @@ export const songSchema = z.object({
 
 
 
+  export const setlistData = z.object({
+    id: z.any().optional(),
+    date: z.any().optional(),
+    church: z.
+    object({
+            church_name: z.any().optional()
+          }).array().optional(),
+
+  })
+  export type TsetlistData = z.infer<typeof setlistData>;
+
 
 
 
