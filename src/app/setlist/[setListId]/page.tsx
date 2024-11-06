@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { getSetList } from "./getSetList";
+import { Button } from "@nextui-org/react";
 import { getSetListSongs } from "./getSetListSongs";
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
@@ -39,7 +40,11 @@ export default async function Page({ params }: {params:{setListId: string}}) {
           </>
         )
       })}
-
+      <br/>
+      <br/>
+      <div className="center-">
+          <Button color="primary"  variant="flat">stampa PDF completo</Button>
+      </div>
     </div>
     )
   }
