@@ -5,7 +5,7 @@ import AudioFileIcon from '@mui/icons-material/AudioFile';
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 export default function ModalLyrics( {songData}:{songData:Array<TsongSchema>}) {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-
+console.log(songData);
   return (
     <>
       <button onClick={onOpen}><AudioFileIcon/></button>
