@@ -119,11 +119,6 @@ export default function CreateSetlistForm({songsList}: {songsList : TsongNameAut
       setEventDetails({ ...eventDetails, title: target.value });
     }
 
-const addSongId =( element , key) =>{
-  console.log(element);
-  console.log(key);
-}
-
 
   const convertData = async () =>{
     console.log(watchAllFields);  
