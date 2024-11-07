@@ -121,8 +121,19 @@ export default function CreateSetlistForm({songsList}: {songsList : TsongNameAut
 
 
   const convertData = async () =>{
-    console.log(watchAllFields);  
-    addSetlist(watchAllFields);
+
+    watchAllFields.sections.map((section,index)=>{
+      const ref = watchAllFields.sections[index].song.split('#');
+      newSongList.map((song,index)=>{
+        if(index === Number(ref[1])){
+          section.song = song.id;
+        }
+      });
+      
+    });
+     console.log(watchAllFields); 
+
+    // addSetlist(watchAllFields);
 }
 
 return (<>
@@ -211,10 +222,11 @@ return (<>
                                     disableAnimation={false}
                                     
                                 >
-                                    {newSongList.map((song: Tsong) => {
+                                    {newSongList.map((song: Tsong, index) => {
+                                      
                                         return (
                                         
-                                    <AutocompleteItem key={song.id} title={song.song_title} description={song.author} textValue={song.id}>
+                                    <AutocompleteItem key={song.id} title={song.song_title} description={song.author} textValue={song.song_title  + " #" + index }>
 
                                     
                                     </AutocompleteItem>
