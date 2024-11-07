@@ -13,7 +13,7 @@ export default async function Page() {
   if(setlist){
     return (
       <>
-      <button className="button-transpose"><a  href="/events/createEvent">Create a New Event!</a></button>
+      <button className="button-transpose"><a  href="/setlist/addSetlist">Crea nuova Setlist!</a></button>
       <br/><br/><br/>
       <h5>List of all Events</h5>
       {setlist.map( (setlist) =>{

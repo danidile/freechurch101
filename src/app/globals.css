@@ -375,3 +375,19 @@ text-decoration: underline;
   justify-content: center;
   align-items: center;
 }
+
+.crea-setlist-container{
+  max-width: 90vw;
+  width: 500px;
+}
+.accordian-setlist{
+  margin: 5px;
+  background-color: #eaedf5;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+}
+
+.selector-author{
+  color: #838383;
+  font-size: 12px;
+}
