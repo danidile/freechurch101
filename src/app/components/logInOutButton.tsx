@@ -28,10 +28,7 @@ export default function LogInOutButton (props: { username: string; isLoggedIn: n
           Sign out
         </Button>
     </NavbarItem>
-    <User   
-      name={username}
-      description={email}
-    />
+
   </>
 );
   }
