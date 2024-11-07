@@ -5,11 +5,7 @@ import { getSetListSongs } from "./getSetListSongs";
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
-interface Setlist {
-  id: string;
-  church_name: string; // nested object from the `church` table
-  date: Date; // or `Date` if it's a date object
-}
+
 
 export default async function Page({ params }: {params:{setListId: string}}) {
   const setlistData = await getSetList(params.setListId) ;

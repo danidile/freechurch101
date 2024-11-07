@@ -44,7 +44,7 @@ export const addSetlist = async (formData: formValues) => {
 
     formData.sections.map(async (section) =>{
       console.log(section);
-      const {data,error } = await supabase
+      const {error } = await supabase
       .from('setlist-songs')
       .insert({
         setlist_id: sectionId,
