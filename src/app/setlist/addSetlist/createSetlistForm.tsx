@@ -218,7 +218,7 @@ return (<>
                                     size="sm"
                                     fullWidth={true}
                                     label="Seleziona la canzone" 
-                                    className="max-w-lg"
+                                    className="max-w-lg autocomplete-mobile-input"
                                     disableAnimation={false}
                                     
                                 >
