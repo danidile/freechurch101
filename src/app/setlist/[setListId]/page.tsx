@@ -10,7 +10,6 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote';
 export default async function Page({ params }: {params:{setListId: string}}) {
   const setlistData = await getSetList(params.setListId) ;
   const setlistsongs = await getSetListSongs(params.setListId);
-  console.log("This is my result" + setlistsongs +setlistData);
     return (
     <div>
       <h6><strong>{setlistData.church.church_name}</strong></h6>
@@ -29,10 +28,11 @@ export default async function Page({ params }: {params:{setListId: string}}) {
           </div>}
           <div key={song.id} className="setlist-song">
             
-            <p><strong>{song.songTitle}</strong></p>
+            <p><strong>{song.songTitle}</strong>  <p><small>{song.notes}</small></p></p>
             <div className="key-button">{song.key}</div>
             <ModalLyrics songData={songData}/>
           </div>
+          
           </>
         )
       })}
