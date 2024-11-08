@@ -226,7 +226,7 @@ return (<>
                                       
                                         return (
                                         
-                                    <AutocompleteItem key={song.id} title={song.song_title} description={song.author} textValue={song.song_title  + " #" + index }>
+                                    <AutocompleteItem key={song.id} title={song.song_title} description={song.author} textValue={song.song_title + " " + song.author + " #" + index }>
 
                                     
                                     </AutocompleteItem>
