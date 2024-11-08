@@ -147,6 +147,8 @@ transform: scale(1.02);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+
 }
 
 .song-list p{
