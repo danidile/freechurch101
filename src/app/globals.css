@@ -134,10 +134,18 @@ Image{
   border-bottom: 1px solid grey;
   width: 100%;
   max-width: 500px;
+  transition: 0.3s;
+}
+.song-list:hover{
+background-color: white;
+transform: scale(1.02);
+}
+.song-list-link{
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .song-list p{
   font-weight: 600;
   margin-right: 20px;
@@ -393,4 +401,9 @@ text-decoration: underline;
 }
 .autocomplete-mobile-input input{
 font-size: 16px;
+}
+.song-list small{
+  text-transform: capitalize;
+
+
 }
