@@ -12,7 +12,7 @@ export default async function MenuBar() {
     "setlist",
     "churches",
     "dashboard",
-    "testForm"
+    "turnazioni"
   ];
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -68,8 +68,8 @@ const { data: profile } = await supabase
           </Link>
         </NavbarItem>
         <NavbarItem isActive>
-          <Link href="/events" aria-current="page" >
-            Events
+          <Link href="/turnazioni" aria-current="page" >
+          Turnazioni
           </Link>
         </NavbarItem>
         <NavbarItem>

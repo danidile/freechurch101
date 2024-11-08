@@ -388,6 +388,11 @@ text-decoration: underline;
   justify-content: center;
   align-items: center;
 }
+.right-{
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
 
 .crea-setlist-container{
   max-width: 90vw;
@@ -411,4 +416,9 @@ font-size: 16px;
   text-transform: capitalize;
 
 
+}
+.two-inputs{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 15px;
 }
