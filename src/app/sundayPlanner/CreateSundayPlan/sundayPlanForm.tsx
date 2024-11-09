@@ -179,14 +179,14 @@ export default function SundayPlanForm() {
   };
 
   const convertData = async () => {
-    watchAllFields.sections.map((section, index) => {
-      const ref = watchAllFields.sections[index].song.split("#");
-      newSongList.map((song, index) => {
-        if (index === Number(ref[1])) {
-          section.song = song.id;
-        }
-      });
-    });
+    // watchAllFields.sections.map((section, index) => {
+    //   const ref = watchAllFields.sections[index].song.split("#");
+    //   newSongList.map((song, index) => {
+    //     if (index === Number(ref[1])) {
+    //       section.song = song.id;
+    //     }
+    //   });
+    // });
     console.log(watchAllFields);
 
     // addSetlist(watchAllFields);
