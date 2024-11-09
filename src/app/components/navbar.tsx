@@ -13,7 +13,7 @@ export default async function MenuBar() {
     "churches",
     "dashboard",
     "turnazioni",
-    "SundayPlanner"
+    "sundayPlanner"
   ];
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
