@@ -12,7 +12,8 @@ export default async function MenuBar() {
     "setlist",
     "churches",
     "dashboard",
-    "turnazioni"
+    "turnazioni",
+    "SundayPlanner"
   ];
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -75,6 +76,11 @@ const { data: profile } = await supabase
         <NavbarItem>
           <Link color="foreground" href="/churches">
             Churches
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="/sundayPlanner">
+          SundayPlanner
           </Link>
         </NavbarItem>
         {loggedIn === 1 && (

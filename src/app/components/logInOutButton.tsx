@@ -2,11 +2,10 @@
 
 import { NavbarItem, Link, Button} from "@nextui-org/react";
 import logoutTest from '@/app/components/logOutAction'
-import {User} from "@nextui-org/react";
 
 
 export default function LogInOutButton (props: { username: string; isLoggedIn: number; email: string; }){
- const {username, isLoggedIn, email} = props;
+ const {isLoggedIn} = props;
  async function logouter () {
     logoutTest();
     }

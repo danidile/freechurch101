@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from "react";
 import { Select, SelectItem, Textarea} from "@nextui-org/react";
-import { addSetlist } from "./addSetlistAction";
 // import {addEvent} from './addEventAction';
 import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForever';
