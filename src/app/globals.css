@@ -400,9 +400,11 @@ text-decoration: underline;
 }
 .accordian-setlist{
   margin: 5px 0px;
-  background-color: #eaedf5;
   padding: 0.5rem;
   border-radius: 0.3rem;
+  border: 2px solid #e2e2e2;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .selector-author{
@@ -421,4 +423,10 @@ font-size: 16px;
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 15px;
+}
+
+.accordian-container{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }

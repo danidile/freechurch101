@@ -5,8 +5,7 @@ import { Input } from '@nextui-org/input';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from "react";
-import { Select, SelectItem, Textarea} from "@nextui-org/react";
-import { addSetlist } from "./addSetlistAction";
+import { Select, SelectItem} from "@nextui-org/react";
 // import {addEvent} from './addEventAction';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
@@ -29,16 +28,6 @@ interface TeventBasics {
   date: string;
 }
 
-interface Tsong {
-  id: string;
-  song_title: string;
-  author: string;
-}
-interface TsongNameAuthor {
-  id: string;
-  author: string;
-  song_title: string;
-}
 
 type formValues ={
   eventType: string;
@@ -149,15 +138,15 @@ export default function UpdateScheduling() {
 
   const convertData = async () =>{
 
-    watchAllFields.sections.map((section,index)=>{
-      const ref = watchAllFields.sections[index].song.split('#');
-      newSongList.map((song,index)=>{
-        if(index === Number(ref[1])){
-          section.song = song.id;
-        }
-      });
+    // watchAllFields.sections.map((section,index)=>{
+    //   const ref = watchAllFields.sections[index].song.split('#');
+    //   newSongList.map((song,index)=>{
+    //     if(index === Number(ref[1])){
+    //       section.song = song.id;
+    //     }
+    //   });
       
-    });
+    // });
      console.log(watchAllFields); 
 
     // addSetlist(watchAllFields);
@@ -267,7 +256,7 @@ return (<>
                                     disableAnimation={false}
                                     
                                 >
-                                  {strumenti.map((strumento, index) => {
+                                  {strumenti.map((strumento) => {
                                       
                                       return (
                                       
