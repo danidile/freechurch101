@@ -1,20 +1,13 @@
 "use client";
-import { eventSchema } from "@/utils/types/types";
-import { Button } from "@nextui-org/react";
+import {Select, SelectItem} from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Select, SelectItem } from "@nextui-org/react";
 // import {addEvent} from './addEventAction';
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForever";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import ArticleIcon from "@mui/icons-material/Article";
-
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-
 interface Tsections {
   id: string;
   key: string;
@@ -25,93 +18,96 @@ interface Tsections {
   duration?: string;
   songId?: string;
 }
-interface TeventBasics {
-  type: string;
-  title: string;
-  date: string;
-}
 
 type formValues = {
   eventType: string;
-  church: string;
   eventTitle: string;
   date: string;
-  sections: {
-    sectionType: string;
-    duration: string;
-    description: string;
-    song: string;
-  }[];
+  church: string;
+  test: string;
+  teamMembers: {
+    memberId: string;
+    label: string;
+    role: string;
+  };
 };
+
 
 export default function SundayPlanForm() {
   const teamMembers = [
     {
       id: "1",
-      name: "Daniele Di Lecce",
+      label: "Daniele Di Lecce",
       role: "Cantante, Chitarrista",
     },
     {
       id: "2",
-      name: "Andrea Scircoli",
+      label: "Andrea Scircoli",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "3",
-      name: "Daniel Oliveira",
+      label: "Daniel Oliveira",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "4",
-      name: "Israel Moraes",
+      label: "Israel Moraes",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "5",
-      name: "Gaia Ruscitto",
+      label: "Gaia Ruscitto",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "6",
-      name: "Sarah Frasson ",
+      label: "Sarah Frasson ",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "7",
-      name: "Luca Gravellona",
+      label: "Luca Gravellona",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "8",
-      name: "Lia Rodriguez",
+      label: "Lia Rodriguez",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "9",
-      name: "Martina Scircoli",
+      label: "Martina Scircoli",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "10",
-      name: "Giovanni",
+      label: "Giovanni",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "11",
-      name: "Roger Flores",
+      label: "Roger Flores",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
       id: "12",
-      name: "Rhuan Ferreira",
+      label: "Rhuan Ferreira",
       role: "Bassista, Chitarrista",
     },
   ];
   const [state, setState] = useState<Tsections[]>([]);
-  const [eventDetails, setEventDetails] = useState<TeventBasics>({
-    type: "0",
-    title: "Culto domenicale",
+  const [eventDetails, setEventDetails] = useState<formValues>({
+    eventType: "0",
+    eventTitle: "Culto domenicale",
     date: "",
+    church: "0033",
+    test: "",
+    teamMembers: {
+      memberId: "1",
+      label: "Daniele Di Lecce",
+      role: "Cantante, Chitarrista",
+    }
   });
   const [eventIsOther, setEventIsOther] = useState(false);
   let x: string;
@@ -149,9 +145,20 @@ export default function SundayPlanForm() {
     watch,
     formState: { isSubmitting },
   } = useForm<formValues>({
-    resolver: zodResolver(eventSchema),
+    defaultValues:{
+      eventType: "0",
+      eventTitle: "Culto domenicale",
+      date: "",
+      church: "0033",
+      teamMembers: {
+        memberId: "1",
+        label: "Daniele Di Lecce",
+        role: "Cantante, Chitarrista",
+      }
+    }
   });
   const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
+
 
   // section => section[1] === event.target.id)
   const removeSection = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -162,8 +169,9 @@ export default function SundayPlanForm() {
   };
   const istypeother = (event: React.ChangeEvent<HTMLSelectElement>) => {
     console.log(event.target.value);
-    setEventDetails({ ...eventDetails, type: event.target.value });
-    if (event.target.value == "4") {
+    
+    setEventDetails({ ...eventDetails, eventType: event.target.value });
+    if (event.target.value == "5") {
       setEventIsOther(true);
     } else {
       setEventIsOther(false);
@@ -175,7 +183,7 @@ export default function SundayPlanForm() {
     const target = event.currentTarget as HTMLInputElement;
     setValue("eventTitle", target.value);
 
-    setEventDetails({ ...eventDetails, title: target.value });
+    setEventDetails({ ...eventDetails, eventTitle: target.value });
   };
 
   const convertData = async () => {
@@ -191,6 +199,7 @@ export default function SundayPlanForm() {
 
     // addSetlist(watchAllFields);
   };
+
 
   return (
     <>
@@ -231,7 +240,7 @@ export default function SundayPlanForm() {
                       >
                         <div className="accordian-container">
                           <Select
-                            {...register("eventType")}
+                            {...register(`eventType`)}
                             label="Tipo di evento"
                             size="sm"
                             placeholder="Riunione dei Giovani..."
@@ -245,7 +254,7 @@ export default function SundayPlanForm() {
                           </Select>
                           {eventIsOther && (
                             <Input
-                              {...register("eventTitle")}
+                            {...register(`eventTitle`)}
                               type="text"
                               label="Aggiungi Titolo evento"
                               variant="bordered"
@@ -257,7 +266,7 @@ export default function SundayPlanForm() {
                           <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
                             <Input
                               type="date"
-                              {...register("date")}
+                              {...register(`date`)}
                               label="Event Date"
                               variant="bordered"
                               size="sm"
@@ -269,27 +278,18 @@ export default function SundayPlanForm() {
                             value={element.id}
                             className="hide-input"
                           />
-
-                          <Autocomplete
-                            multiple
-                            id="tags-outlined"
-                            options={teamMembers}
-                            getOptionLabel={(option) => option.name}
-                            defaultValue={[teamMembers[1]]}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Seleziona i membri del Team"
-                                placeholder="Add Team Member"
-                              />
-                            )}
-                          />
-                          <div className="center-">
-                            <Button color="primary" aria-label="add">
-                              <PersonAddAlt1Icon />
-                            </Button>
-                          </div>
+                            <Select
+                              {...register(`test`)}
+                              label="Favorite Animal"
+                              selectionMode="multiple"
+                              placeholder="Select an animal"
+                            >
+                              {teamMembers.map((animal) => (
+                                <SelectItem key={animal.id}>
+                                  {animal.label}
+                                </SelectItem>
+                              ))}
+                            </Select>
                           <div className="right-">
                             <Button
                               size="sm"
