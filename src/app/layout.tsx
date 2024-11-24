@@ -41,7 +41,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
         <MenuBar/>
-        <main className="flex flex-col items-center">
+        <main>
         {children}
         </main>
         
