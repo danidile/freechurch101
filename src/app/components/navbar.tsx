@@ -9,10 +9,7 @@ export default async function MenuBar() {
 
   const menuItems = [
     "songs",
-    "setlist",
-    "churches",
     "dashboard",
-    "turnazioni",
     "sundayPlanner"
   ];
   const supabase = createClient();
@@ -56,26 +53,10 @@ const { data: profile } = await supabase
         <Link color="foreground" href="/">
         <Image className="max-h-8 overflow-visible" src="/images/brand/LOGO_.png" alt="" />
         </Link>
-        
         </NavbarBrand>
         <NavbarItem>
           <Link color="foreground" href="/songs">
             Songs
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="/setlist">
-            SetList
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="/turnazioni" aria-current="page" >
-          Turnazioni
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="/churches">
-            Churches
           </Link>
         </NavbarItem>
         <NavbarItem>
