@@ -1,5 +1,12 @@
+// @ts-nocheck
+
 "use client";
-import { Autocomplete, AutocompleteItem, Select, SelectItem } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
 import { Button } from "@nextui-org/button";
 import { Input, Textarea } from "@nextui-org/input";
 import { useForm } from "react-hook-form";
@@ -42,67 +49,71 @@ interface TsongNameAuthor {
   song_title: string;
 }
 
-export default function SundayPlanForm({songsList}: {songsList : TsongNameAuthor[]}) {
+export default function SundayPlanForm({
+  songsList,
+}: {
+  songsList: TsongNameAuthor[];
+}) {
   const newSongList = songsList;
 
   const teamMembers = [
     {
-      id: "1",
+      id: "0",
       label: "Daniele Di Lecce",
       role: "Cantante, Chitarrista",
     },
     {
-      id: "2",
+      id: "1",
       label: "Andrea Scircoli",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "3",
+      id: "2",
       label: "Daniel Oliveira",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "4",
+      id: "3",
       label: "Israel Moraes",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "5",
+      id: "4",
       label: "Gaia Ruscitto",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "6",
+      id: "5",
       label: "Sarah Frasson ",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "7",
+      id: "6",
       label: "Luca Gravellona",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "8",
+      id: "7",
       label: "Lia Rodriguez",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "9",
+      id: "8",
       label: "Martina Scircoli",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "10",
+      id: "9",
       label: "Giovanni",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "11",
+      id: "10",
       label: "Roger Flores",
       role: "Cantante, Chitarrista, Mixerista",
     },
     {
-      id: "12",
+      id: "11",
       label: "Rhuan Ferreira",
       role: "Bassista, Chitarrista",
     },
@@ -160,6 +171,7 @@ export default function SundayPlanForm({songsList}: {songsList : TsongNameAuthor
       eventType: "0",
       eventTitle: "Culto domenicale",
       date: "",
+      test: "1",
       church: "0033",
       teamMembers: {
         memberId: "1",
@@ -178,8 +190,6 @@ export default function SundayPlanForm({songsList}: {songsList : TsongNameAuthor
     }
   };
   const istypeother = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
-
     setEventDetails({ ...eventDetails, eventType: event.target.value });
     if (event.target.value == "5") {
       setEventIsOther(true);
@@ -212,154 +222,174 @@ export default function SundayPlanForm({songsList}: {songsList : TsongNameAuthor
 
   return (
     <>
-          <form onSubmit={handleSubmit(convertData)}>
-            <h4>Pianifica Evento</h4>
-              <div className="event-info-header">
-                <Select
-                  {...register(`eventType`)}
-                  label="Tipo di evento"
-                  variant="flat"
-                  size="sm"
-                  placeholder="Riunione dei Giovani..."
-                  onChange={istypeother}
-                >
-                  {tipoEvento.map((evento: string, index) => (
-                    <SelectItem key={index} value={evento}>
-                      {evento}
-                    </SelectItem>
-                  ))}
-                </Select>
-                {eventIsOther && (
-                  <Input
-                    {...register(`eventTitle`)}
-                    type="text"
-                    label="Aggiungi Titolo evento"
-                    variant="flat"
-                    size="sm"
-                    onChange={editTitle}
-                  />
-                )}
+      <form onSubmit={handleSubmit(convertData)}>
+        <h4>Pianifica Evento</h4>
+        <div className="event-info-header">
+          <Select
+            {...register(`eventType`)}
+            label="Tipo di evento"
+            variant="flat"
+            size="sm"
+            placeholder="Riunione dei Giovani..."
+            onChange={istypeother}
+          >
+            {tipoEvento.map((evento: string, index) => (
+              <SelectItem key={index} value={evento}>
+                {evento}
+              </SelectItem>
+            ))}
+          </Select>
+          {eventIsOther && (
+            <Input
+              {...register(`eventTitle`)}
+              type="text"
+              label="Aggiungi Titolo evento"
+              variant="flat"
+              size="sm"
+              onChange={editTitle}
+            />
+          )}
 
-                <Input
-                  type="date"
-                  {...register(`date`)}
-                  label="Event Date"
-                  variant="flat"
-                  size="sm"
-                />
-
-                <Select
-                  {...register(`test`)}
-                  label="Favorite Animal"
-                  variant="flat"
-                  size="sm"
-                  selectionMode="multiple"
-                  placeholder="Select an animal"
-                >
-                  {teamMembers.map((animal) => (
-                    <SelectItem key={animal.id}>{animal.label}</SelectItem>
-                  ))}
-                </Select>
-              </div>
-
-              <br />
-              <Button
-                color="primary"
-                variant="shadow"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                Crea Evento
-              </Button>
-
-
-
-              <div className="event-info-header">
-        
-        <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-        <h4>Crea Setlist</h4>
-
-        <h6>Aggingi sezione</h6>
-          
-
-          <div  className="transpose-button-container">
-                <Button variant="flat" type="button" id="Canzone"  onClick={AddSection}>Canzone</Button>
-                <Button variant="flat" type="button" id="Appunti"  onClick={AddSection}>Appunti</Button>
-          </div>
-            <div >
-            <Accordion selectionBehavior="replace" isCompact={true} selectionMode="single" variant="light" className="gap-4" keepContentMounted={true}>
-
-            {   
-                state.map((element,index) =>{
-                    
-                      return (
-                        <AccordionItem 
-                        className="accordian-setlist"
-                        startContent={<ArticleIcon/>}
-                        key={element.key} aria-label="Accordion 1" title={element.id}
-                        >
-
-                            <Input  
-                            name={"type"+element.key} key={element.key} value={element.id} className='hide-input' />
-
-                            
-                                        
-                            {element.isSong && (
-                                <Autocomplete 
-                                    size="sm"
-                                    fullWidth={true}
-                                    label="Seleziona la canzone" 
-                                    className="max-w-lg autocomplete-mobile-input"
-                                    disableAnimation={false}
-                                    
-                                >
-                                    {newSongList.map((song: Tsong, index) => {
-                                      
-                                        return (
-                                        
-                                    <AutocompleteItem key={song.id} title={song.song_title} description={song.author} textValue={song.song_title + " " + song.author + " #" + index }>
-
-                                    
-                                    </AutocompleteItem>
-                                    )})}
-                                </Autocomplete>                              
-                            )}
-                            <Textarea
-                                    className="my-2"
-                                    label="Descrizione"
-                                    
-                                    id={element.key}
-                                    size="sm"
-                                    labelPlacement="inside"
-                                    placeholder="Inserisci informazioni utili..."
-
-                                />
-                            <Button size="sm"
-                              className=" my-2"
-                              isIconOnly type='button'
-                              variant="bordered"
-                              id={element.key}
-                              onClick={removeSection}
-                              accessKey={String(index)}
-                            >
-                                <DeleteForeverOutlinedIcon/>
-                            </Button>   
-                            </AccordionItem>
-
-                            )
-                })
-            }
-            </Accordion>
-
-            </div>
-
-          <br/>
-          <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
-          Add Song
-          </Button>
+          <Input
+            type="date"
+            {...register(`date`)}
+            label="Event Date"
+            variant="flat"
+            size="sm"
+          />
         </div>
-              </div>
-          </form>
+
+        <div className="event-info-header">
+          <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+            <h4>Worship Team</h4>
+            <Select
+              {...register(`test`)}
+              label="Worship Team"
+              variant="flat"
+              size="sm"
+              selectionMode="multiple"
+              placeholder="Seleziona membro del Worship team"
+            >
+              {teamMembers.map((animal) => (
+                <SelectItem
+                  key={animal.id}
+                  title={animal.label}
+                  description={animal.role}
+                ></SelectItem>
+              ))}
+            </Select>
+            <div className="text-small text-default-500" key="1121">
+              Selezionati:
+              {watch("test")
+                .split(",")
+                .map((element) => {
+                  if (element) {
+                    return (
+                      <p key={element.id}>
+                        {teamMembers[Number(element)].label}
+                      </p>
+                    );
+                  }
+                })}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+            <h4>Crea Setlist</h4>
+
+            <h6>Aggingi sezione</h6>
+
+            <div className="transpose-button-container">
+              <Button
+                variant="flat"
+                type="button"
+                id="Canzone"
+                onClick={AddSection}
+              >
+                Canzone
+              </Button>
+              <Button
+                variant="flat"
+                type="button"
+                id="Appunti"
+                onClick={AddSection}
+              >
+                Appunti
+              </Button>
+            </div>
+            <div>
+              {state.map((element, index) => {
+                return (
+                  <div
+                    className="accordian-setlist"
+                    key={element.key}
+                    aria-label="Accordion 1"
+                    title={element.id}
+                  >
+                    <Input
+                      name={"type" + element.key}
+                      key={element.key}
+                      value={element.id}
+                      className="hide-input"
+                    />
+
+                    {element.isSong && (
+                      <div className="two-inputs">
+                        <Autocomplete
+                          size="sm"
+                          fullWidth={true}
+                          label="Seleziona la canzone"
+                          className="max-w-lg autocomplete-mobile-input"
+                          disableAnimation={false}
+                        >
+                          {newSongList.map((song: Tsong, index) => {
+                            return (
+                              <AutocompleteItem
+                                key={song.id}
+                                title={song.song_title}
+                                description={song.author}
+                                textValue={
+                                  song.song_title +
+                                  " " +
+                                  song.author +
+                                  " #" +
+                                  index
+                                }
+                              ></AutocompleteItem>
+                            );
+                          })}
+                        </Autocomplete>
+                        <Button
+                          size="sm"
+                          className=" my-2"
+                          isIconOnly
+                          type="button"
+                          variant="bordered"
+                          id={element.key}
+                          onClick={removeSection}
+                          accessKey={String(index)}
+                        >
+                          <DeleteForeverOutlinedIcon />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <br />
+        <Button
+          color="primary"
+          variant="shadow"
+          type="submit"
+          disabled={isSubmitting}
+        >
+          Crea Evento
+        </Button>
+      </form>
     </>
   );
 }

@@ -411,9 +411,9 @@ font-size: 16px;
 
 }
 .two-inputs{
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 15px;
+  display: flex;
+flex-direction: row;
+  gap: 10px;
 }
 
 .accordian-container{
