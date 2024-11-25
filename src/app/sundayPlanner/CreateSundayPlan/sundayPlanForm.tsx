@@ -31,6 +31,11 @@ type formValues = {
     role: string;
   };
 };
+interface Tsong {
+  id: string;
+  song_title: string;
+  author: string;
+}
 interface TsongNameAuthor {
   id: string;
   author: string;
