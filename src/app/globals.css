@@ -348,7 +348,11 @@ text-decoration: underline;
   grid-gap: 10px;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));}
 
-
+.event-info-header > div{
+background-color: #ffffff;
+border-radius: 12px;
+padding: 10px;
+}
 .setlist-song{
   padding: 1rem ;
   gap: 20px;
@@ -414,6 +418,17 @@ font-size: 16px;
   display: flex;
 flex-direction: row;
   gap: 10px;
+}
+.team-details-input{
+  align-items: center;
+  margin: 10px 0px;
+  display: grid;
+grid-template-columns: 1fr 2fr;
+    gap: 10px;
+}
+.team-details-input p{
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .accordian-container{

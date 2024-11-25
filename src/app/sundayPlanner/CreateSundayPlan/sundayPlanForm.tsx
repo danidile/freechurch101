@@ -60,37 +60,37 @@ export default function SundayPlanForm({
     {
       id: "0",
       label: "Daniele Di Lecce",
-      role: "Cantante, Chitarrista",
+      role: "Voce, Chitarra AC, Chitarra EL",
     },
     {
       id: "1",
       label: "Andrea Scircoli",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce, Chitarra AC, Mixerista",
     },
     {
       id: "2",
       label: "Daniel Oliveira",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce, Chitarra AC, Batteria",
     },
     {
       id: "3",
       label: "Israel Moraes",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce, Chitarra, Batteria",
     },
     {
       id: "4",
       label: "Gaia Ruscitto",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce, Chitarrista, Mixerista",
     },
     {
       id: "5",
       label: "Sarah Frasson ",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce, Chitarrista, Mixerista",
     },
     {
       id: "6",
       label: "Luca Gravellona",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Chitarrista, Mixerista",
     },
     {
       id: "7",
@@ -223,7 +223,7 @@ export default function SundayPlanForm({
   return (
     <>
       <form onSubmit={handleSubmit(convertData)}>
-        <h4>Pianifica Evento</h4>
+        <h2 className="text-center">Pianifica Evento</h2>
         <div className="event-info-header">
           <Select
             {...register(`eventType`)}
@@ -261,7 +261,35 @@ export default function SundayPlanForm({
 
         <div className="event-info-header">
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-            <h4>Worship Team</h4>
+            <h4 className="text-center">Worship Team</h4>
+            
+            <div className="text-small">
+              Selezionati:
+              {watch("test")
+                .split(",")
+                .map((element) => {
+                  if (element) {
+                    return (
+                      <div className="team-details-input" key={element.id}>
+                        <p>{teamMembers[Number(element)].label}</p>{" "}
+                        <Select
+                          
+                          label="Strumento"
+                          variant="flat"
+                          size="sm"
+                        >
+                          {teamMembers[Number(element)].role.split(",").map((animal) => (
+                            <SelectItem
+                              key={animal}
+                              title={animal}
+                            ></SelectItem>
+                          ))}
+                        </Select>
+                      </div>
+                    );
+                  }
+                })}
+            </div>
             <Select
               {...register(`test`)}
               label="Worship Team"
@@ -278,50 +306,15 @@ export default function SundayPlanForm({
                 ></SelectItem>
               ))}
             </Select>
-            <div className="text-small text-default-500" key="1121">
-              Selezionati:
-              {watch("test")
-                .split(",")
-                .map((element) => {
-                  if (element) {
-                    return (
-                      <p key={element.id}>
-                        {teamMembers[Number(element)].label}
-                      </p>
-                    );
-                  }
-                })}
-            </div>
           </div>
 
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-            <h4>Crea Setlist</h4>
+            <h4 className="text-center">Crea Setlist</h4>
 
-            <h6>Aggingi sezione</h6>
-
-            <div className="transpose-button-container">
-              <Button
-                variant="flat"
-                type="button"
-                id="Canzone"
-                onClick={AddSection}
-              >
-                Canzone
-              </Button>
-              <Button
-                variant="flat"
-                type="button"
-                id="Appunti"
-                onClick={AddSection}
-              >
-                Appunti
-              </Button>
-            </div>
             <div>
               {state.map((element, index) => {
                 return (
                   <div
-                    className="accordian-setlist"
                     key={element.key}
                     aria-label="Accordion 1"
                     title={element.id}
@@ -334,7 +327,7 @@ export default function SundayPlanForm({
                     />
 
                     {element.isSong && (
-                      <div className="two-inputs">
+                      <div className="two-inputs py-2">
                         <Autocomplete
                           size="sm"
                           fullWidth={true}
@@ -376,6 +369,17 @@ export default function SundayPlanForm({
                   </div>
                 );
               })}
+            </div>
+
+            <div className="transpose-button-container">
+              <Button
+                variant="flat"
+                type="button"
+                id="Canzone"
+                onClick={AddSection}
+              >
+                Aggiungi Canzone
+              </Button>
             </div>
           </div>
         </div>
