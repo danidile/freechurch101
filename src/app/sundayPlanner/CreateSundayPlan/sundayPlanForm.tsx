@@ -31,6 +31,11 @@ type formValues = {
     role: string;
   };
 };
+interface TsongNameAuthor {
+  id: string;
+  author: string;
+  song_title: string;
+}
 
 export default function SundayPlanForm({songsList}: {songsList : TsongNameAuthor[]}) {
   const newSongList = songsList;
