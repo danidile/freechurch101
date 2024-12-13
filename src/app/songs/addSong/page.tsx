@@ -86,8 +86,8 @@ return (<>
        {...register("lyrics")}
        value={state}
        onChange={handleInputChange}
-       maxRows={65}
-       minRows={45}
+       maxRows={50}
+       minRows={35}
        cols={100}
        variant="bordered"
        size="sm"

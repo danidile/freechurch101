@@ -1,20 +1,32 @@
 // @ts-nocheck
 
 "use client";
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
+
+import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import {
   Autocomplete,
   AutocompleteItem,
   Select,
   SelectItem,
 } from "@nextui-org/react";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { Button } from "@nextui-org/button";
-import { Input, Textarea } from "@nextui-org/input";
+import { Input } from "@nextui-org/input";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-// import {addEvent} from './addEventAction';
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForever";
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
-import ArticleIcon from "@mui/icons-material/Article";
+
+import Divider from "@mui/joy/Divider";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@nextui-org/react";
+
 interface Tsections {
   id: string;
   key: string;
@@ -36,6 +48,12 @@ type formValues = {
     memberId: string;
     label: string;
     role: string;
+  };
+  setlist: {
+    id: string;
+    song_title: string;
+    author: string;
+    key: string;
   };
 };
 interface Tsong {
@@ -80,43 +98,57 @@ export default function SundayPlanForm({
     {
       id: "4",
       label: "Gaia Ruscitto",
-      role: "Voce, Chitarrista, Mixerista",
+      role: "Voce",
     },
     {
       id: "5",
       label: "Sarah Frasson ",
-      role: "Voce, Chitarrista, Mixerista",
+      role: "Voce",
     },
     {
       id: "6",
       label: "Luca Gravellona",
-      role: "Chitarrista, Mixerista",
+      role: "Basso",
     },
     {
       id: "7",
       label: "Lia Rodriguez",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce",
     },
     {
       id: "8",
       label: "Martina Scircoli",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce",
     },
     {
       id: "9",
       label: "Giovanni",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce, Piano",
     },
     {
       id: "10",
       label: "Roger Flores",
-      role: "Cantante, Chitarrista, Mixerista",
+      role: "Voce",
     },
     {
       id: "11",
       label: "Rhuan Ferreira",
-      role: "Bassista, Chitarrista",
+      role: "Basso, Chitarra, Cajon",
     },
+  ];
+  const keys = [
+    { key: "A" },
+    { key: "A#" },
+    { key: "B" },
+    { key: "C" },
+    { key: "C#" },
+    { key: "D" },
+    { key: "D#" },
+    { key: "E" },
+    { key: "F" },
+    { key: "F#" },
+    { key: "G" },
+    { key: "G#" },
   ];
   const [state, setState] = useState<Tsections[]>([]);
   const [eventDetails, setEventDetails] = useState<formValues>({
@@ -129,6 +161,10 @@ export default function SundayPlanForm({
       memberId: "1",
       label: "Daniele Di Lecce",
       role: "Cantante, Chitarrista",
+    },
+    setlist: {
+      songId: "0",
+      key: "G",
     },
   });
   const [eventIsOther, setEventIsOther] = useState(false);
@@ -178,6 +214,12 @@ export default function SundayPlanForm({
         label: "Daniele Di Lecce",
         role: "Cantante, Chitarrista",
       },
+      setlist: {
+        id: "1",
+        song_title: "Daniele Di Lecce",
+        author: "Cantante, Chitarrista",
+        key: "Cantante, Chitarrista",
+      },
     },
   });
   const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
@@ -199,6 +241,7 @@ export default function SundayPlanForm({
     setValue("eventType", event.target.value);
     setValue("eventTitle", tipoEvento[Number(event.target.value)]);
   };
+
   const editTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.currentTarget as HTMLInputElement;
     setValue("eventTitle", target.value);
@@ -215,171 +258,300 @@ export default function SundayPlanForm({
     //     }
     //   });
     // });
-    console.log(watchAllFields);
+    const completeForm = watchAllFields;
+    console.log(completeForm);
 
     // addSetlist(watchAllFields);
+  };
+
+  // this section handles the worship modal
+  const modalWorshipTeam = useDisclosure();
+  const modalSetList = useDisclosure();
+
+  // END OF this section handles the worship modal
+  const [setList, setSetList] = useState([]);
+  const addSongToSetList = (e) => {
+    console.log(e.target);
+    const song = newSongList.find((element) => element.id == e.target.id);
+    setSetList([...setList, song]);
+    console.log(setList);
+  };
+  const removeSongFromSetList = (e) => {
+    console.log(e.target);
+
+    const result = setList.filter((song) => song.id != e.target.id);
+    setSetList(result);
+    console.log(setList);
+  };
+  //change song Key in setlist
+  const changeSongKey = (event) => {
+    console.log(event);
   };
 
   return (
     <>
       <form onSubmit={handleSubmit(convertData)}>
-        <h2 className="text-center">Pianifica Evento</h2>
-        <div className="event-info-header">
-          <Select
-            {...register(`eventType`)}
-            label="Tipo di evento"
-            variant="flat"
-            size="sm"
-            placeholder="Riunione dei Giovani..."
-            onChange={istypeother}
-          >
-            {tipoEvento.map((evento: string, index) => (
-              <SelectItem key={index} value={evento}>
-                {evento}
-              </SelectItem>
-            ))}
-          </Select>
-          {eventIsOther && (
-            <Input
-              {...register(`eventTitle`)}
-              type="text"
-              label="Aggiungi Titolo evento"
-              variant="flat"
-              size="sm"
-              onChange={editTitle}
-            />
-          )}
-
-          <Input
-            type="date"
-            {...register(`date`)}
-            label="Event Date"
-            variant="flat"
-            size="sm"
-          />
-        </div>
-
-        <div className="event-info-header">
+        <h4 className="text-center">Pianifica Evento</h4>
+        <div className="event-sections-body">
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-            <h4 className="text-center">Worship Team</h4>
-            
-            <div className="text-small">
-              Selezionati:
+            <h6 className="center-x">Organizza Evento</h6>
+
+            <div className="event-info-header">
+              <Select
+                {...register(`eventType`)}
+                label="Tipo di evento"
+                variant="flat"
+                size="sm"
+                placeholder="Riunione dei Giovani..."
+                onChange={istypeother}
+              >
+                {tipoEvento.map((evento: string, index) => (
+                  <SelectItem key={index} value={evento}>
+                    {evento}
+                  </SelectItem>
+                ))}
+              </Select>
+              {eventIsOther && (
+                <Input
+                  {...register(`eventTitle`)}
+                  type="text"
+                  label="Aggiungi Titolo evento"
+                  variant="flat"
+                  size="sm"
+                  onChange={editTitle}
+                />
+              )}
+
+              <Input
+                type="date"
+                {...register(`date`)}
+                label="Event Date"
+                variant="flat"
+                size="sm"
+              />
+            </div>
+            <div className=" bg-gray-100 rounded-lg p-5">
+              <p className="center-x p-3">
+                <b>Worship Team</b>
+              </p>
+              <>
+                <Modal
+                  backdrop="opaque"
+                  size="lg"
+                  isOpen={modalWorshipTeam.isOpen}
+                  onClose={modalWorshipTeam.onClose}
+                  scrollBehavior="inside"
+                >
+                  <ModalContent className="planner-modal">
+                    {(onClose) => (
+                      <>
+                        <ModalHeader className="flex flex-col gap-1">
+                          WorshipTeam
+                        </ModalHeader>
+                        <ModalBody>
+                          <Select
+                            {...register(`test`)}
+                            label="Worship Team"
+                            variant="flat"
+                            className=" py-2"
+                            size="sm"
+                            selectionMode="multiple"
+                            placeholder="Seleziona membro del Worship team"
+                          >
+                            {teamMembers.map((animal) => (
+                              <SelectItem
+                                key={animal.id}
+                                title={animal.label}
+                                description={animal.role}
+                              ></SelectItem>
+                            ))}
+                          </Select>
+                          {watch("test")
+                            .split(",")
+                            .map((element, index) => {
+                              if (element) {
+                                return (
+                                  <div
+                                    className="team-details-input"
+                                    key={element.id}
+                                  >
+                                    <Input
+                                      {...register(`teamMembers.${index}.id`)}
+                                      value={element.id}
+                                      className="hidden-input"
+                                    ></Input>
+                                    <p>{teamMembers[Number(element)].label}</p>{" "}
+                                    <Select
+                                      {...register(`teamMembers.${index}.key`)}
+                                      label="Strumento"
+                                      defaultSelectedKeys="0"
+                                      variant="flat"
+                                      size="sm"
+                                    >
+                                      {teamMembers[Number(element)].role
+                                        .split(",")
+                                        .map((animal, index) => (
+                                          <SelectItem
+                                            key={index}
+                                            title={animal}
+                                          ></SelectItem>
+                                        ))}
+                                    </Select>
+                                  </div>
+                                );
+                              }
+                            })}
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            color="danger"
+                            variant="flat"
+                            onPress={onClose}
+                          >
+                            Close
+                          </Button>
+                        </ModalFooter>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
+              </>
               {watch("test")
                 .split(",")
                 .map((element) => {
                   if (element) {
                     return (
-                      <div className="team-details-input" key={element.id}>
-                        <p>{teamMembers[Number(element)].label}</p>{" "}
-                        <Select
-                          
-                          label="Strumento"
-                          variant="flat"
-                          size="sm"
-                        >
-                          {teamMembers[Number(element)].role.split(",").map((animal) => (
-                            <SelectItem
-                              key={animal}
-                              title={animal}
-                            ></SelectItem>
-                          ))}
-                        </Select>
-                      </div>
+                      <>
+                        <div className="team-details-input" key={element.id}>
+                          <p>{teamMembers[Number(element)].label}</p>{" "}
+                          {teamMembers[Number(element)].role.split(",")[0]}
+                        </div>
+                        <Divider></Divider>
+                      </>
                     );
                   }
                 })}
+              <div className="float-right pt-6">
+                <Button
+                  onPress={modalWorshipTeam.onOpen}
+                  isIconOnly
+                  color="primary"
+                  variant="flat"
+                  size="lg"
+                >
+                  {/* Aggiungi Membri */}
+                  <GroupAddIcon />
+                </Button>
+              </div>
             </div>
-            <Select
-              {...register(`test`)}
-              label="Worship Team"
-              variant="flat"
-              size="sm"
-              selectionMode="multiple"
-              placeholder="Seleziona membro del Worship team"
-            >
-              {teamMembers.map((animal) => (
-                <SelectItem
-                  key={animal.id}
-                  title={animal.label}
-                  description={animal.role}
-                ></SelectItem>
-              ))}
-            </Select>
-          </div>
+            <div className=" bg-gray-100 rounded-lg p-5">
+              <p className="center-x pt-5">
+                <b>Scegli Canzoni</b>
+              </p>
+              <>
+                <Modal
+                  backdrop="opaque"
+                  size="lg"
+                  isOpen={modalSetList.isOpen}
+                  onClose={modalSetList.onClose}
+                  scrollBehavior="inside"
+                >
+                  <ModalContent className="planner-modal">
+                    {(onClose) => (
+                      <>
+                        <ModalHeader className="flex flex-col gap-1">
+                          Log in
+                        </ModalHeader>
+                        <ModalBody>
+                          <div>
+                            <Input
+                              label="Cerca Canzoni"
+                              placeholder="La tua gloria...."
+                              labelPlacement="outside"
+                              className="pb-6"
+                            />
 
-          <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-            <h4 className="text-center">Crea Setlist</h4>
-
-            <div>
-              {state.map((element, index) => {
-                return (
-                  <div
-                    key={element.key}
-                    aria-label="Accordion 1"
-                    title={element.id}
-                  >
-                    <Input
-                      name={"type" + element.key}
-                      key={element.key}
-                      value={element.id}
-                      className="hide-input"
-                    />
-
-                    {element.isSong && (
-                      <div className="two-inputs py-2">
-                        <Autocomplete
-                          size="sm"
-                          fullWidth={true}
-                          label="Seleziona la canzone"
-                          className="max-w-lg autocomplete-mobile-input"
-                          disableAnimation={false}
-                        >
-                          {newSongList.map((song: Tsong, index) => {
-                            return (
-                              <AutocompleteItem
-                                key={song.id}
-                                title={song.song_title}
-                                description={song.author}
-                                textValue={
-                                  song.song_title +
-                                  " " +
-                                  song.author +
-                                  " #" +
-                                  index
-                                }
-                              ></AutocompleteItem>
-                            );
-                          })}
-                        </Autocomplete>
-                        <Button
-                          size="sm"
-                          className=" my-2"
-                          isIconOnly
-                          type="button"
-                          variant="bordered"
-                          id={element.key}
-                          onClick={removeSection}
-                          accessKey={String(index)}
-                        >
-                          <DeleteForeverOutlinedIcon />
-                        </Button>
-                      </div>
+                            {newSongList.map((song: Tsong, index) => {
+                              return (
+                                <p className="song-list-setlist">
+                                  {song.song_title}
+                                  <Button
+                                    isIconOnly
+                                    color="primary"
+                                    size="sm"
+                                    variant="bordered"
+                                    id={song.id}
+                                    onPress={addSongToSetList}
+                                  >
+                                    <PlaylistAddIcon id={song.id} />
+                                  </Button>
+                                </p>
+                              );
+                            })}
+                          </div>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            color="danger"
+                            variant="flat"
+                            onPress={onClose}
+                          >
+                            Close
+                          </Button>
+                        </ModalFooter>
+                      </>
                     )}
-                  </div>
+                  </ModalContent>
+                </Modal>
+              </>
+              {setList.map((song: Tsong, index) => {
+                return (
+                  <p className="song-list-setlist">
+                    {song.song_title}
+                    <Select
+                      className="key-selector"
+                      size="sm"
+                      name="rrr"
+                      id={setList.id}
+                      name={setList.id}
+                      items={keys}
+                      placeholder="A"
+                      color="primary"
+                      aria-label="tonalità"
+                      onChange={changeSongKey}
+                    >
+                      {(key) => (
+                        <SelectItem id={setList.id} key={setList.id}>
+                          {key.key}
+                        </SelectItem>
+                      )}
+                    </Select>
+
+                    <Button
+                      isIconOnly
+                      color="danger"
+                      size="sm"
+                      variant="bordered"
+                      id={song.id}
+                      onPress={removeSongFromSetList}
+                    >
+                      <PlaylistRemoveIcon />
+                    </Button>
+                  </p>
                 );
               })}
-            </div>
-
-            <div className="transpose-button-container">
-              <Button
-                variant="flat"
-                type="button"
-                id="Canzone"
-                onClick={AddSection}
-              >
-                Aggiungi Canzone
-              </Button>
+              <div className="flex justify-end  pt-6">
+                <Button
+                  onPress={modalSetList.onOpen}
+                  isIconOnly
+                  color="primary"
+                  variant="flat"
+                  size="lg"
+                  className="mr-0"
+                >
+                  <LibraryMusicIcon />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
