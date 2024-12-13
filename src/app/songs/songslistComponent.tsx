@@ -9,7 +9,20 @@ import { useForm } from "react-hook-form";
 type searchBar = {
   text: string;
 };
-export default function SongslistComponent({ songs }) {
+
+type songsListType = {
+  songs:{
+    id: string;
+    created_at: string;
+    song_title: string;
+    lyrics: string;
+    author: string;
+    upload_key: string;
+  }[];
+};
+
+
+export default function SongslistComponent({ songs }: songsListType) {
     const [songList, setSongList] = useState(songs);
   const {
     register,
@@ -21,9 +34,14 @@ export default function SongslistComponent({ songs }) {
     },
   });
   const aggiornaLista = (event: any) => {
-    const result = songs.filter((song)=> song.song_title.toLowerCase().includes(event.text.toLowerCase()) || song.author.toLowerCase().includes(event.text.toLowerCase()));
+    const filteredSongs = songs.filter((song) =>
+      song.song_title.toLowerCase().includes(event.text.toLowerCase()) ||
+      song.author.toLowerCase().includes(event.text.toLowerCase())
+    );
+  
+    const result: songsListType = { songs: filteredSongs }; // Avvolgi in un oggetto con chiave 'songs'
     console.log(result);
-    setSongList(result);
+    setSongList(result.songs);
   };
 
   return (
