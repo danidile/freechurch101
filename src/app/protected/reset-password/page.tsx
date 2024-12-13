@@ -52,7 +52,9 @@ export default function ResetPassword({ searchParams }: { searchParams: TalertMe
         placeholder="Confirm password"
         required
       />
-        <FormMessage message={searchParams} />
+        <FormMessage message={{
+    message: searchParams.message || searchParams.error || searchParams.success || '',
+  }} />
 
       <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
         Reset password

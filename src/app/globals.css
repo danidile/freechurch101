@@ -134,7 +134,10 @@ Image{
   background-position: 15%;
   color: white;
 }
-
+.container-sub{
+  max-width: 96vw;
+  margin: 20px auto;
+}
 .song-list{
   padding: 1rem ;
   border-bottom: 1px solid grey;
@@ -144,6 +147,7 @@ Image{
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0px auto;
 }
 .song-list:hover{
 background-color: white;
@@ -296,6 +300,10 @@ text-decoration: underline;
   gap: 10px;
   grid-template-columns: repeat( auto-fit, minmax(400px, 1fr));
   justify-content: center;
+  align-items: center;
+}
+.container-song-list a{
+align-self: center;
 }
 
 .songs-header{

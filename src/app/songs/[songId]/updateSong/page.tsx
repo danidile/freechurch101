@@ -7,7 +7,7 @@ export default async function Page({ params }: {params:{songId: string}}) {
     const songData: TsongSchema = await getSong(params.songId);
 
     return (
-    <div>
+    <div className="container-sub">
       <UpdateSongForm {...songData}/>
     </div>
     )

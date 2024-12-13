@@ -58,7 +58,9 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
           required
           
         />
-        <FormMessage message={searchParams} />
+        <FormMessage message={{
+    message: searchParams.message || searchParams.error || searchParams.success || '',
+  }} />
 
         <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
           Accedi
