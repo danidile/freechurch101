@@ -303,7 +303,9 @@ text-decoration: underline;
   align-items: center;
 }
 .container-song-list a{
+  padding: 0px 5px;
 align-self: center;
+
 }
 
 .songs-header{
@@ -319,11 +321,12 @@ align-self: center;
 .songs-searchbar-form{
   display: flex;
   flex-direction: row;
-  gap: 15px;
+  gap: 10px;
   justify-content: center;
   align-items: center;
   margin: 0px auto;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
 }
 
 @media only screen and (max-width: 850px) {
