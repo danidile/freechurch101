@@ -30,15 +30,25 @@ body {
   box-sizing: border-box;
   min-width: 0;
 }
-
+.center-x{
+  margin: 0 auto;
+  text-align: center;
+}
 button{
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
   font-size: 16px;
-  border: 0px;
 }
-
+.planner-modal{
+  min-height: 70vh;
+  max-height: 70vh;
+}
+.key-selector{
+  max-width: 100px;
+  margin-right: 0px;
+  float: right;
+}
 
 .global-button-1{
   font-weight: 500;
@@ -53,7 +63,7 @@ button{
 
 }
 main{
-  padding: 3vh 5vw;
+  padding: 0px;
   min-height: 93vh;
 }
 a{
@@ -113,7 +123,17 @@ small{
 Image{
   overflow: visible;
 }
-
+.header-homepage{
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url(/images/bg-3.webp);
+  background-size: cover;
+  background-position: 15%;
+  color: white;
+}
 
 .song-list{
   padding: 1rem ;
@@ -129,6 +149,21 @@ Image{
 background-color: white;
 transform: scale(1.02);
 }
+.song-list-setlist{
+  padding: 4px ;
+  border-bottom: 1px solid rgb(210, 210, 210);
+  width: 100%;
+  max-width: 500px;
+  transition: 0.3s;
+  display: grid;
+  gap: 10px;
+  align-items: center;
+  grid-template-columns: 3fr 1fr 1fr;
+}
+.song-list-setlist Button{
+  margin-right: 0px;
+}
+
 .song-list-link{
   display: flex;
   justify-content: space-between;
@@ -224,24 +259,65 @@ transform: scale(1.02);
 
 .chord-sheet .chord{
   font-size: 1.1rem;
-  color: rgb(39, 30, 96);
+  color: rgb(184, 17, 17);
   font-weight: 700;
   line-height: 0.9rem;
   padding: 0px;
   margin: 0px;
 }
 .chord-sheet .lyrics{
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 .chord-sheet .comment{
 font-weight: 800;
 text-decoration: underline;
 
 }
+
 .comment::before{
-  content: '\A';
+
   white-space: pre;
 }
+
+.chord-sheet .paragraph{
+  margin: 0px 0px 20px 0px ;
+  
+  }
+.song-title{
+  margin: 40px 0px 20px 0px;
+  width: 100%;
+  
+  padding: 20px 10px;
+  background-color: #eeeeee;
+}
+
+.container-song-list{
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat( auto-fit, minmax(400px, 1fr));
+  justify-content: center;
+}
+
+.songs-header{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  margin: 0px auto;
+  max-width: 500px;
+}
+
+.songs-searchbar-form{
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  margin: 0px auto;
+  width: 500px;
+}
+
 @media only screen and (max-width: 850px) {
 
   .chord-sheet .lyrics{
@@ -343,16 +419,30 @@ text-decoration: underline;
   transition: max-height 0.2s ease-out;
 }
 .event-info-header{
-  max-width: 1500px;
+  background-color: #ffffff;
+
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));}
-
-.event-info-header > div{
-background-color: #ffffff;
-border-radius: 12px;
-padding: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
+.input-small div{
+  padding: 0px;
+}
+.event-sections-body{
+  min-height: 500px;
+    max-width: 1500px;
+    margin: 0px auto;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.event-sections-body > div{
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  }
+
+
 .setlist-song{
   padding: 1rem ;
   gap: 20px;
@@ -421,10 +511,9 @@ flex-direction: row;
 }
 .team-details-input{
   align-items: center;
-  margin: 10px 0px;
+  margin: 5px 0px;
   display: grid;
-grid-template-columns: 1fr 2fr;
-    gap: 10px;
+  grid-template-columns: 1fr 1fr;
 }
 .team-details-input p{
   text-overflow: ellipsis;
@@ -445,7 +534,7 @@ grid-template-columns: 1fr 2fr;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: 212 100% 46.67%;
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;

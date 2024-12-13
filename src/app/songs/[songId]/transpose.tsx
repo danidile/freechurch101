@@ -39,15 +39,14 @@ export default function  Song({ songData } : { songData: any }) {
 
 
     return (
-        <div className='max-w-md w-full'>  
+        <div className='w-full'>  
             
             <div className="transpose-button-container">
                 <Button variant="flat"><Link href={`/songs/${songData.id}/updateSong`}>Aggiorna Canzone</Link></Button>
                 <Button variant="flat" onClick={transposeDown} ><RemoveCircleOutlineIcon/></Button>
                 <Button variant="flat" onClick={transposeUp}><AddCircleOutlineIcon/></Button>
             </div>
-            <h3>  {songData.author}</h3>
-            <p>Questa canzone è stata caricata nella tonalità di {songData.upload_key}</p><br/><br/>
+            <p className='song-title'><strong>{songData.song_title} - {songData.author}</strong></p>
             <div id="song-chords" dangerouslySetInnerHTML={{ __html: state }} style={{whiteSpace: 'pre-wrap'}}/>
 
             
