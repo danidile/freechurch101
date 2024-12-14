@@ -295,16 +295,13 @@ text-decoration: underline;
 
 .container-song-list{
   display: grid;
-  gap: 0px;
-  grid-template-columns: repeat( auto-fit, minmax(400, 1fr));
+  gap: 10px;
+  grid-template-columns: repeat( auto-fit, minmax(400px, 1fr));
   justify-content: center;
-  align-items: center;
 }
 .songlist-link{
-  width: 100%;
   padding: 0px 0px;
-  align-self: center;
-
+  display: inline;
 }
 
 .songs-header{
