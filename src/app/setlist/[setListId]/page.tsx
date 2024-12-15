@@ -21,7 +21,8 @@ export default async function Page({ params }: {params:{setListId: string}}) {
           // second: "2-digit", // "46"
         });
     return (
-    <div>
+    <div className="container-sub">
+      <div className="song-presentation-container">
       <h6><strong>{setlistData.church.church_name}</strong></h6>
       <p>{readableDate}</p>
       
@@ -38,7 +39,7 @@ export default async function Page({ params }: {params:{setListId: string}}) {
           </div>}
           <div key={song.id} className="setlist-song">
             
-            <p><strong>{song.songTitle}</strong>  <p><small>{song.notes}</small></p></p>
+            <p><strong>{song.songTitle}</strong>  <br /><small>{song.notes}</small></p>
             <div className="key-button">{song.key}</div>
             <ModalLyrics songData={songData}/>
           </div>
@@ -50,6 +51,7 @@ export default async function Page({ params }: {params:{setListId: string}}) {
       <br/>
       <div className="center-">
           <Button color="primary"  variant="flat">stampa PDF completo</Button>
+      </div>
       </div>
     </div>
     )

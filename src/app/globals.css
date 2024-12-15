@@ -138,6 +138,11 @@ Image{
 .container-sub{
   max-width: 96vw;
   margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  
 }
 .song-list{
   padding: 1rem ;
@@ -265,7 +270,9 @@ transform: scale(1.02);
 }
 
 
-
+.hidden-input{
+  display: none;
+}
 
 .navbar-top{
   background-color: #ffffff;
@@ -317,6 +324,8 @@ margin: 0px auto;
 border-top: 0px solid #ffffff !important;
 
 }
+
+
 .view-selector-container{
   border-bottom: 2px solid rgb(75, 75, 75);
   display: flex;
@@ -326,6 +335,9 @@ border-top: 0px solid #ffffff !important;
   padding: 0px 10px;
   justify-content: flex-start;
   align-items: center;
+}
+.view-selector-container p{
+  cursor: pointer;
 }
 #song-lyrics .chord{
   display: none;
@@ -649,4 +661,14 @@ flex-direction: row;
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+
+
+
+.song-details-selection1{
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
