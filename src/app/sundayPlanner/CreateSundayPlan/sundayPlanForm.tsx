@@ -209,11 +209,7 @@ export default function SundayPlanForm({
       date: "",
       test: "1",
       church: "0033",
-      teamMembers: {
-        memberId: "1",
-        label: "Daniele Di Lecce",
-        role: "Cantante, Chitarrista",
-      },
+      teamMembers: {},
       setlist: {
         id: "1",
         song_title: "Daniele Di Lecce",
@@ -375,11 +371,17 @@ export default function SundayPlanForm({
                                     className="team-details-input"
                                     key={element.id}
                                   >
+                                    
+                                    <Input
+                                      {...register(`teamMembers.${index}.memberId`)}
+                                      value={element.id}
+                                      className="hidden-input"
+                                    ></Input>
                                     <Input
                                       {...register(`teamMembers.${index}.id`)}
                                       value={element.id}
                                       className="hidden-input"
-                                    ></Input>
+                                    >element.id</Input>
                                     <p>{teamMembers[Number(element)].label}</p>{" "}
                                     <Select
                                       {...register(`teamMembers.${index}.key`)}

@@ -10,7 +10,7 @@ export default async function MenuBar() {
   const menuItems = [
     "songs",
     "dashboard",
-    "sundayPlanner"
+    "SetList"
   ];
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -60,8 +60,8 @@ const { data: profile } = await supabase
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/sundayPlanner">
-          SundayPlanner
+          <Link color="foreground" href="/setlist">
+          SetList
           </Link>
         </NavbarItem>
         {loggedIn === 1 && (
