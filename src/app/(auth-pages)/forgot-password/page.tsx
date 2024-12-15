@@ -27,7 +27,7 @@ export default function ForgotPassword({
     forgotPasswordAction(data);
     console.log(data);
   };
-
+  console.log("Hello" + searchParams.message);
   return (
     <>
       <form
@@ -43,9 +43,17 @@ export default function ForgotPassword({
             placeholder="you@example.com"
             required
           />
-          <FormMessage message={{
-    message: searchParams.message || searchParams.error || searchParams.success || '',
-  }} />
+          {searchParams.message && (
+            <FormMessage
+              message={{
+                message:
+                  searchParams.message ||
+                  searchParams.error ||
+                  searchParams.success ||
+                  "",
+              }}
+            />
+          )}
 
           <Button
             color="primary"

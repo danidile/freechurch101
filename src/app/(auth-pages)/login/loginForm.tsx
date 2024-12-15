@@ -21,10 +21,9 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
   });
 
   const convertData = async (data: TauthSchema) =>{
-    console.log(data);
     signInAction(data);
-    console.log(data);
   }
+
 
   return (
     <form className="flex-1 flex flex-col min-w-64" onSubmit={handleSubmit(convertData)} >
@@ -58,9 +57,10 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
           required
           
         />
-        <FormMessage message={{
+        {searchParams.message && <FormMessage message={{
     message: searchParams.message || searchParams.error || searchParams.success || '',
-  }} />
+  }} />}
+          
 
         <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
           Accedi
