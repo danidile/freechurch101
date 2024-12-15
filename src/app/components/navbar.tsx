@@ -10,7 +10,7 @@ export default async function MenuBar() {
   const menuItems = [
     "songs",
     "dashboard",
-    "SetList"
+    "setlist"
   ];
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
