@@ -58,6 +58,7 @@ export default function SongslistComponent({ songs }: songsListType) {
             color="primary"
             type="text"
             placeholder="Cerca canzone"
+            className="song-searchbar"
           />
           <Button
             color="primary"

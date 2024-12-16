@@ -10,6 +10,7 @@ type formValues ={
               duration: string;
               description: string;
               song: string;
+              tonalita: string;
             }[]
                       
 }
@@ -49,7 +50,8 @@ export const addSetlist = async (formData: formValues) => {
       .insert({
         setlist_id: sectionId,
         song: section.song,
-        notes: section.description
+        notes: section.description,
+        key: section.tonalita
         })
       .select();
       console.log(error);
@@ -63,8 +65,8 @@ export const addSetlist = async (formData: formValues) => {
     } else {
       return encodedRedirect(
         "success",
-        "/events",
-        "Thanks for signing up! Please check your email for a verification link.",
+        "/setlist",
+        "SetList Registrata con successo!",
       );
     }
   };

@@ -11,6 +11,7 @@ import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForever";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import ArticleIcon from "@mui/icons-material/Article";
+import { addSetlist } from "./addSetlistAction";
 interface Tsections {
   id: string;
   key: string;
@@ -146,16 +147,17 @@ export default function CreateSetlistForm({
 
   const convertData = async () => {
     watchAllFields.sections.map((section, index) => {
+      if(section.sectionType === "Canzone"){
       const ref = watchAllFields.sections[index].song.split("#");
       newSongList.map((song, index) => {
         if (index === Number(ref[1])) {
           section.song = song.id;
         }
-      });
+      })};
     });
     console.log(watchAllFields);
 
-    // addSetlist(watchAllFields);
+    addSetlist(watchAllFields);
   };
 
   return (
@@ -281,7 +283,6 @@ export default function CreateSetlistForm({
                             <Select
                               {...register(`sections.${index}.tonalita`)}
                               className="key-selector"
-                              name="tonalita"
                               size="lg"
                               items={keys}
                               placeholder="A"
