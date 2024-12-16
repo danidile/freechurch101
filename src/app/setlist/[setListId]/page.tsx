@@ -27,7 +27,7 @@ export default async function Page({ params }: {params:{setListId: string}}) {
       <p>{readableDate}</p>
       
       {setlistsongs.map((song, index) =>{
-        const songData = [ song.songTitle , song.lyrics]
+        const songData = [ song.songTitle, song.author , song.lyrics, song.key, song.upload_key]
         let toggle = true;
         if(index>0){toggle=false}
         return (

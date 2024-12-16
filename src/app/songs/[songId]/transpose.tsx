@@ -10,7 +10,6 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function Song({ songData }: { songData: any }) {
-  const [viewChords, setViewChords] = useState(true);
   const chordSheet = songData.lyrics;
   const parser = new ChordSheetJS.ChordProParser();
   const song = parser.parse(chordSheet);
@@ -36,6 +35,8 @@ export default function Song({ songData }: { songData: any }) {
 
     setState(disp);
   };
+  const [viewChords, setViewChords] = useState(true);
+
   const viewChord = () => {
     if (viewChords === false) {
       setViewChords(true);
@@ -68,11 +69,11 @@ export default function Song({ songData }: { songData: any }) {
                 <AddCircleOutlineIcon />
               </Button>
             </div>
-            {/* <Button variant="flat">
+            <Button variant="flat">
             <Link href={`/songs/${songData.id}/updateSong`}>
               Aggiorna Canzone
             </Link>
-          </Button> */}
+          </Button>
           </div>
         )}
 

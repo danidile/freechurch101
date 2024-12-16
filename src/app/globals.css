@@ -373,9 +373,15 @@ border-top: 0px solid #ffffff !important;
   width: 100%;
   max-width: 500px;
 }
-
+.song-searchbar{
+  width: 300px;
+  max-width: 70vw;
+}
 @media only screen and (max-width: 850px) {
+  .song-details-selection1{
+    flex-direction: column;
 
+  }
   .chord-sheet .lyrics{
     font-size: 0.8rem;
     line-height: 0.9rem;
