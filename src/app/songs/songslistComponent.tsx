@@ -6,23 +6,23 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { basicUserData } from "@/utils/types/userData";
+import { songsListType,songType } from "@/utils/types/types";
+
+
 type searchBar = {
   text: string;
 };
 
-type songsListType = {
-  songs:{
-    id: string;
-    created_at: string;
-    song_title: string;
-    lyrics: string;
-    author: string;
-    upload_key: string;
-  }[];
-};
 
 
-export default function SongslistComponent({ songs }: songsListType) {
+export default function SongslistComponent({
+  songs,
+  userData,
+}: {
+  songs: songsListType;
+  userData: basicUserData;
+}) {
     const [songList, setSongList] = useState(songs);
   const {
     register,
@@ -34,14 +34,13 @@ export default function SongslistComponent({ songs }: songsListType) {
     },
   });
   const aggiornaLista = (event: any) => {
-    const filteredSongs = songs.filter((song) =>
+    const filteredSongs = songs.filter((song:songType) =>
       song.song_title.toLowerCase().includes(event.text.toLowerCase()) ||
       song.author.toLowerCase().includes(event.text.toLowerCase())
     );
   
-    const result: songsListType = { songs: filteredSongs }; // Avvolgi in un oggetto con chiave 'songs'
-    console.log(result);
-    setSongList(result.songs);
+    console.log(filteredSongs);
+    setSongList(filteredSongs);
   };
 
   return (
@@ -70,9 +69,12 @@ export default function SongslistComponent({ songs }: songsListType) {
             <ManageSearchIcon />
           </Button>
         </form>
-        <Button color="primary" variant="ghost">
+        {userData.loggedIn && (
+          <Button color="primary" variant="ghost">
           <a href="/songs/addSong">Aggiungi una canzone!</a>
         </Button>
+        )}
+        
       </div>
       <div className="container-song-list">
         {songList.map((song) => {

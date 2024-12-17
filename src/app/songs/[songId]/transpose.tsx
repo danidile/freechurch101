@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@nextui-org/react";
 import ChordSheetJS from "chordsheetjs";
+import { basicUserData } from "@/utils/types/userData";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -9,7 +10,13 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function Song({ songData }: { songData: any }) {
+export default function Song({
+  songData,
+  userData,
+}: {
+  songData: any;
+  userData: basicUserData;
+}) {
   const chordSheet = songData.lyrics;
   const parser = new ChordSheetJS.ChordProParser();
   const song = parser.parse(chordSheet);
@@ -21,15 +28,15 @@ export default function Song({ songData }: { songData: any }) {
   const [count, setCount] = useState(0);
 
   const transposeUp = () => {
-    setCount(count => count + 1);
-    const newchords = song.transpose( count + 1);
+    setCount((count) => count + 1);
+    const newchords = song.transpose(count + 1);
     const disp = formatter.format(newchords);
 
     setState(disp);
   };
 
   const transposeDown = () => {
-    setCount(count => count - 1);
+    setCount((count) => count - 1);
     const newchords = song.transpose(count - 1);
     const disp = formatter.format(newchords);
 
@@ -69,16 +76,18 @@ export default function Song({ songData }: { songData: any }) {
                 <AddCircleOutlineIcon />
               </Button>
             </div>
-            <Button variant="flat">
-            <Link href={`/songs/${songData.id}/updateSong`}>
-              Aggiorna Canzone
-            </Link>
-          </Button>
+            {userData.loggedIn && (
+              <Button variant="flat">
+                <Link href={`/songs/${songData.id}/updateSong`}>
+                  Aggiorna Canzone
+                </Link>
+              </Button>
+            )}
           </div>
         )}
 
         <h6 className="song-title">
-          {songData.song_title} - {songData.author} 
+          {songData.song_title} - {songData.author}
         </h6>
         {viewChords && (
           <div

@@ -1,19 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import SongslistComponent from "./songslistComponent";
-
-
-
-
-type songsListType = {
-  songs:{
-    id: string;
-    created_at: string;
-    song_title: string;
-    lyrics: string;
-    author: string;
-    upload_key: string;
-  }[];
-};
+import { songsListType } from "@/utils/types/types";
+import { basicUserData } from "@/utils/types/userData";
+import fbasicUserData from "../components/getUserData";
 
 
 
@@ -26,14 +15,13 @@ export default async function Page() {
   if (error) {
     console.error("Errore durante il fetch:", error);
   }
-
-  const songList: songsListType = { songs: songs || [] }; // Avvolgi l'array in un oggetto
+  const userData:basicUserData = await fbasicUserData();
 
 
   if (songs) {
     return (
       <div className="container-sub">
-        <SongslistComponent songs={songList.songs} />
+        <SongslistComponent songs={songs} userData={userData} />
       </div>
     );
   } else {
