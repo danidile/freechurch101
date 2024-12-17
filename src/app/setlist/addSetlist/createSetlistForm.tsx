@@ -206,7 +206,7 @@ export default function CreateSetlistForm({
                       <Input
                         name={"type" + element.key}
                         key={element.key}
-                        value={element.id}
+                        value={element.id.toString()}
                         className="hide-input"
                       />
 
