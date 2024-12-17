@@ -1,13 +1,13 @@
-
 // @ts-nocheck
-import { getSetList } from "./getSetList";
+import { getSetList } from "@/utils/supabase/getSetList";
+import { getSetListSongs } from "@/utils/supabase/getSetListSongs";
 import { Button, Link } from "@nextui-org/react";
-import { getSetListSongs } from "./getSetListSongs";
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import ButtonDeleteSetlist from "./buttonDeleteSetlist";
-
+import { basicUserData } from "@/utils/types/userData";
+import fbasicUserData from "@/app/components/getUserData";
 
 export default async function Page({
   params,
@@ -27,8 +27,8 @@ export default async function Page({
     // second: "2-digit", // "46"
   });
 
+  const userData: basicUserData = await fbasicUserData();
 
-  
   return (
     <div className="container-sub">
       <div className="song-presentation-container">
@@ -37,42 +37,44 @@ export default async function Page({
         </h6>
         <p>{readableDate}</p>
 
-        {setlistsongs.map((song, index) => {
-          const songData = [
-            song.songTitle,
-            song.author,
-            song.lyrics,
-            song.key,
-            song.upload_key,
-          ];
-          let toggle = true;
-          if (index > 0) {
-            toggle = false;
-          }
-          return (
-            <>
-              {toggle && (
-                <div className="setlist-song">
-                  <p>Titolo Canzone</p>
-                  <p className="center-">
-                    <MusicNoteIcon fontSize="small" />
+        {setlistsongs
+          .sort((a, b) => a.order - b.order)
+          .map((song, index) => {
+            const songData = [
+              song.songTitle,
+              song.author,
+              song.lyrics,
+              song.key,
+              song.upload_key,
+            ];
+            let toggle = true;
+            if (index > 0) {
+              toggle = false;
+            }
+            return (
+              <>
+                {toggle && (
+                  <div className="setlist-song">
+                    <p>Titolo Canzone</p>
+                    <p className="center-">
+                      <MusicNoteIcon fontSize="small" />
+                    </p>
+                    <p className="center-">
+                      <RemoveRedEyeIcon fontSize="small" />
+                    </p>
+                  </div>
+                )}
+                <div key={song.id} className="setlist-song">
+                  <p>
+                    <strong>{song.songTitle}</strong> <br />
+                    <small>{song.notes}</small>
                   </p>
-                  <p className="center-">
-                    <RemoveRedEyeIcon fontSize="small" />
-                  </p>
+                  <div className="key-button">{song.key}</div>
+                  <ModalLyrics songData={song} />
                 </div>
-              )}
-              <div key={song.id} className="setlist-song">
-                <p>
-                  <strong>{song.songTitle}</strong> <br />
-                  <small>{song.notes}</small>
-                </p>
-                <div className="key-button">{song.key}</div>
-                <ModalLyrics songData={song} />
-              </div>
-            </>
-          );
-        })}
+              </>
+            );
+          })}
         <br />
         <br />
         <div className="center- gap-3">
@@ -81,7 +83,9 @@ export default async function Page({
               Visualizza set completo
             </Button>
           </Link>
-            <ButtonDeleteSetlist setlistID={params.setListId}/>
+          {userData.loggedIn && (
+            <ButtonDeleteSetlist setlistID={params.setListId} />
+          )}
         </div>
       </div>
     </div>

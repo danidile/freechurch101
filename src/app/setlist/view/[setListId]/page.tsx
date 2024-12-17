@@ -1,7 +1,8 @@
 // @ts-nocheck
-import { getSetList } from "./getSetList";
-import { Button } from "@nextui-org/react";
-import { getSetListSongs } from "./getSetListSongs";
+import { getSetList } from "@/utils/supabase/getSetList";
+import { getSetListSongs } from "@/utils/supabase/getSetListSongs";
+
+import { Button,Divider } from "@nextui-org/react";
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
@@ -32,13 +33,15 @@ export default async function Page({
         </h6>
         <p>{readableDate}</p>
 
-        {setlistsongs.map((song, index) => {
+        {setlistsongs.sort((a, b) => a.order - b.order).map((song, index) => {
           
           return (
             <>
-                
                 <ChordProViewComponent songData={song} showExtra={true}/>
+                <Divider className="my-14" />
+
             </>
+
           );
         })}
       </div>
