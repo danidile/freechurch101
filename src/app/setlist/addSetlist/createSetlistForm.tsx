@@ -1,6 +1,13 @@
 "use client";
 import { eventSchema } from "@/utils/types/types";
-import { Button } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Divider,
+  Link,
+} from "@nextui-org/react";
 import { Input } from "@nextui-org/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +19,7 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForever";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import ArticleIcon from "@mui/icons-material/Article";
 import { addSetlist } from "./addSetlistAction";
-import { Reorder } from "framer-motion";
+import { Reorder, useDragControls, useMotionValue } from "framer-motion";
 import {
   Tsections,
   TeventBasics,
@@ -20,6 +27,7 @@ import {
   Tsong,
   formValues,
 } from "@/utils/types/types";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
 export default function CreateSetlistForm({
   songsList,
@@ -128,7 +136,10 @@ export default function CreateSetlistForm({
 
     addSetlist(watchAllFields);
   };
+  const dragControls = useDragControls();
+  const y = useMotionValue(0);
 
+  
   return (
     <div className="container-sub">
       <div className="form-div crea-setlist-container">
@@ -185,103 +196,90 @@ export default function CreateSetlistForm({
                 Canzone
               </Button>
             </div>
-            <div>
-              <Accordion
-                selectionBehavior="replace"
-                isCompact={true}
-                selectionMode="single"
-                variant="light"
-                className="gap-4"
-                keepContentMounted={true}
-              >
-                {state.map((element, index) => {
-                  return (
-                    <AccordionItem
-                      className="accordian-setlist"
-                      startContent={<ArticleIcon />}
-                      key={element.key}
-                      aria-label="Accordion 1"
-                      title={element.id}
+            <Reorder.Group axis="y" values={state} onReorder={setState}>
+              {state.map((section, index) => {
+                return (
+                  <Reorder.Item
+                    value={section}
+                    key={section.id}
                     >
-                      <Input
-                        name={"type" + element.key}
-                        key={element.key}
-                        value={element.id.toString()}
-                        className="hide-input"
-                      />
-
-                      {element.isSong && (
-                        <>
-                          <div className="song-details-selection1">
-                            <Autocomplete
-                              {...register(`sections.${index}.song`)}
-                              size="sm"
-                              fullWidth={true}
-                              label="Seleziona la canzone"
-                              className="max-w-lg autocomplete-mobile-input"
-                              disableAnimation={false}
-                            >
-                              {newSongList.map((song: Tsong, index) => {
-                                return (
-                                  <AutocompleteItem
-                                    key={song.id}
-                                    title={song.song_title}
-                                    description={song.author}
-                                    textValue={
-                                      song.song_title +
-                                      " " +
-                                      song.author +
-                                      " #" +
-                                      index
-                                    }
-                                  ></AutocompleteItem>
-                                );
-                              })}
-                            </Autocomplete>
-                            <Select
-                              {...register(`sections.${index}.tonalita`)}
-                              className="key-selector"
-                              size="lg"
-                              items={keys}
-                              placeholder="A"
-                              aria-label="tonalità"
-                            >
-                              {(key) => (
-                                <SelectItem id={key.key} key={key.key}>
-                                  {key.key}
-                                </SelectItem>
-                              )}
-                            </Select>
-                          </div>
-                        </>
-                      )}
-                      <Textarea
-                        {...register(`sections.${index}.description`)}
-                        className="my-2"
-                        label="Descrizione"
-                        id={element.key}
-                        size="sm"
-                        labelPlacement="inside"
-                        placeholder="Inserisci informazioni utili..."
-                      />
-
-                      <Button
-                        size="sm"
-                        className=" my-2"
-                        isIconOnly
-                        type="button"
-                        variant="bordered"
-                        id={element.key}
-                        onClick={removeSection}
-                        accessKey={String(index)}
-                      >
-                        <DeleteForeverOutlinedIcon />
-                      </Button>
-                    </AccordionItem>
-                  );
-                })}
-              </Accordion>
-            </div>
+                    <Card className="my-4">
+                      <CardBody>
+                        <Input
+                          name={"type" + section.id}
+                          key={section.id}
+                          value={section.id.toString()}
+                          className="hide-input"
+                        />
+                        <div className="song-details-selection1">
+                          <Autocomplete
+                            {...register(`sections.${index}.song`)}
+                            size="sm"
+                            fullWidth={false}
+                            label="Seleziona la canzone"
+                            className="max-w-lg autocomplete-mobile-input ac-setlist"
+                            disableAnimation={false}
+                          >
+                            {newSongList.map((song: Tsong, index) => {
+                              return (
+                                <AutocompleteItem
+                                  key={song.id}
+                                  title={song.song_title}
+                                  description={song.author}
+                                  textValue={
+                                    song.song_title +
+                                    " " +
+                                    song.author +
+                                    " #" +
+                                    index
+                                  }
+                                ></AutocompleteItem>
+                              );
+                            })}
+                          </Autocomplete>
+                          <Select
+                            {...register(`sections.${index}.tonalita`)}
+                            className="key-selector"
+                            size="lg"
+                            items={keys}
+                            placeholder="A"
+                            aria-label="tonalità"
+                          >
+                            {(key) => (
+                              <SelectItem id={key.key} key={key.key}>
+                                {key.key}
+                              </SelectItem>
+                            )}
+                          </Select>
+                          <Button
+                            size="sm"
+                            className=" my-2"
+                            isIconOnly
+                            color="danger"
+                            type="button"
+                            variant="bordered"
+                            id={section.key}
+                            onClick={removeSection}
+                            accessKey={String(index)}
+                          >
+                            <DeleteForeverOutlinedIcon />
+                          </Button>
+                          <Button
+                            variant="light"
+                            key={section.id}
+                            id={section.id}
+                            onPointerDown={(event) => dragControls.start(event)}
+                            isIconOnly
+                          >
+                            <DragIndicatorIcon key={section.id} />
+                          </Button>
+                        </div>
+                      </CardBody>
+                    </Card>
+                  </Reorder.Item>
+                );
+              })}
+            </Reorder.Group>
 
             <br />
             <Button
@@ -294,18 +292,6 @@ export default function CreateSetlistForm({
             </Button>
           </div>
         </form>
-      </div>
-
-      <div>
-        <Reorder.Group values={state} onReorder={setState}>
-          {state.map((section, index) => {
-            return (
-              <Reorder.Item value={section.id} key={section.id}> 
-                <div className="h-6 bg-cyan-400">{section.key}</div>
-              </Reorder.Item>
-            );
-          })}
-        </Reorder.Group>
       </div>
     </div>
   );
