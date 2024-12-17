@@ -26,7 +26,7 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
 
 
   return (
-    <form className="flex-1 flex flex-col min-w-64" onSubmit={handleSubmit(convertData)} >
+    <form className="flex-1 flex flex-col min-w-96 my-20 shadow-xl p-5 rounded-xl" onSubmit={handleSubmit(convertData)} >
       <h1 className="text-2xl font-medium">Accedi</h1>
 
       <p className="text-sm text-foreground">

@@ -48,9 +48,10 @@ export default function Signup({
   }
 
   return (
-    <>
+    <div className="container-sub">
+
       <form
-        className="flex flex-col min-w-64 max-w-64 mx-auto"
+        className="flex-1 flex flex-col min-w-96 my-20 shadow-xl p-5 rounded-xl mx-auto"
         onSubmit={handleSubmit(convertData)}
       >
         <h1 className="text-2xl font-medium">Registrati</h1>
@@ -87,6 +88,6 @@ export default function Signup({
           </Button>
         </div>
       </form>
-    </>
+    </div>
   );
 }

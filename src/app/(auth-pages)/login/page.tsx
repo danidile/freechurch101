@@ -10,7 +10,10 @@ export default async function Login({ searchParams }: { searchParams: TalertMess
     redirect('/protected/dashboard')
   }else{
     return (
+      <div className="container-sub">
+
       <LoginForm searchParams={searchParams}/>
+      </div>
     );
   }
 
