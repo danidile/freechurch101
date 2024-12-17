@@ -67,11 +67,7 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
               Setlist
             </Link>
           </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Integrations
-            </Link>
-          </NavbarItem>
+
         </NavbarContent>
 
 
