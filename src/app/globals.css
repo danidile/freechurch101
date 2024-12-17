@@ -385,6 +385,9 @@ border-top: 0px solid #ffffff !important;
   max-width: 70vw;
 }
 @media only screen and (max-width: 850px) {
+  input{
+    font-size: 16px !important;
+  }
   .song-details-selection1{
     flex-direction: column;
 
