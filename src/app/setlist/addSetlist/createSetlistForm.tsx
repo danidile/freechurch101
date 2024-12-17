@@ -12,47 +12,14 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForever";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import ArticleIcon from "@mui/icons-material/Article";
 import { addSetlist } from "./addSetlistAction";
-interface Tsections {
-  id: string;
-  key: string;
-  isSong: boolean;
-  isTitle: boolean;
-  titleText?: string;
-  description?: string;
-  duration?: string;
-  songId?: string;
-  tonalita: string;
-}
-interface TeventBasics {
-  type: string;
-  title: string;
-  date: string;
-}
-
-interface Tsong {
-  id: string;
-  song_title: string;
-  author: string;
-}
-interface TsongNameAuthor {
-  id: string;
-  author: string;
-  song_title: string;
-}
-
-type formValues = {
-  eventType: string;
-  church: string;
-  eventTitle: string;
-  date: string;
-  sections: {
-    sectionType: string;
-    duration: string;
-    description: string;
-    song: string;
-    tonalita: string;
-  }[];
-};
+import { Reorder } from "framer-motion";
+import {
+  Tsections,
+  TeventBasics,
+  TsongNameAuthor,
+  Tsong,
+  formValues,
+} from "@/utils/types/types";
 
 export default function CreateSetlistForm({
   songsList,
@@ -95,17 +62,18 @@ export default function CreateSetlistForm({
     if (target) {
       x = JSON.stringify(Math.floor(Math.random() * 10000000 + 1));
       const id = target.id;
-      if (target.id === "Canzone") {
-        setState((section) => [
-          ...section,
-          { id: id, key: x, isSong: true, isTitle: false, duration: "10min",tonalita: "A" },
-        ]);
-      } else {
-        setState((section) => [
-          ...section,
-          { id: id, key: x, isSong: false, isTitle: false, duration: "10min",tonalita: "A" },
-        ]);
-      }
+      let randomN = Math.floor(Math.random() * 1000000);
+      setState((section) => [
+        ...section,
+        {
+          id: randomN,
+          key: x,
+          isSong: true,
+          isTitle: false,
+          duration: "10min",
+          tonalita: "A",
+        },
+      ]);
     }
   };
 
@@ -148,23 +116,21 @@ export default function CreateSetlistForm({
   const convertData = async () => {
     watchAllFields.sections.map((section, index) => {
       console.log(section);
-      
+
       const ref = watchAllFields.sections[index].song.split("#");
       newSongList.map((song, index) => {
         if (index === Number(ref[1])) {
           section.song = song.id;
         }
-      })}
-    );
+      });
+    });
     console.log(watchAllFields);
 
     addSetlist(watchAllFields);
-   }
+  };
 
   return (
     <div className="container-sub">
-      {/* <Script  type="text/javascript" src='/snippets/accordian.js' /> */}
-
       <div className="form-div crea-setlist-container">
         <form onSubmit={handleSubmit(convertData)}>
           <h4>Crea Setlist</h4>
@@ -218,15 +184,6 @@ export default function CreateSetlistForm({
               >
                 Canzone
               </Button>
-              {/* <Button
-                color="primary"
-                variant="flat"
-                type="button"
-                id="Appunti"
-                onClick={AddSection}
-              >
-                Appunti
-              </Button> */}
             </div>
             <div>
               <Accordion
@@ -337,6 +294,18 @@ export default function CreateSetlistForm({
             </Button>
           </div>
         </form>
+      </div>
+
+      <div>
+        <Reorder.Group values={state} onReorder={setState}>
+          {state.map((section, index) => {
+            return (
+              <Reorder.Item value={section.id} key={section.id}> 
+                <div className="h-6 bg-cyan-400">{section.key}</div>
+              </Reorder.Item>
+            );
+          })}
+        </Reorder.Group>
       </div>
     </div>
   );
