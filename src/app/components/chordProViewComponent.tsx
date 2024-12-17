@@ -2,16 +2,18 @@
 import { Button } from "@nextui-org/react";
 import ChordSheetJS from "chordsheetjs";
 import { useState } from "react";
-
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
+import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function ChordProViewComponent({ songData }: { songData: any }) {
-  console.log(songData);
-  const chordSheet = songData[2];
+export default function ChordProViewComponent({ songData }: { songData: any }, {showExtra}: {showExtra:boolean}) {
+  console.log(songData.lyrics);
+  const chordSheet = songData.lyrics;
   const parser = new ChordSheetJS.ChordProParser();
-  const song = parser.parse(chordSheet);
+  let song = parser.parse(chordSheet);
+  const steps = stepsBetweenKeys(songData.upload_key, songData.key);
+
+  song = song.transpose(steps);
   const formatter = new ChordSheetJS.HtmlTableFormatter();
 
   const disp = formatter.format(song);
@@ -52,12 +54,15 @@ export default function ChordProViewComponent({ songData }: { songData: any }) {
 
   return (
     <div>
+      {showExtra && (
       <div className="view-selector-container">
         <p onClick={viewLyric}>Lyrics</p>
         <p onClick={viewChord}>Chords</p>
       </div>
+      )}
       <div>
-        {viewChords && (
+        {viewChords && showExtra && (
+          
           <div className="top-song-buttons">
             <div className="transpose-button-container">
               <p>Transpose</p>
@@ -76,9 +81,10 @@ export default function ChordProViewComponent({ songData }: { songData: any }) {
           </div>
         )}
 
-        <h6 className="song-title">
-          {songData[0]} - {songData[1]}
-        </h6>
+        <h5 className="song-title">
+          {songData.songTitle} - {songData.author}
+        </h5>
+
         {viewChords && (
           <div
             id="song-chords"

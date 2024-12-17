@@ -21,7 +21,7 @@ type songsListType = {
 
 export default async function Page() {
   const supabase = createClient();
-  const { data: songs,error } = await supabase.from("songs").select("*");
+  const { data: songs,error } = await supabase.from("songs").select("*").order('song_title', { ascending: true });
   console.log(songs);
   if (error) {
     console.error("Errore durante il fetch:", error);

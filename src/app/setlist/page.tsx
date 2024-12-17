@@ -9,10 +9,22 @@ export default async function Page() {
     .from("setlist")
     .select('id, church("church_name"),event_title,date');
 
+
+    const currentDate = new Date();
+    const readableCurrentDate = currentDate.toLocaleString("it-IT", {
+      weekday: "long", // "Sunday"
+      year: "numeric", // "2024"
+      month: "long", // "November"
+      day: "numeric", // "10"
+      // hour: "2-digit", // "10"
+      // minute: "2-digit", // "22"
+      // second: "2-digit", // "46"
+    });
+
   if (setlist) {
     return (
       <div className="container-sub">
-        
+        <p>{readableCurrentDate}</p>
         <button className="button-transpose">
           <a href="/setlist/addSetlist">Crea nuova Setlist!</a>
         </button>
@@ -28,18 +40,21 @@ export default async function Page() {
             // minute: "2-digit", // "22"
             // second: "2-digit", // "46"
           });
-          return (
-            <div className="song-list" key={setlist.id}>
-              <Link className="song-list-link" href={`/setlist/${setlist.id}`}>
-                <p key={setlist.id}>
-                  {setlist.event_title}
-                  <br />
-                  <small>{readableDate}</small>{" "}
-                </p>
-                <ListAltIcon />
-              </Link>
-            </div>
-          );
+          if(currentDate <= date){
+            return (
+              <div className="song-list" key={setlist.id}>
+                <Link className="song-list-link" href={`/setlist/${setlist.id}`}>
+                  <p key={setlist.id}>
+                    {setlist.event_title}
+                    <br />
+                    <small>{readableDate}</small>{" "}
+                  </p>
+                  <ListAltIcon />
+                </Link>
+              </div>
+            );
+          }
+          
         })}
       </div>
     );

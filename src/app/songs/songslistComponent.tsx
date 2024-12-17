@@ -82,7 +82,8 @@ export default function SongslistComponent({ songs }: songsListType) {
                 <p key={song.id}>
                   {song.song_title}
                   <br />
-                  <small>{song.author}</small>{" "}
+                  {song.author && (<small>{song.author}</small>)}
+                  {!song.author && (<small>Unknown</small>)}
                 </p>
                 <span className="material-symbols-outlined">
                   <QueueMusicIcon />

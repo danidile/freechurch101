@@ -147,18 +147,19 @@ export default function CreateSetlistForm({
 
   const convertData = async () => {
     watchAllFields.sections.map((section, index) => {
-      if(section.sectionType === "Canzone"){
+      console.log(section);
+      
       const ref = watchAllFields.sections[index].song.split("#");
       newSongList.map((song, index) => {
         if (index === Number(ref[1])) {
           section.song = song.id;
         }
-      })};
-    });
+      })}
+    );
     console.log(watchAllFields);
 
     addSetlist(watchAllFields);
-  };
+   }
 
   return (
     <div className="container-sub">
@@ -217,7 +218,7 @@ export default function CreateSetlistForm({
               >
                 Canzone
               </Button>
-              <Button
+              {/* <Button
                 color="primary"
                 variant="flat"
                 type="button"
@@ -225,7 +226,7 @@ export default function CreateSetlistForm({
                 onClick={AddSection}
               >
                 Appunti
-              </Button>
+              </Button> */}
             </div>
             <div>
               <Accordion
