@@ -82,3 +82,48 @@ export const churchMinimalData = z.object({
 export type TchurchMinimalData = z.infer<
   typeof churchMinimalData
 >["posts"][number];
+
+
+
+
+export interface Tsections {
+  id: number;
+  key: string;
+  isSong: boolean;
+  isTitle: boolean;
+  titleText?: string;
+  description?: string;
+  duration?: string;
+  songId?: string;
+  tonalita: string;
+}
+export interface TeventBasics {
+  type: string;
+  title: string;
+  date: string;
+}
+
+export interface Tsong {
+  id: string;
+  song_title: string;
+  author: string;
+}
+export interface TsongNameAuthor {
+  id: string;
+  author: string;
+  song_title: string;
+}
+
+export type formValues = {
+  eventType: string;
+  church: string;
+  eventTitle: string;
+  date: string;
+  sections: {
+    sectionType: string;
+    duration: string;
+    description: string;
+    song: string;
+    tonalita: string;
+  }[];
+};
