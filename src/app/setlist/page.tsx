@@ -24,7 +24,6 @@ export default async function Page() {
   if (setlist) {
     return (
       <div className="container-sub">
-        <p>{readableCurrentDate}</p>
         <button className="button-transpose">
           <a href="/setlist/addSetlist">Crea nuova Setlist!</a>
         </button>

@@ -9,3 +9,11 @@ export const userData = z.object({
 
   })
   export type TuserData = z.infer<typeof userData>;
+
+
+  export type basicUserData = {
+    loggedIn: boolean;
+    id?: string;
+    email?: string;
+    name?: string;
+  }
