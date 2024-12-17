@@ -19,45 +19,63 @@ export default function App() {
 
   const convertData = async (data: TsongSchema) => {
     data.lyrics = state;
-    console.log(data.lyrics);
-    addSong(data);
+    console.log(data);
+    // addSong(data);
   };
 
   function addCommentsToText(inputText: string) {
-// Definizione delle parole chiave che identificano sezioni
-const keywords = ["Bridge", "Coro", "Verso", "Precoro", "Intro", "special","pre-coro"];
+    // Definizione delle parole chiave che identificano sezioni
+    const keywords = [
+      "Bridge",
+      "Coro",
+      "Verso",
+      "Precoro",
+      "Intro",
+      "special",
+      "pre-coro",
+    ];
 
-// Dividi il testo in righe
-const lines = inputText.split("\n");
+    // Dividi il testo in righe
+    const lines = inputText.split("\n");
 
-// Analizza ogni riga
-const updatedLines = lines.map(line => {
-    // Rimuovi spazi iniziali e finali per analisi più precisa
-    const trimmedLine = line.trim();
+    // Analizza ogni riga
+    const updatedLines = lines.map((line) => {
+      // Rimuovi spazi iniziali e finali per analisi più precisa
+      const trimmedLine = line.trim();
 
-    // Controlla se la riga inizia con una delle parole chiave (case insensitive) e non contiene già "{comment:"
-    if (keywords.some(keyword => trimmedLine.toLowerCase().startsWith(keyword.toLowerCase())) && !trimmedLine.startsWith("{comment:")) {
+      // Controlla se la riga inizia con una delle parole chiave (case insensitive) e non contiene già "{comment:"
+      if (
+        keywords.some((keyword) =>
+          trimmedLine.toLowerCase().startsWith(keyword.toLowerCase())
+        ) &&
+        !trimmedLine.startsWith("{comment:")
+      ) {
         return `{comment:"${trimmedLine}"}`;
-    }
+      }
 
-    // Gestisci righe di accordi con slash e linee verticali
-    if (/\[\|.*\|\]/.test(trimmedLine)) {
-        const cleanedLine = trimmedLine.replace(/[\/\|]/g, " ").replace(/\s+/g, " ").trim();
-        return cleanedLine.replace(/ /g, (match, offset, string) => offset === Math.floor(string.length / 2) ? "-" : match);
-    }
+      // Gestisci righe di accordi con slash e linee verticali
+      if (/\[\|.*\|\]/.test(trimmedLine)) {
+        const cleanedLine = trimmedLine
+          .replace(/[\/\|]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+        return cleanedLine.replace(/ /g, (match, offset, string) =>
+          offset === Math.floor(string.length / 2) ? "-" : match
+        );
+      }
 
-    // Gestisci "Intro:" e simili
-    if (/^Intro:/i.test(trimmedLine)) {
+      // Gestisci "Intro:" e simili
+      if (/^Intro:/i.test(trimmedLine)) {
         const [introLabel, ...chords] = trimmedLine.split(/\s+/);
         return `{comment:"${introLabel}"}\n${chords.join(" ")}`;
-    }
+      }
 
-    // Ritorna la riga originale se non ci sono modifiche da fare
-    return line;
-});
+      // Ritorna la riga originale se non ci sono modifiche da fare
+      return line;
+    });
 
-// Ricostruisci il testo dalle righe modificate
-return updatedLines.join("\n");
+    // Ricostruisci il testo dalle righe modificate
+    return updatedLines.join("\n");
   }
 
   const disp = "";
@@ -94,7 +112,6 @@ return updatedLines.join("\n");
 
             <Input
               {...register("author", { required: "Song Title is required" })}
-              name="author"
               label="Author"
               variant="bordered"
               size="sm"
@@ -104,7 +121,6 @@ return updatedLines.join("\n");
           <Input
             {...register("upload_key", { required: "A key is required" })}
             label="Key"
-            name="key"
             variant="bordered"
             size="sm"
           />
