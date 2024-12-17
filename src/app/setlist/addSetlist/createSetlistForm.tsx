@@ -267,7 +267,6 @@ export default function CreateSetlistForm({
                           <Button
                             variant="light"
                             key={section.id}
-                            id={section.id}
                             onPointerDown={(event) => dragControls.start(event)}
                             isIconOnly
                           >
