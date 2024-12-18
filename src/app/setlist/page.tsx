@@ -1,12 +1,11 @@
 // @ts-nocheck
 import { basicUserData } from "@/utils/types/userData";
-import fbasicUserData from "../components/getUserData";
+import fbasicUserData from "../../utils/supabase/getUserData";
 
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Reorder } from "framer-motion";
-
 
 export default async function Page() {
   const supabase = createClient();
@@ -29,11 +28,7 @@ export default async function Page() {
   if (setlist) {
     return (
       <div className="container-sub">
-        {userData.loggedIn && (
-          <button className="button-transpose">
-            <a href="/setlist/addSetlist">Crea nuova Setlist!</a>
-          </button>
-        )}
+       
 
         <h5 className="text-center m-5">Lista eventi</h5>
         {setlist.map((setlist) => {
@@ -65,6 +60,11 @@ export default async function Page() {
             );
           }
         })}
+         {["1", "2"].includes(userData.role.toString()) &&  (
+          <button className="button-transpose my-10">
+            <a href="/setlist/addSetlist">Crea nuova Setlist!</a>
+          </button>
+        )}
       </div>
     );
   } else {

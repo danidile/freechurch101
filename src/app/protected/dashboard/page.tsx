@@ -1,16 +1,18 @@
 import { createClient } from "@/utils/supabase/server";
 import Dashboard from '@/app/protected/dashboard/dashboard-components/dashboard'
 import { redirect } from 'next/navigation'
+import fbasicUserData from "@/utils/supabase/getUserData";
+import { basicUserData } from "@/utils/types/userData";
 
 
 export default async function App() {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if(user){
+  const userData: basicUserData = await fbasicUserData();
+  
+  if(userData){
     return (
       <>
           
-          <Dashboard/>
+          <Dashboard userData={userData}/>
     </>
     );
   } else{

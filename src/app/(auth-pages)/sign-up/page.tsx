@@ -55,12 +55,7 @@ export default function Signup({
         onSubmit={handleSubmit(convertData)}
       >
         <h1 className="text-2xl font-medium">Registrati</h1>
-        <p className="text-sm text text-foreground">
-          Non hai un account?{" "}
-          <Link className="text-primary font-medium underline" href="/sign-in">
-            Accedi
-          </Link>
-        </p>
+        
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <Input
             {...register("email")}
@@ -86,6 +81,12 @@ export default function Signup({
           >
             Registrati
           </Button>
+          <p className="text-sm text text-foreground">
+          Hai già un account?
+          <Link className="text-primary font-medium underline" href="/login">
+            Accedi
+          </Link>
+        </p>
         </div>
       </form>
     </div>

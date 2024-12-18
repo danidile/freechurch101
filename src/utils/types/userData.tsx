@@ -12,8 +12,12 @@ export const userData = z.object({
 
 
   export type basicUserData = {
-    loggedIn: boolean;
+    loggedIn?: boolean;
     id?: string;
     email?: string;
     name?: string;
+    role?: string;
+    lastname?: string;
+    church_id?: string;
+    church_name?: string;
   }
