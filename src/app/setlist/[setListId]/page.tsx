@@ -7,7 +7,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import ButtonDeleteSetlist from "./buttonDeleteSetlist";
 import { basicUserData } from "@/utils/types/userData";
-import fbasicUserData from "@/app/components/getUserData";
+import fbasicUserData from "@/utils/supabase/getUserData";
 
 export default async function Page({
   params,
@@ -54,7 +54,7 @@ export default async function Page({
             return (
               <>
                 {toggle && (
-                  <div className="setlist-song">
+                  <div key={"List"+index} className="setlist-song">
                     <p>Titolo Canzone</p>
                     <p className="center-">
                       <MusicNoteIcon fontSize="small" />
@@ -64,7 +64,7 @@ export default async function Page({
                     </p>
                   </div>
                 )}
-                <div key={song.id} className="setlist-song">
+                <div key={"Song"+index} className="setlist-song">
                   <p>
                     <strong>{song.songTitle}</strong> <br />
                     <small>{song.notes}</small>
@@ -83,7 +83,7 @@ export default async function Page({
               Visualizza set completo
             </Button>
           </Link>
-          {userData.loggedIn && (
+          {["1", "2"].includes(userData.role.toString()) &&  (
             <ButtonDeleteSetlist setlistID={params.setListId} />
           )}
         </div>

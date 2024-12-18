@@ -1,11 +1,9 @@
 "use server"
-import { TuserData } from "@/utils/types/userData";
+import { basicUserData } from "@/utils/types/userData";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 
-export const completeAccountAction = async function completeAccountAction(data: TuserData){
-    console.log("id is: " + data.id);
-    
+export const completeAccountAction = async function completeAccountAction(data: basicUserData){    
     const supabase = createClient();  
     if (!data) {
       return { error: "Email and password are required" };
@@ -13,7 +11,7 @@ export const completeAccountAction = async function completeAccountAction(data: 
 
     const { error } = await supabase
     .from('profiles')
-    .update({ church: data.church,
+    .update({ church: data.church_id,
         name: data.name,
         lastname: data.lastname
      })

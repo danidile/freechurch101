@@ -1,91 +1,102 @@
-'use client'
-import { Button,Input, Link } from "@nextui-org/react";
+"use client";
+import { Button, Input, Link } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 import { TuserData, userData } from "@/utils/types/userData";
-import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
-import {completeAccountAction} from './completeAccountAction';
+import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { completeAccountAction } from "./completeAccountAction";
+import { basicUserData } from "@/utils/types/userData";
 
+export default function CompleteAccount({
+  churchList,
+  userData,
+}: {
+  churchList: Array<{ id: string; churchName: string }>;
+  userData: basicUserData;
+}) {
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<basicUserData>({
+    // No resolver needed, only TypeScript type
+  });
 
-export default function CompleteAccount({churchList}:{churchList : Array<{ id: string, churchName: string }>}){
-    
-  const id = "d8c5266d-4b5f-447a-bf8d-9e5d8575e5d3";
-    const {
-        register,
-        handleSubmit,
-        formState: {  isSubmitting },
-      } = useForm<TuserData>({
-        resolver: zodResolver(userData),
-      });
+  const convertData = async (data: basicUserData) => {
+    console.log(data);
+    const index = churchList.findIndex(church => church.churchName === data.church_name);
+    let updatedData:basicUserData = data;
+    updatedData.church_id = churchList[index].id;
+    completeAccountAction(updatedData);
+  };
 
-      const convertData = async (data: TuserData) => {
-        for(let i=0;i<churchList.length ; i++){
-          if(churchList[i].churchName === data.church){
-            data.church = churchList[i].id;
-          }
-        }
-
-        completeAccountAction(data);
-      console.log(data.church);
-      }
-
-    return(
-        <>
-        <form onSubmit={handleSubmit(convertData)}>
+  return (
+    <>
+      <form onSubmit={handleSubmit(convertData)}>
         <h1 className="text-2xl font-medium">Completa il tuo Profilo</h1>
-     
+
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+          <div className="flex gap-4 items-center">
+            <Input
+              {...register("name")}
+              label="Nome"
+              variant="bordered"
+              size="sm"
+              defaultValue={userData.name}
+            />
 
-        <div className="flex gap-4 items-center">
-        <Input 
-        {...register("name",)}
-        label="Nome"
-        variant="bordered"
-          size="sm"
+            <Input
+              {...register("lastname")}
+              label="Cognome"
+              variant="bordered"
+              size="sm"
+              defaultValue={userData.lastname}
+            />
+          </div>
+          {!userData.church_id && (
+            <>
+              <Autocomplete
+                defaultSelectedKey={userData.church_id}
+                variant="bordered"
+                placeholder="La mia chiesa..."
+                {...register("church_name")}
+                label="Seleziona la tua chiesa"
+              >
+                {churchList.map(
+                  (church: { id: string; churchName: string }) => (
+                    <AutocompleteItem key={church.id} value={church.id} >
+                      {church.churchName}
+                    </AutocompleteItem>
+                  )
+                )}
+              </Autocomplete>
+              <small>
+                Se la tua chiesa non è nella lista{" "}
+                <Link size="sm" underline="hover" href="/churches/addChurch">
+                  Clicca qui
+                </Link>
+              </small>
+            </>
+          )}
+
+          <Input
+            {...register("id")}
+            name="id"
+            label="id"
+            className="hidden"
+            value={userData.id}
           />
-       
-       <Input 
-       {...register("lastname")}
-       label="Cognome"
-       variant="bordered"
-       size="sm"
 
-        />
+          <Button
+            color="primary"
+            variant="shadow"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            Aggiorna profilo
+          </Button>
         </div>
-       
-
-        <Autocomplete  variant="bordered"
-        placeholder="La mia chiesa..."
-        {...register("church")}
-
-        label="Seleziona la tua chiesa" 
-        >
-            {churchList.map((church: {id: string, churchName: string}) => (
-                
-            <AutocompleteItem key={church.id} value={church.id}>
-                {church.churchName}
-            </AutocompleteItem>
-            ))}
-        </Autocomplete>
-       <small>Se la tua chiesa non è nella lista <Link size="sm" underline="hover" href="/churches/addChurch">Clicca qui</Link></small>
-
-
-       <Input 
-       {...register("id")}
-       name="id"
-       label="id"
-       className="hidden"
-       value={id}
-        />
-
-       
-       
-       <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
-         Aggiorna profilo
-       </Button>
-
-     </div>
-        </form>
+      </form>
     </>
-    );
+  );
 }

@@ -218,7 +218,7 @@ export default function CreateSetlistForm({
                             fullWidth={false}
                             label="Seleziona la canzone"
                             className="max-w-lg autocomplete-mobile-input ac-setlist"
-                            disableAnimation={false}
+                            disableAnimation={true}
                           >
                             {newSongList.map((song: Tsong, index) => {
                               return (

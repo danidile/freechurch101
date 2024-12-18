@@ -57,7 +57,7 @@ export default function Song({
     }
     console.log(viewChords);
   };
-
+  console.log(userData);
   return (
     <div className="w-full">
       <div className="view-selector-container">
@@ -76,7 +76,7 @@ export default function Song({
                 <AddCircleOutlineIcon />
               </Button>
             </div>
-            {userData.loggedIn && (
+            {["1", "2"].includes(userData.role.toString()) && (
               <Button variant="flat">
                 <Link href={`/songs/${songData.id}/updateSong`}>
                   Aggiorna Canzone

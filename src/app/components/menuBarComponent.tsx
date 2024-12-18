@@ -33,7 +33,6 @@ export const AcmeLogo = () => {
   };
 
 export default function MenuBarComponent( {userData}:{userData: basicUserData} ) {
-  console.log(userData);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuItems = [
       "songs",

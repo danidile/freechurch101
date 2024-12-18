@@ -39,10 +39,8 @@ export default function SongslistComponent({
       song.author.toLowerCase().includes(event.text.toLowerCase())
     );
   
-    console.log(filteredSongs);
     setSongList(filteredSongs);
   };
-
   return (
     <>
       <div className="songs-header">
@@ -69,7 +67,7 @@ export default function SongslistComponent({
             <ManageSearchIcon />
           </Button>
         </form>
-        {userData.loggedIn && (
+        {["1", "2"].includes(userData.role.toString())  &&  (
           <Button color="primary" variant="ghost">
           <a href="/songs/addSong">Aggiungi una canzone!</a>
         </Button>
