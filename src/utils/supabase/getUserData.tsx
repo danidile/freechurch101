@@ -25,7 +25,9 @@ export default async function fbasicUserData() {
       .select("name,lastname, role,church") // Assuming role_id is a foreign key to the roles table
       .eq("id", user.id) // Filter by the user's id
       .single();
-
+    if(profileData){
+      profileData.role = "0";
+    }
     userData = {
       loggedIn: true,
       id: user.id,
@@ -38,6 +40,7 @@ export default async function fbasicUserData() {
   } else {
     userData = {
       loggedIn: false,
+      role: "0",
     };
   }
 
