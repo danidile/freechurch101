@@ -15,7 +15,7 @@ export default async function Page({
   params: { setListId: string };
 }) {
   const setlistData = await getSetList(params.setListId);
-  const setlistsongs = await getSetListSongs(params.setListId);
+  let setlistsongs = await getSetListSongs(params.setListId);
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"
@@ -54,7 +54,7 @@ export default async function Page({
             return (
               <>
                 {toggle && (
-                  <div key={"List"+index} className="setlist-song">
+                  <div key={"List" + index} className="setlist-song">
                     <p>Titolo Canzone</p>
                     <p className="center-">
                       <MusicNoteIcon fontSize="small" />
@@ -64,10 +64,9 @@ export default async function Page({
                     </p>
                   </div>
                 )}
-                <div key={"Song"+index} className="setlist-song">
+                <div key={"Song" + index} className="setlist-song">
                   <p>
                     <strong>{song.songTitle}</strong> <br />
-                    <small>{song.notes}</small>
                   </p>
                   <div className="key-button">{song.key}</div>
                   <ModalLyrics songData={song} />
@@ -83,7 +82,7 @@ export default async function Page({
               Visualizza set completo
             </Button>
           </Link>
-          {["1", "2"].includes(userData.role.toString()) &&  (
+          {["1", "2"].includes(userData.role.toString()) && (
             <ButtonDeleteSetlist setlistID={params.setListId} />
           )}
         </div>

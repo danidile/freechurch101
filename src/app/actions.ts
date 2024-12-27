@@ -58,7 +58,8 @@ export const signInAction = async (data : TauthSchema) => {
   });
 
   if (error) {
-    return encodedRedirect("error", "/sign-in", error.message);
+    return encodedRedirect("error", "/login", error.message);
+    
   }
 
   return redirect("/protected/dashboard");

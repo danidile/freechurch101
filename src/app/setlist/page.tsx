@@ -14,6 +14,8 @@ export default async function Page() {
     .select('id, church("church_name"),event_title,date');
 
   const currentDate = new Date();
+  const nextDate = new Date(currentDate)
+nextDate.setDate(currentDate.getDate() - 1)
   const readableCurrentDate = currentDate.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"
     year: "numeric", // "2024"
@@ -24,7 +26,7 @@ export default async function Page() {
     // second: "2-digit", // "46"
   });
   const userData: basicUserData = await fbasicUserData();
-
+  console.log(userData);
   if (setlist) {
     return (
       <div className="container-sub">
@@ -42,7 +44,7 @@ export default async function Page() {
             // minute: "2-digit", // "22"
             // second: "2-digit", // "46"
           });
-          if (currentDate <= date) {
+          if (nextDate <= date) {
             return (
               <div className="song-list" key={setlist.id}>
                 <Link
