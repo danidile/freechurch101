@@ -445,6 +445,10 @@ border-top: 0px solid #ffffff !important;
   padding: 3rem;
   height: 200vh;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .dashboard-icon{
