@@ -84,10 +84,11 @@ export default function UpdateScheduling() {
   const [worshipState, setWorshipState] = useState({
     active: false,
   });
+  const [state, setState] = useState<Tsections[]>([]);
+
   const [productionState, setProductionState] = useState({
     active: false,
   });
-  const [state, setState] = useState<Tsections[]>([]);
   const [eventDetails, setEventDetails] = useState<TeventBasics>({
     type: "0",
     title: "Culto domenicale",

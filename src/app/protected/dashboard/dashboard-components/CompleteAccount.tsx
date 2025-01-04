@@ -1,8 +1,7 @@
 "use client";
 import { Button, Input, Link } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { TuserData, userData } from "@/utils/types/userData";
+
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { completeAccountAction } from "./completeAccountAction";
 import { basicUserData } from "@/utils/types/userData";

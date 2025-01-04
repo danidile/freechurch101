@@ -1,7 +1,6 @@
 "use client";
 import { redirect } from "next/navigation";
 import { basicUserData } from "@/utils/types/userData";
-import { Team } from "@/utils/types/types";
 import {
   Modal,
   ModalContent,
@@ -12,23 +11,23 @@ import {
   useDisclosure,
   Input,
 } from "@nextui-org/react";
+import { eventPlanner } from "@/utils/types/types";
 import { useState } from "react";
-import TeamsTableN from "./TeamsTableN";
-import { teamsVariable } from "./teamsType";
+import Planner from "./Planner";
 import { FormProvider, useForm } from "react-hook-form";
-
+import { eventPlannerVariable } from "./teamsType";
 export default function MyChurch({
   userData,
-  teamMembers,
+  eventPlan,
 }: {
   userData: basicUserData;
-  teamMembers: Team[];
+  eventPlan: eventPlanner[];
 }) {
   const methods = useForm();
 
   const { register, reset } = methods;
 
-  const [teams, setTeams] = useState<Team[]>(teamMembers);
+  const [teams, setTeams] = useState<eventPlanner[]>(eventPlan);
 
   const addTeam = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -56,22 +55,19 @@ export default function MyChurch({
     accountCompleted = true;
   }
   if (userData) {
-    const onSubmit = (data:any) => console.log(data);
+    const onSubmit = (data: any) => console.log(data);
 
     return (
       <div className="flex flex-row w-full gap-12">
-        <div className="dashboard-container">
-          <h4> New Life Teams</h4>
+        <div className="container-sub">
+          <h4> New Life Planner</h4>
           <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-              {/* {teams.map((team: any) => {
-            return <TeamsTable teamMembers={team} />;
-          })} */}
-              {teams.map((team: any, index: number) => {
-                console.log("Index"+index);
-                return <TeamsTableN teamId={index} team={team} />;
+              {eventPlannerVariable.teams.map((team: any, index: number) => {
+                console.log("Index" + index);
+                return <Planner teamId={index} team={team} />;
               })}
-              <Button type="submit" >Invia</Button>
+              <Button type="submit">Invia</Button>
             </form>
           </FormProvider>
 

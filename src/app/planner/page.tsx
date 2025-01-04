@@ -3,9 +3,8 @@ import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
 import MyChurch from "./mychurchComponent";
 import { createClient } from "@/utils/supabase/server";
-import Sidebar from "../dashboard/dashboard-components/sidebar";
 import { Team } from "@/utils/types/types";
-
+import { eventPlannerVariable } from "./teamsType";
 export default async function App() {
   const userData: basicUserData = await fbasicUserData();
   const supabase = createClient();
@@ -43,9 +42,8 @@ export default async function App() {
   if (userData) {
     return (
       <>
-        <Sidebar />
 
-        <MyChurch userData={userData} teamMembers={teamMembers} />
+        <MyChurch userData={userData} eventPlan={eventPlannerVariable} />
       </>
     );
   } else {
