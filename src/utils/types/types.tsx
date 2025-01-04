@@ -127,3 +127,32 @@ export type formValues = {
     tonalita: string;
   }[];
 };
+
+
+
+
+
+
+
+
+
+export type TeamMember = {
+  id: number;
+  name: string;
+  roles?: string;
+  email: string;
+  hasbeenmodified?: boolean;
+};
+
+export type Team = {
+  teamId: string;
+  teamName: string;
+  teamMembers: TeamMember[];
+};
+
+export type eventPlanner = {
+  eventName: string;
+  date: string;
+  teams: Team[];
+  
+};
