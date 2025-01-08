@@ -56,14 +56,14 @@ export default function TeamsTableN({
   const addMember = (e: PressEvent) => {
     const usersNumber: number = users.length + 1;
     const newUser = {
-      key: usersNumber.toString(),
+      id: usersNumber,
       name: "",
       roles: "",
-      email: "",
-      status: "",
+      email: ""
     };
 
     setUsers((prevUsers) => [...prevUsers, newUser]);
+    
     setValue(`team[${key}].users[${users.length}].id`, ""); // Register the new user with an empty role field
     setValue(`team[${key}].users[${users.length}].name`, ""); // Register the new user with an empty role field
     setValue(`team[${key}].users[${users.length}].email`, ""); // Register the new user with an empty role field

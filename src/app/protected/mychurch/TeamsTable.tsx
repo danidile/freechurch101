@@ -18,15 +18,15 @@ import {
 import { useCallback, useEffect } from "react";
 import { useMemo, useState } from "react";
 import { PressEvent } from "@react-types/shared";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Team } from "@/utils/types/types";
 export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
   const [users, setUsers] = useState([
     {
-      key: "1",
+      id: "1",
       name: "",
       role: "",
       email: "",
-      status: "",
     },
   ]);
 
@@ -34,12 +34,18 @@ export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
   const rowsPerPage = 15;
 
   //CODICE PER FAR FUNZIONARE I CHIP
- 
-  const [role, setRole] = useState(["Apple", "Banana", "Cherry", "Watermelon", "Orange"]);
+
+  const [role, setRole] = useState([
+    "Apple",
+    "Banana",
+    "Cherry",
+    "Watermelon",
+    "Orange",
+  ]);
 
   const handleClose = (index: number) => {
     console.log("Removing fruit at index:", index);
-    setUsers((us)=>{us.});
+    // setUsers((us)=>{us.});
     // Update the fruits state with the filtered array
     setRole((prevRole) => {
       // Check if the index is valid and remove it
@@ -67,14 +73,14 @@ export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
   const addMember = (e: PressEvent) => {
     console.log(users);
     const usersNumber: number = users.length + 1;
+
     setUsers([
       ...users,
       {
-        key: usersNumber.toString(),
+        id: usersNumber.toString(),
         name: "",
         role: "",
         email: "",
-        status: "",
       },
     ]);
   };
@@ -82,21 +88,15 @@ export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
   const renderCell = useCallback(
     (
       user: {
-        [x: string]: any;
-        team:
-          | string
-          | number
-          | bigint
-          | boolean
-          | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-          | Iterable<React.ReactNode>
-          | React.ReactPortal
-          | Promise<React.AwaitedReactNode>;
+        id: string;
+        name: string;
+        role: string;
+        email: string;
+        [key: string]: any; // Allow additional properties if necessary
       },
       columnKey: string | number
     ) => {
       const cellValue = user[columnKey];
-
       switch (columnKey) {
         case "name":
           return (
@@ -139,10 +139,7 @@ export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
               <Dropdown className="bg-background border-1 border-default-200">
                 <DropdownTrigger>
                   <Button isIconOnly radius="full" size="sm" variant="light">
-                    <MoreVertIcon
-                      className="text-default-400"
-                      
-                    />
+                    <MoreVertIcon className="text-default-400" />
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu>
@@ -201,7 +198,7 @@ export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
         </TableHeader>
         <TableBody items={users}>
           {(item) => (
-            <TableRow key={item.key}>
+            <TableRow key={item.id}>
               {(columnKey) => (
                 <TableCell className="tablecellnewteams">
                   {renderCell(item, columnKey)}

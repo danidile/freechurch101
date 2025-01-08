@@ -35,6 +35,9 @@ export default function MyChurch({
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData);
     const teamName = data.teamName as string; // Explicit cast to string
+    let newIndex = teams.length +1;
+
+    let teamId = newIndex.toString();
 
     if (teamName) {
       setTeams([

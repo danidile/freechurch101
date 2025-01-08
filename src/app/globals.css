@@ -714,3 +714,282 @@ tbody tr .tablecellnewteams {
   align-items: center;
   gap: 10px;
 }
+
+
+
+
+
+
+
+/* WEDDERLY INSPO */
+
+
+.visita-feed-section{
+  padding: 50px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+
+.visita-feed-container{
+  width: 1400px;
+  padding: 50px;
+  columns: 4;
+  gap: 20px;
+}
+.preferite-feed-container{
+  width: 100vw;
+  padding: 40px;
+  columns: 4;
+  gap: 20px;
+}
+
+@media(max-width: 1400px){
+.visita-feed-container, .preferite-feed-container{
+  width: 1050px;
+  padding: 20px;
+
+  columns: 3;
+}
+}
+@media(max-width: 1000px){
+  .visita-feed-container, .preferite-feed-container{
+      width: 750px;
+      columns: 2;
+  }
+}
+@media(max-width: 750px){
+  .visita-feed-container, .preferite-feed-container{
+      width: 350px;
+      columns: 1;
+  }
+}
+
+
+
+.image-feed-div-home{
+
+background: #ffffff;
+
+overflow: hidden;
+margin-bottom: 20px;
+position: relative;
+height: auto;
+top: 0px;
+transition: 0.19s ease-in-out;
+scale: 1;
+}
+.image-feed-div-home:hover{
+top: -2px;
+scale: 1.01;
+}
+
+.image-feed-home{
+  object-fit: cover;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  display: block;
+  
+}
+
+.visita-post-button{
+width: 100%;
+padding: 20px;
+display: flex;
+background-color: #ffffff;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0px 0px 12px 12px;
+  color: var(--text-color);
+  transition: 0.3s;
+  font-size: 15px;
+  text-decoration: none;
+}
+.visita-post-button:hover{
+  background-color: var(--bg-color);
+  }
+.content-feed{    
+  width: 100%;
+  z-index: 2;
+  position: relative;
+  
+
+  
+    
+
+}
+.titolo-feed{
+  position: relative;
+  z-index: 3;
+  color: var(--text-color);
+  
+  display: flex;
+  flex-direction: row;
+  padding: 5px 5px;
+  align-items: center;
+}
+
+.profile-pic-feed-post{
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  margin-right: 5px;
+  position: relative;
+  width: 50px;
+  z-index: 3;
+  border-radius: 8px 0px 8px 0px;
+  border: 1px solid #b9b9b9;
+  transition: 0.2s ease-in-out;
+  left: 0px;
+  scale: 1;
+}
+.profile-pic-feed-post:hover{
+  border-radius: 8px;
+}
+.button-home{ 
+  text-decoration: none;
+}
+.button-home-div{
+  background-color: var(--accent-color);
+  padding: 10px 34px;
+  color: var(--color-1);
+  text-decoration: none;
+  border-radius: 6px;
+}
+.nome-utente-feed{
+  font-size: 18px;
+}
+.ruolo-utente-feed{
+  font-size: 13px !important;
+
+}
+.container-searchbar h6{
+  margin-top: 16px;
+
+}
+
+
+
+.explore-section{
+  padding: 80px 10px;
+  }
+.explore-container{
+  padding-top: 30px;
+display: grid;
+grid-template-columns: 20% 40% 20% 20%;
+}
+.explore-card{
+  height: 500px;
+  overflow: hidden;
+  margin: 0px 10px 0px 10px;
+  position: relative;
+  border-radius: 24px;
+}
+.exp-c-1{
+
+}
+.exp-c-2{
+
+}
+.exp-c-3{
+
+}
+.exp-c-4{
+
+}
+.exp-c-image{
+  height: 100%;
+  width:  100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+}
+.explore-arrow{
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  top: 10px;
+  background-color: #ffffff8b;
+  width: 50px;
+  height: 50px;
+  z-index: 10;
+  svg{
+      fill: #373737;
+      transform: rotate(-45deg);
+  }
+}
+.title-exp-card{
+  position: relative;
+  padding: 15px;
+  width: 100%;
+  z-index: 5;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+
+
+
+}
+.title-exp-card .title-card{
+  border-radius: 50px;
+  background-color: #ffffff8b;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  padding: 0px 30px;
+
+}
+
+
+
+
+
+
+
+@media(max-width: 1400px){
+  .visita-feed-container, .preferite-feed-container{
+      width: 1050px;
+      padding: 20px;
+  
+      columns: 3;
+  }
+  }
+  @media(max-width: 1000px){
+      .visita-feed-container, .preferite-feed-container{
+          width: 750px;
+          columns: 2;
+      }
+  }
+  @media(max-width: 750px){
+      .visita-feed-container, .preferite-feed-container{
+          width: 350px;
+          columns: 1;
+      }
+  }
+
+
+
+
+
+  .card-v1{
+    border: 1px solid #f1f1f1;
+    border-radius: 12px;
+    box-shadow: rgba(88, 88, 88, 0.2) 8px 8px 18px;
+}
+
+.card-v2{
+    border: 1px solid #f1f1f1;
+    border-radius: 24px;
+    box-shadow: rgba(88, 88, 88, 0.3) 6px 6px 18px;
+}

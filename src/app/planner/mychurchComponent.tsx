@@ -11,7 +11,7 @@ import {
   useDisclosure,
   Input,
 } from "@nextui-org/react";
-import { eventPlanner } from "@/utils/types/types";
+import { Team } from "@/utils/types/types";
 import { useState } from "react";
 import Planner from "./Planner";
 import { FormProvider, useForm } from "react-hook-form";
@@ -20,20 +20,23 @@ export default function MyChurch({
   userData,
   eventPlan,
 }: {
-  userData: basicUserData;
-  eventPlan: eventPlanner[];
+  userData: basicUserData,
+  eventPlan: Team[]
 }) {
   const methods = useForm();
-
+console.log(eventPlan);
   const { register, reset } = methods;
 
-  const [teams, setTeams] = useState<eventPlanner[]>(eventPlan);
-
+  const [teams, setTeams] = useState<Team[]>(eventPlan);
+  
   const addTeam = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData);
+    console.log("event");console.log(event);
     const teamName = data.teamName as string; // Explicit cast to string
+    let newIndex = teams.length +1;
+    let teamId = newIndex.toString();
 
     if (teamName) {
       setTeams([
@@ -65,7 +68,7 @@ export default function MyChurch({
             <form onSubmit={methods.handleSubmit(onSubmit)}>
               {eventPlannerVariable.teams.map((team: any, index: number) => {
                 console.log("Index" + index);
-                return <Planner teamId={index} team={team} />;
+                return <Planner key={index} teamId={index} team={team} />;
               })}
               <Button type="submit">Invia</Button>
             </form>
