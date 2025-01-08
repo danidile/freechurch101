@@ -19,6 +19,7 @@ import {
   user,
   Select,
   SelectItem,
+  Input,
 } from "@nextui-org/react";
 import { useState } from "react";
 import { PressEvent } from "@react-types/shared";
@@ -59,14 +60,14 @@ export default function Planner({
   const addMember = (e: PressEvent) => {
     const usersNumber: number = users.length + 1;
     const newUser = {
-      key: usersNumber.toString(),
+      id: usersNumber,
       name: "",
       roles: "",
-      email: "",
-      status: "",
+      email: ""
     };
 
     setUsers((prevUsers) => [...prevUsers, newUser]);
+
     setValue(`team[${key}].users[${users.length}].id`, ""); // Register the new user with an empty role field
     setValue(`team[${key}].users[${users.length}].name`, ""); // Register the new user with an empty role field
     setValue(`team[${key}].users[${users.length}].email`, ""); // Register the new user with an empty role field
@@ -81,7 +82,7 @@ export default function Planner({
         topContent={
           <div className="newteamfooter">
             <h5>
-              {team.eventName} - {team.date}
+              {team.teamName}
             </h5>
             <input
               {...register(`team[${key}].teamId`)}
@@ -118,7 +119,8 @@ export default function Planner({
             return (
               <TableRow key={userIndex}>
                 <TableCell className="tablecellnewteams-name">
-                  <input
+                  <Input
+                     label="Inserisci il nome del Team"
                     {...register(`team[${key}].users[${userIndex}].id`)}
                     defaultValue={item.id}
                     className="hidden"
@@ -127,6 +129,7 @@ export default function Planner({
                     className="max-w-xs"
                     size="sm"
                     key={item.id}
+                    aria-label="Seleziona Membro"
                     placeholder="Seleziona Membro"
                     {...register(`team[${key}].users[${userIndex}].name`)}
                   >
@@ -148,6 +151,7 @@ export default function Planner({
                       className="max-w-xs"
                       size="sm"
                       placeholder="Seleziona Ruolo"
+                      aria-label="Seleziona Ruolo"
                     >
                       {item.roles
                         .split(",")
@@ -161,7 +165,9 @@ export default function Planner({
                     </Select>
                   </div>
                   {item.roles && (
-                    <input
+                    <Input
+                    label="Inserisci il nome del Team"
+
                       {...register(`team[${key}].users[${userIndex}].roles`)} // Register the roles field
                       type="hidden"
                       defaultValue={item.roles} // Set the value as the comma-separated roles
