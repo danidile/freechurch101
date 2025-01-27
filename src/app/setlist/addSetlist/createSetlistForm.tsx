@@ -185,17 +185,7 @@ export default function CreateSetlistForm({
 
             <h6 className="mt-6">Aggiungi sezione</h6>
 
-            <div className="transpose-button-container">
-              <Button
-                color="primary"
-                variant="flat"
-                type="button"
-                id="Canzone"
-                onClick={AddSection}
-              >
-                Canzone
-              </Button>
-            </div>
+            
             <Reorder.Group axis="y" values={state} onReorder={setState}>
               {state.map((section, index) => {
                 return (
@@ -214,8 +204,6 @@ export default function CreateSetlistForm({
                         <div className="song-details-selection1">
                           <Autocomplete
                             {...register(`sections.${index}.song`)}
-                            size="sm"
-                            fullWidth={false}
                             label="Seleziona la canzone"
                             className="max-w-lg autocomplete-mobile-input ac-setlist"
                             disableAnimation={true}
@@ -279,7 +267,17 @@ export default function CreateSetlistForm({
                 );
               })}
             </Reorder.Group>
-
+            <div className="transpose-button-container">
+              <Button
+                color="primary"
+                variant="flat"
+                type="button"
+                id="Canzone"
+                onClick={AddSection}
+              >
+                Aggiungi Canzone
+              </Button>
+            </div>
             <br />
             <Button
               color="primary"
@@ -287,7 +285,7 @@ export default function CreateSetlistForm({
               type="submit"
               disabled={isSubmitting}
             >
-              Add Song
+              Crea Setlist
             </Button>
           </div>
         </form>
