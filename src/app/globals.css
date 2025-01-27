@@ -129,7 +129,7 @@ small {
 }
 
 .app-menu{
-  height: 100px;
+  height: 70px;
   background-color: white;
   position: fixed;
   bottom: 0px;
@@ -139,17 +139,18 @@ small {
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-}
 
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+}
 .app-menu-icons{
   width: 100px;
   color: #838383;
   transition: 0.3s;
   size: 2rem;
 }
-.app-menu-icons:hover{
-  width: 100px;
-  color: black;
+.app-menu-icons[data-active='true'] {
+  color: blue;
+  font-weight: bold;
 }
 
 
@@ -993,8 +994,11 @@ background-color: #ffffff;
   }
 .explore-container{
   padding-top: 30px;
-display: grid;
-grid-template-columns: 20% 40% 20% 20%;
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: space-evenly;
+gap: 20px;
 }
 .explore-card{
   height: 500px;
@@ -1002,6 +1006,11 @@ grid-template-columns: 20% 40% 20% 20%;
   margin: 0px 10px 0px 10px;
   position: relative;
   border-radius: 24px;
+}
+.explore-container a{
+  min-width: 300px;
+  width: auto;
+  flex-grow: 1;
 }
 .exp-c-1{
 

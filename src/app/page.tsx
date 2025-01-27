@@ -65,7 +65,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <AddToHomeScreen />
+      {/* <AddToHomeScreen /> */}
 
       <div className="explore-section">
         <h2>Artisti Italiani</h2>
