@@ -175,7 +175,7 @@ Image {
   overflow: visible;
 }
 .header-homepage {
-  height: 50vh;
+  height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
   justify-content: center;
