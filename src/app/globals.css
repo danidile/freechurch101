@@ -114,6 +114,52 @@ small {
   font-weight: 400;
 }
 
+
+
+@media(max-width: 850px){
+  .menu-desktop{
+    display: none;
+  }
+}
+
+@media(min-width: 850px) {
+  .appmenucontainer{
+    display: none;
+  }
+}
+
+.app-menu{
+  height: 100px;
+  background-color: white;
+  position: fixed;
+  bottom: 0px;
+  z-index: 999;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.app-menu-icons{
+  width: 100px;
+  color: #838383;
+  transition: 0.3s;
+  size: 2rem;
+}
+.app-menu-icons:hover{
+  width: 100px;
+  color: black;
+}
+
+
+
+
+
+
+
+
+
 .sheet-free-chords {
   font-weight: 700;
 }

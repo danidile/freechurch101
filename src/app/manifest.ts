@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
  
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Next.js PWA',
-    short_name: 'CCLab',
+    name: 'Church Lab',
+    short_name: 'Church Lab',
     description: 'A Progressive Web App built with Next.js',
     start_url: '/',
     display: 'fullscreen',
