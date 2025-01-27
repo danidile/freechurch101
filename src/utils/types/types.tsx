@@ -11,9 +11,6 @@ export const songSchema = z.object({
 });
 export type TsongSchema = z.infer<typeof songSchema>;
 
-
-
-
 export type songType = {
   id: string;
   created_at?: string;
@@ -21,14 +18,11 @@ export type songType = {
   lyrics?: string;
   author?: string;
   upload_key?: string;
+  album?: string;
+  artist?: string;
 };
 
 export type songsListType = songType[];
-
-
-
-
-
 
 export const eventSchema = z.object({
   eventType: z.string().optional().default("1"),
@@ -83,9 +77,6 @@ export type TchurchMinimalData = z.infer<
   typeof churchMinimalData
 >["posts"][number];
 
-
-
-
 export interface Tsections {
   id: number;
   key: string;
@@ -128,14 +119,6 @@ export type formValues = {
   }[];
 };
 
-
-
-
-
-
-
-
-
 export type TeamMember = {
   id: number;
   name: string;
@@ -154,5 +137,17 @@ export type eventPlanner = {
   eventName: string;
   date: string;
   teams: Team[];
-  
+};
+
+export type artistT = {
+  username: string;
+  date: string;
+  artist_name: string;
+};
+
+export type albumT = {
+  id: string;
+  release_date: string;
+  album_name: string;
+  artist_id: string;
 };
