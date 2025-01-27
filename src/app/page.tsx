@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import Image from "next/image";
 export default function Home() {
   return (
     <>
@@ -67,70 +67,50 @@ export default function Home() {
       <div className="explore-section">
         <h2>Artisti Italiani</h2>
         <div className="explore-container">
-          <div className="exp-c-1 explore-card card-v2">
-            <div className="title-exp-card">
-              <p className="title-card">SDV Worship</p>
-              <div className="explore-arrow">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                >
-                  <path d="m607-175-74-74 178-178H49v-106h662L533-711l74-74 305 305-305 305Z" />
-                </svg>
+          <Link href="/artists/sdvworship">
+            <div className="exp-c-1 explore-card card-v2">
+              <div className="title-exp-card">
+                <p className="title-card">SDV Worship</p>
+                <div className="explore-arrow">
+                <img src="/images/icons/arrowC.png" alt="more" className="icon" />
+                </div>
               </div>
+              <img className="exp-c-image" src={"images/sdv-Worship.jpg"} />
             </div>
-            <img className="exp-c-image" src={"images/sdv-Worship.jpg"} />
-          </div>
-          <div className="exp-c-2 explore-card card-v2">
-            <div className="title-exp-card">
-              <p className="title-card">Mirko e Giorgia</p>
-              <div className="explore-arrow">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                >
-                  <path d="m607-175-74-74 178-178H49v-106h662L533-711l74-74 305 305-305 305Z" />
-                </svg>
+          </Link>
+          <Link href="/artists/mirkoegiorgia">
+            <div className="exp-c-2 explore-card card-v2">
+              <div className="title-exp-card">
+                <p className="title-card">Mirko e Giorgia</p>
+                <div className="explore-arrow">
+                  <img src="/images/icons/arrowC.png" alt="more" className="icon" />
+                </div>
               </div>
+              <img className="exp-c-image" src={"images/mirkoeGiorgia.webp"} />
             </div>
-            <img className="exp-c-image" src={"images/mirkoeGiorgia.webp"} />
-          </div>
-          <div className="exp-c-3 explore-card card-v2">
-            <div className="title-exp-card">
-              <p className="title-card">Sounds</p>
-              <div className="explore-arrow">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                >
-                  <path d="m607-175-74-74 178-178H49v-106h662L533-711l74-74 305 305-305 305Z" />
-                </svg>
+          </Link>
+          <Link href="/artists/soundsmusicitalia">
+            <div className="exp-c-3 explore-card card-v2">
+              <div className="title-exp-card">
+                <p className="title-card">Sounds</p>
+                <div className="explore-arrow">
+                <img src="/images/icons/arrowC.png" alt="more" className="icon" />
+                </div>
               </div>
+              <img className="exp-c-image" src={"images/Sounds.jpg"} />
             </div>
-            <img className="exp-c-image" src={"images/Sounds.jpg"} />
-          </div>
-          <div className="exp-c-4 explore-card card-v2">
-            <div className="title-exp-card">
-              <p className="title-card">True Devotion</p>
-              <div className="explore-arrow">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                >
-                  <path d="m607-175-74-74 178-178H49v-106h662L533-711l74-74 305 305-305 305Z" />
-                </svg>
+          </Link>
+          <Link href="/artists/truedevotion">
+            <div className="exp-c-4 explore-card card-v2">
+              <div className="title-exp-card">
+                <p className="title-card">True Devotion</p>
+                <div className="explore-arrow">
+                <img src="/images/icons/arrowC.png" alt="more"  className="icon" />
+                </div>
               </div>
+              <img className="exp-c-image" src={"images/true-devotion.jpg"} />
             </div>
-            <img className="exp-c-image" src={"images/true-devotion.jpg"} />
-          </div>
+          </Link>
         </div>
       </div>
 
@@ -151,8 +131,14 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <img className="image-feed-home" src={"images/CuorePuroSDVWorship.jpeg"} />
-            <a className="visita-post-button" href="">
+            <img
+              className="image-feed-home"
+              src={"images/CuorePuroSDVWorship.jpeg"}
+            />
+            <a
+              className="visita-post-button"
+              href="/songs/39278f3a-90da-4c11-99f6-1c92a2db20e5"
+            >
               <div className="button-feed">
                 <p>Testi e Accordi</p>
               </div>
@@ -173,7 +159,7 @@ export default function Home() {
               </div>
             </div>
             <img className="image-feed-home" src={"images/eLuiSounds.jpeg"} />
-            <a className="visita-post-button" href="">
+            <a className="visita-post-button" href="/artists/soundsmusicitalia">
               <div className="button-feed">
                 <p>Testi e Accordi</p>
               </div>
@@ -192,8 +178,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <img className="image-feed-home" src={"images/ilLuogoSegretoMirkoeGiorgia.jpeg"} />
-            <a className="visita-post-button" href="">
+            <img
+              className="image-feed-home"
+              src={"images/ilLuogoSegretoMirkoeGiorgia.jpeg"}
+            />
+            <a className="visita-post-button" href="/artists/mirkoegiorgia">
               <div className="button-feed">
                 <p>Testi e Accordi</p>
               </div>
@@ -212,8 +201,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <img className="image-feed-home" src={"images/inTerraComeInCieloTrueDevotion.jpeg"} />
-            <a className="visita-post-button" href="">
+            <img
+              className="image-feed-home"
+              src={"images/inTerraComeInCieloTrueDevotion.jpeg"}
+            />
+            <a className="visita-post-button" href="/artists/truedevotion">
               <div className="button-feed">
                 <p>Testi e Accordi</p>
               </div>
@@ -233,8 +225,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <img className="image-feed-home" src={"images/LuogoSacroTimoteoPepe.jpeg"} />
-            <a className="visita-post-button" href="">
+            <img
+              className="image-feed-home"
+              src={"images/LuogoSacroTimoteoPepe.jpeg"}
+            />
+            <a className="visita-post-button" href="/artists/timoteopepe">
               <div className="button-feed">
                 <p>Testi e Accordi</p>
               </div>
@@ -254,8 +249,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <img className="image-feed-home" src={"images/offroaTeDavideDiLecce.png"} />
-            <a className="visita-post-button" href="">
+            <img
+              className="image-feed-home"
+              src={"images/offroaTeDavideDiLecce.png"}
+            />
+            <a className="visita-post-button" href="/artists/davidedilecce">
               <div className="button-feed">
                 <p>Testi e Accordi</p>
               </div>
@@ -274,8 +272,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <img className="image-feed-home" src={"images/voglioBruciareDavideDiLecce.jpeg"} />
-            <a className="visita-post-button" href="">
+            <img
+              className="image-feed-home"
+              src={"images/voglioBruciareDavideDiLecce.jpeg"}
+            />
+            <a className="visita-post-button" href="/artists/davidedilecce">
               <div className="button-feed">
                 <p>Testi e Accordi</p>
               </div>
@@ -294,8 +295,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <img className="image-feed-home" src={"images/piuStoConTeMirkoeGiorgia.jpeg"} />
-            <a className="visita-post-button" href="">
+            <img
+              className="image-feed-home"
+              src={"images/piuStoConTeMirkoeGiorgia.jpeg"}
+            />
+            <a className="visita-post-button" href="/artists/mirkoegiorgia">
               <div className="button-feed">
                 <p>Testi e Accordi</p>
               </div>

@@ -47,11 +47,13 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
             className="sm:hidden"
           />
           <NavbarBrand>
+            <Link href="/">
           <Image
                 className="max-h-8 overflow-visible"
                 src="/images/brand/LOGO_.png"
                 alt=""
               />
+              </Link>
           </NavbarBrand>
         </NavbarContent>
   
