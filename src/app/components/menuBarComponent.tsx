@@ -18,6 +18,7 @@ import {
     Button,
   } from "@nextui-org/react";
   import UserDataMenu from "./userDataMenu";
+import MenuApp from "./MenuApp";
 
 export const AcmeLogo = () => {
     return (
@@ -40,7 +41,8 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
     ];
     
     return (
-      <Navbar onMenuOpenChange={setIsMenuOpen}>
+      <>
+      <Navbar onMenuOpenChange={setIsMenuOpen} className="menu-desktop">
         <NavbarContent>
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -92,5 +94,7 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
           
         </NavbarMenu>
       </Navbar>
+      <MenuApp />
+      </>
     );
   }
