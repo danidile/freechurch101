@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { FaTimes } from 'react-icons/fa'
 import { HiDotsVertical } from 'react-icons/hi'
 import { ImArrowDownRight } from 'react-icons/im'
-import ffIcon from '@/assets/img/icons/firefox-install.png'
+import { MdInstallMobile } from "react-icons/md";
 
 interface Props {
     closePrompt: () => void;
@@ -30,7 +30,7 @@ export default function AddToMobileFirefox(props: Props) {
                     <p>Scroll down and then click:</p>
                     <div className="bg-zinc-50 flex items-center justify-around w-full px-4 py-2 rounded-lg text-zinc-900">
                         <div className="flex gap-6 items-center">
-                            <Image src={ffIcon} alt="Firefox install icon" width={32} height={32} />
+                            <MdInstallMobile/>
                             <p>Install</p>
                         </div>
                     </div>

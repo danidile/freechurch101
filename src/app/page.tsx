@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import AddToHomeScreen from '@/components/AddToHomeScreen/AddToHomeScreen'
+
 export default function Home() {
   return (
     <>
@@ -63,6 +65,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <AddToHomeScreen />
 
       <div className="explore-section">
         <h2>Artisti Italiani</h2>
