@@ -59,11 +59,11 @@ export default function TeamsTableN({
       id: usersNumber,
       name: "",
       roles: "",
-      email: ""
+      email: "",
     };
 
     setUsers((prevUsers) => [...prevUsers, newUser]);
-    
+
     setValue(`team[${key}].users[${users.length}].id`, ""); // Register the new user with an empty role field
     setValue(`team[${key}].users[${users.length}].name`, ""); // Register the new user with an empty role field
     setValue(`team[${key}].users[${users.length}].email`, ""); // Register the new user with an empty role field
@@ -187,10 +187,10 @@ export default function TeamsTableN({
         </TableBody>
       </Table>
 
-      {/* <div className="flex justify-between">
+      <div className="flex justify-between">
         <pre>{JSON.stringify(users, null, 2)}</pre>
         <pre>{JSON.stringify(watch(), null, 2)}</pre>
-      </div> */}
+      </div>
     </>
   );
 }
