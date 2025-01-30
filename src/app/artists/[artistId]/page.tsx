@@ -1,7 +1,6 @@
-import { getAlbum } from "./getAlbum";
-import { getSongsByArtist } from "./getSongsByArtist";
-import { basicUserData } from "@/utils/types/userData";
-import fbasicUserData from "@/utils/supabase/getUserData";
+import { getAlbum } from "../../../hooks/GET/getAlbum";
+import { getSongsByArtist } from "../../../hooks/GET/getSongsByArtist";
+
 import { albumT, songType } from "@/utils/types/types";
 import AlbumsListComponent from "./albumsListComponent";
 
@@ -12,9 +11,6 @@ export default async function Page({
 }) {
   const albums: albumT[] = await getAlbum(params.artistId);
   const artistsongs: songType[] = await getSongsByArtist(params.artistId);
-
-  const userData: basicUserData = await fbasicUserData();
-
   if (albums) {
     return (
       <div className="container-sub">

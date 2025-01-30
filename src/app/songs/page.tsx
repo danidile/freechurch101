@@ -2,16 +2,13 @@ import { createClient } from "@/utils/supabase/server";
 import SongslistComponent from "./songslistComponent";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "../../utils/supabase/getUserData";
+import { getSongs } from "@/hooks/GET/getSongs";
 
 export default async function Page() {
-  const supabase = createClient();
-  const { data: songs, error } = await supabase
-    .from("songs")
-    .select("*")
-    .order("song_title", { ascending: true });
-  if (error) {
-    console.error("Errore durante il fetch:", error);
-  }
+  const songs = await getSongs();
+
+
+  
   const userData: basicUserData = await fbasicUserData();
   if (songs) {
     return (
