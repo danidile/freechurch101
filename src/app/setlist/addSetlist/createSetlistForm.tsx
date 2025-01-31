@@ -201,6 +201,7 @@ export default function CreateSetlistForm({
                           value={section.id.toString()}
                           className="hide-input"
                         />
+                        
                         <div className="song-details-selection1">
                           <Autocomplete
                             {...register(`sections.${index}.song`)}

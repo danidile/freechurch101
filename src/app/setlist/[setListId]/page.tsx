@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { getSetList } from "@/utils/supabase/getSetList";
-import { getSetListSongs } from "@/utils/supabase/getSetListSongs";
+import { getSetList } from "@/hooks/GET/getSetList";
+import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
 import { Button, Link } from "@nextui-org/react";
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -28,7 +28,7 @@ export default async function Page({
   });
 
   const userData: basicUserData = await fbasicUserData();
-
+  console.log(setlistsongs);
   return (
     <div className="container-sub">
       <div className="song-presentation-container">

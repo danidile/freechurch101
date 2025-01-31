@@ -53,6 +53,15 @@ export const addSetlist = async (formData: formValues) => {
         order: index,
       })
       .select();
+    if (error) {
+      const { error } = await supabase.from("setlist-songs").insert({
+        setlist_id: sectionId,
+        global_song: section.song,
+        notes: section.description,
+        key: section.tonalita,
+        order: index,
+      });
+    }
     console.log(error);
   });
 
