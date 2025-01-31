@@ -10,7 +10,6 @@
 
 body {
   font-family: "DM Sans", serif;
-
   font-size: 16px;
   font-weight: 500;
   max-width: 100vw;
@@ -20,7 +19,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+main{
+  padding-bottom: 80px !important;
 
+}
 * {
   margin: 0;
   padding: 0;

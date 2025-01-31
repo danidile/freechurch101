@@ -39,7 +39,7 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
       "songs",
       "setlist",      
     ];
-    
+    console.log(userData);
     return (
       <>
       <Navbar onMenuOpenChange={setIsMenuOpen} className="menu-desktop">

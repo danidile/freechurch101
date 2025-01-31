@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { getSetList } from "@/utils/supabase/getSetList";
-import { getSetListSongs } from "@/utils/supabase/getSetListSongs";
+import { getSetList } from "@/hooks/GET/getSetList";
+import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
 
-import { Button,Divider } from "@nextui-org/react";
+import { Button, Divider } from "@nextui-org/react";
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
@@ -27,24 +27,23 @@ export default async function Page({
   return (
     <div className="container-sub">
       <div className="w-full">
-      <div className="song-presentation-container">
-        <h6>
-          <strong>{setlistData.church.church_name}</strong>
-        </h6>
-        <p>{readableDate}</p>
+        <div className="song-presentation-container">
+          <h6>
+            <strong>{setlistData.church.church_name}</strong>
+          </h6>
+          <p>{readableDate}</p>
 
-        {setlistsongs.sort((a, b) => a.order - b.order).map((song, index) => {
-          
-          return (
-            <>
-                <ChordProViewComponent songData={song} showExtra={true}/>
-                <Divider className="my-14" />
-
-            </>
-
-          );
-        })}
-      </div>
+          {setlistsongs
+            .sort((a, b) => a.order - b.order)
+            .map((song, index) => {
+              return (
+                <>
+                  <ChordProViewComponent songData={song} showExtra={true} />
+                  <Divider className="my-14" />
+                </>
+              );
+            })}
+        </div>
       </div>
     </div>
   );

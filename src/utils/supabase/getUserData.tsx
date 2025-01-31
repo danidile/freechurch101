@@ -25,15 +25,15 @@ export default async function fbasicUserData() {
       .select("name,lastname, role,church") // Assuming role_id is a foreign key to the roles table
       .eq("id", user.id) // Filter by the user's id
       .single();
-    
+
     userData = {
       loggedIn: true,
-      id: user.id,
-      email: user.email,
-      name: profileData.name,
-      role: profileData.role,
-      lastname: profileData.lastname,
-      church_id: profileData.church,
+      id: user?.id || null,
+      email: user?.email || null,
+      name: profileData?.name || "Unknown",
+      role: profileData?.role || "user",
+      lastname: profileData?.lastname || "",
+      church_id: profileData?.church || null,
     };
   } else {
     userData = {
