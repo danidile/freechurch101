@@ -146,7 +146,7 @@ small {
 }
 .app-menu-icons {
   width: 100px;
-  color: #838383;
+  color: #1b1b1b;
   transition: 0.3s;
   size: 2rem;
 }
@@ -497,22 +497,32 @@ tbody tr .tablecellnewteams {
 .icon:hover {
   transform: rotate(-135deg);
 }
-
 .album-list {
   padding: 1rem;
   border-bottom: 1px solid grey;
   width: 100%;
-  max-width: 1200px;
   transition: 0.3s;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 40px auto 0px auto;
+  margin: 0px auto;
 }
-.album-list {
+.container-album-list-square {
+  margin: 20px auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  max-width: 1200px;
+}
+.album-list-square {
   padding: 1rem;
   border-bottom: 1px solid grey;
+  max-width: 300px;
   width: 100%;
+  height: 300px;
+  max-height: 300px;
   transition: 0.3s;
   display: flex;
   justify-content: space-between;
@@ -545,6 +555,8 @@ tbody tr .tablecellnewteams {
   width: 100%;
   padding: 0px 0px;
   display: inline;
+  cursor: pointer !important;
+
 }
 
 .songlist-link {
@@ -839,6 +851,7 @@ tbody tr .tablecellnewteams {
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
+  width: 100vw;
 }
 
 .visita-feed-container {

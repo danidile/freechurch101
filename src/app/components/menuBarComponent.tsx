@@ -60,13 +60,21 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
         </NavbarContent>
   
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarItem>
-            <Link color="foreground" href="/songs">
-              Canzoni
+        <NavbarItem>
+            <Link color="foreground" href="/esplora">
+              Esplora
             </Link>
           </NavbarItem>
-          <NavbarItem isActive>
-            <Link aria-current="page" href="/setlist">
+          {userData.loggedIn && (
+            <NavbarItem>
+            <Link color="foreground" href="/songs">
+              La mia Lista
+            </Link>
+          </NavbarItem>
+          )}
+          
+          <NavbarItem>
+            <Link color="foreground" aria-current="page" href="/setlist">
               Setlist
             </Link>
           </NavbarItem>

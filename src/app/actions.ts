@@ -32,7 +32,7 @@ export const signUpAction = async (data : TauthSchema) => {
   } else {
     return encodedRedirect(
       "success",
-      "/sign-up",
+      "/sign-up-successfull",
       "Registrazione effettuata con successo! Controlla la tua mail per il link di verifica.",
     );
   }
