@@ -855,10 +855,16 @@ tbody tr .tablecellnewteams {
 }
 
 .visita-feed-container {
-  width: 1400px;
+  max-width: 1400px;
+  width: 100%;
   padding: 50px;
   columns: 4;
   gap: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 .preferite-feed-container {
   width: 100vw;
@@ -870,8 +876,8 @@ tbody tr .tablecellnewteams {
 @media (max-width: 1400px) {
   .visita-feed-container,
   .preferite-feed-container {
-    width: 1050px;
-    padding: 20px;
+    max-width: 90vw;
+    width: 100%;    padding: 20px;
 
     columns: 3;
   }
@@ -879,21 +885,21 @@ tbody tr .tablecellnewteams {
 @media (max-width: 1000px) {
   .visita-feed-container,
   .preferite-feed-container {
-    width: 750px;
-    columns: 2;
+    max-width: 90vw;
+    width: 100%;    columns: 2;
   }
 }
 @media (max-width: 750px) {
   .visita-feed-container,
   .preferite-feed-container {
-    width: 350px;
-    columns: 1;
+    max-width: 90vw;
+    width: 100%;     columns: 1;
   }
 }
 
 .image-feed-div-home {
   background: #ffffff;
-
+  max-width: 300px;
   overflow: hidden;
   margin-bottom: 20px;
   position: relative;
