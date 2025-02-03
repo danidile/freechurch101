@@ -50,7 +50,7 @@ export default async function Page() {
           <div className="visita-feed-container">
             {albumsList.map((album) => {
               return (
-                <>
+                <div>
                   <div className="image-feed-div-home card-v1">
                     <a href={`/artists/${album.url}`}>
                       <div className="content-feed"></div>
@@ -66,7 +66,7 @@ export default async function Page() {
                       <p className="ruolo-utente-feed">{album.title}</p>
                     </div>
                   </div>
-                </>
+                </div>
               );
             })}
           </div>
