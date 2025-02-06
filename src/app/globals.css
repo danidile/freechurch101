@@ -115,7 +115,19 @@ small {
   font-size: 0.75rem;
   font-weight: 400;
 }
+.pwaiconsmenu{
 
+  width: 100%;
+  padding: 12px 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 12px;
+}
+.pwaiconsmenu:active{
+  background-color: rgb(238, 238, 238);
+
+}
   .appmenucontainer {
     display: none;
   }
@@ -123,14 +135,14 @@ small {
   main {
     transition-property: opacity, transform, filter, background;
     transition-timing-function: ease-in-out;
-    transition-duration: 500ms;
+    transition-duration: 200ms;
   }
   
   .page-transition {
     opacity: 0;
     background: white;
     transform: translateY(0px);
-    filter: blur(3px);
+    filter: blur(1px);
   }
 
 

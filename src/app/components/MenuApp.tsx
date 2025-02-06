@@ -16,19 +16,19 @@ export default function MenuApp() {
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >
         <div className="app-menu">
-          <TransitionLink href="/" >
+          <TransitionLink href="/" className="pwaiconsmenu">
             <FaHouse />
           </TransitionLink>
-          <TransitionLink href="/songs">
+          <TransitionLink href="/songs" className="pwaiconsmenu">
             <FaMusic />
           </TransitionLink>
-          <TransitionLink href="/esplora">
+          <TransitionLink href="/esplora" className="pwaiconsmenu">
             <MdOutlineLibraryMusic />
           </TransitionLink>
-          <TransitionLink href="/setlist">
+          <TransitionLink href="/setlist" className="pwaiconsmenu">
             <MdEventNote />
           </TransitionLink>
-          <TransitionLink href="/protected/dashboard">
+          <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">
             <HiUser />
           </TransitionLink>
           
