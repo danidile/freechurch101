@@ -76,6 +76,11 @@ main {
   padding: 0px;
   min-height: 93vh;
 }
+
+
+Image{
+  border-radius: 0px !important;
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -589,8 +594,7 @@ tbody tr .tablecellnewteams {
   padding: 3vh 1rem;
   display: block;
 }
-.dashboard-ul {
-}
+
 
 .dashboard-li {
   padding: 0.8rem 2rem;
