@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Sidebar from "./sidebar";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
+import PWADashboard from "../PWADashboard";
 
 export default async function Dashboard({
   userData,
@@ -37,6 +38,8 @@ export default async function Dashboard({
         <div className="dashboard-container">
           <h6 className="text-md">Benvenuto {userData.email}</h6>
           {!accountCompleted && (<CompleteAccount churchList={churchList} userData={userData} />)}
+          <PWADashboard />
+
         </div>
       </div>
     );

@@ -151,3 +151,15 @@ export type albumT = {
   album_name: string;
   artist_id: string;
 };
+
+export type profileT = {
+    map: any;
+    id: string;
+    username: string;
+    email: string;
+    name: string;
+    lastname: string;
+    role: number;
+};
+
+
