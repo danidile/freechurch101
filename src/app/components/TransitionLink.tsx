@@ -23,15 +23,15 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.preventDefault();
-    const body = document.querySelector("body");
+    const main = document.querySelector("main");
 
-    body?.classList.add("page-transition");
+    main?.classList.add("page-transition");
 
     await sleep(300);
     router.push(href);
     await sleep(300);
 
-    body?.classList.remove("page-transition");
+    main?.classList.remove("page-transition");
   };
 
   return (
