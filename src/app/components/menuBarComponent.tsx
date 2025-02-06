@@ -42,7 +42,7 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
     console.log(userData);
     return (
       <>
-      <Navbar onMenuOpenChange={setIsMenuOpen} className="menu-desktop">
+      <Navbar onMenuOpenChange={setIsMenuOpen} className="menu-desktop standalone:hidden">
         <NavbarContent>
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
