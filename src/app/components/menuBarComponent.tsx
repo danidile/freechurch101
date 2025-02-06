@@ -19,6 +19,7 @@ import {
   } from "@nextui-org/react";
   import UserDataMenu from "./userDataMenu";
 import MenuApp from "./MenuApp";
+import { TransitionLink } from "./TransitionLink";
 
 export const AcmeLogo = () => {
     return (
@@ -49,34 +50,34 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
             className="sm:hidden"
           />
           <NavbarBrand>
-            <Link href="/">
+            <TransitionLink href="/" >
           <Image
                 className="max-h-8 overflow-visible"
                 src="/images/brand/LOGO_.png"
                 alt=""
               />
-              </Link>
+              </TransitionLink>
           </NavbarBrand>
         </NavbarContent>
   
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-            <Link color="foreground" href="/esplora">
+            <TransitionLink href="/esplora">
               Esplora
-            </Link>
+            </TransitionLink>
           </NavbarItem>
           {userData.loggedIn && (
             <NavbarItem>
-            <Link color="foreground" href="/songs">
+            <TransitionLink  href="/songs">
               La mia Lista
-            </Link>
+            </TransitionLink>
           </NavbarItem>
           )}
           
           <NavbarItem>
-            <Link color="foreground" aria-current="page" href="/setlist">
+            <TransitionLink  aria-current="page" href="/setlist">
               Setlist
-            </Link>
+            </TransitionLink>
           </NavbarItem>
 
         </NavbarContent>
@@ -90,7 +91,6 @@ export default function MenuBarComponent( {userData}:{userData: basicUserData} )
           {menuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
-                className="w-full"
                 color="foreground"
                 href={`/${item}`}
                 size="lg"

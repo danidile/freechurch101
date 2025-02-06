@@ -120,6 +120,19 @@ small {
     display: none;
   }
 
+  body {
+    transition-property: opacity, transform, filter, background;
+    transition-timing-function: ease-in-out;
+    transition-duration: 500ms;
+  }
+  
+  .page-transition {
+    opacity: 0;
+    background: white;
+    transform: translateY(10px);
+    filter: blur(3px);
+  }
+
 
 .app-menu {
   height: 70px;
