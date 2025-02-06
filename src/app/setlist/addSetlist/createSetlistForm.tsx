@@ -140,6 +140,10 @@ export default function CreateSetlistForm({
   const y = useMotionValue(0);
 
   
+    const date = new Date();
+    const todaysDate = date.toISOString().split('T')[0];
+
+  
   return (
     <div className="container-sub">
       <div className="form-div crea-setlist-container">
@@ -179,7 +183,7 @@ export default function CreateSetlistForm({
                 label="Event Date"
                 variant="bordered"
                 size="sm"
-                defaultValue="2026-01-01"
+                defaultValue={todaysDate}
               />
             </div>
 

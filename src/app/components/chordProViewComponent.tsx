@@ -54,14 +54,14 @@ export default function ChordProViewComponent({ songData }: { songData: any }, {
 
   return (
     <div>
-      {showExtra && (
+      
       <div className="view-selector-container">
         <p onClick={viewLyric}>Lyrics</p>
         <p onClick={viewChord}>Chords</p>
       </div>
-      )}
+      
       <div>
-        {viewChords && showExtra && (
+        
           
           <div className="top-song-buttons">
             <div className="transpose-button-container">
@@ -79,7 +79,7 @@ export default function ChordProViewComponent({ songData }: { songData: any }, {
             </Link>
           </Button> */}
           </div>
-        )}
+        
 
         <h5 className="song-title">
           {songData.songTitle} - {songData.author}

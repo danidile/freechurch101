@@ -20,7 +20,7 @@ export default function App() {
   const convertData = async (data: TsongSchema) => {
     data.lyrics = state;
     console.log(data);
-    // addSong(data);
+    addSong(data);
   };
 
   function addCommentsToText(inputText: string) {
