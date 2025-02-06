@@ -10,7 +10,7 @@ import { MdOutlineLibraryMusic } from "react-icons/md";
 export default function MenuApp() {
 
   return (
-    <div className="appmenucontainer">
+    <div className="appmenucontainer standalone:block">
       <IconContext.Provider
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >

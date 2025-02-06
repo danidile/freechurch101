@@ -9,6 +9,7 @@
 }
 
 body {
+  -webkit-tap-highlight-color: transparent;
   font-family: "DM Sans", serif;
   font-size: 16px;
   font-weight: 500;
@@ -19,9 +20,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-main{
+main {
   padding-bottom: 80px !important;
-
 }
 * {
   margin: 0;
@@ -116,17 +116,10 @@ small {
   font-weight: 400;
 }
 
-@media (max-width: 850px) {
-  .menu-desktop {
-    display: none;
-  }
-}
-
-@media (min-width: 850px) {
   .appmenucontainer {
     display: none;
   }
-}
+
 
 .app-menu {
   height: 70px;
@@ -461,9 +454,8 @@ tbody tr .tablecellnewteams {
 @media only screen and (max-width: 850px) {
   .song-list {
     padding: 0.2rem;
-
   }
-  .song-title{
+  .song-title {
     font-size: 18px;
   }
   input {
@@ -556,7 +548,6 @@ tbody tr .tablecellnewteams {
   padding: 0px 0px;
   display: inline;
   cursor: pointer !important;
-
 }
 
 .songlist-link {
@@ -877,7 +868,8 @@ tbody tr .tablecellnewteams {
   .visita-feed-container,
   .preferite-feed-container {
     max-width: 90vw;
-    width: 100%;    padding: 20px;
+    width: 100%;
+    padding: 20px;
 
     columns: 3;
   }
@@ -886,14 +878,16 @@ tbody tr .tablecellnewteams {
   .visita-feed-container,
   .preferite-feed-container {
     max-width: 90vw;
-    width: 100%;    columns: 2;
+    width: 100%;
+    columns: 2;
   }
 }
 @media (max-width: 750px) {
   .visita-feed-container,
   .preferite-feed-container {
     max-width: 90vw;
-    width: 100%;     columns: 1;
+    width: 100%;
+    columns: 1;
   }
 }
 

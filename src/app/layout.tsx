@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import MenuBar from "./components/navbar";
-
+import { Viewport } from "next";
 export const metadata: Metadata = {
   title: "ChurchLab",
   description: "Dai struttura alla tua chiesa",
 };
+
+
+export const viewport: Viewport = {
+  maximumScale: 1,
+  userScalable: false
+}
 
 export default function RootLayout({
   children,
