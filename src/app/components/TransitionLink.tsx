@@ -1,7 +1,7 @@
 "use client";
 import Link, { LinkProps } from "next/link";
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface TransitionLinkProps extends LinkProps {
   children: React.ReactNode;
@@ -20,6 +20,7 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
   ...props
 }) => {
   const router = useRouter();
+  const currentPath = usePathname(); // Get current pathname
 
   const handleTransition = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -31,8 +32,19 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
 
     await sleep(200);
     router.push(href);
-    await sleep(200);
 
+    // Wait for the pathname to change, with a timeout (max 5 sec)
+    const maxWaitTime = 500; // 5 seconds
+    const checkInterval = 50;
+    let elapsedTime = 0;
+
+    while (window.location.pathname === currentPath && elapsedTime < maxWaitTime) {
+      await sleep(checkInterval);
+      elapsedTime += checkInterval;
+    }
+
+
+    await sleep(200);
     main?.classList.remove("page-transition");
   };
 
