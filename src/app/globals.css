@@ -120,7 +120,7 @@ small {
     display: none;
   }
 
-  body {
+  main {
     transition-property: opacity, transform, filter, background;
     transition-timing-function: ease-in-out;
     transition-duration: 500ms;
@@ -129,7 +129,7 @@ small {
   .page-transition {
     opacity: 0;
     background: white;
-    transform: translateY(10px);
+    transform: translateY(0px);
     filter: blur(3px);
   }
 
