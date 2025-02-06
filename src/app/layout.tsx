@@ -7,11 +7,10 @@ export const metadata: Metadata = {
   description: "Dai struttura alla tua chiesa",
 };
 
-
 export const viewport: Viewport = {
   maximumScale: 1,
-  userScalable: false
-}
+  userScalable: false,
+};
 
 export default function RootLayout({
   children,
@@ -22,6 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Add DM SANS font */}
+        <link rel="icon" href="/images/brand/cropped-Fav-2.png" sizes="48x48" />
+        <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/images/brand/180x180.png"></link>
 
         <link rel="icon" href="/images/brand/cropped-Fav-2.png" sizes="any" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
