@@ -6,6 +6,7 @@ import { FaMusic } from "react-icons/fa";
 import { MdEventNote } from "react-icons/md";
 import { FaHouse } from "react-icons/fa6";
 import { MdOutlineLibraryMusic } from "react-icons/md";
+import { TransitionLink } from "./TransitionLink";
 
 export default function MenuApp() {
 
@@ -15,21 +16,21 @@ export default function MenuApp() {
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >
         <div className="app-menu">
-          <Link href="/" >
+          <TransitionLink href="/" >
             <FaHouse />
-          </Link>
-          <Link href="/songs">
+          </TransitionLink>
+          <TransitionLink href="/songs">
             <FaMusic />
-          </Link>
-          <Link href="/esplora">
+          </TransitionLink>
+          <TransitionLink href="/esplora">
             <MdOutlineLibraryMusic />
-          </Link>
-          <Link href="/setlist">
+          </TransitionLink>
+          <TransitionLink href="/setlist">
             <MdEventNote />
-          </Link>
-          <Link href="/protected/dashboard">
+          </TransitionLink>
+          <TransitionLink href="/protected/dashboard">
             <HiUser />
-          </Link>
+          </TransitionLink>
           
         </div>
       </IconContext.Provider>
