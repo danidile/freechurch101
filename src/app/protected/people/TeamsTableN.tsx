@@ -21,11 +21,7 @@ import { PressEvent } from "@react-types/shared";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useForm, useFormContext } from "react-hook-form";
 
-export default function TeamsTableN({
-  profiles,
-}: {
-  profiles: profileT[];
-}) {
+export default function TeamsTableN({ profiles }: { profiles: profileT[] }) {
   const [users, setUsers] = useState(profiles);
   const { handleSubmit, setValue, watch } = useForm();
 
@@ -59,7 +55,7 @@ export default function TeamsTableN({
                   />
                 </TableCell>
                 <TableCell className="tablecellnewteams">
-                <p className="text-center">{item.role}</p>
+                  <p className="text-center">{item.role}</p>
                 </TableCell>
                 <TableCell className="tablecellnewteams">
                   <input
@@ -94,11 +90,11 @@ export default function TeamsTableN({
           })}
         </TableBody>
       </Table>
-
+      {/* 
       <div className="flex justify-between">
         <pre>{JSON.stringify(users, null, 2)}</pre>
         <pre>{JSON.stringify(watch(), null, 2)}</pre>
-      </div>
+      </div> */}
     </>
   );
 }

@@ -8,7 +8,7 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import ButtonDeleteSetlist from "./buttonDeleteSetlist";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
-
+import CopyLinkButton from "@/app/components/CopyLinkButton";
 export default async function Page({
   params,
 }: {
@@ -85,6 +85,9 @@ export default async function Page({
           {["1", "2"].includes(userData.role.toString()) && (
             <ButtonDeleteSetlist setlistID={params.setListId} />
           )}
+          <span className="material-symbols-outlined">
+          <CopyLinkButton/>
+          </span>
         </div>
       </div>
     </div>
