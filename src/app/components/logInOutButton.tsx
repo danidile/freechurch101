@@ -1,6 +1,6 @@
 "use client"
 
-import { NavbarItem, Link, Button} from "@nextui-org/react";
+import { NavbarItem, Link, Button} from "@heroui/react";
 import logoutTest from '@/app/components/logOutAction'
 
 

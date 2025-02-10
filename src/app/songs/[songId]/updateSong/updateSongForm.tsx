@@ -1,7 +1,7 @@
 "use client"; 
 import { TsongSchema, songSchema } from "@/utils/types/types";
-import {Button} from "@nextui-org/react";
-import { Input, Textarea } from '@nextui-org/input';
+import {Button} from "@heroui/react";
+import { Input, Textarea } from "@heroui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState,SetStateAction } from "react";

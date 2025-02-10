@@ -2,7 +2,7 @@
 import useWindowSize from "@/utils/hooks/useWindowDimensions";
 
 import { TsongSchema } from "@/utils/types/types";
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@heroui/react";
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 export default function ModalLyrics( {songData}:{songData:Array<TsongSchema>}) {

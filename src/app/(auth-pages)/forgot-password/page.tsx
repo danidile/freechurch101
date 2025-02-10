@@ -2,7 +2,7 @@
 
 import { forgotPasswordAction } from "@/app/actions";
 import { FormMessage } from "@/app/components/form-message";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button } from "@heroui/react";
 
 import { TlostPasswordSchema, lostPasswordSchema } from "@/utils/types/auth";
 import { TalertMessage } from "@/utils/types/types";

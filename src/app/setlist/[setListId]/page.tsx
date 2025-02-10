@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
-import { Button, Link } from "@nextui-org/react";
+import { Button, Link } from "@heroui/react";
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";

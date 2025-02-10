@@ -1,6 +1,6 @@
 "use client"; 
 
-import { Input, Button } from '@nextui-org/react';
+import { Input, Button } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Tchurch, church } from "@/utils/types/types";

@@ -202,6 +202,7 @@ Image {
   max-width: 96vw;
   margin: 20px auto;
   display: flex;
+  align-items: center;
   flex-direction: column;
   justify-content: center;
 }
@@ -1164,4 +1165,21 @@ tbody tr .tablecellnewteams {
 .people-list:hover {
   background-color: white;
   transform: scale(1.02);
+}
+
+
+.people-table{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid #d8d8d8;
+  padding: 15px;
+}
+.people-li-content{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* gap: 20px; */
+  border-left: 1px solid #aaaaaa;
+  align-items: center;
+
 }

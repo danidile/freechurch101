@@ -10,7 +10,7 @@ import {
   Button,
   useDisclosure,
   Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { Team } from "@/utils/types/types";
 import { useState } from "react";
 import Planner from "./Planner";

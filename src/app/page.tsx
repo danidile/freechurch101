@@ -1,8 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
-import AddToHomeScreen from '@/components/AddToHomeScreen/AddToHomeScreen'
+
+
 
 export default function Home() {
+
   return (
     <>
       <section className="header-homepage">

@@ -7,7 +7,7 @@ import {
     NavbarMenu,
     NavbarMenuItem,
     NavbarMenuToggle,
-  } from "@nextui-org/react";
+  } from "@heroui/react";
   import { useState } from "react";
   import {
     Navbar,
@@ -16,7 +16,7 @@ import {
     NavbarItem,
     Link,
     Button,
-  } from "@nextui-org/react";
+  } from "@heroui/react";
   import UserDataMenu from "./userDataMenu";
 import MenuApp from "./MenuApp";
 import { TransitionLink } from "./TransitionLink";

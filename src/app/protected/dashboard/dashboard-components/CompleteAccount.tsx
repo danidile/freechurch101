@@ -1,8 +1,8 @@
 "use client";
-import { Button, Input, Link } from "@nextui-org/react";
+import { Button, Input, Link } from "@heroui/react";
 import { useForm } from "react-hook-form";
 
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { completeAccountAction } from "./completeAccountAction";
 import { basicUserData } from "@/utils/types/userData";
 

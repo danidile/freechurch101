@@ -14,7 +14,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useCallback, useEffect } from "react";
 import { useMemo, useState } from "react";
 import { PressEvent } from "@react-types/shared";

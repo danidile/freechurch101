@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import ChordSheetJS from "chordsheetjs";
 import { basicUserData } from "@/utils/types/userData";
 

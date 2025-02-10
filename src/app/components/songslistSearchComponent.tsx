@@ -1,6 +1,6 @@
 "use client";
 
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button } from "@heroui/react";
 import Link from "next/link";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
