@@ -49,7 +49,7 @@ export default function MyChurch({
           <div className="container-people-list">
             {profiles.map((profile: profileT) => {
               return (
-                <Link className="people-link" href={`/songs/${profile.id}`}>
+                <Link className="people-link" href={`people/${profile.id}`}>
                   <div className="people-list" key={profile.id}>
                     <p key={profile.id}>
                       {profile.name} <small>{profile.email}</small>

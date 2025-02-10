@@ -27,7 +27,7 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
   ) => {
     e.preventDefault();
     const main = document.querySelector("main");
-
+    
     main?.classList.add("page-transition");
 
     await sleep(200);
