@@ -8,6 +8,10 @@ import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import {TalertMessage} from "@/utils/types/types";
+import { useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
+
 
 
 
@@ -23,6 +27,9 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
   const convertData = async (data: TauthSchema) =>{
     signInAction(data);
   }
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
 
   return (
@@ -44,10 +51,25 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
         <Input
         {...register("password",)}
          label="Password"
-          type="password"
           name="password"
           placeholder="Your password"
           required
+          endContent={
+            <button
+              aria-label="toggle password visibility"
+              className="focus:outline-none"
+              type="button"
+              onClick={toggleVisibility}
+            >
+              {isVisible ? (
+                <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
+              ) : (
+                <FaEye className="text-xl text-default-400 pointer-events-none" />
+              )}
+            </button>
+          }
+          type={isVisible ? "text" : "password"}
+
           
         />
         {searchParams.message && <FormMessage message={{
@@ -56,7 +78,7 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
           
           <div className="flex justify-between items-center">
           <Link
-            className="text-xs text-foreground underline"
+            className="text-xs text-foreground underline py-3"
             href="/forgot-password"
           >
             Hai dimenticato la Password?
