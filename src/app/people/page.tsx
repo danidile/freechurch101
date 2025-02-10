@@ -16,10 +16,10 @@ export default async function App() {
     return (
       <div className="container-sub ">
         <h3 className="pb-6">People</h3>
-        <div>
+        <div className="flex-col gap-3">
          {profiles.map((profile: profileT) => {
             return (
-              <PeopleDrawerList profile={profile}/>
+              <PeopleDrawerList profile={profile} key={profile.id} />
             );
           })}
           </div>
