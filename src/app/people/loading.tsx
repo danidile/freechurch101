@@ -10,7 +10,7 @@ export default function Loading() {
       <h3 className="pb-6">People</h3>
       <div className="flex-col gap-3">
         {[...Array(12)].map((profile: profileT) => {
-          return <PeopleDrawerList profile={profile} key={profile.id} />;
+          return <Skeleton className="songlist-link h-20" />;
         })}
       </div>
     </div>
