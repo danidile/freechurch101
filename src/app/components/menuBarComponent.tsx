@@ -1,95 +1,87 @@
-"use client"
+"use client";
 
 import { basicUserData } from "@/utils/types/userData";
 
 import {
-    Image,
-    NavbarMenu,
-    NavbarMenuItem,
-    NavbarMenuToggle,
-  } from "@heroui/react";
-  import { useState } from "react";
-  import {
-    Navbar,
-    NavbarBrand,
-    NavbarContent,
-    NavbarItem,
-    Link,
-    Button,
-  } from "@heroui/react";
-  import UserDataMenu from "./userDataMenu";
+  Image,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+} from "@heroui/react";
+import { useState } from "react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  Button,
+} from "@heroui/react";
+import UserDataMenu from "./userDataMenu";
 import MenuApp from "./MenuApp";
 import { TransitionLink } from "./TransitionLink";
 
-export default function MenuBarComponent( {userData}:{userData: basicUserData} ) {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const menuItems = [
-      "songs",
-      "setlist",      
-    ];
-    console.log(userData);
-    return (
-      <>
-      <Navbar onMenuOpenChange={setIsMenuOpen} className="menu-desktop standalone:hidden">
+export default function MenuBarComponent({
+  userData,
+}: {
+  userData: basicUserData;
+}) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuItems = ["songs", "setlist"];
+  console.log(userData);
+  return (
+    <>
+      <Navbar
+        onMenuOpenChange={setIsMenuOpen}
+        className="menu-desktop standalone:hidden"
+      >
         <NavbarContent>
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             className="sm:hidden"
           />
           <NavbarBrand>
-            <TransitionLink href="/" >
-          <Image
+            <TransitionLink href="/">
+              <Image
                 className="max-h-8 overflow-visible"
                 src="/images/brand/LOGO_.png"
                 alt=""
               />
-              </TransitionLink>
+            </TransitionLink>
           </NavbarBrand>
         </NavbarContent>
-  
+
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-            <TransitionLink href="/esplora">
-              Esplora
-            </TransitionLink>
+          <NavbarItem>
+            <TransitionLink href="/esplora">Esplora</TransitionLink>
           </NavbarItem>
+
+          <NavbarItem>
+            <TransitionLink href="/songs">Canzoni</TransitionLink>
+          </NavbarItem>
+
           {userData.loggedIn && (
             <NavbarItem>
-            <TransitionLink  href="/songs">
-              La mia Lista
-            </TransitionLink>
-          </NavbarItem>
+              <TransitionLink aria-current="page" href="/setlist">
+                Setlist
+              </TransitionLink>
+            </NavbarItem>
           )}
-          
-          <NavbarItem>
-            <TransitionLink  aria-current="page" href="/setlist">
-              Setlist
-            </TransitionLink>
-          </NavbarItem>
-
         </NavbarContent>
 
+        <UserDataMenu userData={userData} />
 
-        <UserDataMenu userData={userData}/>
-
-
-      
         <NavbarMenu>
           {menuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color="foreground"
-                href={`/${item}`}
-                size="lg"
-              >
+              <Link color="foreground" href={`/${item}`} size="lg">
                 {item}
               </Link>
             </NavbarMenuItem>
           ))}
-          
         </NavbarMenu>
       </Navbar>
       <MenuApp isLoggedIn={userData.loggedIn ? true : false} />
-      </>
-    );
-  }
+    </>
+  );
+}
