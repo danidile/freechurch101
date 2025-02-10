@@ -1,15 +1,25 @@
 "use client";
 import { Link } from "@heroui/react";
 import { IconContext } from "react-icons";
-import { MdEventNote,MdEvent,MdOutlineLibraryMusic,MdLibraryMusic } from "react-icons/md";
-import { RiHome5Fill,RiHome5Line,RiTeamFill,RiTeamLine } from "react-icons/ri";
-import { IoSettings,IoSettingsOutline } from "react-icons/io5";
+import {
+  MdEventNote,
+  MdEvent,
+  MdOutlineLibraryMusic,
+  MdLibraryMusic,
+} from "react-icons/md";
+import {
+  RiHome5Fill,
+  RiHome5Line,
+  RiTeamFill,
+  RiTeamLine,
+} from "react-icons/ri";
+import { IoSettings, IoSettingsOutline } from "react-icons/io5";
 
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
 
-export default function MenuApp() {
+export default function MenuApp({ isLoggedIn }: { isLoggedIn: boolean }) {
   const pathname = usePathname(); // Get the full pathname
   const [parameter, setParameter] = useState(pathname.split("/")[1] || ""); // Initialize state based on the pathname
 
@@ -37,11 +47,13 @@ export default function MenuApp() {
           </TransitionLink>
           <TransitionLink href="/setlist" className="pwaiconsmenu">
             {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
+          </TransitionLink>
+          {isLoggedIn && (
+            <TransitionLink href="/people" className="pwaiconsmenu">
+              {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
+            </TransitionLink>
+          )}
 
-          </TransitionLink>
-          <TransitionLink href="/people" className="pwaiconsmenu">
-            {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
-          </TransitionLink>
           <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">
             {parameter === "protected" ? <IoSettings /> : <IoSettingsOutline />}
           </TransitionLink>

@@ -26,7 +26,7 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
 
 
   return (
-    <form className="flex-1 flex flex-col min-w-96 my-20 shadow-xl p-5 rounded-xl" onSubmit={handleSubmit(convertData)} >
+    <form className="auth-form " onSubmit={handleSubmit(convertData)} >
       <h1 className="text-2xl font-medium">Accedi</h1>
 
       <p className="text-sm text-foreground">
@@ -40,14 +40,7 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
         {...register("email",)}
         
         label="Email" name="email" placeholder="you@example.com" required />
-        <div className="flex justify-between items-center">
-          <Link
-            className="text-xs text-foreground underline"
-            href="/forgot-password"
-          >
-            Hai dimenticato la Password?
-          </Link>
-        </div>
+        
         <Input
         {...register("password",)}
          label="Password"
@@ -61,7 +54,14 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
     message: searchParams.message || searchParams.error || searchParams.success || '',
   }} />}
           
-
+          <div className="flex justify-between items-center">
+          <Link
+            className="text-xs text-foreground underline"
+            href="/forgot-password"
+          >
+            Hai dimenticato la Password?
+          </Link>
+        </div>
         <Button color="primary" variant="shadow" type='submit' disabled={isSubmitting}>
           Accedi
         </Button>
