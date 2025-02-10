@@ -1,14 +1,17 @@
 "use client";
 import { Link } from "@nextui-org/react";
 import { IconContext } from "react-icons";
-import { HiUser } from "react-icons/hi2";
 import { FaMusic } from "react-icons/fa";
 import { MdEventNote } from "react-icons/md";
 import { FaHouse } from "react-icons/fa6";
-import { MdOutlineLibraryMusic } from "react-icons/md";
 import { TransitionLink } from "./TransitionLink";
+import { IoSettings } from "react-icons/io5";
+import { RiTeamFill } from "react-icons/ri";
+
 
 export default function MenuApp() {
+
+
 
   return (
     <div className="appmenucontainer standalone:block">
@@ -22,14 +25,14 @@ export default function MenuApp() {
           <TransitionLink href="/songs" className="pwaiconsmenu">
             <FaMusic />
           </TransitionLink>
-          <TransitionLink href="/esplora" className="pwaiconsmenu">
-            <MdOutlineLibraryMusic />
-          </TransitionLink>
           <TransitionLink href="/setlist" className="pwaiconsmenu">
             <MdEventNote />
           </TransitionLink>
+          <TransitionLink href="/people" className="pwaiconsmenu">
+            <RiTeamFill />
+          </TransitionLink>
           <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">
-            <HiUser />
+            <IoSettings />
           </TransitionLink>
           
         </div>
