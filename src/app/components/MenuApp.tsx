@@ -45,9 +45,11 @@ export default function MenuApp({ isLoggedIn }: { isLoggedIn: boolean }) {
               <MdOutlineLibraryMusic />
             )}
           </TransitionLink>
+          {isLoggedIn && (
           <TransitionLink href="/setlist" className="pwaiconsmenu">
             {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
           </TransitionLink>
+          )}
           {isLoggedIn && (
             <TransitionLink href="/people" className="pwaiconsmenu">
               {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}

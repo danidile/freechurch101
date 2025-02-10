@@ -9,8 +9,6 @@ export const getSongs = async () => {
     .select("*")
     .order("song_title", { ascending: true });
 
-
-
   const { data: globalSongs, error: error2 } = await supabase
     .from("global-songs")
     .select("*")
