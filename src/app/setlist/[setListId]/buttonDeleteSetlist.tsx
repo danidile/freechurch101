@@ -1,6 +1,6 @@
 "use client";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import { Button, Link } from "@nextui-org/react";
+import { Button, Link } from "@heroui/react";
 import { deleteSetList } from './deleteSetlistAction';
 
 

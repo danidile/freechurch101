@@ -4,7 +4,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useState } from "react";
 import { RiLinkM } from "react-icons/ri";
 

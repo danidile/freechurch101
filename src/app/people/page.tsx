@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
-import MyChurch from "./mychurchComponent";
-import { createClient } from "@/utils/supabase/server";
 import { profileT, Team } from "@/utils/types/types";
 import { getProfilesById } from "@/hooks/GET/getProfilesById";
+import PeopleDrawerList from "./peopleDrawerList";
 
 export default async function App() {
   const userData: basicUserData = await fbasicUserData();
@@ -15,9 +14,16 @@ export default async function App() {
 
   if (userData) {
     return (
-      <>
-        <MyChurch userData={userData} profiles={profiles} />
-      </>
+      <div className="container-sub ">
+        <h3 className="pb-6">People</h3>
+        <div>
+         {profiles.map((profile: profileT) => {
+            return (
+              <PeopleDrawerList profile={profile}/>
+            );
+          })}
+          </div>
+      </div>
     );
   } else {
     redirect("/login");

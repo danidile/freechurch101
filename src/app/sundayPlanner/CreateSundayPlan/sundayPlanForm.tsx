@@ -10,10 +10,10 @@ import {
   AutocompleteItem,
   Select,
   SelectItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
-import { Button } from "@nextui-org/button";
-import { Input } from "@nextui-org/input";
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 
@@ -25,7 +25,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 interface Tsections {
   id: string;

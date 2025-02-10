@@ -1,15 +1,15 @@
 // "use client"; 
 // import { TeventSchema, eventSchema } from "@/utils/types/types";
-// import {Button} from "@nextui-org/react";
-// import { Input } from '@nextui-org/input';
+// import {Button} from "@heroui/react";
+// import { Input } from '@heroui/input';
 // import { useForm } from "react-hook-form";
 // import { zodResolver } from '@hookform/resolvers/zod';
 // import { useState } from "react";
-// import { Select, SelectItem, Textarea} from "@nextui-org/react";
+// import { Select, SelectItem, Textarea} from "@heroui/react";
 // // import {addEvent} from './addEventAction';
-// import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
+// import {Autocomplete, AutocompleteItem} from "@heroui/react";
 // import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForever';
-// import {Accordion, AccordionItem} from "@nextui-org/accordion";
+// import {Accordion, AccordionItem} from "@heroui/accordion";
 // import TextFieldsIcon from '@mui/icons-material/TextFields';
 // import ArticleIcon from '@mui/icons-material/Article';
 // interface Tsections {

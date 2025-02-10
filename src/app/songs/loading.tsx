@@ -1,5 +1,5 @@
 "use client"
-import { Button, Input, Skeleton } from "@nextui-org/react";
+import { Button, Input, Skeleton } from "@heroui/react";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 
 export default function Loading() {

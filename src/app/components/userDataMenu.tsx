@@ -1,4 +1,4 @@
-import { NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { NavbarContent, NavbarItem, Link, Button } from "@heroui/react";
 import isLoggedIn from "@/utils/supabase/getuser";
 import logoutTest from '@/app/components/logOutAction'
 import { basicUserData } from "@/utils/types/userData";

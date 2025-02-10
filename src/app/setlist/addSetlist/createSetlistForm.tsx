@@ -7,16 +7,16 @@ import {
   CardFooter,
   Divider,
   Link,
-} from "@nextui-org/react";
-import { Input } from "@nextui-org/input";
+} from "@heroui/react";
+import { Input } from "@heroui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Select, SelectItem, Textarea } from "@heroui/react";
 // import {addEvent} from './addEventAction';
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForever";
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { Accordion, AccordionItem } from "@heroui/accordion";
 import ArticleIcon from "@mui/icons-material/Article";
 import { addSetlist } from "./addSetlistAction";
 import { Reorder, useDragControls, useMotionValue } from "framer-motion";

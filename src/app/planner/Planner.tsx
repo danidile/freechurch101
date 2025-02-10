@@ -20,7 +20,7 @@ import {
   Select,
   SelectItem,
   Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useState } from "react";
 import { PressEvent } from "@react-types/shared";
 import MoreVertIcon from "@mui/icons-material/MoreVert";

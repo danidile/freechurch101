@@ -12,7 +12,7 @@ import {
   DropdownItem,
   Input,
   CardFooter,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { basicUserData } from "@/utils/types/userData";
 
 import { useForm } from "react-hook-form";

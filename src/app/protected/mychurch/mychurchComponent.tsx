@@ -11,7 +11,7 @@ import {
   Button,
   useDisclosure,
   Input,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { useState } from "react";
 import TeamsTableN from "./TeamsTableN";
 import { teamsVariable } from "./teamsType";

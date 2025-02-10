@@ -2,7 +2,7 @@
 
 import { signInAction } from "@/app/actions";
 import { FormMessage } from "@/app/components/form-message";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button } from "@heroui/react";
 import Link from "next/link";
 import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
