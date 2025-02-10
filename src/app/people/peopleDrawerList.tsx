@@ -13,6 +13,7 @@ import {
 import { RiEditFill } from "react-icons/ri";
 
 import { Link } from "@heroui/react";
+import { getProfilesById } from "@/hooks/GET/getProfilesById";
 
 export default function PeopleDrawerList({ profile }: { profile: profileT }) {
   // Drawer Settings
@@ -26,7 +27,7 @@ export default function PeopleDrawerList({ profile }: { profile: profileT }) {
   };
 
   return (
-    <div className="flex flex-row w-full gap-12">
+    <div className="flex flex-row w-full gap-12" key={profile.id}>
       <Link className="people-link" onPress={onOpen} key={profile.id}>
         <div className="people-list" key={profile.id}>
           <p key={profile.id}>
