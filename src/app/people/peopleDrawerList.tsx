@@ -6,14 +6,12 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerBody,
-  DrawerFooter,
-  Button,
+
   useDisclosure,
 } from "@heroui/react";
 import { RiEditFill } from "react-icons/ri";
 
 import { Link } from "@heroui/react";
-import { getProfilesById } from "@/hooks/GET/getProfilesById";
 
 export default function PeopleDrawerList({ profile }: { profile: profileT }) {
   // Drawer Settings
