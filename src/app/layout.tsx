@@ -1,9 +1,6 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import MenuBar from "./components/navbar";
 import { Viewport } from "next";
-import { useRouter } from "next/navigation";
-
 
 export const viewport: Viewport = {
   maximumScale: 1,
@@ -15,12 +12,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <head>
-       
-
         <link rel="icon" href="/images/brand/cropped-Fav-2.png" sizes="48x48" />
         <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
 

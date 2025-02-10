@@ -1,7 +1,6 @@
 "use client";
 
 import { FormMessage } from "@/app/components/form-message";
-
 import { signUpAction } from "@/app/actions";
 import { Input, Button } from "@heroui/react";
 import Link from "next/link";
@@ -9,6 +8,9 @@ import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TalertMessage } from "@/utils/types/types";
+import { useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
 
 export default function Signup({
   searchParams,
@@ -28,6 +30,9 @@ export default function Signup({
     signUpAction(data);
     console.log(data);
   };
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   if ("message" in searchParams) {
     return (
@@ -69,12 +74,27 @@ export default function Signup({
           <Input
             {...register("password")}
             label="Password"
-            type="password"
             name="password"
             placeholder="Your password"
-            minLength={6}
             required
+            minLength={6}
+            endContent={
+              <button
+                aria-label="toggle password visibility"
+                className="focus:outline-none"
+                type="button"
+                onClick={toggleVisibility}
+              >
+                {isVisible ? (
+                  <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
+                ) : (
+                  <FaEye className="text-xl text-default-400 pointer-events-none" />
+                )}
+              </button>
+            }
+            type={isVisible ? "text" : "password"}
           />
+
           <Button
             color="primary"
             variant="shadow"
