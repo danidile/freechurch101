@@ -17,7 +17,6 @@ import {
 } from "@heroui/react";
 import { useCallback, useEffect } from "react";
 import { useMemo, useState } from "react";
-import { PressEvent } from "@react-types/shared";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Team } from "@/utils/types/types";
 export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
@@ -70,7 +69,7 @@ export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
     return users.slice(start, end);
   }, [page, users]);
 
-  const addMember = (e: PressEvent) => {
+  const addMember = (e: ProgressEvent) => {
     console.log(users);
     const usersNumber: number = users.length + 1;
 
@@ -164,7 +163,7 @@ export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
         topContent={
           <div className="newteamfooter">
             <h3>{teamMembers.teamName}</h3>
-            <Button
+            {/* <Button
               size="lg"
               color="primary"
               variant="flat"
@@ -172,7 +171,7 @@ export default function TeamsTable({ teamMembers }: { teamMembers: any }) {
               isIconOnly
             >
               <PersonAddAlt1RoundedIcon />
-            </Button>{" "}
+            </Button>{" "} */}
           </div>
         }
         classNames={{

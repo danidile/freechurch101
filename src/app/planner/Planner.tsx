@@ -1,7 +1,6 @@
 "use client";
 import PersonAddAlt1RoundedIcon from "@mui/icons-material/PersonAddAlt1Rounded";
 import { Team } from "@/utils/types/types";
-import { eventPlanner } from "@/utils/types/types";
 
 import {
   Table,
@@ -22,9 +21,8 @@ import {
   Input,
 } from "@heroui/react";
 import { useState } from "react";
-import { PressEvent } from "@react-types/shared";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 
 export default function Planner({
   team,
@@ -57,13 +55,13 @@ export default function Planner({
   };
   //FINE CODICE PER FAR FUNZIONARE I CHIP
 
-  const addMember = (e: PressEvent) => {
+  const addMember = (e: ProgressEvent) => {
     const usersNumber: number = users.length + 1;
     const newUser = {
       id: usersNumber,
       name: "",
       roles: "",
-      email: ""
+      email: "",
     };
 
     setUsers((prevUsers) => [...prevUsers, newUser]);
@@ -81,9 +79,7 @@ export default function Planner({
         className="planner-table"
         topContent={
           <div className="newteamfooter">
-            <h5>
-              {team.teamName}
-            </h5>
+            <h5>{team.teamName}</h5>
             <input
               {...register(`team[${key}].teamId`)}
               className="hidden"
@@ -94,15 +90,6 @@ export default function Planner({
               className="hidden"
               defaultValue={team.teamName}
             />
-            <Button
-              size="lg"
-              color="primary"
-              variant="flat"
-              onPress={addMember}
-              isIconOnly
-            >
-              <PersonAddAlt1RoundedIcon />
-            </Button>{" "}
           </div>
         }
         classNames={{
@@ -120,7 +107,7 @@ export default function Planner({
               <TableRow key={userIndex}>
                 <TableCell className="tablecellnewteams-name">
                   <Input
-                     label="Inserisci il nome del Team"
+                    label="Inserisci il nome del Team"
                     {...register(`team[${key}].users[${userIndex}].id`)}
                     defaultValue={item.id}
                     className="hidden"
@@ -166,8 +153,7 @@ export default function Planner({
                   </div>
                   {item.roles && (
                     <Input
-                    label="Inserisci il nome del Team"
-
+                      label="Inserisci il nome del Team"
                       {...register(`team[${key}].users[${userIndex}].roles`)} // Register the roles field
                       type="hidden"
                       defaultValue={item.roles} // Set the value as the comma-separated roles
