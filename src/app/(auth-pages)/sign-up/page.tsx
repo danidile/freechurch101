@@ -49,13 +49,15 @@ export default function Signup({
 
   return (
     <div className="container-sub">
-
-      <form
-        className="flex-1 flex flex-col min-w-96 my-20 shadow-xl p-5 rounded-xl mx-auto"
-        onSubmit={handleSubmit(convertData)}
-      >
+      <form className="auth-form" onSubmit={handleSubmit(convertData)}>
         <h1 className="text-2xl font-medium">Registrati</h1>
-        
+
+        <p className="text-sm text text-foreground">
+          Hai già un account?
+          <Link className="text-foreground font-medium underline" href="/login">
+            Accedi
+          </Link>
+        </p>
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <Input
             {...register("email")}
@@ -81,12 +83,6 @@ export default function Signup({
           >
             Registrati
           </Button>
-          <p className="text-sm text text-foreground">
-          Hai già un account?
-          <Link className="text-primary font-medium underline" href="/login">
-            Accedi
-          </Link>
-        </p>
         </div>
       </form>
     </div>

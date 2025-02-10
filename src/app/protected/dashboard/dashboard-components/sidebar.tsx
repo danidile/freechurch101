@@ -1,3 +1,4 @@
+import logoutTest from "@/app/components/logOutAction";
 import {Image, Link} from "@heroui/react";
 
 export default function Sidebar() {
