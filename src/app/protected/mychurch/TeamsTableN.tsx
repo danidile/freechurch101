@@ -17,7 +17,6 @@ import {
   user,
 } from "@heroui/react";
 import { useState } from "react";
-import { PressEvent } from "@react-types/shared";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useForm, useFormContext } from "react-hook-form";
 
@@ -53,7 +52,7 @@ export default function TeamsTableN({
   };
   //FINE CODICE PER FAR FUNZIONARE I CHIP
 
-  const addMember = (e: PressEvent) => {
+  const addMember = (e: ProgressEvent) => {
     const usersNumber: number = users.length + 1;
     const newUser = {
       id: usersNumber,
@@ -88,7 +87,7 @@ export default function TeamsTableN({
               className="hidden"
               defaultValue={team.teamName}
             />
-            <Button
+            {/* <Button
               size="lg"
               color="primary"
               variant="flat"
@@ -96,7 +95,7 @@ export default function TeamsTableN({
               isIconOnly
             >
               <PersonAddAlt1RoundedIcon />
-            </Button>{" "}
+            </Button>{" "} */}
           </div>
         }
         classNames={{
