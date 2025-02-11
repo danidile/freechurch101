@@ -2,6 +2,7 @@
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { Button, Link } from "@heroui/react";
 import { deleteSetList } from './deleteSetlistAction';
+import { MdDelete } from "react-icons/md";
 
 
 export default function ButtonDeleteSetlist({setlistID}: {setlistID : string }) {
@@ -12,8 +13,8 @@ export default function ButtonDeleteSetlist({setlistID}: {setlistID : string }) 
 
 
   return (
-    <Button isIconOnly color="danger" variant="flat" onPress={deleteSetlist}>
-      <DeleteForeverRoundedIcon />
+    <Button fullWidth size='md' color="danger" startContent={<MdDelete />} variant="flat" onPress={deleteSetlist}>
+       Elimina
     </Button>
   );
 }

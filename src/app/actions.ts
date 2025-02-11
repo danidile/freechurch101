@@ -4,11 +4,10 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { TauthSchema,TlostPasswordSchema } from "@/utils/types/auth";
+import { TauthSchema, TlostPasswordSchema } from "@/utils/types/auth";
 import { TresetPasswordSchema } from "@/utils/types/auth";
 
-
-export const signUpAction = async (data : TauthSchema) => {
+export const signUpAction = async (data: TauthSchema) => {
   const email = data.email;
   const password = data.password;
   const supabase = createClient();
@@ -33,21 +32,12 @@ export const signUpAction = async (data : TauthSchema) => {
     return encodedRedirect(
       "success",
       "/sign-up-successfull",
-      "Registrazione effettuata con successo! Controlla la tua mail per il link di verifica.",
+      "Registrazione effettuata con successo! Controlla la tua mail per il link di verifica."
     );
   }
 };
 
-
-
-
-
-
-
-
-
-
-export const signInAction = async (data : TauthSchema) => {
+export const signInAction = async (data: TauthSchema) => {
   const email = data.email;
   const password = data.password;
   const supabase = createClient();
@@ -59,24 +49,12 @@ export const signInAction = async (data : TauthSchema) => {
 
   if (error) {
     return encodedRedirect("error", "/login", error.message);
-    
   }
 
   return redirect("/protected/dashboard");
 };
 
-
-
-
-
-
-
-
-
-
-
-
-export const forgotPasswordAction = async (data : TlostPasswordSchema) => {
+export const forgotPasswordAction = async (data: TlostPasswordSchema) => {
   const email = data.email;
   const supabase = createClient();
   const origin = headers().get("origin");
@@ -94,35 +72,28 @@ export const forgotPasswordAction = async (data : TlostPasswordSchema) => {
     return encodedRedirect(
       "error",
       "/forgot-password",
-      "Could not reset password",
+      "Could not reset password"
     );
   }
 
   return encodedRedirect(
     "success",
     "/forgot-password",
-    "Check your email for a link to reset your password.",
+    "Check your email for a link to reset your password."
   );
 };
-
-
-
-
-
-
-
 
 export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   const supabase = createClient();
 
-  const password =data.password;
-  const confirmPassword = data.confirmPassword ;
+  const password = data.password;
+  const confirmPassword = data.confirmPassword;
 
   if (!password || !confirmPassword) {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Password and confirm password are required",
+      "Password and confirm password are required"
     );
   }
 
@@ -130,7 +101,7 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Passwords do not match",
+      "Passwords do not match"
     );
   }
 
@@ -142,7 +113,7 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Password update failed",
+      "Password update failed"
     );
   }
 
@@ -155,15 +126,12 @@ export const signOutAction = async () => {
   return redirect("/sign-in");
 };
 
-
-
-
 export default async function userData() {
-  const supabase = createClient()
+  const supabase = createClient();
 
-  const { data, error } = await supabase.auth.getUser()
+  const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
-    redirect('/login')
+    redirect("/login");
   }
 
   return data;
@@ -171,9 +139,9 @@ export default async function userData() {
 
 export async function logout() {
   console.log("working till here");
-  const supabase = createClient()
+  const supabase = createClient();
 
-  await supabase.auth.signOut()
+  await supabase.auth.signOut();
 
-  redirect('/auth')
+  redirect("/auth");
 }

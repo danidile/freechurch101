@@ -5,16 +5,11 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { redirect } from "next/navigation";
+import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
 
 export default async function Page() {
-  const userData: basicUserData = await fbasicUserData();
-  if (userData) {
-    const supabase = createClient();
-    const { data: setlist } = await supabase
-      .from("setlist")
-      .select('id, church("church_name"),event_title,date')
-      .eq("church", userData.church_id);
-
+    const userData: basicUserData = await fbasicUserData();
+    const setlists = await getSetListsByChurch(userData.church_id);
     const currentDate = new Date();
     const nextDate = new Date(currentDate);
     nextDate.setDate(currentDate.getDate() - 1);
@@ -27,12 +22,12 @@ export default async function Page() {
       // minute: "2-digit", // "22"
       // second: "2-digit", // "46"
     });
-    console.log(userData);
-    if (setlist) {
+    console.log("setlists");
+    console.log(setlists);
       return (
         <div className="container-sub">
           <h5 className="text-center m-5">Lista eventi</h5>
-          {setlist.map((setlist) => {
+          {setlists && setlists.map((setlist) => {
             const date = new Date(setlist.date);
             const readableDate = date.toLocaleString("it-IT", {
               weekday: "long", // "Sunday"
@@ -68,10 +63,6 @@ export default async function Page() {
           )}
         </div>
       );
-    } else {
-      return redirect("/");
-    }
-  } else {
-    return redirect("/");
-  }
+    
+  
 }
