@@ -92,7 +92,7 @@ export interface TeventBasics {
   type: string;
   title: string;
   date: string;
-  event_title: string;
+  event_title?: string;
 }
 
 export interface Tsong {
