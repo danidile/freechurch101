@@ -164,19 +164,29 @@ export type profileT = {
 };
 
 export type setListSongT = {
-  id: string;
-  songId: string;
-  song_title: string;
-  author: string;
-  key: string;
-  lyrics: string;
-  upload_key: string;
-  order: number;
+  id?: string;
+  songId?: string;
+  song_title?: string;
+  author?: string;
+  key?: string;
+  lyrics?: string;
+  upload_key?: string;
+  order?: number;
+
+
+
+
+  isSong?: boolean;
+  isTitle?: boolean;
+  duration?: string;
+  tonalita?: string;
 };
 
 export type setListT = {
+
   id: string;
   event_title: string;
   date: string;
   setListSongs?: setListSongT[];
+  type?: string;
 };
