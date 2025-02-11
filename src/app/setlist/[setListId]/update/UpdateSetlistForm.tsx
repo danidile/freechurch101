@@ -1,5 +1,5 @@
 "use client";
-import { eventSchema } from "@/utils/types/types";
+import { eventSchema, setListSongT, setListT } from "@/utils/types/types";
 import {
   Button,
   Card,
@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForever";
-import { addSetlist } from "./addSetlistAction";
+import {  updateSetlist } from "./addSetlistAction";
 import { Reorder, useDragControls, useMotionValue } from "framer-motion";
 import {
   Tsections,
@@ -26,12 +26,10 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
 export default function UpdateSetlistForm({
   songsList,
-  setlistsongs,
   setlistData,
 }: {
   songsList: TsongNameAuthor[];
-  setlistsongs: any;
-  setlistData: any;
+  setlistData: setListT;
 }) {
   const keys = [
     { key: "A" },
@@ -48,13 +46,11 @@ export default function UpdateSetlistForm({
     { key: "G#" },
   ];
   const newSongList = songsList;
-  const [state, setState] = useState<Tsections[]>(setlistsongs);
-  const [eventDetails, setEventDetails] = useState<TeventBasics>(setlistData);
+  const [state, setState] = useState<setListSongT[]>(setlistData.setListSongs);
+  const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
   const [eventIsOther, setEventIsOther] = useState(false);
   let x: string;
-  console.log("setlistData");
 
-  console.log(setlistData);
 
   const tipoEvento = [
     "Life Celebration",
@@ -70,15 +66,11 @@ export default function UpdateSetlistForm({
       x = JSON.stringify(Math.floor(Math.random() * 10000000 + 1));
       const id = target.id;
       let randomN = Math.floor(Math.random() * 1000000);
+      
       setState((section) => [
         ...section,
         {
-          id: randomN,
-          key: x,
-          isSong: true,
-          isTitle: false,
-          duration: "10min",
-          tonalita: "A",
+          
         },
       ]);
     }
@@ -117,7 +109,7 @@ export default function UpdateSetlistForm({
     const target = event.currentTarget as HTMLInputElement;
     setValue("eventTitle", target.value);
 
-    setEventDetails({ ...eventDetails, title: target.value });
+    setEventDetails({ ...eventDetails, event_title: target.value });
   };
 
   const convertData = async () => {
@@ -130,7 +122,7 @@ export default function UpdateSetlistForm({
       });
     });
 
-    addSetlist(watchAllFields);
+    updateSetlist(watchAllFields);
   };
   const dragControls = useDragControls();
 

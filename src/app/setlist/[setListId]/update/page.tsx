@@ -2,7 +2,7 @@ import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
 import { getSongs } from "@/hooks/GET/getSongs";
 import { getSetList } from "@/hooks/GET/getSetList";
 import UpdateSetlistForm from "./UpdateSetlistForm";
-import { setListSongT } from "@/utils/types/types";
+import { setListSongT, setListT } from "@/utils/types/types";
 interface TsongNameAuthor {
   id: string;
   author: string;
@@ -13,16 +13,15 @@ export default async function songs({
 }: {
   params: { setListId: string };
 }) {
-  const setlistData: any = await getSetList(params.setListId);
+  let setlistData: setListT = await getSetList(params.setListId);
   let setlistsongs: setListSongT[] = await getSetListSongs(params.setListId);
-
+  setlistData.setListSongs =setlistsongs;
   const songs = await getSongs();
   
     return (
       <div className="container-sub">
         <UpdateSetlistForm
           setlistData={setlistData}
-          setlistsongs={setlistsongs}
           songsList={songs}
         />
       </div>

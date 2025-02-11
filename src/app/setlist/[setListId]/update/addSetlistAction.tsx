@@ -1,6 +1,7 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
+import { setListT } from "@/utils/types/types";
 type formValues = {
   eventType: string;
   eventTitle: string;
@@ -14,22 +15,25 @@ type formValues = {
   }[];
 };
 
-export const addSetlist = async (formData: formValues) => {
+export const updateSetlist = async (formData: formValues) => {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log(formData);
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user?.id)
-    .single();
-  const church: string = profile.church;
+
+
+// COMPARING DATA
+// const originalSetlist: setListT[] = [...];  // Original data (you would get this from your database or initial state)
+// let currentSetlist: setListT[] = formData;    // Current data, which may have been altered
+
+// END OF COMPARING DATA
+
+
+
+
   const { data, error } = await supabase
     .from("setlist")
     .insert({
-      church: church,
       created_by: user?.id,
       date: formData.date,
       event_title: formData.eventTitle,
