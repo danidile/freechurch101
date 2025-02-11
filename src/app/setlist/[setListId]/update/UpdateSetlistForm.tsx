@@ -52,9 +52,9 @@ export default function UpdateSetlistForm({
   const [eventDetails, setEventDetails] = useState<TeventBasics>(setlistData);
   const [eventIsOther, setEventIsOther] = useState(false);
   let x: string;
-  console.log("state");
+  console.log("setlistData");
 
-  console.log(state);
+  console.log(setlistData);
 
   const tipoEvento = [
     "Life Celebration",
