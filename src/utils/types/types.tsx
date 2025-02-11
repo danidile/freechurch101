@@ -80,18 +80,19 @@ export type TchurchMinimalData = z.infer<
 export interface Tsections {
   id: number;
   key: string;
-  isSong: boolean;
-  isTitle: boolean;
+  isSong?: boolean;
+  isTitle?: boolean;
   titleText?: string;
   description?: string;
   duration?: string;
   songId?: string;
-  tonalita: string;
+  tonalita?: string;
 }
 export interface TeventBasics {
   type: string;
   title: string;
   date: string;
+  event_title: string;
 }
 
 export interface Tsong {

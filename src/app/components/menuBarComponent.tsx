@@ -67,6 +67,13 @@ export default function MenuBarComponent({
               </TransitionLink>
             </NavbarItem>
           )}
+          {userData.loggedIn && (
+            <NavbarItem>
+              <TransitionLink aria-current="page" href="/people">
+                People
+              </TransitionLink>
+            </NavbarItem>
+          )}
         </NavbarContent>
 
         <UserDataMenu userData={userData} />

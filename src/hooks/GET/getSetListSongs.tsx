@@ -7,7 +7,7 @@ export const getSetListSongs = async (setlistId: unknown) => {
   const supabase = createClient();
   const { data ,error } = await supabase
   .from('setlist-songs')
-  .select("id, song(song_title, author, lyrics, upload_key),global_song(song_title, author, lyrics, upload_key),key,notes,order")
+  .select("id, song(id, song_title, author, lyrics, upload_key),global_song(song_title, author, lyrics, upload_key),key,notes,order")
   .eq('setlist_id', setlistId);
   
   if(error){
@@ -19,6 +19,7 @@ export const getSetListSongs = async (setlistId: unknown) => {
       if(song.song){
       return {
         id:song.id,
+        songId: song.song.id,
         songTitle: song.song.song_title,
         author: song.song.author,
         lyrics: song.song.lyrics,

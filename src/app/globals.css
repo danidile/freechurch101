@@ -686,7 +686,7 @@ tbody tr .tablecellnewteams {
   border-radius: 12px;
   padding: 10px;
 }
-
+/* SETLIST SECTION */
 .setlist-song {
   padding: 1rem;
   gap: 20px;
@@ -698,6 +698,16 @@ tbody tr .tablecellnewteams {
   justify-content: center;
   grid-template-columns: 5fr 1fr 1fr;
 }
+.top-settings-bar{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-end
+
+  
+}
+
+
 .key-button {
   display: flex;
   flex-direction: row;
