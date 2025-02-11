@@ -55,7 +55,7 @@ if(width > 1100){
             <>
               <ModalHeader className="flex flex-col gap-1"></ModalHeader>
               <ModalBody>
-                <ChordProViewComponent songData={songData}/>
+                <ChordProViewComponent setListSong={songData}/>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
@@ -107,7 +107,7 @@ if(width > 1100){
             <>
               <ModalHeader className="flex flex-col gap-1"></ModalHeader>
               <ModalBody>
-                <ChordProViewComponent songData={songData}/>
+                <ChordProViewComponent setListSong={songData}/>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

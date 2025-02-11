@@ -17,13 +17,16 @@ import CopyLinkButtonWithText from "@/app/components/CopyLinkButtonWithText";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
 import { MdMoreVert } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import { setListT } from "@/utils/types/types";
 
 export default async function Page({
   params,
 }: {
   params: { setListId: string };
 }) {
-  const setlistData:any = await getSetList(params.setListId);
+  const setlistData: setListT = await getSetList(params.setListId);
+  console.log("setlistData");
+  console.log(setlistData);
   let setlistsongs = await getSetListSongs(params.setListId);
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
@@ -33,13 +36,14 @@ export default async function Page({
     day: "numeric", // "10"
   });
 
+
   const userData: basicUserData = await fbasicUserData();
   console.log(setlistsongs);
   return (
     <div className="container-sub">
       <div className="song-presentation-container">
         <h6>
-          <strong>{setlistData.church.church_name}</strong>
+          <strong>{setlistData.event_title}</strong>
         </h6>
         <p>{readableDate}</p>
         <div className="top-settings-bar">
@@ -54,14 +58,9 @@ export default async function Page({
                 <div className="px-1 py-2 flex-col gap-2">
                   <div>
                     <Link href={`/setlist/${params.setListId}/update`}>
-                    <Button
-                      fullWidth
-                      size="md"
-                      variant="light"
-                      
-                    >
-                      <FaEdit /> Aggiorna
-                    </Button>
+                      <Button fullWidth size="md" variant="light">
+                        <FaEdit /> Aggiorna
+                      </Button>
                     </Link>
                   </div>
                   <div className="my-1">
@@ -78,7 +77,7 @@ export default async function Page({
 
         {setlistsongs
           .sort((a, b) => a.order - b.order)
-          .map((song : any, index) => {
+          .map((song: any, index) => {
             const songData = [
               song.songTitle,
               song.author,
@@ -98,14 +97,14 @@ export default async function Page({
                     <p className="center-">
                       <MusicNoteIcon fontSize="small" />
                     </p>
-                    <p className="center-">
+                    <p>
                       <RemoveRedEyeIcon fontSize="small" />
                     </p>
                   </div>
                 )}
                 <div key={"Song" + index} className="setlist-song">
                   <p>
-                    <strong>{song.songTitle}</strong> <br />
+                    <strong>{song.song_title}</strong> <br />
                   </p>
                   <div className="key-button">{song.key}</div>
                   <ModalLyrics songData={song} />

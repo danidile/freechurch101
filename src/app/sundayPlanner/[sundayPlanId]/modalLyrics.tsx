@@ -1,10 +1,10 @@
 "use client"
 
-import { TsongSchema } from "@/utils/types/types";
+import { setListSongT, TsongSchema } from "@/utils/types/types";
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@heroui/react";
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
-export default function ModalLyrics( {songData}:{songData:Array<TsongSchema>}) {
+export default function ModalLyrics( {songData}:{songData:setListSongT}) {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 console.log(songData);
 
@@ -47,7 +47,7 @@ console.log(songData);
             <>
               <ModalHeader className="flex flex-col gap-1"></ModalHeader>
               <ModalBody>
-                <ChordProViewComponent songData={songData}/>
+                <ChordProViewComponent setListSong={songData}/>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

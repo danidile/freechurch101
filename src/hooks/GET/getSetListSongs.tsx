@@ -1,47 +1,47 @@
-// @ts-nocheck
 
 "use server";
 import { createClient } from "@/utils/supabase/server";
+import { setListSongT } from "@/utils/types/types";
 
 export const getSetListSongs = async (setlistId: unknown) => {
   const supabase = createClient();
   const { data ,error } = await supabase
   .from('setlist-songs')
-  .select("id, song(id, song_title, author, lyrics, upload_key),global_song(song_title, author, lyrics, upload_key),key,notes,order")
+  .select("id, song(id, song_title, author,lyrics,upload_key),global_song(song_title, author,lyrics,upload_key),key,order")
   .eq('setlist_id', setlistId);
   
   if(error){
-    // console.log(error)
-
+    console.log(error);
   }else{
 
-    const result = data.map((song ) => {
+    const result:setListSongT[] = data.map((song:any ) => {
       if(song.song){
       return {
         id:song.id,
         songId: song.song.id,
-        songTitle: song.song.song_title,
+        song_title: song.song.song_title,
         author: song.song.author,
+        key: song.key,
+        order: song.order,
         lyrics: song.song.lyrics,
         upload_key: song.song.upload_key,
-        key: song.key,
-        notes: song.notes,
-        order: song.order
       }}
       else{
         return {
           id:song.id,
-          songTitle: song.global_song.song_title,
+          songId: song.global_song.id,
+          song_title: song.global_song.song_title,
           author: song.global_song.author,
           lyrics: song.global_song.lyrics,
-          upload_key: song.global_song.upload_key,
           key: song.key,
-          notes: song.notes,
-          order: song.order
+          order: song.order,
+          upload_key: song.global_song.upload_key,
+
         }
       }
     });
-    console.log("This is my result"+result);
+
+
     return result;
   }
   };

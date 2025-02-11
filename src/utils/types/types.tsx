@@ -154,13 +154,29 @@ export type albumT = {
 };
 
 export type profileT = {
-    map: any;
-    id: string;
-    username: string;
-    email: string;
-    name: string;
-    lastname: string;
-    role: number;
+  map: any;
+  id: string;
+  username: string;
+  email: string;
+  name: string;
+  lastname: string;
+  role: number;
 };
 
+export type setListSongT = {
+  id: string;
+  songId: string;
+  song_title: string;
+  author: string;
+  key: string;
+  lyrics: string;
+  upload_key: string;
+  order: number;
+};
 
+export type setListT = {
+  id: string;
+  event_title: string;
+  date: string;
+  setListSongs?: setListSongT[];
+};
