@@ -23,6 +23,7 @@ export const getSetListSongsCompact = async (setlistId: unknown) => {
         author: song.song.author,
         key: song.key,
         order: song.order,
+        type: "song",
       }}
       else{
         return {
@@ -32,10 +33,13 @@ export const getSetListSongsCompact = async (setlistId: unknown) => {
           lyrics: song.global_song.lyrics,
           key: song.key,
           order: song.order,
+          type: "global-song",
         }
       }
     });
 
+
+    result.sort((a, b) => a.order - b.order);
 
     return result;
   }

@@ -104,6 +104,7 @@ export interface TsongNameAuthor {
   id: string;
   author: string;
   song_title: string;
+  type?: string;
 }
 
 export type formValues = {
@@ -175,7 +176,7 @@ export type setListSongT = {
   lyrics?: string;
   upload_key?: string;
   order?: number;
-
+  type?: string;
 
 
 

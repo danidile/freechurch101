@@ -25,8 +25,7 @@ export default async function Page({
   params: { setListId: string };
 }) {
   const setlistData: setListT = await getSetList(params.setListId);
-  console.log("setlistData");
-  console.log(setlistData);
+
   let setlistsongs = await getSetListSongs(params.setListId);
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
@@ -37,7 +36,6 @@ export default async function Page({
   });
 
   const userData: basicUserData = await fbasicUserData();
-  console.log(setlistsongs);
   return (
     <div className="container-sub">
       <div className="song-presentation-container">

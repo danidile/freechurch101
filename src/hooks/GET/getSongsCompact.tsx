@@ -18,12 +18,24 @@ export const getSongsCompact = async () => {
     console.error("Errore durante il fetch:", error);
   }
   if (customSongs && globalSongs) {
-    // Unisci le due liste
-    const allSongs = [...customSongs, ...globalSongs];
+    // Add a 'source' field to each song indicating the table it came from
+    const customSongsWithSource = customSongs.map(song => ({
+      ...song,
+      type: "songs",  // Mark songs from the 'songs' table
+    }));
+
+    const globalSongsWithSource = globalSongs.map(song => ({
+      ...song,
+      type: "global-songs",  // Mark songs from the 'global-songs' table
+    }));
+
+    // Combine both lists
+    const allSongs = [...customSongsWithSource, ...globalSongsWithSource];
+
+    // Sort the songs by song title
     const sortedSongs = allSongs.sort((a, b) =>
       a.song_title.localeCompare(b.song_title)
     );
-
     return sortedSongs;
   }
 };
