@@ -3,7 +3,6 @@ import { MdMoreVert } from "react-icons/md";
 import { CgArrowsExchange } from "react-icons/cg";
 import {
   eventSchema,
-  searchBar,
   setListSongT,
   setListT,
   songType,
@@ -26,12 +25,11 @@ import {
 } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { PiMusicNotesPlusFill } from "react-icons/pi";
-import { usePathname } from "next/navigation";
-import { updateSetlist } from "./updateSetlist";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
+import { updateSetlist } from "./updateSetlist";
 
 function SelectSongsDrawer({
   songsList,
@@ -164,6 +162,7 @@ export default function UpdateSetlistForm({
   songsList: TsongNameAuthor[];
   setlistData: setListT;
 }) {
+
   const keys = [
     "A",
     "A#",
@@ -208,6 +207,7 @@ export default function UpdateSetlistForm({
         song: song.id,
         song_title: song.song_title,
         author: song.author,
+        type: song.type,
       },
     ]);
   };
@@ -235,6 +235,7 @@ export default function UpdateSetlistForm({
         song: song.id,
         song_title: song.song_title,
         author: song.author,
+        type: song.type,
       };
       if (index === -1) return prevState; // No match found, return original state
 
@@ -259,9 +260,9 @@ export default function UpdateSetlistForm({
     if (page === "create") {
       addSetlist(updatedSetlist);
     }
-    // else if (page === "update") {
-    //   updateSetlist(updatedSetlist, setlistData);
-    // }
+    else if (page === "update") {
+      updateSetlist(updatedSetlist, setlistData);
+    }
   };
 
   const date = new Date();
@@ -285,6 +286,7 @@ export default function UpdateSetlistForm({
                 labelPlacement="outside"
                 size="sm"
                 required
+                defaultValue={eventDetails?.event_title || ""}
                 placeholder="Serata di Preghiera..."
               />
             </div>

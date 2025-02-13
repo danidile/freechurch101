@@ -46,6 +46,7 @@ export const addSetlist = async (formData: setListT) => {
   formData.setListSongs.map(async (section, index) => {
 
     console.log(section);
+    if(section.type === "songs"){
     const { error } = await supabase
       .from("setlist-songs")
       .insert({
@@ -55,7 +56,7 @@ export const addSetlist = async (formData: setListT) => {
         order: index,
       })
       .select();
-    if (error) {
+    } else if(section.type === "global-songs"){
       const { error } = await supabase.from("setlist-songs").insert({
         setlist_id: sectionId,
         global_song: section.song,
@@ -72,7 +73,7 @@ export const addSetlist = async (formData: setListT) => {
   } else {
     return encodedRedirect(
       "success",
-      "/setlist",
+      `/setlist/${sectionId}`,
       "SetList Registrata con successo!"
     );
   }

@@ -39,67 +39,70 @@ export const updateSetlist = async (
       .from("setlist")
       .insert({
         date: updatedSetlist.date,
-        event_title: updatedSetlist.event_title
+        event_title: updatedSetlist.event_title,
       })
       .select()
       .single();
 
-
-
-
-
-      if (setlistError) {
-        console.log("\x1b[41m Error in setlist Data insert \x1b[0m");
-        console.log(setlistError);
-      } else {
-        console.log("\x1b[42m Success in setlist Data insert \x1b[0m");
-      }
+    if (setlistError) {
+      console.log("\x1b[41m Error in setlist Data insert \x1b[0m");
+      console.log(setlistError);
+    } else {
+      console.log("\x1b[42m Success in setlist Data insert \x1b[0m");
+    }
   }
   updatedSetlist.setListSongs.map(async (song, index) => {
-    if (setlistData.setListSongs[index]) {
-      if (song.song !== setlistData.setListSongs[index].song || song.tonalita !== setlistData.setListSongs[index].tonalita) {
-        console.log("\x1b[36m%s\x1b[0m", "UPDATE!!");
-
-        console.log("\x1b[36m%s\x1b[0m", "the");
-        console.log("\x1b[36m%s\x1b[0m", index);
-        console.log("\x1b[36m%s\x1b[0m", "song has been edited");
+    console.log("\x1b[36m%s\x1b[0m", keys[Number(song.key)]);
+      if (song.type === "songs") {
         const { error } = await supabase
           .from("setlist-songs")
-          .update({ song: song.song, key: keys[Number(song.tonalita)], order: index })
-          .eq("id", song.id)
+          .upsert(
+            {
+              id: song.id,
+              setlist_id: updatedSetlist.id,
+              song: song.song,
+              key: keys[Number(song.key)].toString(),
+              order: index,
+              global_song: null,
+              
+            },
+            { onConflict: "id" }
+          )
           .select();
 
-        // if (error) {
-        //   console.error(error.code + " " + error.message);
-        //   console.log("\x1b[36m%s\x1b[0m", "ERRRRRROR");
-        //   return encodedRedirect("error", "/sign-up", error.message);
-        // }
-        // else {
-        //   return encodedRedirect(
-        //     "success",
-        //     `/setlist/${updatedSetlist.id}`,
-        //     "Setlist aggiornata con successo!"
-        //   );
-        // }
-      }
-    } else {
-      const { data, error: insertError } = await supabase
-        .from("setlist-songs")
-        .insert({
-          setlist_id: updatedSetlist.id,
-          song: song.song,
-          key: keys[Number(song.tonalita)] ,
-          order: index,
-        })
-        .select();
-      if (insertError) {
-        console.log("\x1b[41m Error in setlistSong insert \x1b[0m");
-        console.log(insertError);
-      } else {
-        console.log("\x1b[42m Success in setlistSong insert \x1b[0m");
-      }
-    }
-  });
-  return redirect(`/setlist/${setlistData.id}`);
+      } else if (song.type === "global-songs") {
+        const { error } = await supabase
+          .from("setlist-songs")
+          .upsert(
+            {
+              id: song.id,
+              setlist_id: updatedSetlist.id,
+              global_song: song.song,
+              key: keys[Number(song.key)].toString(),
+              order: index,
+              song: null,
+              
+            },
+            { onConflict: "id" }
+          )
+          .select();
 
-}
+      }
+      
+
+      // if (error) {
+      //   console.error(error.code + " " + error.message);
+      //   console.log("\x1b[36m%s\x1b[0m", "ERRRRRROR");
+      //   return encodedRedirect("error", "/sign-up", error.message);
+      // }
+      // else {
+      //   return encodedRedirect(
+      //     "success",
+      //     `/setlist/${updatedSetlist.id}`,
+      //     "Setlist aggiornata con successo!"
+      //   );
+      // }
+    }
+  );
+  return redirect(`/setlist/${setlistData.id}`);
+};
