@@ -25,7 +25,7 @@ import {
 } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  useState } from "react";
+import { useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { PiMusicNotesPlusFill } from "react-icons/pi";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
@@ -59,7 +59,6 @@ function SelectSongsDrawer({
       aggiornaLista(); // Trigger search on Enter key
     }
   };
-
 
   // END SEARCHBAR DATA
 
@@ -95,15 +94,15 @@ function SelectSongsDrawer({
                   <div className="songs-header">
                     <h4>Lista canzoni</h4>
                     <div className="songs-searchbar-form">
-                    <Input
-                      value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)} // Update local state
-                      color="primary"
-                      type="text"
-                      placeholder="Cerca canzone"
-                      className="song-searchbar"
-                      onKeyDown={handleKeyDown} // Listen for Enter key
-                    />
+                      <Input
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)} // Update local state
+                        color="primary"
+                        type="text"
+                        placeholder="Cerca canzone"
+                        className="song-searchbar"
+                        onKeyDown={handleKeyDown} // Listen for Enter key
+                      />
                       <Button
                         color="primary"
                         variant="ghost"
@@ -162,7 +161,6 @@ export default function UpdateSetlistForm({
   songsList: TsongNameAuthor[];
   setlistData: setListT;
 }) {
-
   const keys = [
     "A",
     "A#",
@@ -256,11 +254,12 @@ export default function UpdateSetlistForm({
     };
     console.log("updatedSetlist");
     console.log(updatedSetlist);
+    console.log("setlistData");
+    console.log(setlistData);
 
     if (page === "create") {
       addSetlist(updatedSetlist);
-    }
-    else if (page === "update") {
+    } else if (page === "update") {
       updateSetlist(updatedSetlist, setlistData);
     }
   };
@@ -328,24 +327,17 @@ export default function UpdateSetlistForm({
                   <Select
                     size="sm"
                     className="key-selector"
-                    defaultSelectedKeys={
-                      new Set([
-                        keys.includes(section.key)
-                          ? keys.indexOf(section.key).toString()
-                          : "0",
-                      ])
-                    }
+                    defaultSelectedKeys={new Set([ keys.includes(section.key) ? section.key : keys[0]])} // Ensure it's a valid key
                     {...register(`sections.${index}.key`, {
                       onChange: (e) => {
                         const newKey = e.target.value;
-                        updateKey(index, newKey); // Call the function to update the key field in the state
+                        updateKey(index, newKey); // Pass the actual key value
                       },
                     })}
-                    // onSelectionChange={()=>updateKey(index)}
                     aria-label="tonalità"
                   >
-                    {keys.map((key, index) => (
-                      <SelectItem id={index.toString()} key={index} value={key}>
+                    {keys.map((key) => (
+                      <SelectItem id={key} key={key} value={key}>
                         {key}
                       </SelectItem>
                     ))}
