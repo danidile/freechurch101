@@ -37,12 +37,12 @@ export const updateSetlist = async (
   if (hasChanged) {
     const { data: setlistSuccess, error: setlistError } = await supabase
       .from("setlist")
-      .insert({
+      .update({
         date: updatedSetlist.date,
         event_title: updatedSetlist.event_title,
       })
-      .select()
-      .single();
+      .eq("id", setlistData.id)
+      .select();
 
     if (setlistError) {
       console.log("\x1b[41m Error in setlist Data insert \x1b[0m");
@@ -51,58 +51,69 @@ export const updateSetlist = async (
       console.log("\x1b[42m Success in setlist Data insert \x1b[0m");
     }
   }
+
   updatedSetlist.setListSongs.map(async (song, index) => {
-    console.log("\x1b[36m%s\x1b[0m", keys[Number(song.key)]);
+    let songKey;
+    if (typeof song.key === "number" && !isNaN(song.key)) {
+      songKey = keys[Number(song.key)];
+    } else if (typeof song.key === "string") {
+      songKey = song.key;
+    }
+    // console.log("\x1b[36m%s\x1b[0m", song.key);
+    // console.log("\x1b[36m%s\x1b[0m", songKey);
+
+
+
+
+    if (index <= setlistData.setListSongs.length-1) {
+      
       if (song.type === "songs") {
+        
         const { error } = await supabase
           .from("setlist-songs")
-          .upsert(
-            {
-              id: song.id,
-              setlist_id: updatedSetlist.id,
-              song: song.song,
-              key: keys[Number(song.key)].toString(),
-              order: index,
-              global_song: null,
-              
-            },
-            { onConflict: "id" }
-          )
+          .update({
+            song: song.song,
+            key: songKey,
+            order: index,
+            global_song: null,
+          })
+          .eq("id", song.id)
           .select();
+          console.log("Key");
+          console.log(songKey);
 
       } else if (song.type === "global-songs") {
         const { error } = await supabase
           .from("setlist-songs")
-          .upsert(
-            {
-              id: song.id,
-              setlist_id: updatedSetlist.id,
-              global_song: song.song,
-              key: keys[Number(song.key)].toString(),
-              order: index,
-              song: null,
-              
-            },
-            { onConflict: "id" }
-          )
+          .update({
+            global_song: song.song,
+            key: songKey,
+            order: index,
+            song: null,
+          })
+          .eq("id", song.id)
           .select();
-
+          console.log("Key");
+          console.log(songKey);
       }
-      
 
-      // if (error) {
-      //   console.error(error.code + " " + error.message);
-      //   console.log("\x1b[36m%s\x1b[0m", "ERRRRRROR");
-      //   return encodedRedirect("error", "/sign-up", error.message);
-      // }
-      // else {
-      //   return encodedRedirect(
-      //     "success",
-      //     `/setlist/${updatedSetlist.id}`,
-      //     "Setlist aggiornata con successo!"
-      //   );
-      // }
+    }else{
+      console.log("\x1b[36m%s\x1b[0m", "line"+index+"was NOT already existent");
+
     }
-  );
+
+    // if (error) {
+    //   console.error(error.code + " " + error.message);
+    //   console.log("\x1b[36m%s\x1b[0m", "ERRRRRROR");
+    //   return encodedRedirect("error", "/sign-up", error.message);
+    // }
+    // else {
+    //   return encodedRedirect(
+    //     "success",
+    //     `/setlist/${updatedSetlist.id}`,
+    //     "Setlist aggiornata con successo!"
+    //   );
+    // }
+  });
   return redirect(`/setlist/${setlistData.id}`);
 };

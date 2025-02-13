@@ -52,7 +52,7 @@ export const addSetlist = async (formData: setListT) => {
       .insert({
         setlist_id: sectionId,
         song: section.song,
-        key: keys[Number(section.key)],
+        key: keys[Number(section.key)] ,
         order: index,
       })
       .select();
