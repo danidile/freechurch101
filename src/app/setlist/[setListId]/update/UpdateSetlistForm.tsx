@@ -46,25 +46,22 @@ function SelectSongsDrawer({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [songs, setSongs] = useState(songsList);
+  const [searchText, setSearchText] = useState(""); // Local state for search input
 
-  // SEARCHBAR DATA
-
-  const {
-    register: registerSearchBar,
-    handleSubmit: handleSubmitSearchBar,
-    formState: { isSubmitting },
-  } = useForm<searchBar>({
-    defaultValues: { text: "" },
-  });
-
-  const aggiornaLista = (event: any) => {
-    const filteredSongs = songs.filter(
+  const aggiornaLista = () => {
+    const filteredSongs = songsList.filter(
       (song: songType) =>
-        song.song_title.toLowerCase().includes(event.text.toLowerCase()) ||
-        song.author.toLowerCase().includes(event.text.toLowerCase())
+        song.song_title.toLowerCase().includes(searchText.toLowerCase()) ||
+        song.author.toLowerCase().includes(searchText.toLowerCase())
     );
     setSongs(filteredSongs);
   };
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      aggiornaLista(); // Trigger search on Enter key
+    }
+  };
+
 
   // END SEARCHBAR DATA
 
@@ -99,27 +96,24 @@ function SelectSongsDrawer({
                 <>
                   <div className="songs-header">
                     <h4>Lista canzoni</h4>
-                    <form
-                      className="songs-searchbar-form"
-                      onSubmit={handleSubmitSearchBar(aggiornaLista)}
-                    >
-                      <Input
-                        {...registerSearchBar("text")}
-                        color="primary"
-                        type="text"
-                        placeholder="Cerca canzone"
-                        className="song-searchbar"
-                      />
+                    <div className="songs-searchbar-form">
+                    <Input
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)} // Update local state
+                      color="primary"
+                      type="text"
+                      placeholder="Cerca canzone"
+                      className="song-searchbar"
+                      onKeyDown={handleKeyDown} // Listen for Enter key
+                    />
                       <Button
                         color="primary"
                         variant="ghost"
-                        type="submit"
-                        disabled={isSubmitting}
+                        onPress={() => aggiornaLista()} // Handle search
                       >
-                        {" "}
                         <ManageSearchIcon />
                       </Button>
-                    </form>
+                    </div>
                   </div>
                   <div className="container-song-list">
                     {songs.map((song, index) => {
@@ -232,7 +226,6 @@ export default function UpdateSetlistForm({
         return item; // Return the rest of the items unchanged
       });
     });
-
   };
 
   const updateSongtoSetlist = (song: setListSongT, section: number) => {
@@ -264,9 +257,8 @@ export default function UpdateSetlistForm({
     console.log(updatedSetlist);
 
     if (page === "create") {
-          addSetlist(updatedSetlist);
-
-    } 
+      addSetlist(updatedSetlist);
+    }
     // else if (page === "update") {
     //   updateSetlist(updatedSetlist, setlistData);
     // }
