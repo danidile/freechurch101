@@ -7,12 +7,10 @@ import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { basicUserData } from "@/utils/types/userData";
-import { songsListType,songType } from "@/utils/types/types";
+import { searchBar, songsListType,songType } from "@/utils/types/types";
 
 
-type searchBar = {
-  text: string;
-};
+
 
 
 

@@ -44,9 +44,7 @@ button {
   max-height: 70vh;
 }
 .key-selector {
-  max-width: 100px;
-  margin-right: 0px;
-  float: right;
+  max-width: 80px;
 }
 
 .global-button-1 {
@@ -206,7 +204,22 @@ Image {
   flex-direction: column;
   justify-content: center;
 }
+.setlist-section {
 
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem;
+  border-bottom: 1px solid #dedede;
+}
+.setlist-section p{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 75%;
+}
 .song-list-setlist {
   padding: 4px;
   border-bottom: 1px solid rgb(210, 210, 210);
@@ -698,15 +711,12 @@ tbody tr .tablecellnewteams {
   justify-content: center;
   grid-template-columns: 5fr 1fr 1fr;
 }
-.top-settings-bar{
+.top-settings-bar {
   display: flex;
   width: 100%;
   flex-direction: column;
-  align-items: flex-end
-
-  
+  align-items: flex-end;
 }
-
 
 .key-button {
   display: flex;
@@ -866,6 +876,7 @@ tbody tr .tablecellnewteams {
   flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
@@ -1139,8 +1150,6 @@ tbody tr .tablecellnewteams {
   box-shadow: rgba(88, 88, 88, 0.3) 6px 6px 18px;
 }
 
-
-
 /* PEOPLE SECTION */
 .container-people-list {
   margin-top: 20px;
@@ -1156,10 +1165,7 @@ tbody tr .tablecellnewteams {
   color: black;
   max-width: 500px;
   width: 80vw;
-
-
 }
-
 
 .people-list {
   padding: 1rem;
@@ -1172,37 +1178,30 @@ tbody tr .tablecellnewteams {
   align-items: center;
   margin: 0px auto;
   background-color: #e3e3e3;
-
 }
 .people-list:hover {
   background-color: white;
   transform: scale(1.02);
 }
 
-
-.people-table{
+.people-table {
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-bottom: 1px solid #d8d8d8;
   padding: 15px;
 }
-.people-li-content{
+.people-li-content {
   display: flex;
   flex-direction: row;
   justify-content: center;
   /* gap: 20px; */
   border-left: 1px solid #aaaaaa;
   align-items: center;
-
 }
-
-
-
-
 
 /* LOGIN FORM */
 
-.auth-form{
+.auth-form {
   width: 400px;
   max-width: 80vw;
   display: flex;
@@ -1210,7 +1209,10 @@ tbody tr .tablecellnewteams {
   margin: 20px auto;
   padding: 1.25rem;
   border-radius: 20px;
-  --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
+    0 8px 10px -6px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }

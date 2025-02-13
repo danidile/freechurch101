@@ -1,30 +1,20 @@
-import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
-import { getSongs } from "@/hooks/GET/getSongs";
 import { getSetList } from "@/hooks/GET/getSetList";
 import UpdateSetlistForm from "./UpdateSetlistForm";
 import { setListSongT, setListT } from "@/utils/types/types";
-interface TsongNameAuthor {
-  id: string;
-  author: string;
-  song_title: string;
-}
+import { getSongsCompact } from "@/hooks/GET/getSongsCompact";
+import { getSetListSongsCompact } from "@/hooks/GET/getSetListSongsCompact";
 export default async function songs({
   params,
 }: {
   params: { setListId: string };
 }) {
   let setlistData: setListT = await getSetList(params.setListId);
-  let setlistsongs: setListSongT[] = await getSetListSongs(params.setListId);
-  setlistData.setListSongs =setlistsongs;
-  const songs = await getSongs();
-  
-    return (
-      <div className="container-sub">
-        <UpdateSetlistForm
-          setlistData={setlistData}
-          songsList={songs}
-        />
-      </div>
-    );
-  
+  let setlistsongs: setListSongT[] = await getSetListSongsCompact(params.setListId);
+  setlistData.setListSongs = setlistsongs;
+  const songs = await getSongsCompact();
+  return (
+    <div className="container-sub">
+      <UpdateSetlistForm page="update" setlistData={setlistData} songsList={songs} />
+    </div>
+  );
 }

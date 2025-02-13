@@ -3,11 +3,11 @@
 import { createClient } from "@/utils/supabase/server";
 import { setListSongT } from "@/utils/types/types";
 
-export const getSetListSongs = async (setlistId: unknown) => {
+export const getSetListSongsCompact = async (setlistId: unknown) => {
   const supabase = createClient();
   const { data ,error } = await supabase
   .from('setlist-songs')
-  .select("id, song(id, song_title, author,lyrics,upload_key),global_song(id,song_title, author,lyrics,upload_key),key,order")
+  .select("id, song(id, song_title, author),global_song(id,song_title, author),key,order")
   .eq('setlist_id', setlistId);
   
   if(error){
@@ -23,20 +23,15 @@ export const getSetListSongs = async (setlistId: unknown) => {
         author: song.song.author,
         key: song.key,
         order: song.order,
-        lyrics: song.song.lyrics,
-        upload_key: song.song.upload_key,
       }}
       else{
         return {
           id:song.id,
           song: song.global_song.id,
           song_title: song.global_song.song_title,
-          author: song.global_song.author,
           lyrics: song.global_song.lyrics,
           key: song.key,
           order: song.order,
-          upload_key: song.global_song.upload_key,
-
         }
       }
     });

@@ -1,55 +1,57 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-type formValues = {
-  eventType: string;
-  eventTitle: string;
-  date: string;
-  sections: {
-    sectionType: string;
-    duration: string;
-    description: string;
-    song: string;
-    tonalita: string;
-  }[];
-};
+import { setListT } from "@/utils/types/types";
 
-export const addSetlist = async (formData: formValues) => {
+export const addSetlist = async (formData: setListT) => {
+  const keys = [
+    "A",
+    "A#",
+    "B",
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+  ];
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log(formData);
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user?.id)
     .single();
   const church: string = profile.church;
+
   const { data, error } = await supabase
     .from("setlist")
     .insert({
+      id: formData.id,
       church: church,
       created_by: user?.id,
       date: formData.date,
-      event_title: formData.eventTitle,
+      event_title: formData.event_title,
     })
     .select()
     .single();
 
   const sectionId = data.id;
 
-  console.log(sectionId);
+  formData.setListSongs.map(async (section, index) => {
 
-  formData.sections.map(async (section, index) => {
     console.log(section);
     const { error } = await supabase
       .from("setlist-songs")
       .insert({
         setlist_id: sectionId,
         song: section.song,
-        notes: section.description,
-        key: section.tonalita,
+        key: keys[Number(section.key)],
         order: index,
       })
       .select();
@@ -57,8 +59,7 @@ export const addSetlist = async (formData: formValues) => {
       const { error } = await supabase.from("setlist-songs").insert({
         setlist_id: sectionId,
         global_song: section.song,
-        notes: section.description,
-        key: section.tonalita,
+        key: keys[Number(section.key)],
         order: index,
       });
     }

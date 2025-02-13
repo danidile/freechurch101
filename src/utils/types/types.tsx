@@ -107,16 +107,19 @@ export interface TsongNameAuthor {
 }
 
 export type formValues = {
-  eventType: string;
-  church: string;
-  eventTitle: string;
-  date: string;
-  sections: {
+  eventType?: string;
+  church?: string;
+  event_title?: string;
+  date?: string;
+  sections?: {
+    id?: string;
+    song_title?: string;
     sectionType: string;
-    duration: string;
-    description: string;
-    song: string;
-    tonalita: string;
+    duration?: string;
+    description?: string;
+    songId?: string;
+    song?: string;
+    key?: string;
   }[];
 };
 
@@ -165,7 +168,7 @@ export type profileT = {
 
 export type setListSongT = {
   id?: string;
-  songId?: string;
+  song?: string;
   song_title?: string;
   author?: string;
   key?: string;
@@ -184,9 +187,13 @@ export type setListSongT = {
 
 export type setListT = {
 
-  id: string;
-  event_title: string;
-  date: string;
+  id?: string;
+  event_title?: string;
+  date?: string;
   setListSongs?: setListSongT[];
   type?: string;
+};
+
+export type searchBar = {
+  text: string;
 };
