@@ -1,6 +1,6 @@
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
-import {  Divider } from "@heroui/react";
+import { Divider } from "@heroui/react";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import { setListSongT, setListT } from "@/utils/types/types";
 export default async function Page({
@@ -8,8 +8,8 @@ export default async function Page({
 }: {
   params: { setListId: string };
 }) {
-  const setlistData:setListT  = await getSetList(params.setListId);
-  const setlistsongs:setListSongT[] = await getSetListSongs(params.setListId);
+  const setlistData: setListT = await getSetList(params.setListId);
+  const setlistsongs: setListSongT[] = await getSetListSongs(params.setListId);
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"
@@ -28,12 +28,12 @@ export default async function Page({
 
           {setlistsongs
             .sort((a, b) => a.order - b.order)
-            .map((song:setListSongT, index) => {
+            .map((song: setListSongT, index) => {
               console.log("song");
               console.log(song);
               return (
                 <>
-                  <ChordProViewComponent setListSong={song}  />
+                  <ChordProViewComponent setListSong={song} />
                   <Divider className="my-14" />
                 </>
               );

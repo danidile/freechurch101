@@ -1,162 +1,300 @@
 "use client";
-import { eventSchema, setListSongT, setListT } from "@/utils/types/types";
+import { MdMoreVert } from "react-icons/md";
+import { CgArrowsExchange } from "react-icons/cg";
+import {
+  eventSchema,
+  searchBar,
+  setListSongT,
+  setListT,
+  songType,
+} from "@/utils/types/types";
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import {
   Button,
-  Card,
-  CardBody,
   Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Select,
   SelectItem,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+  useDisclosure,
 } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { Autocomplete, AutocompleteItem } from "@heroui/react";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForever";
-import {  updateSetlist } from "./addSetlistAction";
-import { Reorder, useDragControls, useMotionValue } from "framer-motion";
-import {
-  Tsections,
-  TeventBasics,
-  TsongNameAuthor,
-  Tsong,
-  formValues,
-} from "@/utils/types/types";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import { useEffect, useState } from "react";
+import { TsongNameAuthor, formValues } from "@/utils/types/types";
+import { PiMusicNotesPlusFill } from "react-icons/pi";
+import { usePathname } from "next/navigation";
+import { updateSetlist } from "./updateSetlist";
+import { addSetlist } from "../../addSetlist/addSetlistAction";
+
+function SelectSongsDrawer({
+  songsList,
+  addOrUpdatefunction,
+  type,
+  section,
+}: {
+  type: string;
+  songsList: TsongNameAuthor[];
+  addOrUpdatefunction: (song: setListSongT, section: number) => void;
+  section: number;
+}) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [songs, setSongs] = useState(songsList);
+
+  // SEARCHBAR DATA
+
+  const {
+    register: registerSearchBar,
+    handleSubmit: handleSubmitSearchBar,
+    formState: { isSubmitting },
+  } = useForm<searchBar>({
+    defaultValues: { text: "" },
+  });
+
+  const aggiornaLista = (event: any) => {
+    const filteredSongs = songs.filter(
+      (song: songType) =>
+        song.song_title.toLowerCase().includes(event.text.toLowerCase()) ||
+        song.author.toLowerCase().includes(event.text.toLowerCase())
+    );
+    setSongs(filteredSongs);
+  };
+
+  // END SEARCHBAR DATA
+
+  return (
+    <>
+      {type === "add" && (
+        <Button onPress={onOpen}>
+          Aggiungi canzone
+          <PiMusicNotesPlusFill />
+        </Button>
+      )}
+      {type === "update" && (
+        <Button
+          size="sm"
+          isIconOnly
+          variant="light"
+          className="p-0"
+          onPress={onOpen}
+        >
+          <CgArrowsExchange />
+        </Button>
+      )}
+
+      <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
+        <DrawerContent>
+          {(onClose) => (
+            <>
+              <DrawerHeader className="flex flex-col gap-1">
+                Aggiungi Canzone
+              </DrawerHeader>
+              <DrawerBody>
+                <>
+                  <div className="songs-header">
+                    <h4>Lista canzoni</h4>
+                    <form
+                      className="songs-searchbar-form"
+                      onSubmit={handleSubmitSearchBar(aggiornaLista)}
+                    >
+                      <Input
+                        {...registerSearchBar("text")}
+                        color="primary"
+                        type="text"
+                        placeholder="Cerca canzone"
+                        className="song-searchbar"
+                      />
+                      <Button
+                        color="primary"
+                        variant="ghost"
+                        type="submit"
+                        disabled={isSubmitting}
+                      >
+                        {" "}
+                        <ManageSearchIcon />
+                      </Button>
+                    </form>
+                  </div>
+                  <div className="container-song-list">
+                    {songs.map((song, index) => {
+                      return (
+                        <div
+                          key={song.id}
+                          onClick={() => {
+                            addOrUpdatefunction(song, section);
+                            onClose();
+                          }}
+                        >
+                          <div key={song.id}>
+                            <p key={song.id}>
+                              {song.song_title}
+                              <br />
+                              {song.author && <small>{song.author}</small>}
+                              {!song.author && <small>Unknown</small>}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              </DrawerBody>
+              <DrawerFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Action
+                </Button>
+              </DrawerFooter>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
+    </>
+  );
+}
 
 export default function UpdateSetlistForm({
+  page,
   songsList,
   setlistData,
 }: {
+  page: string;
   songsList: TsongNameAuthor[];
   setlistData: setListT;
 }) {
   const keys = [
-    { key: "A" },
-    { key: "A#" },
-    { key: "B" },
-    { key: "C" },
-    { key: "C#" },
-    { key: "D" },
-    { key: "D#" },
-    { key: "E" },
-    { key: "F" },
-    { key: "F#" },
-    { key: "G" },
-    { key: "G#" },
+    "A",
+    "A#",
+    "B",
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
   ];
-  const newSongList = songsList;
-  const [state, setState] = useState<setListSongT[]>(setlistData.setListSongs);
+  const [state, setState] = useState<setListSongT[]>(
+    setlistData?.setListSongs || []
+  );
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
-  const [eventIsOther, setEventIsOther] = useState(false);
   let x: string;
-
-
-  const tipoEvento = [
-    "Life Celebration",
-    "Riunione di Preghiera",
-    "Studio biblico",
-    "Youth Group",
-    "Concerto",
-    eventDetails.event_title,
-  ];
-  const AddSection = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const target = event.currentTarget as HTMLInputElement;
-    if (target) {
-      x = JSON.stringify(Math.floor(Math.random() * 10000000 + 1));
-      const id = target.id;
-      let randomN = Math.floor(Math.random() * 1000000);
-      
-      setState((section) => [
-        ...section,
-        {
-          
-        },
-      ]);
-    }
-  };
 
   const {
     handleSubmit,
-    setValue,
     register,
     watch,
     formState: { isSubmitting },
   } = useForm<formValues>({
     resolver: zodResolver(eventSchema),
   });
-  const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
 
-  // section => section[1] === event.target.id)
-  const removeSection = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const target = event.currentTarget as HTMLInputElement;
-    if (target) {
-      setState(state.filter((section) => section.key != target.id));
-    }
-  };
-  const istypeother = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
-    setEventDetails({ ...eventDetails, type: event.target.value });
-    if (event.target.value == "4") {
-      setEventIsOther(true);
-    } else {
-      setEventIsOther(false);
-    }
-    setValue("eventType", event.target.value);
-    setValue("eventTitle", tipoEvento[Number(event.target.value)]);
-  };
-  const editTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.currentTarget as HTMLInputElement;
-    setValue("eventTitle", target.value);
+  // SEARCHBAR DATA
 
-    setEventDetails({ ...eventDetails, event_title: target.value });
+  // -------------------------------------------
+
+  // -------------------------------------------
+
+  // ADD AND REMOVE SONG TO SETLIST
+  const addSongtoSetlist = (song: setListSongT) => {
+    setState([
+      ...state,
+      {
+        id: crypto.randomUUID(),
+        song: song.id,
+        song_title: song.song_title,
+        author: song.author,
+      },
+    ]);
   };
 
-  const convertData = async () => {
-    watchAllFields.sections.map((section, index) => {
-      const ref = watchAllFields.sections[index].song.split("#");
-      newSongList.map((song, index) => {
-        if (index === Number(ref[1])) {
-          section.song = song.id;
+  const removeSection = (id: string) => {
+    setState(state.filter((section) => section.id !== id));
+  };
+
+  const updateKey = (index: number, value: string) => {
+    setState((prevState) => {
+      // Update the object at the given index
+      return prevState.map((item, idx) => {
+        if (idx === index) {
+          return { ...item, key: value }; // Update the key field of the matched object
         }
+        return item; // Return the rest of the items unchanged
       });
     });
 
-    updateSetlist(watchAllFields);
   };
-  const dragControls = useDragControls();
+
+  const updateSongtoSetlist = (song: setListSongT, section: number) => {
+    setState((prevState) => {
+      const index = prevState.findIndex((s, index) => index === section);
+      const newSong = {
+        song: song.id,
+        song_title: song.song_title,
+        author: song.author,
+      };
+      if (index === -1) return prevState; // No match found, return original state
+
+      const updatedState = [...prevState]; // Create a new array (immutability)
+      updatedState[index] = { ...updatedState[index], ...newSong }; // Update only the found section
+
+      return updatedState; // Set the new state
+    });
+  };
+
+  const convertData = async () => {
+    const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
+    const updatedSetlist: setListT = {
+      id: setlistData?.id || crypto.randomUUID(),
+      event_title: watchAllFields.event_title,
+      date: watchAllFields.date,
+      setListSongs: state,
+    };
+    console.log("updatedSetlist");
+    console.log(updatedSetlist);
+
+    if (page === "create") {
+          addSetlist(updatedSetlist);
+
+    } 
+    // else if (page === "update") {
+    //   updateSetlist(updatedSetlist, setlistData);
+    // }
+  };
+
+  const date = new Date();
+  const todaysDate = date.toISOString().split("T")[0];
 
   return (
     <div className="container-sub">
       <div className="form-div crea-setlist-container">
         <form onSubmit={handleSubmit(convertData)}>
-          <h4>Aggiorna Setlist</h4>
+          <h4>
+            {page === "create" && "Crea"}
+            {page === "update" && "Aggiorna"} Setlist
+          </h4>
 
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
             <div className="gap-1.5">
-              <Select
-                {...register("eventType")}
+              <Input
+                {...register("event_title")}
                 label="Tipo di evento"
+                variant="underlined"
+                labelPlacement="outside"
                 size="sm"
-                selectedKeys={"5"}
-                onChange={istypeother}
-              >
-                {tipoEvento.map((evento: string, index) => (
-                  <SelectItem key={index} value={evento}>
-                    {evento}
-                  </SelectItem>
-                ))}
-              </Select>
-              {eventIsOther && (
-                <Input
-                  {...register("eventTitle")}
-                  type="text"
-                  label="Aggiungi Titolo evento"
-                  variant="bordered"
-                  size="sm"
-                  onChange={editTitle}
-                />
-              )}
+                required
+                placeholder="Serata di Preghiera..."
+              />
             </div>
             <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
               <Input
@@ -165,102 +303,94 @@ export default function UpdateSetlistForm({
                 label="Event Date"
                 variant="bordered"
                 size="sm"
-                defaultValue={eventDetails.date.split("T")[0]}
+                defaultValue={eventDetails?.date.split("T")[0] || todaysDate}
               />
             </div>
 
             <h6 className="mt-6">Struttura</h6>
 
-            <Reorder.Group axis="y" values={state} onReorder={setState}>
-              {state.map((section, index) => {
-                return (
-                  <Reorder.Item value={section} key={section.id}>
-                    <Card className="my-4">
-                      <CardBody>
-                        <Input
-                          name={"type" + section.id}
-                          key={section.id}
-                          value={section.id.toString()}
-                          className="hide-input"
-                        />
-                        
-                        <div className="song-details-selection1">
-                          <Autocomplete
-                            {...register(`sections.${index}.song`)}
-                            label="Seleziona la canzone"
-                            className="max-w-lg autocomplete-mobile-input ac-setlist"
-                            disableAnimation={true}
-                            defaultSelectedKey={section.songId}
-                          >
-                            {newSongList.map((song: Tsong, index) => {
-                              return (
-                                <AutocompleteItem
-                                  key={song.id}
-                                  title={song.song_title}
-                                  description={song.author}
-                                  textValue={
-                                    song.song_title +
-                                    " " +
-                                    song.author +
-                                    " #" +
-                                    index
-                                  }
-                                ></AutocompleteItem>
-                              );
-                            })}
-                          </Autocomplete>
-                          <Select
-                            {...register(`sections.${index}.tonalita`)}
-                            className="key-selector"
-                            size="lg"
-                            items={keys}
-                            defaultSelectedKeys={section.key || "A"}
-                            aria-label="tonalità"
-                          >
-                            {(key) => (
-                              <SelectItem id={key.key} key={key.key}>
-                                {key.key}
-                              </SelectItem>
-                            )}
-                          </Select>
-                          <Button
-                            size="sm"
-                            className=" my-2"
-                            isIconOnly
-                            color="danger"
-                            type="button"
-                            variant="bordered"
-                            id={section.key}
-                            onClick={removeSection}
-                            accessKey={String(index)}
-                          >
-                            <DeleteForeverOutlinedIcon />
-                          </Button>
-                          <Button
-                            variant="light"
-                            key={section.id}
-                            onPointerDown={(event) => dragControls.start(event)}
-                            isIconOnly
-                          >
-                            <DragIndicatorIcon key={section.id} />
-                          </Button>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Reorder.Item>
-                );
-              })}
-            </Reorder.Group>
+            {state.map((section, index) => {
+              return (
+                <div className="setlist-section" key={section.id}>
+                  <Input
+                    name={"type" + section.id}
+                    key={section.id}
+                    value={section.id.toString()}
+                    className="hide-input"
+                    {...register(`sections.${index}.id`)}
+                  />
+                  <p>
+                    <b>
+                      {section.song_title}{" "}
+                      <SelectSongsDrawer
+                        section={index}
+                        type="update"
+                        songsList={songsList}
+                        addOrUpdatefunction={updateSongtoSetlist} // Pass function correctly
+                      />
+                    </b>
+                  </p>
+
+                  <Select
+                    size="sm"
+                    className="key-selector"
+                    defaultSelectedKeys={
+                      new Set([
+                        keys.includes(section.key)
+                          ? keys.indexOf(section.key).toString()
+                          : "0",
+                      ])
+                    }
+                    {...register(`sections.${index}.key`, {
+                      onChange: (e) => {
+                        const newKey = e.target.value;
+                        updateKey(index, newKey); // Call the function to update the key field in the state
+                      },
+                    })}
+                    // onSelectionChange={()=>updateKey(index)}
+                    aria-label="tonalità"
+                  >
+                    {keys.map((key, index) => (
+                      <SelectItem id={index.toString()} key={index} value={key}>
+                        {key}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Popover placement="bottom" showArrow={true}>
+                    <PopoverTrigger>
+                      <Button isIconOnly radius="full" variant="flat" size="sm">
+                        <MdMoreVert className="text-2xl" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <div className="px-1 py-2 flex-col gap-2">
+                        <div className="my-1"></div>
+                        <Button
+                          size="sm"
+                          className="mx-0"
+                          fullWidth
+                          color="danger"
+                          type="button"
+                          variant="light"
+                          id={section.id}
+                          onPress={() => removeSection(section.id)}
+                          accessKey={String(index)}
+                        >
+                          Elimina
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              );
+            })}
             <div className="transpose-button-container">
-              <Button
-                color="primary"
-                variant="flat"
-                type="button"
-                id="Canzone"
-                onClick={AddSection}
-              >
-                Aggiungi Canzone
-              </Button>
+              <SelectSongsDrawer
+                type="add"
+                songsList={songsList}
+                addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
+                section={null}
+              />
             </div>
             <br />
             <Button
@@ -269,9 +399,10 @@ export default function UpdateSetlistForm({
               type="submit"
               disabled={isSubmitting}
             >
-              Crea Setlist
+              Aggiorna Setlist
             </Button>
           </div>
+          <div>{/* <pre>{JSON.stringify(state, null, 2)}</pre> */}</div>
         </form>
       </div>
     </div>
