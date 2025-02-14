@@ -29,19 +29,23 @@ export default function ChordProViewComponent({
   const [count, setCount] = useState(0);
 
   const transposeUp = () => {
-    setCount(count + 1);
-    const newchords = song.transpose(count);
-    const disp = formatter.format(newchords);
-
-    setState(disp);
+    setCount((prevCount) => {
+      const newCount = prevCount + 1;
+      const newchords = song.transpose(newCount); // Use newCount here
+      const disp = formatter.format(newchords);
+      setState(disp);
+      return newCount; // Return updated count
+    });
   };
 
   const transposeDown = () => {
-    setCount(count - 1);
-    const newchords = song.transpose(count);
-    const disp = formatter.format(newchords);
-
-    setState(disp);
+    setCount((prevCount) => {
+      const newCount = prevCount - 1;
+      const newchords = song.transpose(newCount); // Use newCount here
+      const disp = formatter.format(newchords);
+      setState(disp);
+      return newCount; // Return updated count
+    });
   };
   const [viewChords, setViewChords] = useState(true);
 
