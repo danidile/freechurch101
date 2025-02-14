@@ -1,4 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
 import SongslistComponent from "../components/songslistComponent";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "../../utils/supabase/getUserData";
