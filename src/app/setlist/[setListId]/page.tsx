@@ -17,7 +17,8 @@ import CopyLinkButtonWithText from "@/app/components/CopyLinkButtonWithText";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
 import { MdMoreVert } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import { setListT } from "@/utils/types/types";
+import { setListSongT, setListT } from "@/utils/types/types";
+import ViewFullSetListComponent from "./viewFullSetListComponent";
 
 export default async function Page({
   params,
@@ -26,7 +27,7 @@ export default async function Page({
 }) {
   const setlistData: setListT = await getSetList(params.setListId);
 
-  let setlistsongs = await getSetListSongs(params.setListId);
+  let setlistsongs: setListSongT[] = await getSetListSongs(params.setListId);
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"
@@ -112,11 +113,10 @@ export default async function Page({
         <br />
         <br />
         <div className="center- gap-3">
-          <Link href={`/setlist/view/${params.setListId}`}>
-            <Button color="primary" variant="flat">
-              Visualizza set completo
-            </Button>
-          </Link>
+          <ViewFullSetListComponent
+            setlistData={setlistData}
+            setlistsongs={setlistsongs}
+          />
 
           <span className="material-symbols-outlined">
             <CopyLinkButton />

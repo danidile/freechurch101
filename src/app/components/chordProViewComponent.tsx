@@ -6,6 +6,8 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 import { setListSongT } from "@/utils/types/types";
+import { FaPlus,FaMinus } from "react-icons/fa";
+
 export default function ChordProViewComponent({
   setListSong,
 }: {
@@ -60,19 +62,19 @@ export default function ChordProViewComponent({
   return (
     <div>
       <div className="view-selector-container">
-        <p onClick={viewLyric}>Lyrics</p>
-        <p onClick={viewChord}>Chords</p>
+        <p onClick={viewLyric} >Testo</p>
+        <p onClick={viewChord}>Accordi</p>
       </div>
 
       <div>
         <div className="top-song-buttons">
           <div className="transpose-button-container">
-            <p>Transpose</p>
-            <Button variant="flat" onPress={transposeDown}>
-              <RemoveCircleOutlineIcon />
+            <p>Tonalità</p>
+            <Button isIconOnly radius="full" variant="light" onPress={transposeDown} size="lg">
+              <FaMinus />
             </Button>
-            <Button variant="flat" onPress={transposeUp}>
-              <AddCircleOutlineIcon />
+            <Button isIconOnly radius="full" variant="light" onPress={transposeUp} size="lg">
+              <FaPlus />
             </Button>
           </div>
           {/* <Button variant="flat">
