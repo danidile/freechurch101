@@ -1,8 +1,10 @@
 "use client";
 
-import { Divider } from "@heroui/react";
+import { Divider, Tooltip } from "@heroui/react";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import { setListSongT, setListT } from "@/utils/types/types";
+import { IoCloseSharp } from "react-icons/io5";
+
 import {
   Drawer,
   DrawerContent,
@@ -33,17 +35,31 @@ export default function ViewFullSetListComponent({
         Visualizza set completo
       </Button>
 
-      <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="full">
+      <Drawer hideCloseButton isOpen={isOpen} onOpenChange={onOpenChange} size="full">
         <DrawerContent>
           {(onClose) => (
             <>
-              <DrawerHeader className="flex flex-col gap-1 bg-slate-50">
-                <h6>
+              <DrawerHeader className="py-1 px-1 bg-transparent">
+              <Tooltip content="Close" className="">
+                  <Button
+                    isIconOnly
+                    className="text-default-400 mr-0"
+                    size="md"
+                    radius="full"
+                    color="danger"
+                    variant="flat"
+                    onPress={onClose}
+                  >
+                    <IoCloseSharp className="text-red-500 "/>
+                  </Button>
+                </Tooltip>
+                
+              </DrawerHeader>
+              <DrawerBody>
+              <h6>
                   <strong>{setlistData.event_title}</strong>
                 </h6>
                 <p>{readableDate}</p>
-              </DrawerHeader>
-              <DrawerBody>
                 <div className="song-presentation-container">
                   {setlistsongs
                     .sort((a, b) => a.order - b.order)
