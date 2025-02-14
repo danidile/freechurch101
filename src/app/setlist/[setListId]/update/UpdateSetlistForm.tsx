@@ -116,18 +116,24 @@ function SelectSongsDrawer({
                     {songs.map((song, index) => {
                       return (
                         <div
+                          className="song-card-searchBar"
+                          style={{ cursor: "pointer" }}
+
                           key={song.id}
                           onClick={() => {
                             addOrUpdatefunction(song, section);
                             onClose();
                           }}
                         >
-                          <div key={song.id}>
-                            <p key={song.id}>
+                          <div className="song-card-searchBar">
+                            <p className="song-card-searchBar">
                               {song.song_title}
                               <br />
-                              {song.author && <small>{song.author}</small>}
-                              {!song.author && <small>Unknown</small>}
+                              {song.author ? (
+                                <small>{song.author}</small>
+                              ) : (
+                                <small>Unknown</small>
+                              )}
                             </p>
                           </div>
                         </div>
@@ -314,20 +320,24 @@ export default function UpdateSetlistForm({
                   />
                   <p>
                     <b>
-                      {section.song_title}{" "}
                       <SelectSongsDrawer
                         section={index}
                         type="update"
                         songsList={songsList}
                         addOrUpdatefunction={updateSongtoSetlist} // Pass function correctly
                       />
+                      {section.song_title}{" "}
                     </b>
                   </p>
 
                   <Select
                     size="sm"
                     className="key-selector"
-                    defaultSelectedKeys={new Set([ keys.includes(section.key) ? section.key : keys[0]])} // Ensure it's a valid key
+                    defaultSelectedKeys={
+                      new Set([
+                        keys.includes(section.key) ? section.key : keys[0],
+                      ])
+                    } // Ensure it's a valid key
                     {...register(`sections.${index}.key`, {
                       onChange: (e) => {
                         const newKey = e.target.value;

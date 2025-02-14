@@ -52,7 +52,7 @@ export const addSetlist = async (formData: setListT) => {
       .insert({
         setlist_id: sectionId,
         song: section.song,
-        key: keys[Number(section.key)] ,
+        key: section.key ,
         order: index,
       })
       .select();
@@ -60,7 +60,7 @@ export const addSetlist = async (formData: setListT) => {
       const { error } = await supabase.from("setlist-songs").insert({
         setlist_id: sectionId,
         global_song: section.song,
-        key: keys[Number(section.key)],
+        key: section.key,
         order: index,
       });
     }

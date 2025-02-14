@@ -205,7 +205,6 @@ Image {
   justify-content: center;
 }
 .setlist-section {
-
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -214,7 +213,7 @@ Image {
   padding: 1rem;
   border-bottom: 1px solid #dedede;
 }
-.setlist-section p{
+.setlist-section p {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -276,13 +275,12 @@ Image {
   border-radius: 12px;
 }
 .transpose-button-container {
-  display: flex;
 
+  display: flex;
   max-width: 400px;
-  margin: 10px 0px;
+  margin: 0px 10px;
   gap: 15px;
-  margin: 0px auto;
-  justify-content: center;
+  justify-content:left;
   align-items: center;
 }
 
@@ -350,15 +348,24 @@ Image {
   background-color: #ffffff;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
-
+.song-card-searchBar {
+  cursor: pointer !important;
+  display: inline-block; /* Ensures consistency across elements */
+}
+.song-card-searchBar *,
+.song-card-searchBar p,
+.song-card-searchBar small {
+  cursor: inherit !important; /* Forces child elements to inherit the cursor */
+}
 .chord-sheet .chord {
   color: rgb(130, 29, 29);
   font-weight: 800;
   line-height: 0.9rem;
-  padding: 0px;
+  padding: 0px 2px;
   margin: 0px;
   font-family: "Space Mono", monospace;
 }
+
 .chord-sheet .lyrics {
   font-size: 1rem;
 }
@@ -380,8 +387,8 @@ Image {
   font-weight: 800;
 }
 .song-presentation-container {
-  max-width: 800px;
-  border: 1px solid #e3e3e3;
+  max-width: 1000px;
+  border: 1px solid #f8f8f8;
   background-color: white;
   padding: 15px;
   margin: 0px auto;
@@ -444,7 +451,7 @@ tbody tr .tablecellnewteams {
   gap: 15px;
   max-width: 800px;
   margin: 0px auto;
-  padding: 0px 10px;
+  padding: 10px 10px;
   justify-content: flex-start;
   align-items: center;
 }
@@ -1135,6 +1142,10 @@ tbody tr .tablecellnewteams {
   .preferite-feed-container {
     width: 350px;
     columns: 1;
+  }
+  .song-presentation-container {
+    border: 0px solid #f8f8f8;
+    padding: 0px;
   }
 }
 

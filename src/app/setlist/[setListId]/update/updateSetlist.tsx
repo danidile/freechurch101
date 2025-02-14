@@ -62,13 +62,8 @@ export const updateSetlist = async (
     // console.log("\x1b[36m%s\x1b[0m", song.key);
     // console.log("\x1b[36m%s\x1b[0m", songKey);
 
-
-
-
-    if (index <= setlistData.setListSongs.length-1) {
-      
+    if (index <= setlistData.setListSongs.length - 1) {
       if (song.type === "songs") {
-        
         const { error } = await supabase
           .from("setlist-songs")
           .update({
@@ -79,9 +74,8 @@ export const updateSetlist = async (
           })
           .eq("id", song.id)
           .select();
-          console.log("Key");
-          console.log(songKey);
-
+        console.log("Key");
+        console.log(songKey);
       } else if (song.type === "global-songs") {
         const { error } = await supabase
           .from("setlist-songs")
@@ -93,13 +87,42 @@ export const updateSetlist = async (
           })
           .eq("id", song.id)
           .select();
-          console.log("Key");
-          console.log(songKey);
+        console.log("Key");
+        console.log(songKey);
       }
+    } else {
+      console.log(
+        "\x1b[36m%s\x1b[0m",
+        "line" + index + "was NOT already existent"
+      );
+      if (song.type === "songs") {
+        const { error } = await supabase
+          .from("setlist-songs")
+          .insert({
+            setlist_id: setlistData.id,
+            song: song.song,
+            key: songKey,
+            order: index,
+            global_song: null,
+          })
+          .select();
+        console.log("Key");
+        console.log(songKey);
+      } else if (song.type === "global-songs") {
+        const { error } = await supabase
+          .from("setlist-songs")
+          .insert({
+            setlist_id: setlistData.id,
 
-    }else{
-      console.log("\x1b[36m%s\x1b[0m", "line"+index+"was NOT already existent");
-
+            global_song: song.song,
+            key: songKey,
+            order: index,
+            song: null,
+          })
+          .select();
+        console.log("Key");
+        console.log(songKey);
+      }
     }
 
     // if (error) {

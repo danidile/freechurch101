@@ -19,6 +19,9 @@ export default function Song({
 }) {
   const chordSheet = songData.lyrics;
   const parser = new ChordSheetJS.ChordProParser();
+  console.log("parser");
+  if(parser){
+  console.log(parser);}
   const song = parser.parse(chordSheet);
   const formatter = new ChordSheetJS.HtmlTableFormatter();
 
