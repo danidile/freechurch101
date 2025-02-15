@@ -34,7 +34,7 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
     router.push(href);
 
     // Wait for the pathname to change, with a timeout (max 5 sec)
-    const maxWaitTime = 500; // 5 seconds
+    const maxWaitTime = 1500; // 5 seconds
     const checkInterval = 50;
     let elapsedTime = 0;
 

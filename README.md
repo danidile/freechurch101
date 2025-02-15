@@ -1,28 +1,19 @@
-# freechurch101
+# ChurchLab 
 
-Church will start as a platform for worship leaders and pastors to plan theor sunday service.
-We want to provide for them all the tools to serve and make it easy for the volunteers and offer a playform easy for anyone to use.
-### Phase1
-The first service that ChurchLab will offer is a simple databse woth all the lyrics anf chirds from all the italian worship leqders.
-### Phase2
-offer a sistem to plan sunsay services.
-### Phase3
+ChurchLab will start as a platform for worship leaders and pastors to plan their services.
+We want to provide them all the tools to serve and make it easy for the volunteers and offer a platform easy for anyone to use.
+### Phase 1
+The first service that ChurchLab will offer is a databse with all the lyrics and chords from all the italian worship leaders and offer a sistem to plan sunsay services.
+### Phase 2
+
+### Phase 3
 a platform to plan youth meetings. who leads worship? presents, games budget?? food? who is available for car rides?
 
-
-
-#### Phase 1
-songs fields:
-- Song Title
-- Author
-- Key
-- Lyrics
-- Youtube link to listen to original Song
-- 
-
-
-
-
+## Features in developement:
+- Recentemente è stata completata la sezione per le setlist. Ora si possono creare, aggiornare  ed eliminare le setlist. 
+- Le setlist verrano rinominate in "Eventi" e nella stessa schermata verrà aggiunta la possibiltà di selezionare i membri della chiesa che saranno di turno in quel "evento".
+- Nella sezione People verrà aggiunta la possibilità di aggiungere informazioni al profilo dell'utente. Questa funzione sarà accessibile dall'amministratore, o team Leader della chiesa.
+- Verrà aggiunto un step dopo la creazione dell'account, quando un utente si iscrive e seleziona la chiesa di appartenenza l'inserimento alla chiesa avverrà solo dopo che l'admin della chiesa avrà confermato la sua appartenenza alla chiesa.
 
 
 # features to add and work on:
@@ -35,3 +26,8 @@ songs fields:
 7. connect to domain.
 8. work on SEO
 
+
+
+
+
+Curre

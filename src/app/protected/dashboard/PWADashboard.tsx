@@ -26,13 +26,13 @@ export default function PWADashboard() {
           />{" "}
           Membri Chiesa
         </Link>
-        <Link className="song-list text-black" href="/protected/mychurch">
+        <Link className="song-list text-black" href="/protected/teams">
           <Image
             className="dashboard-icon"
             src="/images/dashboard/church.png"
             alt=""
           />{" "}
-          La mia chiesa
+          Teams
         </Link>
         <Link className="song-list text-black">
           {" "}
