@@ -133,9 +133,9 @@ export type TeamMember = {
 };
 
 export type Team = {
-  teamId: string;
-  teamName: string;
-  teamMembers: TeamMember[];
+  id: string;
+  team_name: string;
+  teamMembers?: TeamMember[];
 };
 
 export type eventPlanner = {
@@ -177,9 +177,7 @@ export type setListSongT = {
   upload_key?: string;
   order?: number;
   type?: string;
-
-
-
+  global_song?: string;
   isSong?: boolean;
   isTitle?: boolean;
   duration?: string;
@@ -187,7 +185,6 @@ export type setListSongT = {
 };
 
 export type setListT = {
-
   id?: string;
   event_title?: string;
   date?: string;
@@ -197,4 +194,11 @@ export type setListT = {
 
 export type searchBar = {
   text: string;
+};
+
+export type churchMembersT = {
+  id?: string;
+  email?: string;
+  name?: string;
+  lastname?: string;
 };

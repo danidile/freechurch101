@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { setListSongT } from "@/utils/types/types";
 
-export const getSetListSongs = async (setlistId: unknown) => {
+export const getSetListSongs = async (setlistId: string) => {
   const supabase = createClient();
   const { data ,error } = await supabase
   .from('setlist-songs')

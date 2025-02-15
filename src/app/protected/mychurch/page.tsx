@@ -31,8 +31,8 @@ export default async function App() {
       }
 
       return {
-        teamId: churchTeam.id,
-        teamName: churchTeam.team_name,
+        id: churchTeam.id,
+        team_name: churchTeam.team_name,
         teamMembers: teamMembersFull || [],
       };
     })

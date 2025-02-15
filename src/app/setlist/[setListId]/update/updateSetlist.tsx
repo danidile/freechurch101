@@ -1,34 +1,18 @@
 "use server";
 import { setListT } from "@/utils/types/types";
-import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { encodedRedirect } from "@/utils/utils";
 
 export const updateSetlist = async (
   updatedSetlist: setListT,
   setlistData: setListT
 ) => {
   let hasChanged: boolean = false;
-  const keys = [
-    "A",
-    "A#",
-    "B",
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#",
-  ];
-  if (updatedSetlist.id !== setlistData.id) {
-    return redirect("/setlist");
-  }
-  if (updatedSetlist.date !== setlistData.date) {
-    hasChanged = true;
-  }
-  if (updatedSetlist.event_title !== setlistData.event_title) {
+
+  if (
+    updatedSetlist.date !== setlistData.date.split("T")[0] ||
+    updatedSetlist.event_title !== setlistData.event_title
+  ) {
     hasChanged = true;
   }
 
@@ -50,79 +34,59 @@ export const updateSetlist = async (
     } else {
       console.log("\x1b[42m Success in setlist Data insert \x1b[0m");
     }
+  } else {
+    console.log("\x1b[42m Setlist Data was not changed \x1b[0m");
   }
 
-  updatedSetlist.setListSongs.map(async (song, index) => {
-    let songKey;
-    if (typeof song.key === "number" && !isNaN(song.key)) {
-      songKey = keys[Number(song.key)];
-    } else if (typeof song.key === "string") {
-      songKey = song.key;
-    }
-    // console.log("\x1b[36m%s\x1b[0m", song.key);
-    // console.log("\x1b[36m%s\x1b[0m", songKey);
+  // mappo attraverso le setlist di setlistData e inserisco il valore della setlist dentro updatedSetlist con lo stesso index
+  // in questo modo garantisco che gli setlistID sono gli stessi e nel caso in cui devo cancellare un campo devo solo
+  // controllare se il campo song del della setlist è vuota. Se è vuola vuol dire che c'era una setlist ma è stat cancellata
 
-    if (index <= setlistData.setListSongs.length - 1) {
-      if (song.type === "songs") {
-        const { error } = await supabase
-          .from("setlist-songs")
-          .update({
-            song: song.song,
-            key: songKey,
-            order: index,
-            global_song: null,
-          })
-          .eq("id", song.id)
-          .select();
-        console.log("Key");
-        console.log(songKey);
-      } else if (song.type === "global-songs") {
-        const { error } = await supabase
-          .from("setlist-songs")
-          .update({
-            global_song: song.song,
-            key: songKey,
-            order: index,
-            song: null,
-          })
-          .eq("id", song.id)
-          .select();
-        console.log("Key");
-        console.log(songKey);
+  setlistData.setListSongs.map((setlist, index) => {
+    if (updatedSetlist.setListSongs[index]) {
+      updatedSetlist.setListSongs[index].id = setlist.id;
+    } else {
+      updatedSetlist.setListSongs.push({
+        id: setlist.id,
+      });
+    }
+  });
+
+  console.log("updatedSetlist");
+  console.log(updatedSetlist);
+  console.log("setlistData");
+  console.log(setlistData);
+
+  updatedSetlist.setListSongs.map(async (song, index) => {
+    if (song.type === "global-songs") {
+      song.global_song = song.song;
+      song.song = null;
+      console.log("\x1b[36m%s\x1b[0m", "Song was global_");
+    }
+    if (song.song || song.global_song) { // Check if the field is empty
+      const { data, error } = await supabase.from("setlist-songs").upsert(
+        {
+          setlist_id: setlistData.id,
+          id: song.id,
+          song: song.song,
+          global_song: song.global_song,
+          key: song.key,
+          order: index,
+        },
+        { onConflict: "id" }
+      );
+      if (error) {
+        console.log("\x1b[36m%s\x1b[0m", "ERROR");
+        console.log("\x1b[36m%s\x1b[0m", error);
+      } else {
+        console.log("\x1b[36m%s\x1b[0m", "SUCCESS");
+        console.log("\x1b[36m%s\x1b[0m", data);
       }
     } else {
-      console.log(
-        "\x1b[36m%s\x1b[0m",
-        "line" + index + "was NOT already existent"
-      );
-      if (song.type === "songs") {
-        const { error } = await supabase
-          .from("setlist-songs")
-          .insert({
-            setlist_id: setlistData.id,
-            song: song.song,
-            key: songKey,
-            order: index,
-            global_song: null,
-          })
-          .select();
-        console.log("Key");
-        console.log(songKey);
-      } else if (song.type === "global-songs") {
-        const { error } = await supabase
-          .from("setlist-songs")
-          .insert({
-            setlist_id: setlistData.id,
-
-            global_song: song.song,
-            key: songKey,
-            order: index,
-            song: null,
-          })
-          .select();
-        console.log("Key");
-        console.log(songKey);
-      }
+      const { error } = await supabase
+        .from("setlist-songs")
+        .delete()
+        .eq("id", song.id);
     }
 
     // if (error) {
@@ -131,12 +95,12 @@ export const updateSetlist = async (
     //   return encodedRedirect("error", "/sign-up", error.message);
     // }
     // else {
-    //   return encodedRedirect(
-    //     "success",
-    //     `/setlist/${updatedSetlist.id}`,
-    //     "Setlist aggiornata con successo!"
-    //   );
+    //
     // }
   });
-  return redirect(`/setlist/${setlistData.id}`);
+  return encodedRedirect(
+    "success",
+    `/setlist/${updatedSetlist.id}`,
+    "Setlist aggiornata con successo!"
+  );
 };
