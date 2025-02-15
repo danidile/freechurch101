@@ -17,6 +17,7 @@ export default async function songs({
   return (
     <div className="container-sub">
       <UpdateSetlistForm
+        churchMembers={null}
         page="update"
         setlistData={setlistData}
         songsList={songs}
