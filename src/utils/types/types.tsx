@@ -124,6 +124,23 @@ export type formValues = {
   }[];
 };
 
+export type teamFormValues = {
+  team_name: string;
+  church?: string;
+  is_worship?: boolean;
+  event_title?: string;
+  date?: string;
+  sections?: {
+    id?: string;
+    song_title?: string;
+    sectionType: string;
+    duration?: string;
+    description?: string;
+    songId?: string;
+    song?: string;
+    key?: string;
+  }[];
+};
 export type TeamMember = {
   id: number;
   name: string;
@@ -202,10 +219,17 @@ export type churchMembersT = {
   name?: string;
   lastname?: string;
   skills?: string[];
+  team_id?: string;
+  roles?: string[];
+  profile?: string;
 };
+
+
+
 export type teamData = {
   id?: string;
   team_name?: string;
-  team_leaders?:churchMembersT[];
+  team_leaders?: churchMembersT[];
   team_members?: churchMembersT[];
+  is_worship?: boolean;
 };
