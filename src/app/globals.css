@@ -275,12 +275,11 @@ Image {
   border-radius: 12px;
 }
 .transpose-button-container {
-
   display: flex;
   max-width: 400px;
   margin: 0px 10px;
   gap: 15px;
-  justify-content:left;
+  justify-content: left;
   align-items: center;
 }
 
@@ -290,8 +289,8 @@ Image {
   flex-wrap: wrap;
   gap: 10px;
 }
-.title-input input{
-font-size: 30px !important;
+.title-input input {
+  font-size: 30px !important;
 }
 .hero-section {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 80px -20px,
@@ -1228,4 +1227,55 @@ tbody tr .tablecellnewteams {
     0 8px 10px -6px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+
+
+
+
+
+
+/* TEAM MEMBERS */
+
+.teammember-section {
+  width: 100%;
+
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem;
+  border-bottom: 1px solid #ebebeb;
+}
+.teammember-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f8f8f85e;
+  /* border-bottom: 1px solid #959595; */
+}
+.teammember-section p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 75%;
+}
+.team-members-skills-div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  gap: 5px;
+}
+.input-skill-hidden{
+  display: none;
+}
+.input-skill-show{
+  display: block !important;
+
 }

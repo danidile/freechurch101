@@ -201,4 +201,11 @@ export type churchMembersT = {
   email?: string;
   name?: string;
   lastname?: string;
+  skills?: string[];
+};
+export type teamData = {
+  id?: string;
+  team_name?: string;
+  team_leaders?:churchMembersT[];
+  team_members?: churchMembersT[];
 };
