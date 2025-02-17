@@ -1,9 +1,15 @@
 "use client";
 import { MdMoreVert } from "react-icons/md";
-import { churchMembersT, eventSchema, setListT, teamData } from "@/utils/types/types";
+import {
+  churchMembersT,
+  eventSchema,
+  teamData,
+  teamFormValues,
+} from "@/utils/types/types";
 import {
   Button,
   Input,
+  Checkbox,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -12,26 +18,26 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
-import { addSetlist } from "./create-team/addSetlistAction";
+import { createTeam } from "./create-team/createTeamAction";
 import { updateSetlist } from "./[teamsId]/update/updateSetlist";
 import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
 import { Chip } from "@heroui/react";
 import { useDisclosure } from "@heroui/react";
-import { AddSkill } from "./AddSkill";
+import { AddRole } from "./AddRole";
 
 export default function TeamsForm({
   churchMembers,
+  churchTeam,
   page,
-  songsList,
-  setlistData,
 }: {
   page: string;
-  songsList: TsongNameAuthor[];
-  setlistData: setListT;
+  churchTeam: teamData;
   churchMembers: churchMembersT[];
 }) {
+  console.log("churchTeam");
+  console.log(churchTeam);
   const [state, setState] = useState<churchMembersT[]>(
-    setlistData?.setListSongs || []
+    churchTeam?.team_members || []
   );
 
   const {
@@ -39,39 +45,38 @@ export default function TeamsForm({
     register,
     watch,
     formState: { isSubmitting },
-  } = useForm<formValues>({
+  } = useForm<teamFormValues>({
     resolver: zodResolver(eventSchema),
   });
 
-  // MANAGE SKILLS
+  // MANAGE roleS
 
   // -------------------------------------------
-  const addSkillfunction = (churchMemberId: string, skillToAdd: string) => {
-    const newSkills = skillToAdd.split(",").map((skill) => skill.trim()); // Trim spaces
+  const addRolefunction = (churchMemberId: string, roleToAdd: string) => {
+    const newRoles = roleToAdd.split(",").map((role) => role.trim()); // Trim spaces
     console.log("churchMemberId");
     console.log(churchMemberId);
 
     setState((prevMembers) =>
       prevMembers.map((member) => {
-        console.log(member.id);
         console.log(member.name);
-        return member.id === churchMemberId
+        return member.profile === churchMemberId
           ? {
               ...member,
-              skills: [...(member.skills || []), ...newSkills], // Spread new skills into the array
+              roles: [...(member.roles || []), ...newRoles], // Spread new roles into the array
             }
           : member;
       })
     );
   };
-  const removeSkill = (skillToRemove: string, teamMember: string) => {
+  const removeRole = (roleToRemove: string, teamMember: string) => {
     setState((prevMembers) =>
       prevMembers.map((member) =>
-        member.id === teamMember
+        member.profile === teamMember
           ? {
               ...member,
-              skills: member.skills
-                ? member.skills.filter((skill) => skill !== skillToRemove)
+              roles: member.roles
+                ? member.roles.filter((role) => role !== roleToRemove)
                 : [],
             }
           : member
@@ -81,7 +86,7 @@ export default function TeamsForm({
 
   // -------------------------------------------
 
-  // END  MANAGE SKILLS
+  // END  MANAGE roleS
 
   // -------------------------------------------
 
@@ -91,11 +96,11 @@ export default function TeamsForm({
     setState([
       ...state,
       {
-        id: member.id,
+        profile: member.id,
         email: member.email,
         name: member.name,
         lastname: member.lastname,
-        skills: [],
+        roles: [],
       },
     ]);
   };
@@ -110,21 +115,21 @@ export default function TeamsForm({
 
   const convertData = async () => {
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
-    const updatedSetlist: teamData = {
-      id: setlistData?.id || crypto.randomUUID(),
-      team_name: watchAllFields.event_title,
+    const teamList: teamData = {
+      id: crypto.randomUUID(),
+      team_name: watchAllFields.team_name,
+      is_worship: watchAllFields.is_worship,
       team_members: state,
     };
-    console.log("updatedSetlist");
-    console.log(updatedSetlist);
-    console.log("setlistData");
-    console.log(setlistData);
+    console.log("updatedTeamList");
+    console.log(teamList);
+    console.log("teamList");
 
-    // if (page === "create") {
-    //   addSetlist(updatedSetlist);
-    // } else if (page === "update") {
-    //   updateSetlist(updatedSetlist, setlistData);
-    // }
+    if (page === "create") {
+      createTeam(teamList);
+    } else if (page === "update") {
+      // updateSetlist(teamList, setlistData);
+    }
   };
 
   return (
@@ -139,7 +144,7 @@ export default function TeamsForm({
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
             <div className="gap-1.5">
               <Input
-                {...register("event_title")}
+                {...register("team_name")}
                 label="Nome Team"
                 variant="underlined"
                 labelPlacement="outside"
@@ -149,17 +154,20 @@ export default function TeamsForm({
                 placeholder="Worship Team"
               />
             </div>
+            <Checkbox {...register("is_worship")}>
+              Questo è il Team dell'Adorazione/Worship Team
+            </Checkbox>
 
             <h5 className="mt-6">Membri del Team</h5>
 
             {state.map((member, index) => {
               return (
-                <div className="teammember-container" key={member.id}>
+                <div className="teammember-container" key={member.profile}>
                   <div className="teammember-section">
                     <Input
-                      name={"type" + member.id}
+                      name={"type" + member.profile}
                       key={member.id}
-                      value={member.id.toString()}
+                      value={member.profile.toString()}
                       className="hide-input"
                       {...register(`sections.${index}.id`)}
                     />
@@ -188,8 +196,8 @@ export default function TeamsForm({
                             color="danger"
                             type="button"
                             variant="light"
-                            id={member.id}
-                            onPress={() => removeMemberToTeam(member.id)}
+                            id={member.profile}
+                            onPress={() => removeMemberToTeam(member.profile)}
                             accessKey={String(index)}
                           >
                             Elimina
@@ -200,19 +208,19 @@ export default function TeamsForm({
                   </div>
                   <div className="team-members-skills-div">
                     <p>Abilità: </p>
-                    {member.skills.map((skill, index) => (
+                    {member.roles.map((role, index) => (
                       <Chip
                         key={index}
                         variant="flat"
-                        onClose={() => removeSkill(skill, member.id)}
+                        onClose={() => removeRole(role, member.id)}
                       >
-                        {skill}
+                        {role}
                       </Chip>
                     ))}
-                    <AddSkill
+                    <AddRole
                       type="add"
-                      churchMemberId={member.id}
-                      addSkillfunction={addSkillfunction} // Pass function correctly
+                      churchMemberId={member.profile}
+                      addRolefunction={addRolefunction} // Pass function correctly
                     />
                   </div>
                 </div>

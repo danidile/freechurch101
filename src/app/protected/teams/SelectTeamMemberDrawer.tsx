@@ -95,7 +95,7 @@ export function SelectTeamMemberDrawer({
                   <div className="container-song-list">
                     {members
                       .filter(
-                        (member) => !state.some((m) => m.id === member.id)
+                        (member) => !state.some((m) => m.profile === member.id)
                       )
 
                       .map((member, index) => {
@@ -103,7 +103,7 @@ export function SelectTeamMemberDrawer({
                           <div
                             className="song-card-searchBar"
                             style={{ cursor: "pointer" }}
-                            key={member.id}
+                            key={member.profile}
                             onClick={() => {
                               addMemberToTeam(member, section);
                               onClose();

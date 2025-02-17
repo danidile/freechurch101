@@ -5,6 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@heroui/react";
+
 import { useState } from "react";
 import { RiLinkM } from "react-icons/ri";
 
@@ -20,6 +21,7 @@ export default function CopyLinkButtonWithText() {
       console.error("Failed to copy:", error);
     }
   };
+
 
   return (
     <>

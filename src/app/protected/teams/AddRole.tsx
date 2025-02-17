@@ -22,15 +22,15 @@ import { FaPlus } from "react-icons/fa";
 
 import { useState } from "react";
 
-export function AddSkill({
+export function AddRole({
   
   churchMemberId,
-  addSkillfunction,
+  addRolefunction,
   type,
 }: {
   type: string;
   churchMemberId: string;
-  addSkillfunction: (churchMemberId: string, skillToAdd: string) => void;
+  addRolefunction: (churchMemberId: string, roleToAdd: string) => void;
 }) {
   const [searchText, setSearchText] = useState("");
 
@@ -69,7 +69,7 @@ export function AddSkill({
                     className="song-searchbar"
                     onKeyDown={(e: React.KeyboardEvent) => {
                       if (e.key === "Enter") {
-                        addSkillfunction(churchMemberId, searchText);
+                        addRolefunction(churchMemberId, searchText);
                         setSearchText(""); // Clear input after adding
 
                         onClose();
@@ -82,7 +82,7 @@ export function AddSkill({
                     onPress={() => {
                       if (searchText.trim() !== "") {
                         // Prevent empty input submission
-                        addSkillfunction(churchMemberId, searchText);
+                        addRolefunction(churchMemberId, searchText);
                         setSearchText(""); // Clear input after adding
                         onClose();
                       }

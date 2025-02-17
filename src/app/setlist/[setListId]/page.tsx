@@ -19,6 +19,8 @@ import { MdMoreVert } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { setListSongT, setListT } from "@/utils/types/types";
 import ViewFullSetListComponent from "./viewFullSetListComponent";
+import MoreDropdown from "./MoreDropdownSetlist";
+import MoreDropdownSetlist from "./MoreDropdownSetlist";
 
 export default async function Page({
   params,
@@ -46,30 +48,7 @@ export default async function Page({
         <p>{readableDate}</p>
         <div className="top-settings-bar">
           <div>
-            <Popover placement="bottom" showArrow={true}>
-              <PopoverTrigger>
-                <Button isIconOnly radius="full">
-                  <MdMoreVert className="text-2xl" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                <div className="px-1 py-2 flex-col gap-2">
-                  <div>
-                    <Link href={`/setlist/${params.setListId}/update`}>
-                      <Button fullWidth size="md" variant="light">
-                        <FaEdit /> Aggiorna
-                      </Button>
-                    </Link>
-                  </div>
-                  <div className="my-1">
-                    <CopyLinkButtonWithText />
-                  </div>
-                  {["1", "2"].includes(userData.role.toString()) && (
-                    <ButtonDeleteSetlist setlistID={params.setListId} />
-                  )}
-                </div>
-              </PopoverContent>
-            </Popover>
+            <MoreDropdownSetlist setlistId={params.setListId} />
           </div>
         </div>
 
