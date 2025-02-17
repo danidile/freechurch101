@@ -1,14 +1,12 @@
 "use client";
 import { MdMoreVert } from "react-icons/md";
-import { churchMembersT, eventSchema, setListSongT, setListT } from "@/utils/types/types";
+import { churchMembersT, eventSchema, setListT, teamData } from "@/utils/types/types";
 import {
   Button,
   Input,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Select,
-  SelectItem,
 } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +15,9 @@ import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { addSetlist } from "./create-team/addSetlistAction";
 import { updateSetlist } from "./[teamsId]/update/updateSetlist";
 import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
+import { Chip } from "@heroui/react";
+import { useDisclosure } from "@heroui/react";
+import { AddSkill } from "./AddSkill";
 
 export default function TeamsForm({
   churchMembers,
@@ -29,25 +30,9 @@ export default function TeamsForm({
   setlistData: setListT;
   churchMembers: churchMembersT[];
 }) {
-  const keys = [
-    "A",
-    "A#",
-    "B",
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#",
-  ];
   const [state, setState] = useState<churchMembersT[]>(
     setlistData?.setListSongs || []
   );
-  const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
-  let x: string;
 
   const {
     handleSubmit,
@@ -58,14 +43,51 @@ export default function TeamsForm({
     resolver: zodResolver(eventSchema),
   });
 
-  // SEARCHBAR DATA
+  // MANAGE SKILLS
+
+  // -------------------------------------------
+  const addSkillfunction = (churchMemberId: string, skillToAdd: string) => {
+    const newSkills = skillToAdd.split(",").map((skill) => skill.trim()); // Trim spaces
+    console.log("churchMemberId");
+    console.log(churchMemberId);
+
+    setState((prevMembers) =>
+      prevMembers.map((member) => {
+        console.log(member.id);
+        console.log(member.name);
+        return member.id === churchMemberId
+          ? {
+              ...member,
+              skills: [...(member.skills || []), ...newSkills], // Spread new skills into the array
+            }
+          : member;
+      })
+    );
+  };
+  const removeSkill = (skillToRemove: string, teamMember: string) => {
+    setState((prevMembers) =>
+      prevMembers.map((member) =>
+        member.id === teamMember
+          ? {
+              ...member,
+              skills: member.skills
+                ? member.skills.filter((skill) => skill !== skillToRemove)
+                : [],
+            }
+          : member
+      )
+    );
+  };
 
   // -------------------------------------------
 
+  // END  MANAGE SKILLS
+
   // -------------------------------------------
 
-  // ADD AND REMOVE SONG TO SETLIST
-  const addSongtoSetlist = (member: churchMembersT) => {
+  // MANAGE TEAM-MEMBERS
+
+  const addMemberToTeam = (member: churchMembersT) => {
     setState([
       ...state,
       {
@@ -73,62 +95,36 @@ export default function TeamsForm({
         email: member.email,
         name: member.name,
         lastname: member.lastname,
+        skills: [],
       },
     ]);
   };
 
-  const removeSection = (id: string) => {
+  const removeMemberToTeam = (id: string) => {
     setState(state.filter((section) => section.id !== id));
   };
 
-  const updateKey = (index: number, value: string) => {
-    setState((prevState) => {
-      // Update the object at the given index
-      return prevState.map((item, idx) => {
-        if (idx === index) {
-          return { ...item, key: value }; // Update the key field of the matched object
-        }
-        return item; // Return the rest of the items unchanged
-      });
-    });
-  };
+  // -------------------------------------------
 
-  const updateSongtoSetlist = (song: setListSongT, section: number) => {
-    setState((prevState) => {
-      const index = prevState.findIndex((s, index) => index === section);
-      const newSong = {
-        song: song.id,
-        song_title: song.song_title,
-        author: song.author,
-        type: song.type,
-      };
-      if (index === -1) return prevState; // No match found, return original state
-
-      const updatedState = [...prevState]; // Create a new array (immutability)
-      updatedState[index] = { ...updatedState[index], ...newSong }; // Update only the found section
-
-      return updatedState; // Set the new state
-    });
-  };
+  // END MANAGE TEAM-MEMBERS
 
   const convertData = async () => {
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
-    const updatedSetlist: setListT = {
+    const updatedSetlist: teamData = {
       id: setlistData?.id || crypto.randomUUID(),
-      event_title: watchAllFields.event_title,
-      date: watchAllFields.date,
-      setListSongs: state,
+      team_name: watchAllFields.event_title,
+      team_members: state,
     };
     console.log("updatedSetlist");
     console.log(updatedSetlist);
     console.log("setlistData");
     console.log(setlistData);
 
-    if (page === "create") {
-      addSetlist(updatedSetlist);
-    } else if (page === "update") {
-      updateSetlist(updatedSetlist, setlistData);
-    }
+    // if (page === "create") {
+    //   addSetlist(updatedSetlist);
+    // } else if (page === "update") {
+    //   updateSetlist(updatedSetlist, setlistData);
+    // }
   };
 
   return (
@@ -149,7 +145,7 @@ export default function TeamsForm({
                 labelPlacement="outside"
                 className="title-input"
                 required
-                defaultValue={eventDetails?.event_title || "Worship Team"}
+                defaultValue="Worship Team"
                 placeholder="Worship Team"
               />
             </div>
@@ -158,52 +154,77 @@ export default function TeamsForm({
 
             {state.map((member, index) => {
               return (
-                <div className="setlist-section" key={member.id}>
-                  <Input
-                    name={"type" + member.id}
-                    key={member.id}
-                    value={member.id.toString()}
-                    className="hide-input"
-                    {...register(`sections.${index}.id`)}
-                  />
-                  <p>
-                      {member.name + " " + member.lastname}
-                  </p>
+                <div className="teammember-container" key={member.id}>
+                  <div className="teammember-section">
+                    <Input
+                      name={"type" + member.id}
+                      key={member.id}
+                      value={member.id.toString()}
+                      className="hide-input"
+                      {...register(`sections.${index}.id`)}
+                    />
+                    <p>
+                      <b>{member.name + " " + member.lastname}</b>
+                    </p>
 
-                  
-                  <Popover placement="bottom" showArrow={true}>
-                    <PopoverTrigger>
-                      <Button isIconOnly radius="full" variant="flat" size="sm">
-                        <MdMoreVert className="text-2xl" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <div className="px-1 py-2 flex-col gap-2">
-                        <div className="my-1"></div>
+                    <Popover placement="bottom" showArrow={true}>
+                      <PopoverTrigger>
                         <Button
+                          isIconOnly
+                          radius="full"
+                          variant="flat"
                           size="sm"
-                          className="mx-0"
-                          fullWidth
-                          color="danger"
-                          type="button"
-                          variant="light"
-                          id={member.id}
-                          onPress={() => removeSection(member.id)}
-                          accessKey={String(index)}
                         >
-                          Elimina
+                          <MdMoreVert className="text-2xl" />
                         </Button>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <div className="px-1 py-2 flex-col gap-2">
+                          <div className="my-1"></div>
+                          <Button
+                            size="sm"
+                            className="mx-0"
+                            fullWidth
+                            color="danger"
+                            type="button"
+                            variant="light"
+                            id={member.id}
+                            onPress={() => removeMemberToTeam(member.id)}
+                            accessKey={String(index)}
+                          >
+                            Elimina
+                          </Button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="team-members-skills-div">
+                    <p>Abilità: </p>
+                    {member.skills.map((skill, index) => (
+                      <Chip
+                        key={index}
+                        variant="flat"
+                        onClose={() => removeSkill(skill, member.id)}
+                      >
+                        {skill}
+                      </Chip>
+                    ))}
+                    <AddSkill
+                      type="add"
+                      churchMemberId={member.id}
+                      addSkillfunction={addSkillfunction} // Pass function correctly
+                    />
+                  </div>
                 </div>
               );
             })}
+
             <div className="transpose-button-container">
               <SelectTeamMemberDrawer
+                state={state}
                 type="add"
                 churchMembers={churchMembers}
-                addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
+                addMemberToTeam={addMemberToTeam} // Pass function correctly
                 section={null}
               />
             </div>
@@ -221,7 +242,6 @@ export default function TeamsForm({
           <div>{/* <pre>{JSON.stringify(state, null, 2)}</pre> */}</div>
         </form>
       </div>
-     
     </div>
   );
 }

@@ -18,14 +18,16 @@ import { FaPlus } from "react-icons/fa";
 import { useState } from "react";
 
 export function SelectTeamMemberDrawer({
+  state,
   churchMembers,
-  addOrUpdatefunction,
+  addMemberToTeam,
   type,
   section,
 }: {
+  state: churchMembersT[];
   type: string;
   churchMembers: churchMembersT[];
-  addOrUpdatefunction: (song: setListSongT, section: number) => void;
+  addMemberToTeam: (song: setListSongT, section: number) => void;
   section: number;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -70,7 +72,7 @@ export function SelectTeamMemberDrawer({
               <DrawerBody>
                 <>
                   <div className="songs-header">
-                    <h4>Lista canzoni</h4>
+                    <h4>Lista Membri</h4>
                     <div className="songs-searchbar-form">
                       <Input
                         value={searchText}
@@ -91,27 +93,32 @@ export function SelectTeamMemberDrawer({
                     </div>
                   </div>
                   <div className="container-song-list">
-                    {members.map((member, index) => {
-                      return (
-                        <div
-                          className="song-card-searchBar"
-                          style={{ cursor: "pointer" }}
-                          key={member.id}
-                          onClick={() => {
-                            addOrUpdatefunction(member, section);
-                            onClose();
-                          }}
-                        >
-                          <div className="song-card-searchBar">
-                            <p className="song-card-searchBar">
-                              {member.name + " " + member.lastname}
-                              <br />
-                              <small>{member.email}</small>
-                            </p>
+                    {members
+                      .filter(
+                        (member) => !state.some((m) => m.id === member.id)
+                      )
+
+                      .map((member, index) => {
+                        return (
+                          <div
+                            className="song-card-searchBar"
+                            style={{ cursor: "pointer" }}
+                            key={member.id}
+                            onClick={() => {
+                              addMemberToTeam(member, section);
+                              onClose();
+                            }}
+                          >
+                            <div className="song-card-searchBar">
+                              <p className="song-card-searchBar">
+                                {member.name + " " + member.lastname}
+                                <br />
+                                <small>{member.email}</small>
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </>
               </DrawerBody>
