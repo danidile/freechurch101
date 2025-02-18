@@ -9,12 +9,11 @@ import {
   DropdownTrigger,
   DropdownMenu,
   Button,
-  DropdownSection,
   DropdownItem,
   Link,
 } from "@heroui/react";
 import { useState } from "react";
-import { deleteSetList } from "./deleteSetlistAction";
+import { deleteTeamAction } from "./deleteTeamAction";
 
 export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
   const [copied, setCopied] = useState(false);
@@ -28,8 +27,8 @@ export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
       console.error("Failed to copy:", error);
     }
   };
-  const deleteSetlist = (event: any) => {
-    deleteSetList(teamsId);
+  const deleteTeam = (event: any) => {
+    deleteTeamAction(teamsId);
   };
   return (
     <Dropdown>
@@ -56,7 +55,7 @@ export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
         <DropdownItem
           startContent={<MdDelete />}
           variant="flat"
-          onPress={deleteSetlist}
+          onPress={deleteTeam}
           key="delete"
           className="text-danger"
           color="danger"

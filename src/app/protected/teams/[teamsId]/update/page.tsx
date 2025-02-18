@@ -1,12 +1,11 @@
-import { getSetList } from "@/hooks/GET/getSetList";
 import UpdateSetlistForm from "../../teamsForm";
-import { setListSongT, setListT, teamData } from "@/utils/types/types";
-import { getSongsCompact } from "@/hooks/GET/getSongsCompact";
-import { getSetListSongsCompact } from "@/hooks/GET/getSetListSongsCompact";
+import { teamData } from "@/utils/types/types";
+
 import { getChurchTeam } from "@/hooks/GET/getChurchTeam";
 import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
+import TeamsForm from "../../teamsForm";
 export default async function songs({
   params,
 }: {
@@ -19,7 +18,11 @@ export default async function songs({
 
   return (
     <div className="container-sub">
-      <UpdateSetlistForm churchMembers={churchMembers} churchTeam={churchTeam} page="update" />
+      <TeamsForm
+        page="update"
+        churchTeam={churchTeam}
+        churchMembers={churchMembers}
+      />
     </div>
   );
 }

@@ -1,142 +1,101 @@
 "use server";
-import { setListT } from "@/utils/types/types";
-import { redirect } from "next/navigation";
+import { churchMembersT, setListT, teamData } from "@/utils/types/types";
 import { createClient } from "@/utils/supabase/server";
+import { encodedRedirect } from "@/utils/utils";
 
 export const updateSetlist = async (
-  updatedSetlist: setListT,
-  setlistData: setListT
+  churchTeamUpdated: teamData,
+  churchTeamStart: teamData
 ) => {
   let hasChanged: boolean = false;
-  const keys = [
-    "A",
-    "A#",
-    "B",
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#",
-  ];
-  if (updatedSetlist.id !== setlistData.id) {
-    return redirect("/setlist");
-  }
-  if (updatedSetlist.date !== setlistData.date) {
-    hasChanged = true;
-  }
-  if (updatedSetlist.event_title !== setlistData.event_title) {
-    hasChanged = true;
-  }
 
+  if (
+    churchTeamUpdated.is_worship !== churchTeamStart.is_worship ||
+    churchTeamUpdated.team_name !== churchTeamStart.team_name
+  ) {
+    hasChanged = true;
+  }
   const supabase = createClient();
 
   if (hasChanged) {
-    const { data: setlistSuccess, error: setlistError } = await supabase
-      .from("setlist")
+    const { data, error } = await supabase
+      .from("church-teams")
       .update({
-        date: updatedSetlist.date,
-        event_title: updatedSetlist.event_title,
+        team_name: churchTeamUpdated.team_name,
+        is_worship: churchTeamUpdated.is_worship,
       })
-      .eq("id", setlistData.id)
-      .select();
+      .eq("id", churchTeamStart.id)
+      .select()
+      .single();
 
-    if (setlistError) {
-      console.log("\x1b[41m Error in setlist Data insert \x1b[0m");
-      console.log(setlistError);
+    if (error) {
+      console.log("\x1b[41m Error in Team Data insert \x1b[0m");
+      console.log(error);
     } else {
-      console.log("\x1b[42m Success in setlist Data insert \x1b[0m");
+      console.log("\x1b[42m Success in Team Data insert \x1b[0m");
     }
+  } else {
+    console.log("\x1b[42m Team Data was not changed \x1b[0m");
   }
 
-  updatedSetlist.setListSongs.map(async (song, index) => {
-    let songKey;
-    if (typeof song.key === "number" && !isNaN(song.key)) {
-      songKey = keys[Number(song.key)];
-    } else if (typeof song.key === "string") {
-      songKey = song.key;
-    }
-    // console.log("\x1b[36m%s\x1b[0m", song.key);
-    // console.log("\x1b[36m%s\x1b[0m", songKey);
+  // mappo attraverso le setlist di setlistData e inserisco il valore della setlist dentro updatedSetlist con lo stesso index
+  // in questo modo garantisco che gli setlistID sono gli stessi e nel caso in cui devo cancellare un campo devo solo
+  // controllare se il campo song del della setlist è vuota. Se è vuola vuol dire che c'era una setlist ma è stat cancellata
 
-    if (index <= setlistData.setListSongs.length - 1) {
-      if (song.type === "songs") {
-        const { error } = await supabase
-          .from("setlist-songs")
-          .update({
-            song: song.song,
-            key: songKey,
-            order: index,
-            global_song: null,
-          })
-          .eq("id", song.id)
-          .select();
-        console.log("Key");
-        console.log(songKey);
-      } else if (song.type === "global-songs") {
-        const { error } = await supabase
-          .from("setlist-songs")
-          .update({
-            global_song: song.song,
-            key: songKey,
-            order: index,
-            song: null,
-          })
-          .eq("id", song.id)
-          .select();
-        console.log("Key");
-        console.log(songKey);
-      }
+  churchTeamStart.team_members.map((member, index) => {
+    if (churchTeamUpdated.team_members[index]) {
+      churchTeamUpdated.team_members[index].id = member.id;
     } else {
-      console.log(
-        "\x1b[36m%s\x1b[0m",
-        "line" + index + "was NOT already existent"
-      );
-      if (song.type === "songs") {
-        const { error } = await supabase
-          .from("setlist-songs")
-          .insert({
-            setlist_id: setlistData.id,
-            song: song.song,
-            key: songKey,
-            order: index,
-            global_song: null,
-          })
-          .select();
-        console.log("Key");
-        console.log(songKey);
-      } else if (song.type === "global-songs") {
-        const { error } = await supabase
-          .from("setlist-songs")
-          .insert({
-            setlist_id: setlistData.id,
-
-            global_song: song.song,
-            key: songKey,
-            order: index,
-            song: null,
-          })
-          .select();
-        console.log("Key");
-        console.log(songKey);
-      }
+      churchTeamUpdated.team_members.push({
+        id: member.id,
+      });
     }
-
-    // if (error) {
-    //   console.error(error.code + " " + error.message);
-    //   console.log("\x1b[36m%s\x1b[0m", "ERRRRRROR");
-    //   return encodedRedirect("error", "/sign-up", error.message);
-    // }
-    // else {
-    //   return encodedRedirect(
-    //     "success",
-    //     `/setlist/${updatedSetlist.id}`,
-    //     "Setlist aggiornata con successo!"
-    //   );
-    // }
   });
-  return redirect(`/setlist/${setlistData.id}`);
+
+  const newTeam = churchTeamUpdated.team_members.map(
+    (teamMember: churchMembersT) => {
+      return {
+        id: teamMember?.id || crypto.randomUUID(),
+        profile: teamMember.profile,
+        roles: teamMember.roles,
+        team_id:churchTeamStart.id,
+      };
+    }
+  );
+  console.log("churchTeamUpdated");
+  console.log(churchTeamUpdated);
+  console.log("newTeam");
+  console.log(newTeam);
+
+  const { data, error } = await supabase
+    .from("team-members")
+    .upsert(newTeam, { onConflict: "id" });
+  if (error) {
+    console.log("\x1b[36m%s\x1b[0m", "ERROR");
+    console.log("\x1b[36m%s\x1b[0m", error);
+  } else {
+    console.log("\x1b[36m%s\x1b[0m", "SUCCESS");
+    console.log("\x1b[36m%s\x1b[0m", data);
+  }
+
+  //   const { error } = await supabase
+  //     .from("setlist-songs")
+  //     .delete()
+  //     .eq("id", song.id);
+  //
+
+  // if (error) {
+  //   console.error(error.code + " " + error.message);
+  //   console.log("\x1b[36m%s\x1b[0m", "ERRRRRROR");
+  //   return encodedRedirect("error", "/sign-up", error.message);
+  // }
+  // else {
+  //
+  // }
+  // });
+  return encodedRedirect(
+    "success",
+    `/protected/teams/${churchTeamStart.id}`,
+    "Team aggiornato con successo!"
+  );
 };

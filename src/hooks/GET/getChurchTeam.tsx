@@ -7,7 +7,7 @@ export const getChurchTeam = async (teamId: string) => {
   const supabase = createClient();
   let { data: churchTeam, error } = await supabase
     .from("church-teams")
-    .select("id,team_name")
+    .select("id,team_name,is_worship")
     .eq("id", teamId)
     .single();
   let { data: teamMembers, error: errorTeamMembers } = await supabase
@@ -21,24 +21,22 @@ export const getChurchTeam = async (teamId: string) => {
 
   const formattedTeamMembers = teamMembers?.map((member) => {
     const profile = Array.isArray(member.profile)
-    ? member.profile[0]
-    : member.profile
+      ? member.profile[0]
+      : member.profile;
     return {
-      profile: member.id,
+      id:member.id,
+      profile: profile.id,
       roles: member.roles,
       name: profile.name,
-      lastname:profile.lastname,
-      email:profile.email,
-      
+      lastname: profile.lastname,
+      email: profile.email,
     };
   });
-
-  console.log("teamMembers");
-  console.log(teamMembers);
   const result: teamData = {
     id: teamId,
     team_name: churchTeam.team_name,
     team_members: formattedTeamMembers,
+    is_worship: churchTeam.is_worship,
   };
 
   return result;
