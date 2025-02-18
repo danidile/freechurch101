@@ -9,8 +9,7 @@ export default async function Page({
   params: { teamsId: string };
 }) {
   const churchTeam: teamData = await getChurchTeam(params.teamsId);
-  console.log("churchTeam");
-  console.log(churchTeam);
+
   if (churchTeam) {
     return (
       <div className="container-sub">
@@ -25,8 +24,7 @@ export default async function Page({
           </div>
 
           {churchTeam.team_members.map((member: churchMembersT, index) => {
-            console.log("member");
-            console.log(member);
+            
             return (
               <>
                 <div key={"Song" + index} className="setlist-song">

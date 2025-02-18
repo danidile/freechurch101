@@ -79,7 +79,7 @@ export function SelectTeamMemberDrawer({
                         onChange={(e) => setSearchText(e.target.value)} // Update local state
                         color="primary"
                         type="text"
-                        placeholder="Cerca canzone"
+                        placeholder="Cerca membri"
                         className="song-searchbar"
                         onKeyDown={handleKeyDown} // Listen for Enter key
                       />

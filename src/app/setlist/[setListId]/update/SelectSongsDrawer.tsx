@@ -3,6 +3,8 @@ import { MdMoreVert } from "react-icons/md";
 import { CgArrowsExchange } from "react-icons/cg";
 import { setListSongT, songType } from "@/utils/types/types";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+import { FaPlus } from "react-icons/fa";
+
 import {
   Button,
   Input,
@@ -52,9 +54,16 @@ export function SelectSongsDrawer({
   return (
     <>
       {type === "add" && (
-        <Button onPress={onOpen}>
-          Aggiungi canzone
-          <PiMusicNotesPlusFill />
+        <Button
+          isIconOnly
+          radius="full"
+          color="primary"
+          variant="flat"
+          size="lg"
+          className="mr-0"
+          onPress={onOpen}
+        >
+          <FaPlus />
         </Button>
       )}
       {type === "update" && (
