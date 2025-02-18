@@ -7,6 +7,8 @@ export const updateSetlist = async (
   churchTeamUpdated: teamData,
   churchTeamStart: teamData
 ) => {
+  // CHECK AND UPDATE church-teams TABLE
+
   let hasChanged: boolean = false;
 
   if (
@@ -16,7 +18,6 @@ export const updateSetlist = async (
     hasChanged = true;
   }
   const supabase = createClient();
-
   if (hasChanged) {
     const { data, error } = await supabase
       .from("church-teams")
@@ -37,6 +38,9 @@ export const updateSetlist = async (
   } else {
     console.log("\x1b[42m Team Data was not changed \x1b[0m");
   }
+  // END OF OCHECK AND UPDATE church-teams TABLE
+
+  // CHECK AND UPDATE team-members TABLE
 
   // mappo attraverso le setlist di setlistData e inserisco il valore della setlist dentro updatedSetlist con lo stesso index
   // in questo modo garantisco che gli setlistID sono gli stessi e nel caso in cui devo cancellare un campo devo solo
@@ -52,14 +56,25 @@ export const updateSetlist = async (
     }
   });
 
-  const newTeam = churchTeamUpdated.team_members.map(
-    (teamMember: churchMembersT) => {
-      return {
-        id: teamMember?.id || crypto.randomUUID(),
-        profile: teamMember.profile,
-        roles: teamMember.roles,
-        team_id:churchTeamStart.id,
-      };
+  let newTeam: churchMembersT[] = [];
+  let idsToDelete: string[] = [];
+
+  churchTeamUpdated.team_members.map(
+    async (teamMember: churchMembersT, index: number) => {
+      if (teamMember.profile) {
+        newTeam.push({
+          id: teamMember?.id || crypto.randomUUID(),
+          profile: teamMember.profile,
+          roles: teamMember.roles,
+          team_id: churchTeamStart.id,
+        });
+      } else {
+        console.log(
+          "\x1b[36m%s\x1b[0m",
+          "Team Member " + index + " has been removed from the team"
+        );
+        idsToDelete.push(teamMember.id);
+      }
     }
   );
   console.log("churchTeamUpdated");
@@ -76,6 +91,20 @@ export const updateSetlist = async (
   } else {
     console.log("\x1b[36m%s\x1b[0m", "SUCCESS");
     console.log("\x1b[36m%s\x1b[0m", data);
+  }
+
+  if (idsToDelete.length > 0) {
+    idsToDelete.map(async (id, index) => {
+      console.log("\x1b[36m%s\x1b[0m", "SUCCESS");
+
+      const { error } = await supabase
+        .from("team-members")
+        .delete()
+        .eq("id", id);
+      if (error) {
+        console.log("\x1b[36m%s\x1b[0m", error);
+      }
+    });
   }
 
   //   const { error } = await supabase

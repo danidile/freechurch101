@@ -1,15 +1,20 @@
 "use client";
 import { MdMoreVert } from "react-icons/md";
-import { eventSchema, setListSongT, setListT } from "@/utils/types/types";
+import {
+  churchMembersT,
+  eventSchema,
+  setListSongT,
+  setListT,
+} from "@/utils/types/types";
 import {
   Button,
+  Chip,
   Input,
   Popover,
   PopoverContent,
   PopoverTrigger,
   Select,
   SelectItem,
-
 } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,16 +23,19 @@ import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
 import { SelectSongsDrawer } from "./SelectSongsDrawer";
-import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
+import { SelectTeamMemberDrawer } from "@/app/protected/teams/SelectTeamMemberDrawer";
+import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 
 export default function UpdateSetlistForm({
   page,
   songsList,
   setlistData,
+  worshipTeamMembers,
 }: {
   page: string;
   songsList: TsongNameAuthor[];
   setlistData: setListT;
+  worshipTeamMembers: churchMembersT[];
 }) {
   const keys = [
     "A",
@@ -46,9 +54,11 @@ export default function UpdateSetlistForm({
   const [state, setState] = useState<setListSongT[]>(
     setlistData?.setListSongs || []
   );
+  const [team, setTeam] = useState<churchMembersT[]>([]);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
   let x: string;
-
+  console.log("team");
+  console.log(team);
   const {
     handleSubmit,
     register,
@@ -58,13 +68,30 @@ export default function UpdateSetlistForm({
     resolver: zodResolver(eventSchema),
   });
 
-  // SEARCHBAR DATA
+  // TeamData
 
   // -------------------------------------------
 
+  const addMemberToTeam = (member: churchMembersT) => {
+    setTeam([
+      ...team,
+      {
+        profile: member.id,
+        email: member.email,
+        name: member.name,
+        lastname: member.lastname,
+        roles: [],
+      },
+    ]);
+  };
+
+  const removeMemberToTeam = (profile: string) => {
+    setTeam(team.filter((section) => section.profile !== profile));
+  };
   // -------------------------------------------
 
-  // ADD AND REMOVE SONG TO SETLIST
+  // END TeamData
+
   const addSongtoSetlist = (song: setListSongT) => {
     setState([
       ...state,
@@ -250,30 +277,73 @@ export default function UpdateSetlistForm({
                 section={null}
               />
             </div>
-            <br />
-            <Button
-              color="primary"
-              variant="shadow"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {page === "create" && "Crea"}
-              {page === "update" && "Aggiorna"} Evento
-            </Button>
           </div>
           <div>{/* <pre>{JSON.stringify(state, null, 2)}</pre> */}</div>
+
+          <br />
+          {worshipTeamMembers && (
+            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+              <div className="form-div crea-setlist-container">
+                <h5>Turnazioni</h5>
+              </div>
+              {team.map((member, index) => {
+                return (
+                  <div
+                    className="teammember-container !py-1"
+                    key={member.profile}
+                  >
+                    <div className="teammember-section !py-1">
+                      <Input
+                        name={"type" + member.profile}
+                        key={member.id}
+                        value={member.profile}
+                        className="hide-input"
+                        {...register(`sections.${index}.id`)}
+                      />
+                      <p>
+                        <b>{member.name + " " + member.lastname}</b>
+                      </p>
+                      <Button
+                        size="sm"
+                        className="mx-0"
+                        fullWidth
+                        color="danger"
+                        type="button"
+                        variant="light"
+                        id={member.profile}
+                        onPress={() => removeMemberToTeam(member.profile)}
+                        accessKey={String(index)}
+                      >
+                        Elimina
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="transpose-button-container">
+                <SelectWorshipTeamMemberDrawer
+                  state={team}
+                  type="add"
+                  churchMembers={worshipTeamMembers}
+                  addMemberToTeam={addMemberToTeam} // Pass function correctly
+                  section={null}
+                />
+              </div>
+              <br />
+              <Button
+                color="primary"
+                variant="shadow"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {page === "create" && "Crea"}
+                {page === "update" && "Aggiorna"} Evento
+              </Button>
+            </div>
+          )}
         </form>
       </div>
-      <br />
-      {/* <div className="form-div crea-setlist-container">
-        <h5>Turnazioni</h5>
-      </div>
-      <SelectTeamMemberDrawer
-        type="add"
-        songsList={songsList}
-        addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
-        section={null}
-      /> */}
     </div>
   );
 }

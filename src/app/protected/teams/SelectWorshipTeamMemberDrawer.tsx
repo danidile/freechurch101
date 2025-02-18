@@ -1,7 +1,5 @@
 "use client";
-import { MdMoreVert } from "react-icons/md";
-import { CgArrowsExchange } from "react-icons/cg";
-import { setListSongT, songType } from "@/utils/types/types";
+import { churchMembersT, setListSongT, songType } from "@/utils/types/types";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import {
   Button,
@@ -13,33 +11,34 @@ import {
   DrawerFooter,
   useDisclosure,
 } from "@heroui/react";
+import { FaPlus } from "react-icons/fa";
 
 import { useState } from "react";
-import { TsongNameAuthor, formValues } from "@/utils/types/types";
-import { PiMusicNotesPlusFill } from "react-icons/pi";
 
-export function SelectTeamMemberDrawer({
-  songsList,
-  addOrUpdatefunction,
+export function SelectWorshipTeamMemberDrawer({
+  state,
+  churchMembers,
+  addMemberToTeam,
   type,
   section,
 }: {
+  state: churchMembersT[];
   type: string;
-  songsList: TsongNameAuthor[];
-  addOrUpdatefunction: (song: setListSongT, section: number) => void;
+  churchMembers: churchMembersT[];
+  addMemberToTeam: (song: setListSongT, section: number) => void;
   section: number;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [songs, setSongs] = useState(songsList);
+  const [members, setmembers] = useState(churchMembers);
   const [searchText, setSearchText] = useState(""); // Local state for search input
 
   const aggiornaLista = () => {
-    const filteredSongs = songsList.filter(
-      (song: songType) =>
-        song.song_title.toLowerCase().includes(searchText.toLowerCase()) ||
-        song.author.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setSongs(filteredSongs);
+    // const filteredSongs = songsList.filter(
+    //   (song: songType) =>
+    //     song.song_title.toLowerCase().includes(searchText.toLowerCase()) ||
+    //     song.author.toLowerCase().includes(searchText.toLowerCase())
+    // );
+    // setSongs(filteredSongs);
   };
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -51,31 +50,34 @@ export function SelectTeamMemberDrawer({
 
   return (
     <>
-        <Button onPress={onOpen}>
-          Aggiungi Membro Team
-          <PiMusicNotesPlusFill />
-        </Button>
-      
-      
+      <Button
+        isIconOnly
+        radius="full"
+        color="primary"
+        variant="flat"
+        size="lg"
+        className="mr-0"
+        onPress={onOpen}
+      >
+        <FaPlus />
+      </Button>
 
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
         <DrawerContent>
           {(onClose) => (
             <>
-              <DrawerHeader className="flex flex-col gap-1">
-                Aggiungi Canzone
-              </DrawerHeader>
+              <DrawerHeader className="flex flex-col gap-1"></DrawerHeader>
               <DrawerBody>
                 <>
                   <div className="songs-header">
-                    <h4>Lista canzoni</h4>
+                    <h4>Lista Membri</h4>
                     <div className="songs-searchbar-form">
                       <Input
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)} // Update local state
                         color="primary"
                         type="text"
-                        placeholder="Cerca canzone"
+                        placeholder="Cerca membri"
                         className="song-searchbar"
                         onKeyDown={handleKeyDown} // Listen for Enter key
                       />
@@ -89,31 +91,32 @@ export function SelectTeamMemberDrawer({
                     </div>
                   </div>
                   <div className="container-song-list">
-                    {songs.map((song, index) => {
-                      return (
-                        <div
-                          className="song-card-searchBar"
-                          style={{ cursor: "pointer" }}
-                          key={song.id}
-                          onClick={() => {
-                            addOrUpdatefunction(song, section);
-                            onClose();
-                          }}
-                        >
-                          <div className="song-card-searchBar">
-                            <p className="song-card-searchBar">
-                              {song.song_title}
-                              <br />
-                              {song.author ? (
-                                <small>{song.author}</small>
-                              ) : (
-                                <small>Unknown</small>
-                              )}
-                            </p>
+                    {members
+                      .filter(
+                        (member) => !state.some((m) => m.profile === member.id)
+                      )
+
+                      .map((member, index) => {
+                        return (
+                          <div
+                            className="song-card-searchBar"
+                            style={{ cursor: "pointer" }}
+                            key={member.profile}
+                            onClick={() => {
+                              addMemberToTeam(member, section);
+                              onClose();
+                            }}
+                          >
+                            <div className="song-card-searchBar">
+                              <p className="song-card-searchBar">
+                                {member.name + " " + member.lastname}
+                                <br />
+                                <small>{member.roles.join(", ")}</small>
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </>
               </DrawerBody>

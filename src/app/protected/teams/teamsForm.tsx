@@ -17,12 +17,10 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { createTeam } from "./create-team/createTeamAction";
 import { updateSetlist } from "./[teamsId]/update/updateSetlist";
 import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
 import { Chip } from "@heroui/react";
-import { useDisclosure } from "@heroui/react";
 import { AddRole } from "./AddRole";
 
 export default function TeamsForm({
@@ -35,8 +33,7 @@ export default function TeamsForm({
   churchMembers: churchMembersT[];
 }) {
   const churchTeamStart = churchTeam;
-  console.log("churchTeam");
-  console.log(churchTeam);
+
   const [state, setState] = useState<churchMembersT[]>(
     churchTeam?.team_members || []
   );
@@ -55,12 +52,10 @@ export default function TeamsForm({
   // -------------------------------------------
   const addRolefunction = (churchMemberId: string, roleToAdd: string) => {
     const newRoles = roleToAdd.split(",").map((role) => role.trim()); // Trim spaces
-    console.log("churchMemberId");
-    console.log(churchMemberId);
+
 
     setState((prevMembers) =>
       prevMembers.map((member) => {
-        console.log(member.name);
         return member.profile === churchMemberId
           ? {
               ...member,
@@ -71,10 +66,7 @@ export default function TeamsForm({
     );
   };
   const removeRole = (roleToRemove: string, teamMember: string) => {
-    console.log("roleToRemove");
-    console.log(roleToRemove);
-    console.log("teamMember");
-    console.log(teamMember);
+
     setState((prevMembers) =>
       prevMembers.map((member) =>
         member.id === teamMember
@@ -110,8 +102,8 @@ export default function TeamsForm({
     ]);
   };
 
-  const removeMemberToTeam = (id: string) => {
-    setState(state.filter((section) => section.id !== id));
+  const removeMemberToTeam = (profile: string) => {
+    setState(state.filter((section) => section.profile !== profile));
   };
 
   // -------------------------------------------
@@ -126,9 +118,7 @@ export default function TeamsForm({
       is_worship: watchAllFields.is_worship,
       team_members: state,
     };
-    console.log("churchTeamUpdated");
-    console.log(churchTeamUpdated);
-    console.log("teamList");
+
 
     if (page === "create") {
       createTeam(churchTeamUpdated);

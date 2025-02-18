@@ -1,14 +1,28 @@
 import { getSongsCompact } from "@/hooks/GET/getSongsCompact";
 import UpdateSetlistForm from "../[setListId]/update/UpdateSetlistForm";
+import { basicUserData } from "@/utils/types/userData";
+import fbasicUserData from "@/utils/supabase/getUserData";
+import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
+import { getChurchWorshipTeam } from "@/hooks/GET/getChurchWorshipTeam";
+import { churchMembersT } from "@/utils/types/types";
 
 export default async function songs() {
-  
-  const songs = await getSongsCompact();  
-  const setlistData :null = null;
+  const songs = await getSongsCompact();
+  const setlistData: null = null;
+  const userData: basicUserData = await fbasicUserData();
+  const worshipTeamMembers: churchMembersT[] = await getChurchWorshipTeam(
+    userData.church_id
+  );
+
   return (
     <div className="container-sub">
-    <UpdateSetlistForm page="create" setlistData={setlistData} songsList={songs}  />
-      
+      <UpdateSetlistForm
+        worshipTeamMembers={worshipTeamMembers}
+        page="create"
+        setlistData={setlistData}
+        songsList={songs}
+      />
+
       {/* <CreateSetlistForm songsList={songs} /> */}
     </div>
   );
