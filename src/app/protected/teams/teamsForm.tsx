@@ -34,6 +34,7 @@ export default function TeamsForm({
   churchTeam: teamData;
   churchMembers: churchMembersT[];
 }) {
+  const churchTeamStart = churchTeam;
   console.log("churchTeam");
   console.log(churchTeam);
   const [state, setState] = useState<churchMembersT[]>(
@@ -70,9 +71,13 @@ export default function TeamsForm({
     );
   };
   const removeRole = (roleToRemove: string, teamMember: string) => {
+    console.log("roleToRemove");
+    console.log(roleToRemove);
+    console.log("teamMember");
+    console.log(teamMember);
     setState((prevMembers) =>
       prevMembers.map((member) =>
-        member.profile === teamMember
+        member.id === teamMember
           ? {
               ...member,
               roles: member.roles
@@ -115,20 +120,20 @@ export default function TeamsForm({
 
   const convertData = async () => {
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
-    const teamList: teamData = {
-      id: crypto.randomUUID(),
+    const churchTeamUpdated: teamData = {
+      id: churchTeamStart?.id || crypto.randomUUID(),
       team_name: watchAllFields.team_name,
       is_worship: watchAllFields.is_worship,
       team_members: state,
     };
-    console.log("updatedTeamList");
-    console.log(teamList);
+    console.log("churchTeamUpdated");
+    console.log(churchTeamUpdated);
     console.log("teamList");
 
     if (page === "create") {
-      createTeam(teamList);
+      createTeam(churchTeamUpdated);
     } else if (page === "update") {
-      // updateSetlist(teamList, setlistData);
+      updateSetlist(churchTeamUpdated, churchTeamStart);
     }
   };
 
@@ -154,7 +159,10 @@ export default function TeamsForm({
                 placeholder="Worship Team"
               />
             </div>
-            <Checkbox {...register("is_worship")}>
+            <Checkbox
+              {...register("is_worship")}
+              defaultChecked={churchTeamStart?.is_worship ? true : false}
+            >
               Questo è il Team dell'Adorazione/Worship Team
             </Checkbox>
 

@@ -1,11 +1,11 @@
 "use client";
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { Button, Link } from "@heroui/react";
-import { deleteSetList } from './deleteSetlistAction';
+import { deleteSetList } from '@/app/setlist/[setListId]/deleteSetlistAction';
 import { MdDelete } from "react-icons/md";
 
 
-export default function ButtonDeleteSetlist({setlistID}: {setlistID : string }) {
+export default function ButtonDeleteTeam({setlistID}: {setlistID : string }) {
 
     const deleteSetlist =(event : any)=>{
         deleteSetList(setlistID);
