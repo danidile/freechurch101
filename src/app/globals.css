@@ -1228,19 +1228,19 @@ tbody tr .tablecellnewteams {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
-
-
-
-
-
-
+.auth-form-pwa {
+  padding: 1rem !important;
+  --tw-shadow: none !important;
+  --tw-shadow-colored: none !important;
+  box-shadow: none !important;
+}
 
 /* TEAM MEMBERS */
 
 .teammember-section {
   width: 100%;
 
-  display:flex;
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -1272,10 +1272,9 @@ tbody tr .tablecellnewteams {
   align-items: center;
   gap: 5px;
 }
-.input-skill-hidden{
+.input-skill-hidden {
   display: none;
 }
-.input-skill-show{
+.input-skill-show {
   display: block !important;
-
 }

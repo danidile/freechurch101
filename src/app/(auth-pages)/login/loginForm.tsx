@@ -33,7 +33,7 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
 
 
   return (
-    <form className="auth-form " onSubmit={handleSubmit(convertData)} >
+    <form className="browser:auth-form standalone:auth-form-pwa " onSubmit={handleSubmit(convertData)} >
       <h1 className="text-2xl font-medium">Accedi</h1>
 
       <p className="text-sm text-foreground">
