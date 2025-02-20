@@ -54,7 +54,7 @@ export default function Signup({
 
   return (
     <div className="container-sub">
-      <form className="auth-form" onSubmit={handleSubmit(convertData)}>
+      <form className="browser:auth-form standalone:auth-form-pwa" onSubmit={handleSubmit(convertData)}>
         <h1 className="text-2xl font-medium">Registrati</h1>
 
         <p className="text-sm text text-foreground">
@@ -63,7 +63,7 @@ export default function Signup({
             Accedi
           </Link>
         </p>
-        <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+        <div className="w-80 max-w-screen flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <Input
             {...register("email")}
             label="Email"

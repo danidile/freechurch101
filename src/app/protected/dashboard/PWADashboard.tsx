@@ -1,8 +1,12 @@
-"use client"
+"use client";
 import logoutTest from "@/app/components/logOutAction";
+import { basicUserData } from "@/utils/types/userData";
 import { Button, Image, Link } from "@heroui/react";
-export default function PWADashboard() {
-
+export default function PWADashboard({
+  userData,
+}: {
+  userData: basicUserData;
+}) {
   async function logouter() {
     logoutTest();
   }
@@ -26,14 +30,16 @@ export default function PWADashboard() {
           />{" "}
           Membri Chiesa
         </Link>
-        <Link className="song-list text-black" href="/protected/teams">
-          <Image
-            className="dashboard-icon"
-            src="/images/dashboard/church.png"
-            alt=""
-          />{" "}
-          Teams
-        </Link>
+        {Number(userData.role) <= 2 && (
+          <Link className="song-list text-black" href="/protected/teams">
+            <Image
+              className="dashboard-icon"
+              src="/images/dashboard/church.png"
+              alt=""
+            />{" "}
+            Teams
+          </Link>
+        )}
         <Link className="song-list text-black">
           {" "}
           <Image
