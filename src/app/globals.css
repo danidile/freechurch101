@@ -1214,8 +1214,7 @@ tbody tr .tablecellnewteams {
 /* LOGIN FORM */
 
 .auth-form {
-  width: 400px;
-  max-width: 80vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   margin: 20px auto;
@@ -1229,6 +1228,7 @@ tbody tr .tablecellnewteams {
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .auth-form-pwa {
+  width: 100%;
   padding: 1rem !important;
   --tw-shadow: none !important;
   --tw-shadow-colored: none !important;

@@ -42,7 +42,7 @@ export default function LoginForm({ searchParams }: { searchParams: TalertMessag
           Registrati
         </Link>
       </p> 
-      <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+      <div className="w-80  max-w-screen  flex flex-col gap-2 [&>input]:mb-3 mt-8">
         <Input 
         {...register("email",)}
         

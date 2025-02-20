@@ -34,12 +34,13 @@ export default async function Dashboard({
   if (userData) {
     return (
       <div className="flex flex-row w-full gap-12">
-        <Sidebar />
+        <Sidebar userData={userData} />
         <div className="dashboard-container">
           <h6 className="text-md">Benvenuto {userData.email}</h6>
-          {!accountCompleted && (<CompleteAccount churchList={churchList} userData={userData} />)}
-          <PWADashboard />
-
+          {!accountCompleted && (
+            <CompleteAccount churchList={churchList} userData={userData} />
+          )}
+          <PWADashboard userData={userData} />
         </div>
       </div>
     );
