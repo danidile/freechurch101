@@ -1,15 +1,11 @@
+"use client";
 import Link from "next/link";
 
-
-
 export default function Home() {
-
   return (
     <>
       <section className="header-homepage">
         <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
-          
-
           <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl">
             Risorse per la Chiesa
           </h1>
@@ -53,7 +49,11 @@ export default function Home() {
               <div className="title-exp-card">
                 <p className="title-card">SDV Worship</p>
                 <div className="explore-arrow">
-                <img src="/images/icons/arrowC.png" alt="more" className="icon" />
+                  <img
+                    src="/images/icons/arrowC.png"
+                    alt="more"
+                    className="icon"
+                  />
                 </div>
               </div>
               <img className="exp-c-image" src={"images/sdv-Worship.jpg"} />
@@ -64,7 +64,11 @@ export default function Home() {
               <div className="title-exp-card">
                 <p className="title-card">Mirko e Giorgia</p>
                 <div className="explore-arrow">
-                  <img src="/images/icons/arrowC.png" alt="more" className="icon" />
+                  <img
+                    src="/images/icons/arrowC.png"
+                    alt="more"
+                    className="icon"
+                  />
                 </div>
               </div>
               <img className="exp-c-image" src={"images/mirkoeGiorgia.webp"} />
@@ -75,7 +79,11 @@ export default function Home() {
               <div className="title-exp-card">
                 <p className="title-card">Sounds</p>
                 <div className="explore-arrow">
-                <img src="/images/icons/arrowC.png" alt="more" className="icon" />
+                  <img
+                    src="/images/icons/arrowC.png"
+                    alt="more"
+                    className="icon"
+                  />
                 </div>
               </div>
               <img className="exp-c-image" src={"images/Sounds.jpg"} />
@@ -86,7 +94,11 @@ export default function Home() {
               <div className="title-exp-card">
                 <p className="title-card">True Devotion</p>
                 <div className="explore-arrow">
-                <img src="/images/icons/arrowC.png" alt="more"  className="icon" />
+                  <img
+                    src="/images/icons/arrowC.png"
+                    alt="more"
+                    className="icon"
+                  />
                 </div>
               </div>
               <img className="exp-c-image" src={"images/true-devotion.jpg"} />

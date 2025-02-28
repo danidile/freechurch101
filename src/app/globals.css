@@ -283,6 +283,15 @@ Image {
   align-items: center;
 }
 
+.transopose-section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 0px 0px 0px 15px;
+  border-radius: 12px;
+  background-color: #d8d8d8;
+}
+
 .top-song-buttons {
   display: flex;
   align-items: center;
@@ -358,7 +367,8 @@ Image {
 .song-card-searchBar small {
   cursor: inherit !important; /* Forces child elements to inherit the cursor */
 }
-.chord-sheet .chord {
+.chord-sheet .chord,
+.chord {
   color: rgb(130, 29, 29);
   font-weight: 800;
   line-height: 0.9rem;
@@ -449,12 +459,15 @@ tbody tr .tablecellnewteams {
 .view-selector-container {
   border-bottom: 2px solid rgb(75, 75, 75);
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0px auto;
   padding: 10px 10px;
+  background-color: #f3f3f3;
   justify-content: flex-start;
   align-items: center;
+  justify-content: left;
 }
 .view-selector-container p {
   cursor: pointer;

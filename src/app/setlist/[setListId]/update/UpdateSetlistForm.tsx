@@ -76,11 +76,9 @@ export default function UpdateSetlistForm({
     setTeam([
       ...team,
       {
-        profile: member.id,
-        email: member.email,
+        profile: member.profile,
         name: member.name,
         lastname: member.lastname,
-        roles: [],
       },
     ]);
   };
@@ -140,12 +138,17 @@ export default function UpdateSetlistForm({
   };
 
   const convertData = async () => {
+    const newTeam: any = [];
+    team.map((member) => {
+      newTeam.push({ profile: member.profile });
+    });
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
     const updatedSetlist: setListT = {
       id: setlistData?.id || crypto.randomUUID(),
       event_title: watchAllFields.event_title,
       date: watchAllFields.date,
       setListSongs: state,
+      teamMembers: newTeam,
     };
     console.log("updatedSetlist");
     console.log(updatedSetlist);
@@ -330,18 +333,18 @@ export default function UpdateSetlistForm({
                   section={null}
                 />
               </div>
-              <br />
-              <Button
-                color="primary"
-                variant="shadow"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                {page === "create" && "Crea"}
-                {page === "update" && "Aggiorna"} Evento
-              </Button>
             </div>
           )}
+          <br />
+          <Button
+            color="primary"
+            variant="shadow"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {page === "create" && "Crea"}
+            {page === "update" && "Aggiorna"} Evento
+          </Button>
         </form>
       </div>
     </div>

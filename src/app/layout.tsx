@@ -1,7 +1,6 @@
 import "./globals.css";
 import MenuBar from "./components/navbar";
 import { Viewport } from "next";
-
 export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,

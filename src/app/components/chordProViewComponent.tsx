@@ -1,25 +1,45 @@
-"use client"
-import { Button } from "@heroui/react";
+"use client";
+import { Button, Link } from "@heroui/react";
 import ChordSheetJS from "chordsheetjs";
 import { useState } from "react";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 import { setListSongT } from "@/utils/types/types";
-import { FaPlus,FaMinus } from "react-icons/fa";
-
+import { FaPlus, FaMinus } from "react-icons/fa";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@heroui/react";
+import { MdModeEdit, MdMoreVert } from "react-icons/md";
+import { basicUserData } from "@/utils/types/userData";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 export default function ChordProViewComponent({
   setListSong,
+  userData,
 }: {
   setListSong: setListSongT;
+  userData?: basicUserData;
 }) {
-  console.log(setListSong.lyrics);
-  console.log("songData");
+  const keys = [
+    "A",
+    "A#",
+    "B",
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+  ];
+
   const chordSheet = setListSong.lyrics;
   const parser = new ChordSheetJS.ChordProParser();
   let song = parser.parse(chordSheet);
   const steps = stepsBetweenKeys(setListSong.upload_key, setListSong.key);
-
   song = song.transpose(steps);
   const formatter = new ChordSheetJS.HtmlTableFormatter();
 
@@ -27,8 +47,12 @@ export default function ChordProViewComponent({
 
   const [state, setState] = useState(disp);
   const [count, setCount] = useState(0);
+  const [songKey, setSongKey] = useState(
+    setListSong.key || setListSong.upload_key
+  );
 
   const transposeUp = () => {
+    console.log("transposeUp");
     setCount((prevCount) => {
       const newCount = prevCount + 1;
       const newchords = song.transpose(newCount); // Use newCount here
@@ -36,9 +60,13 @@ export default function ChordProViewComponent({
       setState(disp);
       return newCount; // Return updated count
     });
+    setSongKey(
+      keys[(keys.findIndex((key) => key === songKey) + 1) % keys.length]
+    );
   };
 
   const transposeDown = () => {
+    console.log("transposeDown");
     setCount((prevCount) => {
       const newCount = prevCount - 1;
       const newchords = song.transpose(newCount); // Use newCount here
@@ -46,6 +74,12 @@ export default function ChordProViewComponent({
       setState(disp);
       return newCount; // Return updated count
     });
+    setSongKey(
+      keys[
+        (keys.findIndex((key) => key === songKey) - 1 + keys.length) %
+          keys.length
+      ]
+    );
   };
   const [viewChords, setViewChords] = useState(true);
 
@@ -60,38 +94,66 @@ export default function ChordProViewComponent({
     if (viewChords === true) {
       setViewChords(false);
     }
-    console.log(viewChords);
   };
-
   return (
     <div>
       <div className="view-selector-container">
-        <p onClick={viewLyric} >Testo</p>
-        <p onClick={viewChord}>Accordi</p>
+        {viewChords && (
+          <Button size="md" onPress={viewLyric}>
+            Testo
+          </Button>
+        )}
+        {!viewChords && (
+          <Button size="md" onPress={viewChord}>
+            Accordi
+          </Button>
+        )}
+
+        <div className="transopose-section">
+          <p>Tonalità:</p>
+
+          <Button isIconOnly variant="light" onPress={transposeDown} size="md">
+            <FaMinus />
+          </Button>
+          <Button isIconOnly variant="light" onPress={transposeUp} size="md">
+            <FaPlus />
+          </Button>
+        </div>
+        {userData && hasPermission(userData.role as Role, "update:songs") && (
+          <Dropdown>
+            <DropdownTrigger>
+              <Button variant="bordered" isIconOnly>
+                <MdMoreVert className="text-2xl" />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="Dropdown menu with shortcut"
+              variant="flat"
+            >
+              <DropdownItem
+                startContent={<MdModeEdit />}
+                key="new"
+                className="text-center"
+              >
+                <Link
+                  color="foreground"
+                  className="w-full text-center"
+                  size="sm"
+                  href={`/songs/${setListSong.id}/updateSong`}
+                >
+                  Aggiorna
+                </Link>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        )}
       </div>
 
       <div>
-        <div className="top-song-buttons">
-          <div className="transpose-button-container">
-            <p>Tonalità</p>
-            <Button isIconOnly radius="full" variant="light" onPress={transposeDown} size="lg">
-              <FaMinus />
-            </Button>
-            <Button isIconOnly radius="full" variant="light" onPress={transposeUp} size="lg">
-              <FaPlus />
-            </Button>
-          </div>
-          {/* <Button variant="flat">
-            <Link href={`/songs/${songData.id}/updateSong`}>
-              Aggiorna Canzone
-            </Link>
-          </Button> */}
-        </div>
-
         <h5 className="song-title">
           {setListSong.song_title} - {setListSong.author}
         </h5>
-
+        Tonalità canzone: <span className="chord">{songKey}</span>
         {viewChords && (
           <div
             id="song-chords"

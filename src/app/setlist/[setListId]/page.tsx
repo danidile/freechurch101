@@ -1,26 +1,17 @@
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
-import {
-  Button,
-  Link,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@heroui/react";
+
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import ButtonDeleteSetlist from "./buttonDeleteSetlist";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
-import CopyLinkButtonWithText from "@/app/components/CopyLinkButtonWithText";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
-import { MdMoreVert } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
-import { setListSongT, setListT } from "@/utils/types/types";
+import { GroupedMembers, setListSongT, setListT } from "@/utils/types/types";
 import ViewFullSetListComponent from "./viewFullSetListComponent";
-import MoreDropdown from "./MoreDropdownSetlist";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
 
 export default async function Page({
   params,
@@ -30,6 +21,8 @@ export default async function Page({
   const setlistData: setListT = await getSetList(params.setListId);
 
   let setlistsongs: setListSongT[] = await getSetListSongs(params.setListId);
+  let setlistTeams: GroupedMembers = await getSetListTeams(params.setListId);
+
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"
@@ -46,11 +39,13 @@ export default async function Page({
           <strong>{setlistData.event_title}</strong>
         </h6>
         <p>{readableDate}</p>
-        <div className="top-settings-bar">
-          <div>
-            <MoreDropdownSetlist setlistId={params.setListId} />
+        {hasPermission(userData.role as Role, "create:setlists") && (
+          <div className="top-settings-bar">
+            <div>
+              <MoreDropdownSetlist setlistId={params.setListId} />
+            </div>
           </div>
-        </div>
+        )}
 
         {setlistsongs
           .sort((a, b) => a.order - b.order)
@@ -91,6 +86,20 @@ export default async function Page({
           })}
         <br />
         <br />
+        {Object.entries(setlistTeams).map((team) => {
+          console.log("team");
+          console.log(team);
+          return (
+            <>
+              <h5>{team[0]}</h5>
+              {team[1].map((member)=>{
+                return (<div>
+                  {member.name + " " + member.lastname}
+                </div>)
+              })}
+            </>
+          );
+        })}
         <div className="center- gap-3">
           <ViewFullSetListComponent
             setlistData={setlistData}

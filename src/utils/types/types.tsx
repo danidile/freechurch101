@@ -175,13 +175,13 @@ export type albumT = {
 };
 
 export type profileT = {
-  map: any;
-  id: string;
-  username: string;
-  email: string;
-  name: string;
-  lastname: string;
-  role: number;
+  map?: any;
+  id?: string;
+  username?: string;
+  email?: string;
+  name?: string;
+  lastname?: string;
+  role?: number;
 };
 
 export type setListSongT = {
@@ -207,6 +207,10 @@ export type setListT = {
   date?: string;
   setListSongs?: setListSongT[];
   type?: string;
+  teamMembers?: {
+    id?: string;
+    profile?: string;
+  };
 };
 
 export type searchBar = {
@@ -222,9 +226,8 @@ export type churchMembersT = {
   team_id?: string;
   roles?: string[];
   profile?: string;
+  team_name?: string;
 };
-
-
 
 export type teamData = {
   id?: string;
@@ -233,3 +236,15 @@ export type teamData = {
   team_members?: churchMembersT[];
   is_worship?: boolean;
 };
+
+
+
+export type ChurchMemberByTeam = {
+  id: number;
+  team_name: string;
+  profile: string;
+  name: string;
+  lastname: string;
+};
+
+export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;

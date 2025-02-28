@@ -16,7 +16,7 @@ export default async function App() {
         <div className="flex-col gap-3">
           {profiles &&
             profiles.map((profile: profileT) => {
-              return <PeopleDrawerList profile={profile} key={profile.id} />;
+              return <PeopleDrawerList userData={userData} profile={profile} key={profile.id} />;
             })}
         </div>
       </div>
