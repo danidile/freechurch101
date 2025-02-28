@@ -23,6 +23,7 @@ export const getChurchWorshipTeam = async (churchId: string) => {
       .from("team-members")
       .select("id, roles, profile:profile!inner(id,name, lastname, email)")
       .eq("team_id", teamId.id);
+
     if (teamMembersError) {
       console.log("teamMembersError");
       console.log(teamMembersError);
@@ -45,7 +46,7 @@ export const getChurchWorshipTeam = async (churchId: string) => {
       };
     });
     return formattedTeamMembers;
-  }else{
+  } else {
     return null;
   }
 };

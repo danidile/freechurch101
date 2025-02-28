@@ -1,6 +1,7 @@
 import TeamsForm from "../teamsForm";
 import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import fbasicUserData from "@/utils/supabase/getUserData";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { basicUserData } from "@/utils/types/userData";
 import { redirect } from "next/navigation";
 
@@ -9,7 +10,7 @@ export default async function songs() {
   const churchMembers = await getChurchMembersCompact(userData.church_id);
   console.log("churchMembers");
   console.log(churchMembers);
-  if (Number(userData.role) <= 2) {
+  if (hasPermission(userData.role as Role, "create:team")) {
     return (
       <div className="container-sub">
         <TeamsForm
@@ -19,7 +20,7 @@ export default async function songs() {
         />
       </div>
     );
-  }else{
+  } else {
     redirect("/protected/teams");
   }
 }

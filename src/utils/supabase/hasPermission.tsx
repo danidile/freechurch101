@@ -2,8 +2,16 @@ export type Role = keyof typeof ROLES;
 type Permission = (typeof ROLES)[Role][number];
 
 const ROLES = {
-  admin: ["view:songs", "create:songs", "update:songs", "delete:songs",
-    "view:setlists", "create:setlists", "update:setlists", "delete:setlists"
+  admin: [
+    "view:songs",
+    "create:songs",
+    "update:songs",
+    "delete:songs",
+    "view:setlists",
+    "create:setlists",
+    "update:setlists",
+    "delete:setlists",
+    "create:team",
   ],
   church: ["view:songs", "create:songs", "update:songs", "delete:songs"],
   jel: ["view:songs", "create:songs", "update:songs", "delete:songs"],

@@ -2,7 +2,7 @@
 
 import { FormMessage } from "@/app/components/form-message";
 import { signUpAction } from "@/app/actions";
-import { Input, Button } from "@heroui/react";
+import { Input, Button, Spinner } from "@heroui/react";
 import Link from "next/link";
 import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
@@ -27,7 +27,7 @@ export default function Signup({
 
   const convertData = async (data: TauthSchema) => {
     console.log(data);
-    signUpAction(data);
+    await signUpAction(data);
     console.log(data);
   };
   const [isVisible, setIsVisible] = useState(false);
@@ -54,7 +54,10 @@ export default function Signup({
 
   return (
     <div className="container-sub">
-      <form className="browser:auth-form standalone:auth-form-pwa" onSubmit={handleSubmit(convertData)}>
+      <form
+        className="browser:auth-form standalone:auth-form-pwa"
+        onSubmit={handleSubmit(convertData)}
+      >
         <h1 className="text-2xl font-medium">Registrati</h1>
 
         <p className="text-sm text text-foreground">
@@ -77,7 +80,7 @@ export default function Signup({
             name="password"
             placeholder="Your password"
             required
-            minLength={6}
+            minLength={8}
             endContent={
               <button
                 aria-label="toggle password visibility"
@@ -101,7 +104,7 @@ export default function Signup({
             type="submit"
             disabled={isSubmitting}
           >
-            Registrati
+            {isSubmitting ? <Spinner color="white" size="sm" /> : "Registrati"}
           </Button>
         </div>
       </form>

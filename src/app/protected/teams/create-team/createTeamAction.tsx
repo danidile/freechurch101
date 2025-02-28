@@ -25,12 +25,11 @@ export const createTeam = async (formData: teamData) => {
     .select()
     .single();
 
-  const teamId = data.id;
   if (error) {
     console.log(error);
-  } else {
-    console.log(teamId);
   }
+  const teamId = data.id;
+
   const newMembersArray: churchMembersT[] = [];
   formData.team_members.map((member: churchMembersT, index: number) => {
     newMembersArray[index] = {
