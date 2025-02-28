@@ -4,20 +4,6 @@ import { createClient } from "@/utils/supabase/server";
 import { setListT } from "@/utils/types/types";
 
 export const addSetlist = async (formData: setListT) => {
-  const keys = [
-    "A",
-    "A#",
-    "B",
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#",
-  ];
   const supabase = createClient();
   const {
     data: { user },
@@ -42,21 +28,32 @@ export const addSetlist = async (formData: setListT) => {
     .single();
 
   const sectionId = data.id;
-
+  const teamMembers: any = formData.teamMembers;
+  const formattedTeam = teamMembers.map((member: any) => {
+    return {
+      setlist: sectionId,
+      member: member.profile,
+    };
+  });
+  const { error: errorTeam } = await supabase
+    .from("event-team")
+    .insert(formattedTeam)
+    .select();
+  console.log("errorTeam");
+  console.log(errorTeam);
   formData.setListSongs.map(async (section, index) => {
-
     console.log(section);
-    if(section.type === "songs"){
-    const { error } = await supabase
-      .from("setlist-songs")
-      .insert({
-        setlist_id: sectionId,
-        song: section.song,
-        key: section.key ,
-        order: index,
-      })
-      .select();
-    } else if(section.type === "global-songs"){
+    if (section.type === "songs") {
+      const { error } = await supabase
+        .from("setlist-songs")
+        .insert({
+          setlist_id: sectionId,
+          song: section.song,
+          key: section.key,
+          order: index,
+        })
+        .select();
+    } else if (section.type === "global-songs") {
       const { error } = await supabase.from("setlist-songs").insert({
         setlist_id: sectionId,
         global_song: section.song,

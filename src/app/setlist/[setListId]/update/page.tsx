@@ -7,6 +7,8 @@ import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
 import { getChurchWorshipTeam } from "@/hooks/GET/getChurchWorshipTeam";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { redirect } from "next/navigation";
 export default async function songs({
   params,
 }: {
@@ -23,14 +25,18 @@ export default async function songs({
 
   setlistData.setListSongs = setlistsongs;
   const songs = await getSongsCompact();
-  return (
-    <div className="container-sub">
-      <UpdateSetlistForm
-        page="update"
-        setlistData={setlistData}
-        songsList={songs}
-        worshipTeamMembers={worshipTeamMembers}
-      />
-    </div>
-  );
+  if (hasPermission(userData.role as Role, "update:setlists")) {
+    return (
+      <div className="container-sub">
+        <UpdateSetlistForm
+          page="update"
+          setlistData={setlistData}
+          songsList={songs}
+          worshipTeamMembers={worshipTeamMembers}
+        />
+      </div>
+    );
+  } else {
+    return redirect("/setlist");
+  }
 }

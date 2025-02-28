@@ -5,6 +5,7 @@ import Link from "next/link";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
 import { setListT } from "@/utils/types/types";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default async function Page() {
   const userData: basicUserData = await fbasicUserData();
@@ -54,7 +55,7 @@ export default async function Page() {
             );
           }
         })}
-      {["1", "2"].includes(userData.role.toString()) && (
+      {hasPermission(userData.role as Role, "create:setlists") && (
         <button className="button-transpose my-10">
           <a href="/setlist/addSetlist">Crea nuova Setlist!</a>
         </button>
