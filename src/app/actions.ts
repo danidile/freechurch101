@@ -6,12 +6,12 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { TauthSchema, TlostPasswordSchema } from "@/utils/types/auth";
 import { TresetPasswordSchema } from "@/utils/types/auth";
+import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
 
 export const signUpAction = async (data: TauthSchema) => {
   const email = data.email;
   const password = data.password;
   const supabase = createClient();
-  const origin = headers().get("origin");
 
   if (!email || !password) {
     return { error: "Email and password are required" };
@@ -20,18 +20,16 @@ export const signUpAction = async (data: TauthSchema) => {
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      emailRedirectTo: `${origin}/auth/callback`,
-    },
   });
 
   if (error) {
     console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
+
+    return encodedRedirect("error", "/sign-up", translateSupabaseError(error.message));
   } else {
     return encodedRedirect(
       "success",
-      "/sign-up-successfull",
+      "/sign-up",
       "Registrazione effettuata con successo! Controlla la tua mail per il link di verifica."
     );
   }
@@ -48,7 +46,11 @@ export const signInAction = async (data: TauthSchema) => {
   });
 
   if (error) {
-    return encodedRedirect("error", "/login", error.message);
+    return encodedRedirect(
+      "error",
+      "/login",
+      translateSupabaseError(error.message)
+    );
   }
 
   return redirect("/protected/dashboard");
@@ -79,7 +81,7 @@ export const forgotPasswordAction = async (data: TlostPasswordSchema) => {
   return encodedRedirect(
     "success",
     "/forgot-password",
-    "Check your email for a link to reset your password."
+    "Controlla la tu Mail per il link per reimpostare la password."
   );
 };
 

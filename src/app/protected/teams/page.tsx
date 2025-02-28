@@ -4,6 +4,7 @@ import Link from "next/link";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Team } from "@/utils/types/types";
 import { getTeamsByChurch } from "@/hooks/GET/getTeamsByChurch";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default async function Page() {
   const userData: basicUserData = await fbasicUserData();
@@ -28,7 +29,7 @@ export default async function Page() {
             </div>
           );
         })}
-      {["1", "2"].includes(userData.role.toString()) && (
+      {hasPermission(userData.role as Role, "create:team") && (
         <button className="button-transpose my-10">
           <a href="/protected/teams/create-team">Crea nuovo team</a>
         </button>
