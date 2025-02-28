@@ -19,6 +19,7 @@ export default async function songs({
     params.setListId
   );
   const userData: basicUserData = await fbasicUserData();
+
   const worshipTeamMembers: churchMembersT[] = await getChurchWorshipTeam(
     userData.church_id
   );
@@ -29,6 +30,7 @@ export default async function songs({
     return (
       <div className="container-sub">
         <UpdateSetlistForm
+          teams={null}
           page="update"
           setlistData={setlistData}
           songsList={songs}
