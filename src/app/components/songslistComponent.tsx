@@ -7,12 +7,8 @@ import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { basicUserData } from "@/utils/types/userData";
-import { searchBar, songsListType,songType } from "@/utils/types/types";
-
-
-
-
-
+import { searchBar, songsListType, songType } from "@/utils/types/types";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function SongslistComponent({
   songs,
@@ -21,7 +17,7 @@ export default function SongslistComponent({
   songs: songsListType;
   userData: basicUserData;
 }) {
-    const [songList, setSongList] = useState(songs);
+  const [songList, setSongList] = useState(songs);
   const {
     register,
     handleSubmit,
@@ -32,11 +28,12 @@ export default function SongslistComponent({
     },
   });
   const aggiornaLista = (event: any) => {
-    const filteredSongs = songs.filter((song:songType) =>
-      song.song_title.toLowerCase().includes(event.text.toLowerCase()) ||
-      song.author.toLowerCase().includes(event.text.toLowerCase())
+    const filteredSongs = songs.filter(
+      (song: songType) =>
+        song.song_title.toLowerCase().includes(event.text.toLowerCase()) ||
+        song.author.toLowerCase().includes(event.text.toLowerCase())
     );
-  
+
     setSongList(filteredSongs);
   };
   return (
@@ -65,12 +62,11 @@ export default function SongslistComponent({
             <ManageSearchIcon />
           </Button>
         </form>
-        {["1", "2"].includes(userData.role.toString())  &&  (
+        {hasPermission(userData.role as Role, "create:songs") && (
           <Button color="primary" variant="ghost">
-          <a href="/songs/addSong">Aggiungi una canzone!</a>
-        </Button>
+            <a href="/songs/addSong">Aggiungi una canzone!</a>
+          </Button>
         )}
-        
       </div>
       <div className="container-song-list">
         {songList.map((song) => {
@@ -80,8 +76,8 @@ export default function SongslistComponent({
                 <p key={song.id}>
                   {song.song_title}
                   <br />
-                  {song.author && (<small>{song.author}</small>)}
-                  {!song.author && (<small>Unknown</small>)}
+                  {song.author && <small>{song.author}</small>}
+                  {!song.author && <small>Unknown</small>}
                 </p>
                 <span className="material-symbols-outlined">
                   <QueueMusicIcon />

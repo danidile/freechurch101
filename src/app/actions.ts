@@ -35,12 +35,12 @@ export const signUpAction = async (data: TauthSchema) => {
   }
 };
 
-export const signInAction = async (data: TauthSchema) => {
-  const email = data.email;
-  const password = data.password;
+export const signInAction = async (formData: TauthSchema) => {
+  const email = formData.email;
+  const password = formData.password;
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });

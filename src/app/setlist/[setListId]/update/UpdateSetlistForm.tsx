@@ -5,6 +5,7 @@ import {
   eventSchema,
   setListSongT,
   setListT,
+  teamData,
 } from "@/utils/types/types";
 import {
   Button,
@@ -27,11 +28,13 @@ import { SelectTeamMemberDrawer } from "@/app/protected/teams/SelectTeamMemberDr
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 
 export default function UpdateSetlistForm({
+  teams,
   page,
   songsList,
   setlistData,
   worshipTeamMembers,
 }: {
+  teams: teamData[];
   page: string;
   songsList: TsongNameAuthor[];
   setlistData: setListT;
