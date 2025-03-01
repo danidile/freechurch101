@@ -235,6 +235,7 @@ export type teamData = {
   team_leaders?: churchMembersT[];
   team_members?: churchMembersT[];
   is_worship?: boolean;
+  selected?:churchMembersT[];
 };
 
 

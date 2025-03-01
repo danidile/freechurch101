@@ -12,6 +12,7 @@ const ROLES = {
     "update:setlists",
     "delete:setlists",
     "create:team",
+    "view:teams",
   ],
   church: ["view:songs", "create:songs", "update:songs", "delete:songs"],
   jel: ["view:songs", "create:songs", "update:songs", "delete:songs"],

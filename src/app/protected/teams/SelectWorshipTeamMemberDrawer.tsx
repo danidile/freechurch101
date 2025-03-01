@@ -16,20 +16,22 @@ import { FaPlus } from "react-icons/fa";
 import { useState } from "react";
 
 export function SelectWorshipTeamMemberDrawer({
+  teamId,
   state,
-  churchMembers,
+  teamMembers,
   addMemberToTeam,
   type,
   section,
 }: {
+  teamId: string;
   state: churchMembersT[];
   type: string;
-  churchMembers: churchMembersT[];
-  addMemberToTeam: (song: setListSongT, section: number) => void;
+  teamMembers: churchMembersT[];
+  addMemberToTeam: (song: setListSongT, teamId: string) => void;
   section: number;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [members, setmembers] = useState(churchMembers);
+  const [members, setmembers] = useState(teamMembers);
   const [searchText, setSearchText] = useState(""); // Local state for search input
 
   const aggiornaLista = () => {
@@ -103,7 +105,7 @@ export function SelectWorshipTeamMemberDrawer({
                             style={{ cursor: "pointer" }}
                             key={member.profile}
                             onClick={() => {
-                              addMemberToTeam(member, section);
+                              addMemberToTeam(member, teamId);
                               onClose();
                             }}
                           >
