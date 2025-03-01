@@ -235,10 +235,8 @@ export type teamData = {
   team_leaders?: churchMembersT[];
   team_members?: churchMembersT[];
   is_worship?: boolean;
-  selected?:churchMembersT[];
+  selected?: churchMembersT[];
 };
-
-
 
 export type ChurchMemberByTeam = {
   id: number;
@@ -249,3 +247,8 @@ export type ChurchMemberByTeam = {
 };
 
 export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;
+
+export type artistsT = {
+  username: string;
+  artist_name: string;
+};

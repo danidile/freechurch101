@@ -13,11 +13,10 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 export default function GlobalSongslistComponent({
   songs,
   userData,
-  artists,
+  
 }: {
   songs: songsListType;
   userData: basicUserData;
-  artists: any;
 }) {
   const [songList, setSongList] = useState(songs);
   const {

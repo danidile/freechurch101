@@ -13,10 +13,5 @@ export const getArtistsGlobal = async () => {
   if (error) {
     console.error("Errore durante il fetch:", error);
   }
-
-  const sortedSongs = globalSongs.sort((a, b) =>
-    a.author.localeCompare(b.author)
-  );
-
-  return sortedSongs;
+  return globalSongs;
 };
