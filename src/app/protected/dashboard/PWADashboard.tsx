@@ -1,5 +1,6 @@
 "use client";
 import logoutTest from "@/app/components/logOutAction";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { basicUserData } from "@/utils/types/userData";
 import { Button, Image, Link } from "@heroui/react";
 export default function PWADashboard({
@@ -30,15 +31,25 @@ export default function PWADashboard({
           />{" "}
           Membri Chiesa
         </Link>
-        {Number(userData.role) <= 2 && (
-          <Link className="song-list text-black" href="/protected/teams">
-            <Image
-              className="dashboard-icon"
-              src="/images/dashboard/church.png"
-              alt=""
-            />{" "}
-            Teams
-          </Link>
+        {hasPermission(userData.role as Role, "view:teams") && (
+          <>
+            <Link className="song-list text-black" href="/protected/teams">
+              <Image
+                className="dashboard-icon"
+                src="/images/dashboard/church.png"
+                alt=""
+              />{" "}
+              Teams
+            </Link>
+            <Link className="song-list text-black" href="/protected/global-songs">
+              <Image
+                className="dashboard-icon"
+                src="/images/dashboard/church.png"
+                alt=""
+              />{" "}
+              Global Songs
+            </Link>
+          </>
         )}
         <Link className="song-list text-black">
           {" "}

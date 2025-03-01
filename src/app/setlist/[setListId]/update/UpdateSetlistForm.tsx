@@ -1,6 +1,12 @@
 "use client";
 import { MdMoreVert } from "react-icons/md";
 import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@heroui/dropdown";
+import {
   churchMembersT,
   eventSchema,
   setListSongT,
@@ -24,7 +30,6 @@ import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
 import { SelectSongsDrawer } from "./SelectSongsDrawer";
-import { SelectTeamMemberDrawer } from "@/app/protected/teams/SelectTeamMemberDrawer";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 
 export default function UpdateSetlistForm({
@@ -57,6 +62,7 @@ export default function UpdateSetlistForm({
   const [state, setState] = useState<setListSongT[]>(
     setlistData?.setListSongs || []
   );
+  const [teamsState, setTeamsState] = useState<teamData[]>([]);
   const [team, setTeam] = useState<churchMembersT[]>([]);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
   let x: string;
@@ -75,16 +81,25 @@ export default function UpdateSetlistForm({
 
   // -------------------------------------------
 
-  const addMemberToTeam = (member: churchMembersT) => {
-    setTeam([
-      ...team,
-      {
-        profile: member.profile,
-        name: member.name,
-        lastname: member.lastname,
-      },
+  const addTeam = (id: string) => {
+    setTeamsState([
+      ...teamsState,
+      teams[teams.findIndex((section) => section.id === id)],
     ]);
   };
+
+  const addMemberToTeam = (member: churchMembersT, teamId: string) => {
+    setTeamsState((prevTeams) =>
+      prevTeams.map((team) =>
+        team.id === teamId
+          ? { ...team, selected: [...(team.selected || []), member] }
+          : team
+      )
+    );
+  };
+  // TeamData
+
+  // -------------------------------------------
 
   const removeMemberToTeam = (profile: string) => {
     setTeam(team.filter((section) => section.profile !== profile));
@@ -287,57 +302,82 @@ export default function UpdateSetlistForm({
           <div>{/* <pre>{JSON.stringify(state, null, 2)}</pre> */}</div>
 
           <br />
-          {worshipTeamMembers && (
-            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-              <div className="form-div crea-setlist-container">
-                <h5>Turnazioni</h5>
-              </div>
-              {team.map((member, index) => {
-                return (
-                  <div
-                    className="teammember-container !py-1"
-                    key={member.profile}
-                  >
-                    <div className="teammember-section !py-1">
-                      <Input
-                        name={"type" + member.profile}
-                        key={member.id}
-                        value={member.profile}
-                        className="hide-input"
-                        {...register(`sections.${index}.id`)}
-                      />
-                      <p>
-                        <b>{member.name + " " + member.lastname}</b>
-                      </p>
-                      <Button
-                        size="sm"
-                        className="mx-0"
-                        fullWidth
-                        color="danger"
-                        type="button"
-                        variant="light"
-                        id={member.profile}
-                        onPress={() => removeMemberToTeam(member.profile)}
-                        accessKey={String(index)}
-                      >
-                        Elimina
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
 
-              <div className="transpose-button-container">
-                <SelectWorshipTeamMemberDrawer
-                  state={team}
-                  type="add"
-                  churchMembers={worshipTeamMembers}
-                  addMemberToTeam={addMemberToTeam} // Pass function correctly
-                  section={null}
-                />
-              </div>
+          <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+            <div className="form-div crea-setlist-container">
+              <h5>Turnazioni</h5>
             </div>
-          )}
+            <Dropdown>
+              <DropdownTrigger>
+                <Button variant="bordered">Aggiungi Team</Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                {teams.map((team: teamData) => {
+                  return (
+                    <DropdownItem
+                      key={team.id}
+                      onPress={() => addTeam(team.id)}
+                    >
+                      {team.team_name}
+                    </DropdownItem>
+                  );
+                })}
+              </DropdownMenu>
+            </Dropdown>
+            {teamsState.map((section) => {
+              return (
+                <>
+                  <h5>{section.team_name}</h5>
+                  <div className="transpose-button-container">
+                    <SelectWorshipTeamMemberDrawer
+                      state={team}
+                      type="add"
+                      teamMembers={section.team_members}
+                      addMemberToTeam={addMemberToTeam} // Pass function correctly
+                      section={null}
+                      teamId={section.id}
+                    />
+                  </div>
+                  {section.selected &&
+                    section.selected.map((member, index) => {
+                      return (
+                        <div
+                          className="teammember-container !py-1"
+                          key={member.profile}
+                        >
+                          <div className="teammember-section !py-1">
+                            <Input
+                              name={"type" + member.profile}
+                              key={member.id}
+                              value={member.profile}
+                              className="hide-input"
+                              {...register(`sections.${index}.id`)}
+                            />
+                            <p>
+                              <b>{member.name + " " + member.lastname}</b>
+                            </p>
+                            <Button
+                              size="sm"
+                              className="mx-0"
+                              fullWidth
+                              color="danger"
+                              type="button"
+                              variant="light"
+                              id={member.profile}
+                              onPress={() => removeMemberToTeam(member.profile)}
+                              accessKey={String(index)}
+                            >
+                              Elimina
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </>
+              );
+            })}
+          </div>
+
           <br />
           <Button
             color="primary"
