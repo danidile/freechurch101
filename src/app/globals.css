@@ -732,6 +732,52 @@ tbody tr .tablecellnewteams {
   justify-content: center;
   grid-template-columns: 5fr 1fr 1fr;
 }
+.setlist-list-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 70%;
+}
+.setlist-date-avatar{
+  width: 50px;
+  height: 50px;
+  background-color: #eeeeee;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 30px;
+}
+.setlist-list {
+  padding: 1rem;
+  border-bottom: 1px solid grey;
+  width: 100%;
+  max-width: 500px;
+  transition: 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0px auto;
+}
+.setlist-list:hover {
+  background-color: white;
+  transform: scale(1.02);
+}
+.setlist-list p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+.setlist-day{
+  white-space: nowrap;
+  overflow: visible !important;
+  font-size: 25px;
+  line-height: 10px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
 .top-settings-bar {
   display: flex;
   width: 100%;
