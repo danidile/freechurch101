@@ -37,11 +37,21 @@ export default async function Page() {
             // minute: "2-digit", // "22"
             // second: "2-digit", // "46"
           });
+          const dateDay = date.toLocaleString("it-IT", {
+            day: "numeric", // "10"
+          });
+          const dateMonth = date.toLocaleString("it-IT", {
+            month: "long", // "November"
+          });
           if (nextDate <= date) {
             return (
-              <div className="song-list" key={setlist.id}>
+              <div className="setlist-list" key={setlist.id}>
+                <div className="setlist-date-avatar">
+                  <p className="setlist-day">{dateDay}</p>
+                  <small>{dateMonth.slice(0, 3) + ".."}</small>
+                </div>
                 <Link
-                  className="song-list-link"
+                  className="setlist-list-link"
                   href={`/setlist/${setlist.id}`}
                 >
                   <p key={setlist.id}>
