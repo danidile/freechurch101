@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { encodedRedirect } from "@/utils/utils";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "ChurchLab",
@@ -15,13 +16,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const userData: basicUserData = await fbasicUserData();
-console.log(userData.loggedIn);
-  if(userData.loggedIn){
-  return (<>
-    {children}
-    </>
-  )}else{
-      return encodedRedirect("error", "/login", "login to access the dashboard");
+  console.log(userData.loggedIn);
+  if (userData.loggedIn) {
+    return <>{children}</>;
+  } else {
+    return redirect("/login");
   }
-
 }

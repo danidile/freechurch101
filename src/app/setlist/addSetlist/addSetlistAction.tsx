@@ -1,7 +1,7 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { setListT } from "@/utils/types/types";
+import { setListT, teamData } from "@/utils/types/types";
 
 export const addSetlist = async (formData: setListT) => {
   const supabase = createClient();
@@ -28,16 +28,21 @@ export const addSetlist = async (formData: setListT) => {
     .single();
 
   const sectionId = data.id;
-  const teamMembers: any = formData.teamMembers;
-  const formattedTeam = teamMembers.map((member: any) => {
-    return {
-      setlist: sectionId,
-      member: member.profile,
-    };
+  let expandedTeam: any = [];
+  formData.teams.map((team: teamData) => {
+    team.selected.map((member: any) => {
+      expandedTeam.push({
+        setlist: sectionId,
+        member: member.profile,
+        team: team.id,
+      });
+    });
   });
+  console.log("expandedTeam");
+  console.log(expandedTeam);
   const { error: errorTeam } = await supabase
     .from("event-team")
-    .insert(formattedTeam)
+    .insert(expandedTeam)
     .select();
   console.log("errorTeam");
   console.log(errorTeam);

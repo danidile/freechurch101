@@ -733,50 +733,62 @@ tbody tr .tablecellnewteams {
   grid-template-columns: 5fr 1fr 1fr;
 }
 .setlist-list-link {
+  cursor:pointer;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 70%;
+  width: 100%;
 }
-.setlist-date-avatar{
+.setlist-date-avatar {
   width: 50px;
   height: 50px;
   background-color: #eeeeee;
-  border-radius: 50%;
+  border-radius: 0.7rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-right: 30px;
+  position: relative;
 }
 .setlist-list {
-  padding: 1rem;
-  border-bottom: 1px solid grey;
+  padding: 0.5rem;
   width: 100%;
   max-width: 500px;
   transition: 0.3s;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-center;
   align-items: center;
   margin: 0px auto;
+  border-radius: 1rem;
+  background-color: rgb(247, 247, 247, 0);
+  transition: 0.5s;
 }
 .setlist-list:hover {
-  background-color: white;
-  transform: scale(1.02);
+  background-color: rgb(247, 247, 247, 1);
 }
-.setlist-list p {
+
+.setlist-name {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 600;
+  width: 70%;
 }
-.setlist-day{
+
+.setlist-day {
   white-space: nowrap;
   overflow: visible !important;
   font-size: 25px;
   line-height: 10px;
   font-weight: 600;
-  margin-bottom: 5px;
+}
+.setlist-weekday {
+  text-transform: capitalize;
+  color: #bebebe;
+  position: absolute;
+  bottom: 0px;
 }
 .top-settings-bar {
   display: flex;

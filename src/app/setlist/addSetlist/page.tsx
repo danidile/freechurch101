@@ -25,8 +25,6 @@ export default async function songs() {
         setlistData={setlistData}
         songsList={songs}
       />
-
-      {/* <CreateSetlistForm songsList={songs} /> */}
     </div>
   );
 }

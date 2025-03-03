@@ -211,6 +211,7 @@ export type setListT = {
     id?: string;
     profile?: string;
   };
+  teams?: teamData[];
 };
 
 export type searchBar = {
@@ -251,4 +252,10 @@ export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;
 export type artistsT = {
   username: string;
   artist_name: string;
+};
+
+export type notificationT = {
+  id?: string;
+  setlist?: setListT;
+  team?: teamData;
 };

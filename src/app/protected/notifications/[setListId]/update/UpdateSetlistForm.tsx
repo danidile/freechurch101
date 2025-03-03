@@ -166,11 +166,12 @@ export default function UpdateSetlistForm({
       event_title: watchAllFields.event_title,
       date: watchAllFields.date,
       setListSongs: state,
-      teams: teamsState,
+      teamMembers: newTeam,
     };
-    console.log("updatedSetlist.teams");
-    console.log(updatedSetlist.teams);
-
+    console.log("updatedSetlist");
+    console.log(updatedSetlist);
+    console.log("setlistData");
+    console.log(setlistData);
 
     if (page === "create") {
       addSetlist(updatedSetlist);
