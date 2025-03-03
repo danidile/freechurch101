@@ -1,10 +1,18 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { teamData } from "@/utils/types/types";
+import {
+  GroupedNotificationsT,
+  notificationT,
+  teamData,
+} from "@/utils/types/types";
 
-export const getNotificationsById = async (userId: string) => {
+export const getNotificationsById = async (
+  userId: string
+): Promise<GroupedNotificationsT> => {
   const supabase = createClient();
+  const today = new Date().toISOString().split("T")[0]; // Get today's date in "YYYY-MM-DD"
+
   let { data: notifications, error } = await supabase
     .from("event-team")
     .select(
@@ -13,11 +21,11 @@ export const getNotificationsById = async (userId: string) => {
        team:team!inner(team_name),status`
     )
     .eq("member", userId)
-    .eq("status", "pending");
+    .gte("setlist.date", today);
 
   if (error) {
     console.error(error);
-    return [];
+    return { pending: {}, confirmed: {}, denied: {} };
   }
 
   // Ensure setlist and team are returned as single objects, not arrays
@@ -28,6 +36,38 @@ export const getNotificationsById = async (userId: string) => {
     status: n.status,
   }));
 
-  console.log("formatted notifications:", formattedNotifications);
-  return formattedNotifications;
+  const groupedNotifications: GroupedNotificationsT = {
+    pending: {
+      details: {
+        title: "Da confermare",
+        color: "#f0a736",
+      },
+      notifications: [],
+    },
+    confirmed: {
+      details: {
+        title: "Confermati",
+        color: "#46af3b",
+      },
+      notifications: [],
+    },
+    denied: {
+      details: {
+        title: "Rifiutati",
+        color: "#e44d42",
+      },
+      notifications: [],
+    },
+  };
+  formattedNotifications.map((notification: notificationT) => {
+    if (notification.status === "pending") {
+      groupedNotifications.pending.notifications.push(notification);
+    } else if (notification.status === "confirmed") {
+      groupedNotifications.confirmed.notifications.push(notification);
+    } else if (notification.status === "denied") {
+      groupedNotifications.denied.notifications.push(notification);
+    }
+  });
+
+  return groupedNotifications;
 };

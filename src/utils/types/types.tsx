@@ -254,9 +254,25 @@ export type artistsT = {
   artist_name: string;
 };
 
+export type notificationDetails = {
+  title?: string;
+  color?: string;
+};
+
 export type notificationT = {
   id?: string;
   setlist?: setListT;
   team?: teamData;
   status?: string;
+};
+
+export type NotificationsT = {
+  notifications?: notificationT[];
+  details?: notificationDetails;
+};
+
+export type GroupedNotificationsT = {
+  pending?: NotificationsT;
+  confirmed?: NotificationsT;
+  denied?: NotificationsT;
 };

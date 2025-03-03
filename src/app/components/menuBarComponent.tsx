@@ -27,7 +27,7 @@ export default function MenuBarComponent({
   notifications,
 }: {
   userData: basicUserData;
-  notifications: notificationT[];
+  notifications: number;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuItems = ["songs", "setlist"];

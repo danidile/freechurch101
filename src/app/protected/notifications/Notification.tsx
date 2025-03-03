@@ -1,15 +1,6 @@
 "use client";
-import { basicUserData } from "@/utils/types/userData";
-import fbasicUserData from "@/utils/supabase/getUserData";
-import Link from "next/link";
-import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
-import { notificationT, setListT } from "@/utils/types/types";
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import { IoEnterOutline } from "react-icons/io5";
-import { getNotificationsById } from "@/hooks/GET/getNotificationsById";
-import { CgNotifications } from "react-icons/cg";
+import { notificationT } from "@/utils/types/types";
 import { FaCircle } from "react-icons/fa";
-
 import {
   Modal,
   ModalContent,
@@ -19,12 +10,19 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
+import { motion, AnimatePresence } from "framer-motion";
+import { confirmAction } from "./confirmAction";
+import { denyAction } from "./denyAction";
 export default function NotificationElement({
+  type,
   nextDate,
   notification,
+  removeFromList,
 }: {
+  type: string;
   nextDate: Date;
   notification: notificationT;
+  removeFromList: (NotificationId: string) => void;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   console.log("notification.setlist.date");
@@ -55,35 +53,45 @@ export default function NotificationElement({
   if (nextDate <= date) {
     return (
       <>
-        <div
-          className="setlist-list-link"
-          onClick={onOpen}
-        >
-          <div className="setlist-list" key={notification.id}>
-            <div className="setlist-date-avatar">
-              <p
-                className={`setlist-day ${
-                  isSunday ? "text-red-400" : "text-black"
-                }`}
-              >
-                {dateDay}
-              </p>
-              <small className="setlist-weekday">{dateWeekDay}</small>
-            </div>
+        <AnimatePresence>
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 25,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            exit={{
+              opacity: 0,
+              y: 25,
+            }}
+            transition={{ duration: 0.5 }}
+            className="setlist-list-link"
+            onClick={onOpen}
+          >
+            <div className="setlist-list" key={notification.id}>
+              <div className="setlist-date-avatar">
+                <p
+                  className={`setlist-day ${
+                    isSunday ? "text-red-400" : "text-black"
+                  }`}
+                >
+                  {dateDay}
+                </p>
+                <small className="setlist-weekday">{dateWeekDay}</small>
+              </div>
 
-            <p className="setlist-name" key={notification.id}>
-              {notification.setlist.event_title}
-              <br />
-              <small>{notification.team.team_name}</small>
-            </p>
-            <FaCircle
-              size={15}
-              color={`
-    ${notification.status == "pending" ? "#ffe55d" : ""}
-`}
-            />
-          </div>
-        </div>
+              <p className="setlist-name" key={notification.id}>
+                {notification.setlist.event_title}
+                <br />
+                <small>{notification.team.team_name}</small>
+              </p>
+              <FaCircle size={15} color={"red"} />
+            </div>
+          </motion.div>
+        </AnimatePresence>
         <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
           <ModalContent>
             {(onClose) => (
@@ -98,11 +106,22 @@ export default function NotificationElement({
                     fullWidth
                     color="danger"
                     variant="light"
-                    onPress={onClose}
+                    onPress={() => {
+                      denyAction(notification.id);
+                      removeFromList(notification.id);
+                    }}
                   >
                     Rifiuta
                   </Button>
-                  <Button fullWidth color="primary" onPress={onClose}>
+                  <Button
+                    fullWidth
+                    color="primary"
+                    onPress={() => {
+                      confirmAction(notification.id);
+                      removeFromList(notification.id);
+                      onClose;
+                    }}
+                  >
                     Conferma
                   </Button>
                 </ModalFooter>
