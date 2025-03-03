@@ -68,14 +68,17 @@ export default function MenuApp({
               href="/protected/notifications"
               className="pwaiconsmenu"
             >
-              {/* <Badge color="primary" content="5"> */}
-
               {parameter === "/protected/notifications" ? (
-                <IoNotificationsSharp />
+                  <Badge size="sm" color="primary" content={notifications.length}>
+                    <IoNotificationsSharp />
+                  </Badge>
               ) : (
-                <IoNotificationsOutline />
+                <div>
+                  <Badge size="sm" color="primary" content={notifications.length}>
+                    <IoNotificationsOutline />
+                  </Badge>
+                </div>
               )}
-              {/* <Badge/> */}
             </TransitionLink>
           )}
           <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">

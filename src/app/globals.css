@@ -162,7 +162,6 @@ main {
     rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 .app-menu-icons {
-  width: 100px;
   color: #1b1b1b;
   transition: 0.3s;
   size: 2rem;
@@ -541,7 +540,12 @@ tbody tr .tablecellnewteams {
     text-decoration: underline;
   }
 }
-
+.appmenucontainer {
+  display: block;
+}
+.TransitionLink svg{
+width: 20px;
+}
 .icon {
   max-width: 30px;
   transform: rotate(-90deg);
@@ -1348,4 +1352,9 @@ tbody tr .tablecellnewteams {
 }
 .input-skill-show {
   display: block !important;
+}
+
+
+.notification-icon{
+  width: 30px;
 }
