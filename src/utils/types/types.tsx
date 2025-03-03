@@ -258,4 +258,5 @@ export type notificationT = {
   id?: string;
   setlist?: setListT;
   team?: teamData;
+  status?: string;
 };

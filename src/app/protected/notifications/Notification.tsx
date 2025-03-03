@@ -8,6 +8,7 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { IoEnterOutline } from "react-icons/io5";
 import { getNotificationsById } from "@/hooks/GET/getNotificationsById";
 import { CgNotifications } from "react-icons/cg";
+import { FaCircle } from "react-icons/fa";
 
 import {
   Modal,
@@ -54,7 +55,10 @@ export default function NotificationElement({
   if (nextDate <= date) {
     return (
       <>
-        <div className="setlist-list-link" onClick={onOpen}>
+        <div
+          className="setlist-list-link"
+          onClick={onOpen}
+        >
           <div className="setlist-list" key={notification.id}>
             <div className="setlist-date-avatar">
               <p
@@ -72,21 +76,30 @@ export default function NotificationElement({
               <br />
               <small>{notification.team.team_name}</small>
             </p>
-            <CgNotifications size={25} />
+            <FaCircle
+              size={15}
+              color={`
+    ${notification.status == "pending" ? "#ffe55d" : ""}
+`}
+            />
           </div>
         </div>
         <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
           <ModalContent>
             {(onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">
-                </ModalHeader>
+                <ModalHeader className="flex flex-col gap-1"></ModalHeader>
                 <ModalBody>
-                <h5>{notification.setlist.event_title}</h5>
-                <p>{readableCurrentDate}</p>
-                  </ModalBody>
+                  <h5>{notification.setlist.event_title}</h5>
+                  <p>{readableCurrentDate}</p>
+                </ModalBody>
                 <ModalFooter>
-                  <Button fullWidth color="danger" variant="light" onPress={onClose}>
+                  <Button
+                    fullWidth
+                    color="danger"
+                    variant="light"
+                    onPress={onClose}
+                  >
                     Rifiuta
                   </Button>
                   <Button fullWidth color="primary" onPress={onClose}>
