@@ -18,12 +18,19 @@ import {
   IoNotificationsOutline,
   IoNotificationsSharp,
 } from "react-icons/io5";
-
+import { Badge } from "@heroui/badge";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
+import { notificationT } from "@/utils/types/types";
 
-export default function MenuApp({ isLoggedIn }: { isLoggedIn: boolean }) {
+export default function MenuApp({
+  isLoggedIn,
+  notifications,
+}: {
+  isLoggedIn: boolean;
+  notifications: notificationT[];
+}) {
   const pathname = usePathname(); // Get the full pathname
   const [parameter, setParameter] = useState(pathname.split("/")[1] || ""); // Initialize state based on the pathname
 
@@ -61,11 +68,14 @@ export default function MenuApp({ isLoggedIn }: { isLoggedIn: boolean }) {
               href="/protected/notifications"
               className="pwaiconsmenu"
             >
+              {/* <Badge color="primary" content="5"> */}
+
               {parameter === "/protected/notifications" ? (
                 <IoNotificationsSharp />
               ) : (
                 <IoNotificationsOutline />
               )}
+              {/* <Badge/> */}
             </TransitionLink>
           )}
           <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">

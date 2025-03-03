@@ -27,7 +27,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
-import { addSetlist } from "../../addSetlist/addSetlistAction";
+import { addSetlist } from "@/app/setlist/addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
 import { SelectSongsDrawer } from "./SelectSongsDrawer";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";

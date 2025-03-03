@@ -20,11 +20,14 @@ import {
 import UserDataMenu from "./userDataMenu";
 import MenuApp from "./MenuApp";
 import { TransitionLink } from "./TransitionLink";
+import { notificationT } from "@/utils/types/types";
 
 export default function MenuBarComponent({
   userData,
+  notifications,
 }: {
   userData: basicUserData;
+  notifications: notificationT[];
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuItems = ["songs", "setlist"];
@@ -88,7 +91,7 @@ export default function MenuBarComponent({
           ))}
         </NavbarMenu>
       </Navbar>
-      <MenuApp isLoggedIn={userData.loggedIn ? true : false} />
+      <MenuApp notifications={notifications} isLoggedIn={userData.loggedIn ? true : false} />
     </>
   );
 }
