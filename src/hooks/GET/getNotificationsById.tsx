@@ -10,7 +10,7 @@ export const getNotificationsById = async (userId: string) => {
     .select(
       `id, 
        setlist:setlist!inner(date, event_title), 
-       team:team!inner(team_name)`
+       team:team!inner(team_name),status`
     )
     .eq("member", userId)
     .eq("status", "pending");
@@ -25,8 +25,8 @@ export const getNotificationsById = async (userId: string) => {
     id: n.id,
     setlist: Array.isArray(n.setlist) ? n.setlist[0] : n.setlist, // Fixes TypeScript error
     team: Array.isArray(n.team) ? n.team[0] : n.team, // Fixes TypeScript error
+    status: n.status,
   }));
-  
 
   console.log("formatted notifications:", formattedNotifications);
   return formattedNotifications;
