@@ -6,6 +6,8 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
 import { setListT } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { Button } from "@heroui/react";
+import { IoEnterOutline } from "react-icons/io5";
 
 export default async function Page() {
   const userData: basicUserData = await fbasicUserData();
@@ -22,6 +24,7 @@ export default async function Page() {
     // minute: "2-digit", // "22"
     // second: "2-digit", // "46"
   });
+  const monthCheck = "NotAMonth";
   return (
     <div className="container-sub">
       <h5 className="text-center m-5">Lista eventi</h5>
@@ -43,32 +46,47 @@ export default async function Page() {
           const dateMonth = date.toLocaleString("it-IT", {
             month: "long", // "November"
           });
+          const dateWeekDay = date.toLocaleString("it-IT", {
+            weekday: "short", // "Sunday"
+          });
+          let isSunday = false;
+          if (dateWeekDay == "dom") {
+            isSunday=true;
+          }
+
           if (nextDate <= date) {
             return (
-              <div className="setlist-list" key={setlist.id}>
-                <div className="setlist-date-avatar">
-                  <p className="setlist-day">{dateDay}</p>
-                  <small>{dateMonth.slice(0, 3) + ".."}</small>
-                </div>
-                <Link
-                  className="setlist-list-link"
-                  href={`/setlist/${setlist.id}`}
-                >
-                  <p key={setlist.id}>
+              <Link
+                className="setlist-list-link"
+                href={`/setlist/${setlist.id}`}
+              >
+                <div className="setlist-list" key={setlist.id}>
+                  <div className="setlist-date-avatar">
+                    <p
+                      className={`setlist-day ${
+                        isSunday ? "text-red-400" : "text-black"
+                      }`}
+                    >
+                      {dateDay}
+                    </p>
+                    <small className="setlist-weekday">{dateWeekDay}</small>
+                  </div>
+
+                  <p className="setlist-name" key={setlist.id}>
                     {setlist.event_title}
-                    <br />
-                    <small>{readableDate}</small>{" "}
                   </p>
-                  <ListAltIcon />
-                </Link>
-              </div>
+                  <IoEnterOutline size={25} />
+                </div>
+              </Link>
             );
           }
         })}
       {hasPermission(userData.role as Role, "create:setlists") && (
-        <button className="button-transpose my-10">
-          <a href="/setlist/addSetlist">Crea nuova Setlist!</a>
-        </button>
+        <Link href="/setlist/addSetlist">
+          <Button className="button-transpose my-10">
+            Crea nuova Setlist!
+          </Button>
+        </Link>
       )}
     </div>
   );
