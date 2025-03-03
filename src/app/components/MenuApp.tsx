@@ -29,7 +29,7 @@ export default function MenuApp({
   notifications,
 }: {
   isLoggedIn: boolean;
-  notifications: notificationT[];
+  notifications: number;
 }) {
   const pathname = usePathname(); // Get the full pathname
   const [parameter, setParameter] = useState(pathname.split("/")[1] || ""); // Initialize state based on the pathname
@@ -69,12 +69,12 @@ export default function MenuApp({
               className="pwaiconsmenu"
             >
               {parameter === "/protected/notifications" ? (
-                  <Badge size="sm" color="primary" content={notifications.length}>
-                    <IoNotificationsSharp />
-                  </Badge>
+                <Badge size="sm" color="primary" content={notifications}>
+                  <IoNotificationsSharp />
+                </Badge>
               ) : (
                 <div>
-                  <Badge size="sm" color="primary" content={notifications.length}>
+                  <Badge size="sm" color="primary" content={notifications}>
                     <IoNotificationsOutline />
                   </Badge>
                 </div>
