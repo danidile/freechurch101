@@ -100,8 +100,7 @@ export default async function Page({
             </>
           );
         })}
-        <br />
-        <br />
+        
         <div className="center- gap-3">
           <ViewFullSetListComponent
             setlistData={setlistData}
