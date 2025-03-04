@@ -21,13 +21,24 @@ export default function NotificationList({
   const [notificationState, setNotificationState] =
     useState<GroupedNotificationsT>(notifications);
 
-  const removeFromList = (NotificationId: string) => {
-    // setNotificationState(
-    //   notificationState.filter(
-    //     (section: NotificationsT) => section.id !== NotificationId
-    //   )
-    // );
+  const removeFromList = (NotificationId: string, onClose: () => void) => {
+    setNotificationState((prevState: GroupedNotificationsT) => {
+      return Object.keys(prevState).reduce((newState, key) => {
+        const typedKey = key as keyof GroupedNotificationsT; // Explicitly type key
+
+        newState[typedKey] = {
+          ...prevState[typedKey],
+          notifications: prevState[typedKey].notifications.filter(
+            (notification: notificationT) => notification.id !== NotificationId
+          ),
+        };
+        return newState;
+      }, {} as GroupedNotificationsT);
+    });
+    onClose;
   };
+  console.log("notificationState");
+  console.log(notificationState);
   return (
     <>
       <Tabs
@@ -36,29 +47,32 @@ export default function NotificationList({
         variant="underlined"
         fullWidth
       >
-        {Object.entries(notifications).map(([status, notifications]) => {
-          return (
-            <Tab
-              className="w-full"
-              key={notifications.details.title}
-              title={notifications.details.title}
-            >
-              {notifications.notifications &&
-                notifications.notifications.map(
-                  (notification: notificationT) => {
-                    return (
-                      <NotificationElement
-                        type="pending"
-                        notification={notification}
-                        nextDate={nextDate}
-                        removeFromList={removeFromList}
-                      />
-                    );
-                  }
-                )}
-            </Tab>
-          );
-        })}
+        {Object.entries(notificationState).map(
+          ([status, notificationsByType]) => {
+            return (
+              <Tab
+                className="w-full"
+                key={notificationsByType.details.title}
+                title={notificationsByType.details.title}
+              >
+                {notificationsByType.notifications &&
+                  notificationsByType.notifications.map(
+                    (notification: notificationT) => {
+                      return (
+                        <NotificationElement
+                          details={notificationsByType.details}
+                          type="pending"
+                          notification={notification}
+                          nextDate={nextDate}
+                          removeFromList={removeFromList}
+                        />
+                      );
+                    }
+                  )}
+              </Tab>
+            );
+          }
+        )}
       </Tabs>
     </>
   );

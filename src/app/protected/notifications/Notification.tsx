@@ -1,5 +1,5 @@
 "use client";
-import { notificationT } from "@/utils/types/types";
+import { notificationDetails, notificationT } from "@/utils/types/types";
 import { FaCircle } from "react-icons/fa";
 import {
   Modal,
@@ -14,15 +14,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { confirmAction } from "./confirmAction";
 import { denyAction } from "./denyAction";
 export default function NotificationElement({
+  details,
   type,
   nextDate,
   notification,
   removeFromList,
 }: {
+  details: notificationDetails;
   type: string;
   nextDate: Date;
   notification: notificationT;
-  removeFromList: (NotificationId: string) => void;
+  removeFromList: (NotificationId: string, onClose: () => void) => void;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   console.log("notification.setlist.date");
@@ -67,6 +69,7 @@ export default function NotificationElement({
               opacity: 0,
               y: 25,
             }}
+            layout
             transition={{ duration: 0.5 }}
             className="setlist-list-link"
             onClick={onOpen}
@@ -88,47 +91,47 @@ export default function NotificationElement({
                 <br />
                 <small>{notification.team.team_name}</small>
               </p>
-              <FaCircle size={15} color={"red"} />
+              <FaCircle size={15} color={details.color} />
             </div>
           </motion.div>
+          <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+                  <ModalBody>
+                    <h5>{notification.setlist.event_title}</h5>
+                    <p>{readableCurrentDate}</p>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      fullWidth
+                      color="danger"
+                      variant="light"
+                      onPress={() => {
+                        denyAction(notification.id);
+                        removeFromList(notification.id, onClose);
+                      }}
+                    >
+                      Rifiuta
+                    </Button>
+                    <Button
+                      fullWidth
+                      color="primary"
+                      onPress={() => {
+                        confirmAction(notification.id);
+                        removeFromList(notification.id, onClose);
+                        onClose;
+                      }}
+                    >
+                      Conferma
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
         </AnimatePresence>
-        <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1"></ModalHeader>
-                <ModalBody>
-                  <h5>{notification.setlist.event_title}</h5>
-                  <p>{readableCurrentDate}</p>
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    fullWidth
-                    color="danger"
-                    variant="light"
-                    onPress={() => {
-                      denyAction(notification.id);
-                      removeFromList(notification.id);
-                    }}
-                  >
-                    Rifiuta
-                  </Button>
-                  <Button
-                    fullWidth
-                    color="primary"
-                    onPress={() => {
-                      confirmAction(notification.id);
-                      removeFromList(notification.id);
-                      onClose;
-                    }}
-                  >
-                    Conferma
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
       </>
     );
   }

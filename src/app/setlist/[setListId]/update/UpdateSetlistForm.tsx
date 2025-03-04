@@ -1,5 +1,5 @@
 "use client";
-import { MdMoreVert } from "react-icons/md";
+import { MdDelete, MdMoreVert } from "react-icons/md";
 import {
   Dropdown,
   DropdownTrigger,
@@ -31,6 +31,7 @@ import { addSetlist } from "../../addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
 import { SelectSongsDrawer } from "./SelectSongsDrawer";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 export default function UpdateSetlistForm({
   teams,
@@ -62,7 +63,9 @@ export default function UpdateSetlistForm({
   const [state, setState] = useState<setListSongT[]>(
     setlistData?.setListSongs || []
   );
-  const [teamsState, setTeamsState] = useState<teamData[]>([]);
+  const [teamsState, setTeamsState] = useState<teamData[]>(
+    teams.filter((team) => team.selected.length > 0) || []
+  );
   const [team, setTeam] = useState<churchMembersT[]>([]);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
   let x: string;
@@ -86,6 +89,8 @@ export default function UpdateSetlistForm({
       ...teamsState,
       teams[teams.findIndex((section) => section.id === id)],
     ]);
+    console.log("teamsState");
+    console.log(teamsState);
   };
 
   const addMemberToTeam = (member: churchMembersT, teamId: string) => {
@@ -171,14 +176,14 @@ export default function UpdateSetlistForm({
     console.log("updatedSetlist.teams");
     console.log(updatedSetlist.teams);
 
-
     if (page === "create") {
       addSetlist(updatedSetlist);
     } else if (page === "update") {
       updateSetlist(updatedSetlist, setlistData);
     }
   };
-
+  console.log("teams");
+  console.log(teams);
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
 
@@ -227,16 +232,14 @@ export default function UpdateSetlistForm({
                     className="hide-input"
                     {...register(`sections.${index}.id`)}
                   />
+                  <SelectSongsDrawer
+                    section={index}
+                    type="update"
+                    songsList={songsList}
+                    addOrUpdatefunction={updateSongtoSetlist} // Pass function correctly
+                  />
                   <p>
-                    <b>
-                      <SelectSongsDrawer
-                        section={index}
-                        type="update"
-                        songsList={songsList}
-                        addOrUpdatefunction={updateSongtoSetlist} // Pass function correctly
-                      />
-                      {section.song_title}{" "}
-                    </b>
+                    <b>{section.song_title} </b>
                   </p>
 
                   <Select
@@ -325,18 +328,9 @@ export default function UpdateSetlistForm({
             </Dropdown>
             {teamsState.map((section) => {
               return (
-                <>
+                <div className="team-show">
                   <h5>{section.team_name}</h5>
-                  <div className="transpose-button-container">
-                    <SelectWorshipTeamMemberDrawer
-                      state={team}
-                      type="add"
-                      teamMembers={section.team_members}
-                      addMemberToTeam={addMemberToTeam} // Pass function correctly
-                      section={null}
-                      teamId={section.id}
-                    />
-                  </div>
+
                   {section.selected &&
                     section.selected.map((member, index) => {
                       return (
@@ -358,7 +352,7 @@ export default function UpdateSetlistForm({
                             <Button
                               size="sm"
                               className="mx-0"
-                              fullWidth
+                              isIconOnly
                               color="danger"
                               type="button"
                               variant="light"
@@ -366,13 +360,23 @@ export default function UpdateSetlistForm({
                               onPress={() => removeMemberToTeam(member.profile)}
                               accessKey={String(index)}
                             >
-                              Elimina
+                              <RiDeleteBinLine size={20} />
                             </Button>
                           </div>
                         </div>
                       );
                     })}
-                </>
+                  <div className="transpose-button-container">
+                    <SelectWorshipTeamMemberDrawer
+                      state={team}
+                      type="add"
+                      teamMembers={section.team_members}
+                      addMemberToTeam={addMemberToTeam} // Pass function correctly
+                      section={null}
+                      teamId={section.id}
+                    />
+                  </div>
+                </div>
               );
             })}
           </div>

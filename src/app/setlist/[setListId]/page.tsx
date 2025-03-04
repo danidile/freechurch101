@@ -7,7 +7,7 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
-import { GroupedMembers, setListSongT, setListT } from "@/utils/types/types";
+import { GroupedMembers, setListSongT, setListT, teamData } from "@/utils/types/types";
 import ViewFullSetListComponent from "./viewFullSetListComponent";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
@@ -50,31 +50,9 @@ export default async function Page({
         {setlistsongs
           .sort((a, b) => a.order - b.order)
           .map((song: any, index) => {
-            const songData = [
-              song.songTitle,
-              song.author,
-              song.lyrics,
-              song.key,
-              song.upload_key,
-            ];
-            let toggle = true;
-            if (index > 0) {
-              toggle = false;
-            }
             return (
               <>
-                {toggle && (
-                  <div key={"List" + index} className="setlist-song">
-                    <p>Titolo Canzone</p>
-                    <p className="center-">
-                      <MusicNoteIcon fontSize="small" />
-                    </p>
-                    <p>
-                      <RemoveRedEyeIcon fontSize="small" />
-                    </p>
-                  </div>
-                )}
-                <div key={"Song" + index} className="setlist-song">
+                <div key={"Song" + index} className="setlist-list-id">
                   <p>
                     <strong>{song.song_title}</strong> <br />
                   </p>
@@ -84,29 +62,26 @@ export default async function Page({
               </>
             );
           })}
-        <br />
-        <br />
-        {Object.entries(setlistTeams).map((team) => {
-          console.log("team");
-          console.log(team);
-          return (
-            <>
-              <h5>{team[0]}</h5>
-              {team[1].map((member)=>{
-                return (<div>
-                  {member.name + " " + member.lastname}
-                </div>)
-              })}
-            </>
-          );
-        })}
-        
-        <div className="center- gap-3">
+        <div className="center- gap-3 mt-5 mb-20">
           <ViewFullSetListComponent
             setlistData={setlistData}
             setlistsongs={setlistsongs}
           />
+        </div>
+        {Object.entries(setlistTeams).map((team) => {
+          return (
+            <>
+              <div className="team-show">
+                <h5>{team[0]}</h5>
+                {team[1].map((member) => {
+                  return <div>{member.name + " " + member.lastname}</div>;
+                })}
+              </div>
+            </>
+          );
+        })}
 
+        <div className="center- gap-3">
           <span className="material-symbols-outlined">
             <CopyLinkButton />
           </span>
