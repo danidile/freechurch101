@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { teamData } from "@/utils/types/types";
+import { churchMembersT, teamData } from "@/utils/types/types";
 
 export const getChurchTeams = async (churchId: string) => {
   const supabase = createClient();
@@ -48,6 +48,7 @@ export const getChurchTeams = async (churchId: string) => {
         id: team.id,
         team_name: team.team_name,
         team_members: formattedTeamMembers || [],
+        selected: [] as churchMembersT[],
       };
     })
   );

@@ -1,8 +1,9 @@
-import logoutTest from "@/app/components/logOutAction";
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+"use client";
 import { basicUserData } from "@/utils/types/userData";
-import { Image, Link } from "@heroui/react";
 import PWADashboard from "../PWADashboard";
+import { useUserStore } from "@/store/user";
+import { useEffect, useState } from "react";
+import { fetchUserFromServer } from "@/hooks/GET/userZustand";
 
 export default function Sidebar({ userData }: { userData: basicUserData }) {
   return (

@@ -54,9 +54,7 @@ export function SelectWorshipTeamMemberDrawer({
     <>
       <Button
         isIconOnly
-        radius="full"
         color="primary"
-        variant="flat"
         size="lg"
         className="mr-0"
         onPress={onOpen}
@@ -95,7 +93,7 @@ export function SelectWorshipTeamMemberDrawer({
                   <div className="container-song-list">
                     {members
                       .filter(
-                        (member) => !state.some((m) => m.profile === member.id)
+                        (member) => !state.some((m) => m.id === member.id)
                       )
 
                       .map((member, index) => {
@@ -106,7 +104,6 @@ export function SelectWorshipTeamMemberDrawer({
                             key={member.profile}
                             onClick={() => {
                               addMemberToTeam(member, teamId);
-                              onClose();
                             }}
                           >
                             <div className="song-card-searchBar">

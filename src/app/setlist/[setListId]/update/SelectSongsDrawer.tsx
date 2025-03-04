@@ -56,9 +56,7 @@ export function SelectSongsDrawer({
       {type === "add" && (
         <Button
           isIconOnly
-          radius="full"
           color="primary"
-          variant="flat"
           size="lg"
           className="mr-0"
           onPress={onOpen}

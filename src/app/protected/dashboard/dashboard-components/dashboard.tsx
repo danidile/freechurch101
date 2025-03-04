@@ -3,7 +3,6 @@ import CompleteAccount from "./CompleteAccount";
 import { redirect } from "next/navigation";
 import Sidebar from "./sidebar";
 import { basicUserData } from "@/utils/types/userData";
-import fbasicUserData from "@/utils/supabase/getUserData";
 import PWADashboard from "../PWADashboard";
 
 export default async function Dashboard({
@@ -11,6 +10,7 @@ export default async function Dashboard({
 }: {
   userData: basicUserData;
 }) {
+
   const supabase = createClient();
   let accountCompleted = false;
   if ((userData.name && userData.lastname) || userData.church_id) {
@@ -34,6 +34,7 @@ export default async function Dashboard({
   if (userData) {
     return (
       <div className="flex flex-row w-full gap-12">
+
         <Sidebar userData={userData} />
         <div className="dashboard-container">
           <h6 className="text-md">Benvenuto {userData.email}</h6>

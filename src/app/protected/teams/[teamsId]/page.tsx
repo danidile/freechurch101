@@ -27,7 +27,7 @@ export default async function Page({
             
             return (
               <>
-                <div key={"Song" + index} className="setlist-song">
+                <div key={"Song" + index} className="setlist-list">
                   <p>
                     <strong>{member.name + " " + member.lastname}</strong>{" "}
                     <br />

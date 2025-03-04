@@ -276,8 +276,7 @@ Image {
 }
 .transpose-button-container {
   display: flex;
-  max-width: 400px;
-  margin: 0px 10px;
+  margin: 0px ;
   gap: 15px;
   justify-content: left;
   align-items: center;
@@ -655,12 +654,12 @@ tbody tr .tablecellnewteams {
   box-shadow: #0a0a0a;
 }
 .dashboard-list {
-  padding: 1rem ;
+  padding: 1rem;
   width: 100%;
   max-width: 500px;
   transition: 0.3s;
   display: flex;
-  gap:20px;
+  gap: 20px;
   justify-content: space-center;
   align-items: center;
   margin: 10px auto;
@@ -806,6 +805,22 @@ tbody tr .tablecellnewteams {
   transition: 0.5s;
 }
 .setlist-list-id:hover {
+  background-color: rgb(247, 247, 247, 1);
+}
+.team-list {
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 500px;
+  transition: 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px auto;
+  border-radius: 1rem;
+  background-color: rgb(247, 247, 247, 1);
+  transition: 0.5s;
+}
+.team-list:hover {
   background-color: rgb(247, 247, 247, 1);
 }
 
