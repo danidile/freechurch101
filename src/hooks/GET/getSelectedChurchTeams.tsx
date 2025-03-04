@@ -37,7 +37,6 @@ export const getSelectedChurchTeams = async (
             ? member.profile[0]
             : member.profile;
           return {
-            id: member.id,
             profile: profile.id,
             roles: member.roles,
             name: profile.name,
@@ -79,6 +78,6 @@ export const getSelectedChurchTeams = async (
     });
   }
 
-  console.log("teamFinal -", teamFinal);
+  console.log("teamFinal -", teamFinal[0].selected);
   return teamFinal;
 };

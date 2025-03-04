@@ -208,7 +208,7 @@ Image {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  
+
   gap: 10px;
   padding: 0.5rem;
   border-radius: 1rem;
@@ -644,17 +644,36 @@ tbody tr .tablecellnewteams {
   gap: 10px;
   font-weight: 500;
 }
-
+.container-dashboard-list {
+  margin-top: 20px;
+  width: 100%;
+  justify-content: center;
+  gap: 20px;
+}
 .dashboard-li:hover {
   background-color: #f0f0f0;
   box-shadow: #0a0a0a;
+}
+.dashboard-list {
+  padding: 1rem ;
+  width: 100%;
+  max-width: 500px;
+  transition: 0.3s;
+  display: flex;
+  gap:20px;
+  justify-content: space-center;
+  align-items: center;
+  margin: 10px auto;
+  border-radius: 0.5rem;
+  background-color: rgb(247, 247, 247, 1);
+  transition: 0.5s;
 }
 
 .dashboard-container {
   box-shadow: rgba(17, 12, 46, 0.08) 0px 48px 100px 0px;
   position: relative;
   margin-left: 270px;
-  padding: 3rem;
+  padding: 1rem;
   height: 200vh;
   width: 100%;
   display: flex;
