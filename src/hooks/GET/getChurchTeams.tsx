@@ -27,7 +27,7 @@ export const getChurchTeams = async (churchId: string) => {
 
       if (teamMembersError) {
         console.log("teamMembersError", teamMembersError);
-        return { ...team, team_members: [] };
+        return { ...team, team_members: [] as churchMembersT[] };
       }
 
       const formattedTeamMembers = teamMembers?.map((member) => {
