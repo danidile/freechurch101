@@ -51,7 +51,7 @@ export default async function Page() {
           });
           let isSunday = false;
           if (dateWeekDay == "dom") {
-            isSunday=true;
+            isSunday = true;
           }
 
           if (nextDate <= date) {
@@ -82,11 +82,14 @@ export default async function Page() {
           }
         })}
       {hasPermission(userData.role as Role, "create:setlists") && (
-        <Link href="/setlist/addSetlist">
-          <Button className="button-transpose my-10">
-            Crea nuova Setlist!
-          </Button>
-        </Link>
+        <Button
+        color="primary"
+          href="/setlist/addSetlist"
+          as={Link}
+          className="button-transpose my-10"
+        >
+          Crea nuova Setlist!
+        </Button>
       )}
     </div>
   );

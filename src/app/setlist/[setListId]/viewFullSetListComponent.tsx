@@ -31,16 +31,21 @@ export default function ViewFullSetListComponent({
   });
   return (
     <>
-      <Button onPress={onOpen} color="primary" variant="flat">
+      <Button onPress={onOpen} color="primary">
         Visualizza set completo
       </Button>
 
-      <Drawer hideCloseButton isOpen={isOpen} onOpenChange={onOpenChange} size="full">
+      <Drawer
+        hideCloseButton
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="full"
+      >
         <DrawerContent>
           {(onClose) => (
             <>
               <DrawerHeader className="py-1 px-1 bg-transparent">
-              <Tooltip content="Close" className="">
+                <Tooltip content="Close" className="">
                   <Button
                     isIconOnly
                     className="text-default-400 mr-0"
@@ -50,13 +55,12 @@ export default function ViewFullSetListComponent({
                     variant="flat"
                     onPress={onClose}
                   >
-                    <IoCloseSharp className="text-red-500 "/>
+                    <IoCloseSharp className="text-red-500 " />
                   </Button>
                 </Tooltip>
-                
               </DrawerHeader>
               <DrawerBody>
-              <h6>
+                <h6>
                   <strong>{setlistData.event_title}</strong>
                 </h6>
                 <p>{readableDate}</p>

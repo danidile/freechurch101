@@ -74,7 +74,7 @@ export function SelectSongsDrawer({
           className="p-0"
           onPress={onOpen}
         >
-          <CgArrowsExchange />
+          <CgArrowsExchange size={25} />
         </Button>
       )}
 

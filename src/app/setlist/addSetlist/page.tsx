@@ -14,12 +14,12 @@ export default async function songs() {
   const worshipTeamMembers: churchMembersT[] = await getChurchWorshipTeam(
     userData.church_id
   );
-  const teams : teamData[] = await getChurchTeams(userData.church_id);
-
+  const teams: teamData[] = await getChurchTeams(userData.church_id);
+  
   return (
     <div className="container-sub">
       <UpdateSetlistForm
-      teams={teams}
+        teams={teams}
         worshipTeamMembers={worshipTeamMembers}
         page="create"
         setlistData={setlistData}

@@ -208,9 +208,10 @@ Image {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  
   gap: 10px;
-  padding: 1rem;
-  border-bottom: 1px solid #dedede;
+  padding: 0.5rem;
+  border-radius: 1rem;
 }
 .setlist-section p {
   white-space: nowrap;
@@ -543,8 +544,8 @@ tbody tr .tablecellnewteams {
 .appmenucontainer {
   display: block;
 }
-.TransitionLink svg{
-width: 20px;
+.TransitionLink svg {
+  width: 20px;
 }
 .icon {
   max-width: 30px;
@@ -737,7 +738,7 @@ width: 20px;
   grid-template-columns: 5fr 1fr 1fr;
 }
 .setlist-list-link {
-  cursor:pointer;
+  cursor: pointer;
 
   display: flex;
   justify-content: space-between;
@@ -771,6 +772,30 @@ width: 20px;
 }
 .setlist-list:hover {
   background-color: rgb(247, 247, 247, 1);
+}
+.setlist-list-id {
+  padding: 0.5rem 1rem;
+  width: 100%;
+  max-width: 500px;
+  transition: 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px auto;
+  border-radius: 1rem;
+  background-color: rgb(247, 247, 247, 0);
+  transition: 0.5s;
+}
+.setlist-list-id:hover {
+  background-color: rgb(247, 247, 247, 1);
+}
+
+.team-show {
+  border-radius: 1rem;
+
+  margin: 10px;
+  padding: 1rem;
+  background-color: rgb(247, 247, 247, 0.7);
 }
 
 .setlist-name {
@@ -1321,7 +1346,6 @@ width: 20px;
   align-items: center;
   gap: 10px;
   padding: 1rem;
-  border-bottom: 1px solid #ebebeb;
 }
 .teammember-container {
   display: flex;
@@ -1354,7 +1378,6 @@ width: 20px;
   display: block !important;
 }
 
-
-.notification-icon{
+.notification-icon {
   width: 30px;
 }

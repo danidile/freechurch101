@@ -16,10 +16,11 @@ export default function ModalLyrics({ songData }: { songData: any }) {
 
   return (
     <>
-      <button onClick={onOpen}>
+      <button onClick={onOpen} className="mx-0">
         <AudioFileIcon fontSize="small" />
       </button>
       <Modal
+        placement="center"
         backdrop="opaque"
         isOpen={isOpen}
         onOpenChange={onOpenChange}

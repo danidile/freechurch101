@@ -8,12 +8,12 @@ export const denyAction = async (formId: string) => {
 
   const { data, error } = await supabase
     .from("event-team")
-    .update({ status: "confirmed" })
+    .update({ status: "denied" })
     .eq("id", formId)
     .select();
   if (error) {
     console.log(error);
-  }else{
+  } else {
     console.log(data);
   }
 };
