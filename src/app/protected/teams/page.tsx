@@ -5,6 +5,9 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Team } from "@/utils/types/types";
 import { getTeamsByChurch } from "@/hooks/GET/getTeamsByChurch";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { HiUserGroup } from "react-icons/hi2";
+import { CgShapeHexagon } from "react-icons/cg";
+import { PiCirclesThreeBold } from "react-icons/pi";
 
 export default async function Page() {
   const userData: basicUserData = await fbasicUserData();
@@ -18,15 +21,27 @@ export default async function Page() {
       {churchTeams &&
         churchTeams.map((team) => {
           return (
-            <div className="song-list" key={team.id}>
-              <Link
-                className="song-list-link"
-                href={`/protected/teams/${team.id}`}
-              >
-                <p key={team.id}>{team.team_name}</p>
-                <ListAltIcon />
-              </Link>
-            </div>
+            <Link
+              key={team.id}
+              className="team-list"
+              href={`/protected/teams/${team.id}`}
+            >
+              <div className="setlist-date-avatar">
+                <p
+                  className={`setlist-day 
+                  }`}
+                >
+                  <PiCirclesThreeBold />
+                </p>
+                <small className="setlist-weekday">1</small>
+              </div>
+              <div className="setlist-list" key={team.id}>
+                <p>
+                  <b>{team.team_name}</b>
+                </p>
+              </div>
+
+            </Link>
           );
         })}
       {hasPermission(userData.role as Role, "create:team") && (

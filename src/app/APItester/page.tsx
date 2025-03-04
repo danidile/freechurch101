@@ -1,10 +1,12 @@
 import { getChurchTeams } from "@/hooks/GET/getChurchTeams";
+import { createClient } from "@/utils/supabase/server";
+
+export default async function Tester() {
+  const supabase = createClient();
+
+  const { data: { user } } = await supabase.auth.getUser()
 
 
-export default function Tester () {
-
-
-    const teams = getChurchTeams("24a8b487-5c81-47c9-8d6c-28fe08a1917c");
-    console.log("teams");
-    console.log(teams);
+  console.log("data");
+  console.log(user);
 }

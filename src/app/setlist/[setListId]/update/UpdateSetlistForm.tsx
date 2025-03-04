@@ -89,8 +89,6 @@ export default function UpdateSetlistForm({
       ...teamsState,
       teams[teams.findIndex((section) => section.id === id)],
     ]);
-    console.log("teamsState");
-    console.log(teamsState);
   };
 
   const addMemberToTeam = (member: churchMembersT, teamId: string) => {
@@ -101,16 +99,25 @@ export default function UpdateSetlistForm({
           : team
       )
     );
-    console.log("teamsState");
-    console.log(teamsState);
   };
+  const removeMemberToTeam = (profile: string) => {
+    setTeamsState((prevTeams) =>
+      prevTeams.map((team) => ({
+        ...team,
+        selected: team.selected.filter(
+          (section) => section.profile !== profile
+        ),
+      }))
+    );
+  };
+
   // TeamData
 
   // -------------------------------------------
 
-  const removeMemberToTeam = (profile: string) => {
-    setTeam(team.filter((section) => section.profile !== profile));
-  };
+  // const removeMemberToTeam = (profile: string) => {
+  //   setTeam(team.filter((section) => section.profile !== profile));
+  // };
   // -------------------------------------------
 
   // END TeamData
@@ -223,84 +230,90 @@ export default function UpdateSetlistForm({
             </div>
 
             <h5 className="mt-6">Canzoni</h5>
+            <div className="team-show">
+              {state.map((section, index) => {
+                return (
+                  <div className="setlist-section" key={section.id}>
+                    <Input
+                      name={"type" + section.id}
+                      key={section.id}
+                      value={section.id.toString()}
+                      className="hide-input"
+                      {...register(`sections.${index}.id`)}
+                    />
+                    <SelectSongsDrawer
+                      section={index}
+                      type="update"
+                      songsList={songsList}
+                      addOrUpdatefunction={updateSongtoSetlist} // Pass function correctly
+                    />
+                    <p>
+                      <b>{section.song_title} </b>
+                    </p>
 
-            {state.map((section, index) => {
-              return (
-                <div className="setlist-section" key={section.id}>
-                  <Input
-                    name={"type" + section.id}
-                    key={section.id}
-                    value={section.id.toString()}
-                    className="hide-input"
-                    {...register(`sections.${index}.id`)}
-                  />
-                  <SelectSongsDrawer
-                    section={index}
-                    type="update"
-                    songsList={songsList}
-                    addOrUpdatefunction={updateSongtoSetlist} // Pass function correctly
-                  />
-                  <p>
-                    <b>{section.song_title} </b>
-                  </p>
-
-                  <Select
-                    size="sm"
-                    className="key-selector"
-                    defaultSelectedKeys={
-                      new Set([
-                        keys.includes(section.key) ? section.key : keys[0],
-                      ])
-                    } // Ensure it's a valid key
-                    {...register(`sections.${index}.key`, {
-                      onChange: (e) => {
-                        const newKey = e.target.value;
-                        updateKey(index, newKey); // Pass the actual key value
-                      },
-                    })}
-                    aria-label="tonalità"
-                  >
-                    {keys.map((key) => (
-                      <SelectItem id={key} key={key} value={key}>
-                        {key}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                  <Popover placement="bottom" showArrow={true}>
-                    <PopoverTrigger>
-                      <Button isIconOnly radius="full" variant="flat" size="sm">
-                        <MdMoreVert className="text-2xl" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <div className="px-1 py-2 flex-col gap-2">
-                        <div className="my-1"></div>
+                    <Select
+                      size="sm"
+                      className="key-selector"
+                      defaultSelectedKeys={
+                        new Set([
+                          keys.includes(section.key) ? section.key : keys[0],
+                        ])
+                      } // Ensure it's a valid key
+                      {...register(`sections.${index}.key`, {
+                        onChange: (e) => {
+                          const newKey = e.target.value;
+                          updateKey(index, newKey); // Pass the actual key value
+                        },
+                      })}
+                      aria-label="tonalità"
+                    >
+                      {keys.map((key) => (
+                        <SelectItem id={key} key={key} value={key}>
+                          {key}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Popover placement="bottom" showArrow={true}>
+                      <PopoverTrigger>
                         <Button
+                          isIconOnly
+                          radius="full"
+                          variant="flat"
                           size="sm"
-                          className="mx-0"
-                          fullWidth
-                          color="danger"
-                          type="button"
-                          variant="light"
-                          id={section.id}
-                          onPress={() => removeSection(section.id)}
-                          accessKey={String(index)}
                         >
-                          Elimina
+                          <MdMoreVert className="text-2xl" />
                         </Button>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              );
-            })}
-            <div className="transpose-button-container">
-              <SelectSongsDrawer
-                type="add"
-                songsList={songsList}
-                addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
-                section={null}
-              />
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <div className="px-1 py-2 flex-col gap-2">
+                          <div className="my-1"></div>
+                          <Button
+                            size="sm"
+                            className="mx-0"
+                            fullWidth
+                            color="danger"
+                            type="button"
+                            variant="light"
+                            id={section.id}
+                            onPress={() => removeSection(section.id)}
+                            accessKey={String(index)}
+                          >
+                            Elimina
+                          </Button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                );
+              })}
+              <div className="transpose-button-container">
+                <SelectSongsDrawer
+                  type="add"
+                  songsList={songsList}
+                  addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
+                  section={null}
+                />
+              </div>
             </div>
           </div>
           <div>{/* <pre>{JSON.stringify(state, null, 2)}</pre> */}</div>
@@ -316,16 +329,19 @@ export default function UpdateSetlistForm({
                 <Button variant="bordered">Aggiungi Team</Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
-                {teams.map((team: teamData) => {
-                  return (
+                {teams
+                  .filter(
+                    (team) =>
+                      !teamsState.some((el) => el.team_name === team.team_name)
+                  )
+                  .map((team: teamData) => (
                     <DropdownItem
                       key={team.id}
                       onPress={() => addTeam(team.id)}
                     >
                       {team.team_name}
                     </DropdownItem>
-                  );
-                })}
+                  ))}
               </DropdownMenu>
             </Dropdown>
             {teamsState.map((section) => {
@@ -370,7 +386,7 @@ export default function UpdateSetlistForm({
                     })}
                   <div className="transpose-button-container">
                     <SelectWorshipTeamMemberDrawer
-                      state={team}
+                      state={section.selected}
                       type="add"
                       teamMembers={section.team_members}
                       addMemberToTeam={addMemberToTeam} // Pass function correctly
