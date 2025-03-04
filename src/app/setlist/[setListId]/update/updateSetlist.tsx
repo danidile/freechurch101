@@ -1,5 +1,5 @@
 "use server";
-import { setListT } from "@/utils/types/types";
+import { expandedTeamT, setListT } from "@/utils/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 
@@ -7,6 +7,7 @@ export const updateSetlist = async (
   updatedSetlist: setListT,
   setlistData: setListT
 ) => {
+  // check if generic data has changed
   let hasChanged: boolean = false;
 
   if (
@@ -17,7 +18,7 @@ export const updateSetlist = async (
   }
 
   const supabase = createClient();
-
+  //If data ahs changed update it
   if (hasChanged) {
     const { data: setlistSuccess, error: setlistError } = await supabase
       .from("setlist")
@@ -41,6 +42,7 @@ export const updateSetlist = async (
   // mappo attraverso le setlist di setlistData e inserisco il valore della setlist dentro updatedSetlist con lo stesso index
   // in questo modo garantisco che gli setlistID sono gli stessi e nel caso in cui devo cancellare un campo devo solo
   // controllare se il campo song del della setlist è vuota. Se è vuola vuol dire che c'era una setlist ma è stat cancellata
+  //Format data
 
   setlistData.setListSongs.map((setlist, index) => {
     if (updatedSetlist.setListSongs[index]) {
@@ -52,10 +54,7 @@ export const updateSetlist = async (
     }
   });
 
-  console.log("updatedSetlist");
-  console.log(updatedSetlist);
-  console.log("setlistData");
-  console.log(setlistData);
+  // Update songs
 
   updatedSetlist.setListSongs.map(async (song, index) => {
     if (song.type === "global-songs") {
@@ -63,7 +62,8 @@ export const updateSetlist = async (
       song.song = null;
       console.log("\x1b[36m%s\x1b[0m", "Song was global_");
     }
-    if (song.song || song.global_song) { // Check if the field is empty
+    if (song.song || song.global_song) {
+      // Check if the field is empty
       const { data, error } = await supabase.from("setlist-songs").upsert(
         {
           setlist_id: setlistData.id,
@@ -88,16 +88,33 @@ export const updateSetlist = async (
         .delete()
         .eq("id", song.id);
     }
-
-    // if (error) {
-    //   console.error(error.code + " " + error.message);
-    //   console.log("\x1b[36m%s\x1b[0m", "ERRRRRROR");
-    //   return encodedRedirect("error", "/sign-up", error.message);
-    // }
-    // else {
-    //
-    // }
   });
+  console.log("updatedSetlist");
+  console.log(updatedSetlist);
+  console.log("setlistData");
+  console.log(setlistData);
+
+  const updateTeam: expandedTeamT[] = [];
+  updatedSetlist.teams.map((team) => {
+    team.selected.map((member) => {
+      updateTeam.push({
+        id: member.id || crypto.randomUUID(),
+        setlist: setlistData.id,
+        member: member.profile,
+        team: team.id,
+      });
+    });
+  });
+  console.log("updateTeam");
+  console.log(updateTeam);
+  const { data, error: errorTeam } = await supabase
+    .from("event-team")
+    .upsert(updateTeam, { onConflict: "id" });
+  if (errorTeam) {
+    console.log("\x1b[36m%s\x1b[0m", "ERRORTEAM");
+    console.log("\x1b[36m%s\x1b[0m", errorTeam);
+  }
+
   return encodedRedirect(
     "success",
     `/setlist/${updatedSetlist.id}`,

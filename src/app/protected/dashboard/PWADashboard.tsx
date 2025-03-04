@@ -3,6 +3,11 @@ import logoutTest from "@/app/components/logOutAction";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { basicUserData } from "@/utils/types/userData";
 import { Button, Image, Link } from "@heroui/react";
+import { FaUserCircle } from "react-icons/fa";
+import { HiUserGroup } from "react-icons/hi2";
+import { BiSolidChurch } from "react-icons/bi";
+import { MdLibraryMusic } from "react-icons/md";
+import { IoSettingsSharp } from "react-icons/io5";
 export default function PWADashboard({
   userData,
 }: {
@@ -12,67 +17,40 @@ export default function PWADashboard({
     logoutTest();
   }
   return (
-    <div className=" hidden standalone:block">
-      <ul className="container-song-list ">
-        <Link className="song-list text-black">
-          {" "}
-          <Image
-            className="dashboard-icon"
-            src="/images/dashboard/dashboard.png"
-            alt=""
-          />{" "}
-          Dashboard
-        </Link>
-        <Link className="song-list text-black" href="/people">
-          <Image
-            className="dashboard-icon"
-            src="/images/dashboard/song-lyrics.png"
-            alt=""
-          />{" "}
-          Membri Chiesa
-        </Link>
-        {hasPermission(userData.role as Role, "view:teams") && (
-          <>
-            <Link className="song-list text-black" href="/protected/teams">
-              <Image
-                className="dashboard-icon"
-                src="/images/dashboard/church.png"
-                alt=""
-              />{" "}
-              Teams
-            </Link>
-            <Link className="song-list text-black" href="/protected/global-songs">
-              <Image
-                className="dashboard-icon"
-                src="/images/dashboard/church.png"
-                alt=""
-              />{" "}
-              Global Songs
-            </Link>
-          </>
-        )}
-        <Link className="song-list text-black">
-          {" "}
-          <Image
-            className="dashboard-icon"
-            src="/images/dashboard/settings.png"
-            alt=""
-          />
-          Impostazioni
-        </Link>
-        <Link className="song-list text-black">
-          {" "}
-          <Image
-            className="dashboard-icon"
-            src="/images/dashboard/user.png"
-            alt=""
-          />
-          Il mio Account
-        </Link>
-        <Button color="danger" variant="flat" onPress={logouter}>
-          Sign out
-        </Button>
-      </ul>
-    </div>
+    <ul className="container-dashboard-list">
+      <Link className="dashboard-list text-black">
+        {" "}
+        <FaUserCircle className="dashboard-icon" />
+        Il mio Account
+      </Link>
+      <Link className="dashboard-list text-black" href="/people">
+        <BiSolidChurch className="dashboard-icon" />
+        Membri Chiesa
+      </Link>
+      {hasPermission(userData.role as Role, "view:teams") && (
+        <>
+          <Link className="dashboard-list text-black" href="/protected/teams">
+            <HiUserGroup className="dashboard-icon" />
+            Teams
+          </Link>
+          <Link
+            className="dashboard-list text-black"
+            href="/protected/global-songs"
+          >
+            <MdLibraryMusic className="dashboard-icon" />
+            Global Songs
+          </Link>
+        </>
+      )}
+      <Link className="dashboard-list text-black">
+        {" "}
+        <IoSettingsSharp className="dashboard-icon" />
+        Impostazioni
+      </Link>
+
+      <Button fullWidth color="danger" variant="flat" className="py-5" onPress={logouter}>
+        Sign out
+      </Button>
+    </ul>
   );
 }

@@ -101,6 +101,8 @@ export default function UpdateSetlistForm({
           : team
       )
     );
+    console.log("teamsState");
+    console.log(teamsState);
   };
   // TeamData
 
@@ -173,8 +175,8 @@ export default function UpdateSetlistForm({
       setListSongs: state,
       teams: teamsState,
     };
-    console.log("updatedSetlist.teams");
-    console.log(updatedSetlist.teams);
+    console.log("updatedSetlist");
+    console.log(updatedSetlist);
 
     if (page === "create") {
       addSetlist(updatedSetlist);
@@ -182,8 +184,8 @@ export default function UpdateSetlistForm({
       updateSetlist(updatedSetlist, setlistData);
     }
   };
-  console.log("teams");
-  console.log(teams);
+  // console.log("teams");
+  // console.log(teams);
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
 

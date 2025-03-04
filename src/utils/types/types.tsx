@@ -276,3 +276,10 @@ export type GroupedNotificationsT = {
   confirmed?: NotificationsT;
   denied?: NotificationsT;
 };
+
+export type expandedTeamT = {
+  id?: string;
+  setlist?: string;
+  member?: string;
+  team?: string;
+};
