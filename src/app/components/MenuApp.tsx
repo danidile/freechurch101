@@ -74,7 +74,13 @@ export default function MenuApp({
                 </Badge>
               ) : (
                 <div>
-                  <Badge size="sm" color="primary" content={notifications}>
+                  <Badge
+                    isInvisible={notifications === 0 ? true : false}
+                    size="sm"
+                    color="danger"
+                    showOutline={false}
+                    content={notifications}
+                  >
                     <IoNotificationsOutline />
                   </Badge>
                 </div>
