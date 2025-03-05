@@ -21,22 +21,54 @@ export default function NotificationList({
   const [notificationState, setNotificationState] =
     useState<GroupedNotificationsT>(notifications);
 
-  const removeFromList = (NotificationId: string, onClose: () => void) => {
+  const moveFromList = (
+    NotificationId: string,
+    onClose: () => void,
+    destinationType: string
+  ) => {
     setNotificationState((prevState: GroupedNotificationsT) => {
-      return Object.keys(prevState).reduce((newState, key) => {
-        const typedKey = key as keyof GroupedNotificationsT; // Explicitly type key
+      let movedNotification: notificationT | undefined;
 
-        newState[typedKey] = {
+      // Create a new state object while extracting the notification to be moved
+      const newState = Object.keys(prevState).reduce((acc, key) => {
+        const typedKey = key as keyof GroupedNotificationsT;
+
+        const filteredNotifications = prevState[typedKey].notifications.filter(
+          (notification) => {
+            if (notification.id === NotificationId) {
+              movedNotification = notification; // Capture the notification to move
+              return false;
+            }
+            return true;
+          }
+        );
+
+        acc[typedKey] = {
           ...prevState[typedKey],
-          notifications: prevState[typedKey].notifications.filter(
-            (notification: notificationT) => notification.id !== NotificationId
-          ),
+          notifications: filteredNotifications,
         };
-        return newState;
+        return acc;
       }, {} as GroupedNotificationsT);
+
+      // If the notification was found, add it to the destination group
+      if (movedNotification) {
+        const typedDestinationKey =
+          destinationType as keyof GroupedNotificationsT;
+        newState[typedDestinationKey] = {
+          ...prevState[typedDestinationKey],
+          notifications: [
+            ...prevState[typedDestinationKey].notifications,
+            movedNotification,
+          ],
+        };
+      }
+
+      return newState;
     });
-    onClose;
+
+    onClose();
   };
+
   console.log("notificationState");
   console.log(notificationState);
   return (
@@ -64,7 +96,7 @@ export default function NotificationList({
                           type="pending"
                           notification={notification}
                           nextDate={nextDate}
-                          removeFromList={removeFromList}
+                          moveFromList={moveFromList}
                         />
                       );
                     }

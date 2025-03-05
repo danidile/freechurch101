@@ -14,6 +14,7 @@ import { Select, SelectSection, SelectItem } from "@heroui/select";
 import { Link } from "@heroui/react";
 import { basicUserData } from "@/utils/types/userData";
 import { useState } from "react";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function PeopleDrawerList({
   profile,
@@ -36,8 +37,9 @@ export default function PeopleDrawerList({
       <Link className="people-link" onPress={onOpen} key={profile.id}>
         <div className="people-list" key={profile.id}>
           <p key={profile.id}>
-            {profile.name} <small>{profile.email}</small>
+            {profile.name} 
             <br />
+            <small>{profile.email}</small>
           </p>
           <span className="material-symbols-outlined">
             <MoreVertIcon className="text-default-400" />
@@ -50,7 +52,7 @@ export default function PeopleDrawerList({
           {(onClose) => (
             <>
               <DrawerHeader className="flex justify-end">
-                {Number(userData.role) <= 2 && (
+                {hasPermission(userData.role as Role, "update:setlists" ) && (
                   <Link className="mr-0" href={`/people/${profile.id}/update`}>
                     Edit
                   </Link>

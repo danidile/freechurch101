@@ -83,7 +83,7 @@ export default async function Page() {
         })}
       {hasPermission(userData.role as Role, "create:setlists") && (
         <Button
-        color="primary"
+          color="primary"
           href="/setlist/addSetlist"
           as={Link}
           className="button-transpose my-10"

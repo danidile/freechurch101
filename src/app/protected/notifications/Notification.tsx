@@ -18,17 +18,20 @@ export default function NotificationElement({
   type,
   nextDate,
   notification,
-  removeFromList,
+  moveFromList,
 }: {
   details: notificationDetails;
   type: string;
   nextDate: Date;
   notification: notificationT;
-  removeFromList: (NotificationId: string, onClose: () => void) => void;
+  moveFromList: (
+    NotificationId: string,
+    onClose: () => void,
+    destinationType: string
+  ) => void;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  console.log("notification.setlist.date");
-  console.log(notification.setlist);
+
   const date = new Date(notification.setlist.date);
   const readableCurrentDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"
@@ -110,7 +113,7 @@ export default function NotificationElement({
                       variant="light"
                       onPress={() => {
                         denyAction(notification.id);
-                        removeFromList(notification.id, onClose);
+                        moveFromList(notification.id, onClose, "denied");
                       }}
                     >
                       Rifiuta
@@ -120,7 +123,7 @@ export default function NotificationElement({
                       color="primary"
                       onPress={() => {
                         confirmAction(notification.id);
-                        removeFromList(notification.id, onClose);
+                        moveFromList(notification.id, onClose, "confirmed");
                         onClose;
                       }}
                     >
