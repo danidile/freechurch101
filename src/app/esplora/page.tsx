@@ -2,7 +2,6 @@ import { createClient } from "@/utils/supabase/server";
 import ExploreListComponent from "./exploreListComponent";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "../../utils/supabase/getUserData";
-import songs from "../events/createEvent/page";
 import SongsListSearch from "../components/songslistSearchComponent";
 import { getSongs } from "@/hooks/GET/getSongs";
 
