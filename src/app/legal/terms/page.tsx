@@ -514,14 +514,7 @@ export default function Terms() {
         il nome, l'indirizzo e le informazioni di contatto della parte che la
         fornisce, i fatti che hanno dato origine alla controversia e il
         risarcimento richiesto. Devi inviare qualsiasi Notifica di controversia
-        via e-mail a:
-        <a
-          href="/cdn-cgi/l/email-protection"
-          className="__cf_email__"
-          data-cfemail="365257585f525f5a530f0276515b575f5a1855595b"
-        >
-          [email&#160;protected]
-        </a>
+        via e-mail a: danidile94@gmail.com
         . Church Lab ti invierà qualsiasi Notifica di controversia via posta al
         tuo indirizzo se lo abbiamo, o altrimenti al tuo indirizzo e-mail. Tu e
         Church Lab cercherete di risolvere qualsiasi controversia tramite
@@ -668,14 +661,8 @@ export default function Terms() {
       <p>Non esitare a contattarci per qualsiasi domanda.</p>
       <ul>
         <li>
-          Via e-mail:{" "}
-          <a
-            href="/cdn-cgi/l/email-protection"
-            className="__cf_email__"
-            data-cfemail="9bfffaf5f2fff2f7fea2afdbfcf6faf2f7b5f8f4f6"
-          >
-            [email&#160;protected]
-          </a>
+          Via e-mail:{" "} danidile94@gmail.com
+          
         </li>
       </ul>
     </div>
