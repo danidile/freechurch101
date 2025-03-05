@@ -82,14 +82,13 @@ export default async function Page() {
           }
         })}
       {hasPermission(userData.role as Role, "create:setlists") && (
-        <Button
-          color="primary"
+        <Link
           href="/setlist/addSetlist"
-          as={Link}
-          className="button-transpose my-10"
+          className="button-style my-10"
+          prefetch
         >
           Crea nuova Setlist!
-        </Button>
+        </Link>
       )}
     </div>
   );

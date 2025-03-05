@@ -27,7 +27,7 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
   ) => {
     e.preventDefault();
     const main = document.querySelector("main");
-    
+
     main?.classList.add("page-transition");
 
     await sleep(200);
@@ -38,18 +38,26 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
     const checkInterval = 50;
     let elapsedTime = 0;
 
-    while (window.location.pathname === currentPath && elapsedTime < maxWaitTime) {
+    while (
+      window.location.pathname === currentPath &&
+      elapsedTime < maxWaitTime
+    ) {
       await sleep(checkInterval);
       elapsedTime += checkInterval;
     }
-
 
     await sleep(200);
     main?.classList.remove("page-transition");
   };
 
   return (
-    <Link {...props} href={href} onClick={handleTransition} className={className}>
+    <Link
+      {...props}
+      href={href}
+      onClick={handleTransition}
+      prefetch
+      className={className}
+    >
       {children}
     </Link>
   );

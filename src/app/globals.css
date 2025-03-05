@@ -269,7 +269,12 @@ Image {
   top: -5px;
   font-weight: 400;
 }
-
+.button-style {
+  padding: 10px 20px;
+  border-radius: 1rem;
+  color: white;
+  background-color: #006fee;
+}
 .button-transpose {
   padding: 10px 30px;
   border: 1px solid rgb(189, 189, 189);
@@ -277,7 +282,7 @@ Image {
 }
 .transpose-button-container {
   display: flex;
-  margin: 0px ;
+  margin: 0px;
   gap: 15px;
   justify-content: left;
   align-items: center;
