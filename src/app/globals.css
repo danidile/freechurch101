@@ -196,6 +196,7 @@ Image {
   color: white;
 }
 .container-sub {
+  width: 100%;
   max-width: 96vw;
   margin: 20px auto;
   display: flex;
@@ -397,10 +398,11 @@ Image {
   font-weight: 800;
 }
 .song-presentation-container {
-  max-width: 1000px;
+  max-width: 600px;
+  width: 100%;
   border: 1px solid #f8f8f8;
   background-color: white;
-  padding: 15px;
+  padding: 1rem;
   margin: 0px auto;
   border-top: 0px solid #ffffff !important;
 }
@@ -866,6 +868,7 @@ tbody tr .tablecellnewteams {
   justify-content: center;
   align-items: center;
   padding: 0px;
+  margin: 0px;
   height: 40px;
   border-radius: 12px;
   aspect-ratio: 1/1;
@@ -1314,8 +1317,8 @@ tbody tr .tablecellnewteams {
 }
 
 .people-list {
-  padding: 1rem;
-  border-bottom: 1px solid grey;
+  cursor: pointer;
+  padding: 0.5rem;
   width: 100%;
   max-width: 500px;
   transition: 0.3s;
@@ -1323,11 +1326,12 @@ tbody tr .tablecellnewteams {
   justify-content: space-between;
   align-items: center;
   margin: 0px auto;
-  background-color: #e3e3e3;
+  border-radius: 1rem;
+  background-color: rgb(247, 247, 247, 0);
+  transition: 0.5s;
 }
 .people-list:hover {
-  background-color: white;
-  transform: scale(1.02);
+  background-color: rgb(247, 247, 247, 1);
 }
 
 .people-table {
