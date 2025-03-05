@@ -4,7 +4,7 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { basicUserData } from "@/utils/types/userData";
 import { Button, Image, Link } from "@heroui/react";
 import { FaUserCircle } from "react-icons/fa";
-import { HiUserGroup } from "react-icons/hi2";
+import { HiMiniDocumentText, HiOutlineDocumentText, HiUserGroup } from "react-icons/hi2";
 import { BiSolidChurch } from "react-icons/bi";
 import { MdLibraryMusic } from "react-icons/md";
 import { IoSettingsSharp } from "react-icons/io5";
@@ -47,8 +47,17 @@ export default function PWADashboard({
         <IoSettingsSharp className="dashboard-icon" />
         Impostazioni
       </Link>
-
-      <Button fullWidth color="danger" variant="flat" className="py-5" onPress={logouter}>
+      <Link className="dashboard-list text-black" href="/legal">
+        <HiMiniDocumentText className="dashboard-icon" />
+        Legal
+      </Link>
+      <Button
+        fullWidth
+        color="danger"
+        variant="flat"
+        className="!py-7 !bg-red-100 dashboard-list"
+        onPress={logouter}
+      >
         Sign out
       </Button>
     </ul>
