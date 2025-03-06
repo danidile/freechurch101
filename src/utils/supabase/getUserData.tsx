@@ -55,7 +55,7 @@ export default async function fbasicUserData() {
   } else {
     userData = {
       loggedIn: false,
-      role: "0",
+      role: null,
     };
   }
 

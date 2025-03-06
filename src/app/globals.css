@@ -546,10 +546,11 @@ tbody tr .tablecellnewteams {
     font-weight: 800;
     text-decoration: underline;
   }
+  .appmenucontainer {
+    display: block;
+  }
 }
-.appmenucontainer {
-  display: block;
-}
+
 .TransitionLink svg {
   width: 20px;
 }

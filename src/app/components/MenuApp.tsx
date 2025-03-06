@@ -7,8 +7,6 @@ import {
   MdLibraryMusic,
 } from "react-icons/md";
 import {
-  RiHome5Fill,
-  RiHome5Line,
   RiTeamFill,
   RiTeamLine,
 } from "react-icons/ri";
@@ -22,7 +20,6 @@ import { Badge } from "@heroui/badge";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
-import { notificationT } from "@/utils/types/types";
 
 export default function MenuApp({
   isLoggedIn,
