@@ -4,6 +4,11 @@ import { redirect } from "next/navigation";
 import Sidebar from "./sidebar";
 import { basicUserData } from "@/utils/types/userData";
 import PWADashboard from "../PWADashboard";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
+import { Alert, Button } from "@heroui/react";
+import Link from "next/link";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 export default async function Dashboard({
   userData,
@@ -11,11 +16,6 @@ export default async function Dashboard({
   userData: basicUserData;
 }) {
   const supabase = createClient();
-  let accountCompleted = false;
-  if ((userData.name && userData.lastname) || userData.church_id) {
-    accountCompleted = true;
-  }
-
   const { data: churches } = await supabase
     .from("churches")
     .select("id , church_name");
@@ -30,16 +30,39 @@ export default async function Dashboard({
       churchList.unshift(church);
     }
   }
+  let pendingRequests = [];
+
+  if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
+    pendingRequests = await getPendingChurchMembershipRequests(
+      userData.church_id
+    );
+    console.log("pendingRequests");
+    console.log(pendingRequests);
+  }
+
   if (userData) {
     return (
       <div className="flex flex-row w-full gap-12">
         <Sidebar userData={userData} />
         <div className="dashboard-container">
-          <h6 className="text-md">Benvenuto {userData.email}</h6>
-          {!accountCompleted && (
-            <CompleteAccount churchList={churchList} userData={userData} />
+          <h6 className="text-md">
+            Benvenuto {userData.name ? userData.name : userData.email}
+          </h6>
+          {pendingRequests.length > 0 && (
+            <div className="flex items-center justify-center w-full">
+              <Link prefetch href="/protected/church/confirm-members">
+                <Alert
+                endContent={<FaExternalLinkAlt />
+                }
+                  color="warning"
+                  description="Alcuni account sono in attesa della tua conferma."
+                  title="In attesa di conferma"
+                />
+              </Link>
+            </div>
           )}
-            <PWADashboard userData={userData} />
+          <CompleteAccount churchList={churchList} userData={userData} />
+          <PWADashboard userData={userData} />
         </div>
       </div>
     );

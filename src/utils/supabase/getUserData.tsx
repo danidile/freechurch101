@@ -30,17 +30,26 @@ export default async function fbasicUserData() {
   }
 
   if (user) {
-    const { data, error } = await supabase
-    .from("profiles")
+    const { data, error } = (await supabase
+      .from("profiles")
       .select("name, lastname, role:role!inner(role_name), church")
       .eq("id", user.id) // Filter by the user's id
-      .single()as unknown as SupabaseResponse; // Use the full SupabaseResponse type
+      .single()) as unknown as SupabaseResponse; // Use the full SupabaseResponse type
 
-      // Now, TypeScript knows that 'error' exists in the response object
-      if (error) {
-        console.error("Error fetching profile:", error.message);
+    // Now, TypeScript knows that 'error' exists in the response object
+    if (error) {
+      console.error("Error fetching profile:", error.message);
+    }
+    let churchpending:boolean = false;
+    if (!data.church) {
+      let { data: churchMembershipRequest } = await supabase
+        .from("church-membership-request")
+        .select("*")
+        .eq("profile", user.id);
+        console.log("churchMembershipRequest");
+        console.log(churchMembershipRequest);
+        if(churchMembershipRequest.length>0) churchpending = true;
       }
-      
     userData = {
       loggedIn: true,
       id: user?.id || null,
@@ -49,9 +58,10 @@ export default async function fbasicUserData() {
       role: data?.role?.role_name || "user", // No array, safe access
       lastname: data?.lastname || "",
       church_id: data?.church || null,
+      pending_church_confirmation: churchpending ,
     };
-    console.log("profileData");
-    console.log(data);
+    console.log("userData");
+    console.log(userData);
   } else {
     userData = {
       loggedIn: false,

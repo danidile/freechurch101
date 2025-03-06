@@ -20,4 +20,5 @@ export const userData = z.object({
     lastname?: string;
     church_id?: string;
     church_name?: string;
+    pending_church_confirmation?: boolean;
   }
