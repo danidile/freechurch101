@@ -151,9 +151,11 @@ export default function ChordProViewComponent({
 
       <div>
         <h5 className="song-title">
-          {setListSong.song_title} - {setListSong.author}
+          {setListSong.song_title}
         </h5>
-        Tonalità canzone: <span className="chord">{songKey}</span>
+        <small>{setListSong.author}</small>
+
+        <p>Tonalità canzone: <span className="chord">{songKey}</span></p>
         {viewChords && (
           <div
             id="song-chords"

@@ -21,5 +21,9 @@ const ROLES = {
 } as const;
 
 export function hasPermission(userRole: Role, permission: Permission) {
+  if(userRole){
   return (ROLES[userRole] as readonly Permission[]).includes(permission);
+  }else{
+    return false;
+  }
 }
