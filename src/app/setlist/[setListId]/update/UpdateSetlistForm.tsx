@@ -100,14 +100,18 @@ export default function UpdateSetlistForm({
       )
     );
   };
-  const removeMemberToTeam = (profile: string) => {
+  const removeMemberToTeam = (profile: string, teamId: string) => {
     setTeamsState((prevTeams) =>
-      prevTeams.map((team) => ({
-        ...team,
-        selected: team.selected.filter(
-          (section) => section.profile !== profile
-        ),
-      }))
+      prevTeams.map((team) =>
+        team.id === teamId
+          ? {
+              ...team,
+              selected: team.selected.filter(
+                (member) => member.profile !== profile
+              ),
+            }
+          : team
+      )
     );
   };
 
@@ -375,7 +379,9 @@ export default function UpdateSetlistForm({
                               type="button"
                               variant="light"
                               id={member.profile}
-                              onPress={() => removeMemberToTeam(member.profile)}
+                              onPress={() =>
+                                removeMemberToTeam(member.profile, section.id)
+                              }
                               accessKey={String(index)}
                             >
                               <RiDeleteBinLine size={20} />
