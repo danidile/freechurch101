@@ -10,7 +10,6 @@ export default async function Dashboard({
 }: {
   userData: basicUserData;
 }) {
-
   const supabase = createClient();
   let accountCompleted = false;
   if ((userData.name && userData.lastname) || userData.church_id) {
@@ -34,14 +33,13 @@ export default async function Dashboard({
   if (userData) {
     return (
       <div className="flex flex-row w-full gap-12">
-
         <Sidebar userData={userData} />
         <div className="dashboard-container">
           <h6 className="text-md">Benvenuto {userData.email}</h6>
           {!accountCompleted && (
             <CompleteAccount churchList={churchList} userData={userData} />
           )}
-          <PWADashboard userData={userData} />
+            <PWADashboard userData={userData} />
         </div>
       </div>
     );

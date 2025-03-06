@@ -1277,6 +1277,7 @@ tbody tr .tablecellnewteams {
     columns: 2;
   }
 }
+
 @media (max-width: 750px) {
   .dashboard-sidebar-container {
     display: none;
