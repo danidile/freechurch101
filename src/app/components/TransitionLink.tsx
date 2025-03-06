@@ -30,7 +30,7 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
 
     main?.classList.add("page-transition");
 
-    await sleep(200);
+    await sleep(100);
     router.push(href);
 
     // Wait for the pathname to change, with a timeout (max 5 sec)
@@ -46,7 +46,7 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
       elapsedTime += checkInterval;
     }
 
-    await sleep(200);
+    await sleep(100);
     main?.classList.remove("page-transition");
   };
 
