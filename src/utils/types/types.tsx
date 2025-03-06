@@ -283,3 +283,17 @@ export type expandedTeamT = {
   member?: string;
   team?: string;
 };
+
+export type pendingRequestsT = {
+
+    id?: string;
+    created_at?: string;
+    profile?: {
+      id?: string;
+      name?: string;
+      email?: string;
+      lastname?: string;
+    }
+  
+};
+
