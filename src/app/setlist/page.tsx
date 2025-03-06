@@ -8,6 +8,7 @@ import { setListT } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { Button } from "@heroui/react";
 import { IoEnterOutline } from "react-icons/io5";
+import { TransitionLink } from "../components/TransitionLink";
 
 export default async function Page() {
   const userData: basicUserData = await fbasicUserData();
@@ -56,7 +57,7 @@ export default async function Page() {
 
           if (nextDate <= date) {
             return (
-              <Link
+              <TransitionLink
                 className="setlist-list-link"
                 href={`/setlist/${setlist.id}`}
               >
@@ -77,18 +78,18 @@ export default async function Page() {
                   </p>
                   <IoEnterOutline size={25} />
                 </div>
-              </Link>
+              </TransitionLink>
             );
           }
         })}
       {hasPermission(userData.role as Role, "create:setlists") && (
-        <Link
+        <TransitionLink
           href="/setlist/addSetlist"
           className="button-style my-10"
           prefetch
         >
           Crea nuova Setlist!
-        </Link>
+        </TransitionLink>
       )}
     </div>
   );
