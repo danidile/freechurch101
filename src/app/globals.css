@@ -550,7 +550,10 @@ tbody tr .tablecellnewteams {
     display: block;
   }
 }
-
+.loginwithgooglebutton {
+  background-color: white;
+  border: 1px solid #838383;
+}
 .TransitionLink svg {
   width: 20px;
 }

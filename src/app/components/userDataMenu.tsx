@@ -1,14 +1,16 @@
 import { NavbarContent, NavbarItem, Link, Button } from "@heroui/react";
 import isLoggedIn from "@/utils/supabase/getuser";
-import logoutTest from '@/app/components/logOutAction'
+import logoutTest from "@/app/components/logOutAction";
 import { basicUserData } from "@/utils/types/userData";
 
-
-export default function UserDataMenu({ userData }: { userData: basicUserData }) {
-
-  async function logouter () {
+export default function UserDataMenu({
+  userData,
+}: {
+  userData: basicUserData;
+}) {
+  async function logouter() {
     logoutTest();
-    }
+  }
 
   if (userData.loggedIn) {
     return (
@@ -34,13 +36,10 @@ export default function UserDataMenu({ userData }: { userData: basicUserData }) 
 
   return (
     <NavbarContent justify="end">
-      <NavbarItem className="hidden lg:flex">
-        <Link href="/login">Login</Link>
-      </NavbarItem>
       <NavbarItem>
-        <Button as={Link} color="primary" href="/sign-up" variant="flat">
-          Sign Up
-        </Button>
+        <Link href="/login">
+          <Button color="primary">Login</Button>
+        </Link>
       </NavbarItem>
     </NavbarContent>
   );
