@@ -81,28 +81,30 @@ export default function NotificationList({
       >
         {Object.entries(notificationState).map(
           ([status, notificationsByType]) => {
-            return (
-              <Tab
-                className="w-full"
-                key={notificationsByType.details.title}
-                title={notificationsByType.details.title}
-              >
-                {notificationsByType.notifications &&
-                  notificationsByType.notifications.map(
-                    (notification: notificationT) => {
-                      return (
-                        <NotificationElement
-                          details={notificationsByType.details}
-                          type="pending"
-                          notification={notification}
-                          nextDate={nextDate}
-                          moveFromList={moveFromList}
-                        />
-                      );
-                    }
-                  )}
-              </Tab>
-            );
+            if (notificationsByType.notifications.length > 0) {
+              return (
+                <Tab
+                  className="w-full"
+                  key={notificationsByType.details.title}
+                  title={notificationsByType.details.title}
+                >
+                  {notificationsByType.notifications &&
+                    notificationsByType.notifications.map(
+                      (notification: notificationT) => {
+                        return (
+                          <NotificationElement
+                            details={notificationsByType.details}
+                            type={status}
+                            notification={notification}
+                            nextDate={nextDate}
+                            moveFromList={moveFromList}
+                          />
+                        );
+                      }
+                    )}
+                </Tab>
+              );
+            }
           }
         )}
       </Tabs>

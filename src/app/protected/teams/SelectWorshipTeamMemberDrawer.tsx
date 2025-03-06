@@ -71,32 +71,15 @@ export function SelectWorshipTeamMemberDrawer({
                 <>
                   <div className="songs-header">
                     <h4>Lista Membri</h4>
-                    <div className="songs-searchbar-form">
-                      <Input
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)} // Update local state
-                        color="primary"
-                        type="text"
-                        placeholder="Cerca membri"
-                        className="song-searchbar"
-                        onKeyDown={handleKeyDown} // Listen for Enter key
-                      />
-                      <Button
-                        color="primary"
-                        variant="ghost"
-                        onPress={() => aggiornaLista()} // Handle search
-                      >
-                        <ManageSearchIcon />
-                      </Button>
-                    </div>
                   </div>
                   <div className="container-song-list">
                     {members
                       .filter(
-                        (member) => !state.some((m) => m.id === member.id)
+                        (member) => !state.some((m) => m.profile === member.profile)
                       )
-
                       .map((member, index) => {
+                        console.log("member");
+                        console.log(member);
                         return (
                           <div
                             className="song-card-searchBar"

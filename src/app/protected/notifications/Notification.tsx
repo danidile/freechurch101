@@ -107,28 +107,32 @@ export default function NotificationElement({
                     <p>{readableCurrentDate}</p>
                   </ModalBody>
                   <ModalFooter>
-                    <Button
-                      fullWidth
-                      color="danger"
-                      variant="light"
-                      onPress={() => {
-                        denyAction(notification.id);
-                        moveFromList(notification.id, onClose, "denied");
-                      }}
-                    >
-                      Rifiuta
-                    </Button>
-                    <Button
-                      fullWidth
-                      color="primary"
-                      onPress={() => {
-                        confirmAction(notification.id);
-                        moveFromList(notification.id, onClose, "confirmed");
-                        onClose;
-                      }}
-                    >
-                      Conferma
-                    </Button>
+                    {type === "confirmed" && (
+                      <Button
+                        fullWidth
+                        color="danger"
+                        variant="light"
+                        onPress={() => {
+                          denyAction(notification.id);
+                          moveFromList(notification.id, onClose, "denied");
+                        }}
+                      >
+                        Rifiuta
+                      </Button>
+                    )}
+                    {type === "denied" && (
+                      <Button
+                        fullWidth
+                        color="primary"
+                        onPress={() => {
+                          confirmAction(notification.id);
+                          moveFromList(notification.id, onClose, "confirmed");
+                          onClose;
+                        }}
+                      >
+                        Conferma
+                      </Button>
+                    )}
                   </ModalFooter>
                 </>
               )}
