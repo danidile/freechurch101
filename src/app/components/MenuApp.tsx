@@ -6,10 +6,7 @@ import {
   MdOutlineLibraryMusic,
   MdLibraryMusic,
 } from "react-icons/md";
-import {
-  RiTeamFill,
-  RiTeamLine,
-} from "react-icons/ri";
+import { RiTeamFill, RiTeamLine } from "react-icons/ri";
 import {
   IoSettings,
   IoSettingsOutline,
@@ -38,57 +35,66 @@ export default function MenuApp({
   }, [pathname]); // Depend on pathname to re-run when it changes
 
   return (
-    <div className="appmenucontainer standalone:block">
-      <IconContext.Provider
-        value={{ size: "1.2rem", className: "app-menu-icons" }}
-      >
-        <div className="app-menu">
-          <TransitionLink href="/songs" className="pwaiconsmenu">
-            {parameter === "songs" ? (
-              <MdLibraryMusic />
-            ) : (
-              <MdOutlineLibraryMusic />
-            )}
-          </TransitionLink>
-          {isLoggedIn && (
-            <TransitionLink href="/setlist" className="pwaiconsmenu">
-              {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
-            </TransitionLink>
-          )}
-          {isLoggedIn && (
-            <TransitionLink href="/people" className="pwaiconsmenu">
-              {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
-            </TransitionLink>
-          )}
-          {isLoggedIn && (
-            <TransitionLink
-              href="/protected/notifications"
-              className="pwaiconsmenu"
-            >
-              {parameter === "/protected/notifications" ? (
-                <Badge size="sm" color="primary" content={notifications}>
-                  <IoNotificationsSharp />
-                </Badge>
+    <div className={`${isLoggedIn ? "block" : "hidden"}`}>
+      <div className="appmenucontainer">
+        <IconContext.Provider
+          value={{ size: "1.2rem", className: "app-menu-icons" }}
+        >
+          <div className="app-menu">
+            <TransitionLink href="/songs" className="pwaiconsmenu">
+              {parameter === "songs" ? (
+                <MdLibraryMusic />
               ) : (
-                <div>
-                  <Badge
-                    isInvisible={notifications === 0 ? true : false}
-                    size="sm"
-                    color="danger"
-                    showOutline={false}
-                    content={notifications}
-                  >
-                    <IoNotificationsOutline />
-                  </Badge>
-                </div>
+                <MdOutlineLibraryMusic />
               )}
             </TransitionLink>
-          )}
-          <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">
-            {parameter === "protected" ? <IoSettings /> : <IoSettingsOutline />}
-          </TransitionLink>
-        </div>
-      </IconContext.Provider>
+            {isLoggedIn && (
+              <TransitionLink href="/setlist" className="pwaiconsmenu">
+                {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
+              </TransitionLink>
+            )}
+            {isLoggedIn && (
+              <TransitionLink href="/people" className="pwaiconsmenu">
+                {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
+              </TransitionLink>
+            )}
+            {isLoggedIn && (
+              <TransitionLink
+                href="/protected/notifications"
+                className="pwaiconsmenu"
+              >
+                {parameter === "/protected/notifications" ? (
+                  <Badge size="sm" color="primary" content={notifications}>
+                    <IoNotificationsSharp />
+                  </Badge>
+                ) : (
+                  <div>
+                    <Badge
+                      isInvisible={notifications === 0 ? true : false}
+                      size="sm"
+                      color="danger"
+                      showOutline={false}
+                      content={notifications}
+                    >
+                      <IoNotificationsOutline />
+                    </Badge>
+                  </div>
+                )}
+              </TransitionLink>
+            )}
+            <TransitionLink
+              href="/protected/dashboard"
+              className="pwaiconsmenu"
+            >
+              {parameter === "protected" ? (
+                <IoSettings />
+              ) : (
+                <IoSettingsOutline />
+              )}
+            </TransitionLink>
+          </div>
+        </IconContext.Provider>
+      </div>
     </div>
   );
 }

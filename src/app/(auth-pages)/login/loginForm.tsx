@@ -12,6 +12,7 @@ import { TalertMessage } from "@/utils/types/types";
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
+import SignInWithGoogleButton from "../SignInWithGoogleButton";
 
 export default function LoginForm({
   searchParams,
@@ -95,6 +96,7 @@ export default function LoginForm({
           )}
 
           <Button
+            fullWidth
             color="primary"
             variant="shadow"
             type="submit"
@@ -104,7 +106,9 @@ export default function LoginForm({
             {isSubmitting ? <Spinner color="white" size="sm" /> : "Accedi"}
           </Button>
         </div>
+        <SignInWithGoogleButton />
       </form>
+
       <div className="flex justify-between items-center">
         <Link
           className="text-xs text-foreground underline py-3"
