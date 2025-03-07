@@ -7,7 +7,12 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
-import { GroupedMembers, setListSongT, setListT, teamData } from "@/utils/types/types";
+import {
+  GroupedMembers,
+  setListSongT,
+  setListT,
+  teamData,
+} from "@/utils/types/types";
 import ViewFullSetListComponent from "./viewFullSetListComponent";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
@@ -35,17 +40,20 @@ export default async function Page({
   return (
     <div className="container-sub">
       <div className="song-presentation-container">
-        <h6>
-          <strong>{setlistData.event_title}</strong>
-        </h6>
-        <p>{readableDate}</p>
-        {hasPermission(userData.role as Role, "create:setlists") && (
-          <div className="top-settings-bar">
-            <div>
-              <MoreDropdownSetlist setlistId={params.setListId} />
+        <div className="team-show">
+          <h6>
+            <strong className="capitalize">{setlistData.event_title}</strong>
+          </h6>
+          <p className="capitalize">{readableDate}</p>
+
+          {hasPermission(userData.role as Role, "create:setlists") && (
+            <div className="top-settings-bar">
+                        <CopyLinkButton />
+
+                <MoreDropdownSetlist setlistId={params.setListId} />
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {setlistsongs
           .sort((a, b) => a.order - b.order)
@@ -54,20 +62,24 @@ export default async function Page({
               <>
                 <div key={"Song" + index} className="setlist-list-id">
                   <p>
-                    <strong>{song.song_title}</strong> <br />
+                    <strong>{song.song_title}</strong> {" - "}
+                    {song.key}
                   </p>
-                  <div className="key-button">{song.key}</div>
                   <ModalLyrics songData={song} />
                 </div>
               </>
             );
           })}
-        <div className="center- gap-3 mt-5 mb-20">
-          <ViewFullSetListComponent
-            setlistData={setlistData}
-            setlistsongs={setlistsongs}
-          />
-        </div>
+
+        {setlistsongs.length > 0 && (
+          <div className="center- gap-3 mt-5 mb-20">
+            <ViewFullSetListComponent
+              setlistData={setlistData}
+              setlistsongs={setlistsongs}
+            />
+          </div>
+        )}
+
         {Object.entries(setlistTeams).map((team) => {
           return (
             <>
@@ -80,12 +92,6 @@ export default async function Page({
             </>
           );
         })}
-
-        <div className="center- gap-3">
-          <span className="material-symbols-outlined">
-            <CopyLinkButton />
-          </span>
-        </div>
       </div>
     </div>
   );

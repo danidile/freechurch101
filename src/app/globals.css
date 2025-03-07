@@ -204,7 +204,7 @@ Image {
   flex-direction: column;
   justify-content: center;
 }
-.team-title-container{
+.team-title-container {
   display: flex;
   justify-content: space-between;
 }
@@ -238,7 +238,10 @@ Image {
 .song-list-setlist Button {
   margin-right: 0px;
 }
-
+.setlist-container-title {
+  padding: 1rem;
+  position: relative;
+}
 .song-list-link {
   display: flex;
   justify-content: space-between;
@@ -841,7 +844,7 @@ tbody tr .tablecellnewteams {
 
 .team-show {
   border-radius: 1rem;
-
+  position: relative;
   margin: 10px;
   padding: 1rem;
   background-color: rgb(247, 247, 247, 0.7);
@@ -869,9 +872,12 @@ tbody tr .tablecellnewteams {
   bottom: 0px;
 }
 .top-settings-bar {
+  right: 1rem;
+  top: calc(50% - 20px);
+  position: absolute;
   display: flex;
-  width: 100%;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 1rem;
   align-items: flex-end;
 }
 

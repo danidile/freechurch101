@@ -9,6 +9,8 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { Button } from "@heroui/react";
 import { IoEnterOutline } from "react-icons/io5";
 import { TransitionLink } from "../components/TransitionLink";
+import { IoIosListBox } from "react-icons/io";
+import { FaListUl } from "react-icons/fa6";
 
 export default async function Page() {
   const userData: basicUserData = await fbasicUserData();
@@ -16,36 +18,15 @@ export default async function Page() {
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
-  const readableCurrentDate = currentDate.toLocaleString("it-IT", {
-    weekday: "long", // "Sunday"
-    year: "numeric", // "2024"
-    month: "long", // "November"
-    day: "numeric", // "10"
-    // hour: "2-digit", // "10"
-    // minute: "2-digit", // "22"
-    // second: "2-digit", // "46"
-  });
-  const monthCheck = "NotAMonth";
+
   return (
     <div className="container-sub">
       <h5 className="text-center m-5">Lista eventi</h5>
       {setlists &&
         setlists.map((setlist) => {
           const date = new Date(setlist.date);
-          const readableDate = date.toLocaleString("it-IT", {
-            weekday: "long", // "Sunday"
-            year: "numeric", // "2024"
-            month: "long", // "November"
-            day: "numeric", // "10"
-            // hour: "2-digit", // "10"
-            // minute: "2-digit", // "22"
-            // second: "2-digit", // "46"
-          });
           const dateDay = date.toLocaleString("it-IT", {
             day: "numeric", // "10"
-          });
-          const dateMonth = date.toLocaleString("it-IT", {
-            month: "long", // "November"
           });
           const dateWeekDay = date.toLocaleString("it-IT", {
             weekday: "short", // "Sunday"
@@ -54,7 +35,6 @@ export default async function Page() {
           if (dateWeekDay == "dom") {
             isSunday = true;
           }
-
           if (nextDate <= date) {
             return (
               <TransitionLink
@@ -76,7 +56,7 @@ export default async function Page() {
                   <p className="setlist-name" key={setlist.id}>
                     {setlist.event_title}
                   </p>
-                  <IoEnterOutline size={25} />
+                  <FaListUl color="#000000" size={20} />
                 </div>
               </TransitionLink>
             );
