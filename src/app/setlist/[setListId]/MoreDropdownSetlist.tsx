@@ -3,6 +3,7 @@ import { MdMoreVert } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { FaRegCopy } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
+import { RiSettings4Fill } from "react-icons/ri";
 
 import {
   Dropdown,
@@ -16,7 +17,11 @@ import {
 import { useState } from "react";
 import { deleteSetList } from "./deleteSetlistAction";
 
-export default function MoreDropdowSetlist({ setlistId }: { setlistId: string }) {
+export default function MoreDropdowSetlist({
+  setlistId,
+}: {
+  setlistId: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -34,14 +39,18 @@ export default function MoreDropdowSetlist({ setlistId }: { setlistId: string })
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button variant="bordered" isIconOnly>
-          <MdMoreVert className="text-2xl" />
+        <Button variant="flat" isIconOnly>
+          <RiSettings4Fill size={25} color="#000000" />
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Dropdown menu with shortcut" variant="flat">
-        <DropdownItem startContent={<MdModeEdit />} key="new" className="text-center">
+        <DropdownItem
+          startContent={<MdModeEdit />}
+          key="new"
+          className="text-center"
+        >
           <Link
-          color="foreground"
+            color="foreground"
             className="w-full text-center"
             size="sm"
             href={`/setlist/${setlistId}/update`}
@@ -49,10 +58,6 @@ export default function MoreDropdowSetlist({ setlistId }: { setlistId: string })
             Aggiorna
           </Link>
         </DropdownItem>
-        <DropdownItem startContent={<FaRegCopy />} key="copy" onPress={handleCopy} color="primary">
-          Copia link
-        </DropdownItem>
-
         <DropdownItem
           startContent={<MdDelete />}
           variant="flat"

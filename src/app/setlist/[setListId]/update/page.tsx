@@ -39,7 +39,6 @@ export default async function songs({
 
   setlistData.setListSongs = setlistsongs;
   const songs = await getSongsCompact();
-  if (hasPermission(userData.role as Role, "update:setlists")) {
     return (
       <div className="container-sub">
         <UpdateSetlistForm
@@ -51,7 +50,5 @@ export default async function songs({
         />
       </div>
     );
-  } else {
-    return redirect("/setlist");
-  }
+  
 }

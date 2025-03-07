@@ -9,9 +9,10 @@ export default async function App() {
 
   if (userData) {
     return (
-      <>
+      <div className="container-sub">
+        <h3 className="pb-6">People</h3>
         <CreateTempProfileForm userData={userData} />
-      </>
+      </div>
     );
   } else {
     redirect("/login");

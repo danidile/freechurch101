@@ -8,6 +8,7 @@ import {
 import { useState } from "react";
 import NotificationElement from "./Notification";
 import { Tabs, Tab } from "@heroui/react";
+import { AnimatePresence } from "framer-motion";
 
 export default function NotificationList({
   notifications,
@@ -88,20 +89,22 @@ export default function NotificationList({
                   key={notificationsByType.details.title}
                   title={notificationsByType.details.title}
                 >
-                  {notificationsByType.notifications &&
-                    notificationsByType.notifications.map(
-                      (notification: notificationT) => {
-                        return (
-                          <NotificationElement
-                            details={notificationsByType.details}
-                            type={status}
-                            notification={notification}
-                            nextDate={nextDate}
-                            moveFromList={moveFromList}
-                          />
-                        );
-                      }
-                    )}
+                  <AnimatePresence>
+                    {notificationsByType.notifications &&
+                      notificationsByType.notifications.map(
+                        (notification: notificationT) => {
+                          return (
+                            <NotificationElement
+                              details={notificationsByType.details}
+                              type={status}
+                              notification={notification}
+                              nextDate={nextDate}
+                              moveFromList={moveFromList}
+                            />
+                          );
+                        }
+                      )}
+                  </AnimatePresence>
                 </Tab>
               );
             }
