@@ -36,8 +36,6 @@ export default async function songs({
     userData.church_id,
     params.setListId
   );
-  console.log("setlistTeams");
-  console.log(setlistTeams);
 
   setlistData.setListSongs = setlistsongs;
   const songs = await getSongsCompact();

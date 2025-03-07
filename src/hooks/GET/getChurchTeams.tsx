@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { churchMembersT, teamData } from "@/utils/types/types";
+import { getTeamByIdFunction } from "./getChurchTeam";
 
 export const getChurchTeams = async (churchId: string) => {
   const supabase = createClient();
@@ -20,39 +21,15 @@ export const getChurchTeams = async (churchId: string) => {
   // Use Promise.all to wait for all async operations
   const teamFinal: teamData[] = await Promise.all(
     teams.map(async (team) => {
-      const { data: teamMembers, error: teamMembersError } = await supabase
-        .from("team-members")
-        .select("id, roles, profile:profile!inner(id,name, lastname, email)")
-        .eq("team_id", team.id);
-
-      if (teamMembersError) {
-        console.log("teamMembersError", teamMembersError);
-        return { ...team, team_members: [] as churchMembersT[] };
-      }
-
-      const formattedTeamMembers = teamMembers?.map((member) => {
-        const profile = Array.isArray(member.profile)
-          ? member.profile[0]
-          : member.profile;
-        return {
-          id: member.id,
-          profile: profile.id,
-          roles: member.roles,
-          name: profile.name,
-          lastname: profile.lastname,
-          email: profile.email,
-        };
-      });
-
+      const teamMembers = await getTeamByIdFunction(team.id);
       return {
         id: team.id,
         team_name: team.team_name,
-        team_members: formattedTeamMembers || [],
+        team_members: teamMembers ?? [], // Assicura un array vuoto se `null`
         selected: [] as churchMembersT[],
       };
     })
   );
 
-  console.log("teamFinal -", teamFinal);
   return teamFinal;
 };

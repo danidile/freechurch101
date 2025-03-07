@@ -26,20 +26,13 @@ export default function PeopleDrawerList({
   // Drawer Settings
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   // END Drawer Settings
-  const roles: Record<number, string> = {
-    1: "Admin",
-    2: "Church Admin",
-    3: "Viewer",
-  };
 
   return (
     <div className="flex flex-row w-full gap-12" key={profile.id}>
       <Link className="people-link" onPress={onOpen} key={profile.id}>
         <div className="people-list" key={profile.id}>
           <p key={profile.id}>
-            {profile.name} 
-            <br />
-            <small>{profile.email}</small>
+            {profile.name} {profile.lastname}
           </p>
           <span className="material-symbols-outlined">
             <MoreVertIcon className="text-default-400" />
@@ -52,7 +45,7 @@ export default function PeopleDrawerList({
           {(onClose) => (
             <>
               <DrawerHeader className="flex justify-end">
-                {hasPermission(userData.role as Role, "update:setlists" ) && (
+                {hasPermission(userData.role as Role, "update:setlists") && (
                   <Link className="mr-0" href={`/people/${profile.id}/update`}>
                     Edit
                   </Link>
@@ -65,9 +58,6 @@ export default function PeopleDrawerList({
                     <b>{profile.name + " " + profile.lastname} </b>
                   </h5>
                   <small className="text-center">{profile.email}</small>
-                  <p className="text-center">
-                    {roles[Number(profile.role)] || "Unknown"}
-                  </p>
                 </>
               </DrawerBody>
             </>

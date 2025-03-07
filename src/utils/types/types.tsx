@@ -182,6 +182,7 @@ export type profileT = {
   name?: string;
   lastname?: string;
   role?: number;
+  isTemp?: boolean;
 };
 
 export type setListSongT = {
@@ -228,6 +229,8 @@ export type churchMembersT = {
   roles?: string[];
   profile?: string;
   team_name?: string;
+  isTemp?: boolean;
+  temp_profile?: string;
 };
 
 export type teamData = {
@@ -282,18 +285,16 @@ export type expandedTeamT = {
   setlist?: string;
   member?: string;
   team?: string;
+  temp_profile?: string;
 };
 
 export type pendingRequestsT = {
-
+  id?: string;
+  created_at?: string;
+  profile?: {
     id?: string;
-    created_at?: string;
-    profile?: {
-      id?: string;
-      name?: string;
-      email?: string;
-      lastname?: string;
-    }
-  
+    name?: string;
+    email?: string;
+    lastname?: string;
+  };
 };
-
