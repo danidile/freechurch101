@@ -32,6 +32,7 @@ import { updateSetlist } from "./updateSetlist";
 import { SelectSongsDrawer } from "./SelectSongsDrawer";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function UpdateSetlistForm({
   teams,
@@ -187,7 +188,7 @@ export default function UpdateSetlistForm({
       teams: teamsState,
     };
     console.log("updatedSetlist");
-    console.log(updatedSetlist);
+    // console.log(updatedSetlist.teams[0].selected);
 
     if (page === "create") {
       addSetlist(updatedSetlist);
@@ -348,61 +349,97 @@ export default function UpdateSetlistForm({
                   ))}
               </DropdownMenu>
             </Dropdown>
-            {teamsState.map((section) => {
-              return (
-                <div className="team-show">
-                  <h5>{section.team_name}</h5>
-
-                  {section.selected &&
-                    section.selected.map((member, index) => {
-                      return (
-                        <div
-                          className="teammember-container !py-1"
-                          key={member.profile}
-                        >
-                          <div className="teammember-section !py-1">
-                            <Input
-                              name={"type" + member.profile}
-                              key={member.id}
-                              value={member.profile}
-                              className="hide-input"
-                              {...register(`sections.${index}.id`)}
-                            />
-                            <p>
-                              <b>{member.name + " " + member.lastname}</b>
-                            </p>
-                            <Button
-                              size="sm"
-                              className="mx-0"
-                              isIconOnly
-                              color="danger"
-                              type="button"
-                              variant="light"
-                              id={member.profile}
-                              onPress={() =>
-                                removeMemberToTeam(member.profile, section.id)
-                              }
-                              accessKey={String(index)}
+            <AnimatePresence>
+              {teamsState.map((section,index) => {
+                return (
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      x: 85,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      x: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      x: 80,
+                    }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
+                    layout
+                    className="team-show"
+                  >
+                    <div className="team-title-container">
+                      <h5>{section.team_name}</h5>{" "}
+                      <SelectWorshipTeamMemberDrawer
+                        state={section.selected}
+                        type="add"
+                        teamMembers={section.team_members}
+                        addMemberToTeam={addMemberToTeam} // Pass function correctly
+                        section={null}
+                        teamId={section.id}
+                      />
+                    </div>
+                    <AnimatePresence>
+                      {section.selected &&
+                        section.selected.map((member, index) => {
+                          return (
+                            <motion.div
+                              initial={{
+                                opacity: 0,
+                                x: 85,
+                              }}
+                              animate={{
+                                opacity: 1,
+                                x: 0,
+                              }}
+                              exit={{
+                                opacity: 0,
+                                x: 80,
+                              }}
+                              transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
+                              layout
+                              className="teammember-container !py-1"
+                              key={member.profile}
                             >
-                              <RiDeleteBinLine size={20} />
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  <div className="transpose-button-container">
-                    <SelectWorshipTeamMemberDrawer
-                      state={section.selected}
-                      type="add"
-                      teamMembers={section.team_members}
-                      addMemberToTeam={addMemberToTeam} // Pass function correctly
-                      section={null}
-                      teamId={section.id}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+                              <div className="teammember-section !py-1">
+                                <Input
+                                  name={"type" + member.profile}
+                                  key={member.id}
+                                  value={member.profile}
+                                  className="hide-input"
+                                  {...register(`sections.${index}.id`)}
+                                />
+                                <p>
+                                  <b>{member.name + " " + member.lastname}</b>
+                                </p>
+                                <Button
+                                  size="sm"
+                                  className="mx-0"
+                                  isIconOnly
+                                  color="danger"
+                                  type="button"
+                                  variant="light"
+                                  id={member.profile}
+                                  onPress={() =>
+                                    removeMemberToTeam(
+                                      member.profile,
+                                      section.id
+                                    )
+                                  }
+                                  accessKey={String(index)}
+                                >
+                                  <RiDeleteBinLine size={20} />
+                                </Button>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
 
           <br />

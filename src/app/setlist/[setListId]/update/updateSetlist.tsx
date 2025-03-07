@@ -100,7 +100,8 @@ export const updateSetlist = async (
       updateTeam.push({
         id: member.id || crypto.randomUUID(),
         setlist: setlistData.id,
-        member: member.profile,
+        member: member.isTemp ? null : member.profile,
+        temp_profile: member.isTemp ? member.profile : null,
         team: team.id,
       });
     });

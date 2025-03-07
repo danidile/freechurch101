@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { createTeam } from "./create-team/createTeamAction";
-import { updateSetlist } from "./[teamsId]/update/updateSetlist";
+import { updateTeam } from "./[teamsId]/update/updateTeam";
 import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
 import { Chip } from "@heroui/react";
 import { AddRole } from "./AddRole";
@@ -53,7 +53,6 @@ export default function TeamsForm({
   const addRolefunction = (churchMemberId: string, roleToAdd: string) => {
     const newRoles = roleToAdd.split(",").map((role) => role.trim()); // Trim spaces
 
-
     setState((prevMembers) =>
       prevMembers.map((member) => {
         return member.profile === churchMemberId
@@ -66,7 +65,6 @@ export default function TeamsForm({
     );
   };
   const removeRole = (roleToRemove: string, teamMember: string) => {
-
     setState((prevMembers) =>
       prevMembers.map((member) =>
         member.id === teamMember
@@ -98,6 +96,7 @@ export default function TeamsForm({
         name: member.name,
         lastname: member.lastname,
         roles: [],
+        isTemp: member.isTemp || null,
       },
     ]);
   };
@@ -118,12 +117,12 @@ export default function TeamsForm({
       is_worship: watchAllFields.is_worship,
       team_members: state,
     };
-
-
+    console.log("churchTeamUpdated");
+    console.log(churchTeamUpdated);
     if (page === "create") {
       createTeam(churchTeamUpdated);
     } else if (page === "update") {
-      updateSetlist(churchTeamUpdated, churchTeamStart);
+      updateTeam(churchTeamUpdated, churchTeamStart);
     }
   };
 
@@ -145,17 +144,12 @@ export default function TeamsForm({
                 labelPlacement="outside"
                 className="title-input"
                 required
-                defaultValue="Worship Team"
+                defaultValue={
+                  churchTeamStart ? churchTeamStart.team_name : "Worship Team"
+                }
                 placeholder="Worship Team"
               />
             </div>
-            <Checkbox
-              {...register("is_worship")}
-              defaultChecked={churchTeamStart?.is_worship ? true : false}
-            >
-              Questo è il Team dell'Adorazione/Worship Team
-            </Checkbox>
-
             <h5 className="mt-6">Membri del Team</h5>
 
             {state.map((member, index) => {

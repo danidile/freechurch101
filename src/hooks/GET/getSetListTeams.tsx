@@ -10,7 +10,7 @@ export const getSetListTeams = async (setlistId: string) => {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("event-team")
-    .select("id,member(id, name, lastname),team(team_name)")
+    .select("id,member(id, name, lastname),team(team_name),temp_profile(id, name, lastname)")
     .eq("setlist", setlistId);
 
   if (error) {
@@ -20,9 +20,9 @@ export const getSetListTeams = async (setlistId: string) => {
       return {
         id: member.id,
         team_name: member.team.team_name,
-        profile: member.member.id,
-        name: member.member.name,
-        lastname: member.member.lastname,
+        profile: member.member ? member.member.id : member.temp_profile.id,
+        name: member.member ? member.member.name : member.temp_profile.name,
+        lastname: member.member ? member.member.lastname : member.temp_profile.lastname,
       };
     });
     const groupedByTeam = result.reduce<GroupedMembers>((acc, item) => {

@@ -3,19 +3,15 @@ import { churchMembersT, setListT, teamData } from "@/utils/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 
-export const updateSetlist = async (
+const updateTeamData = async (
   churchTeamUpdated: teamData,
   churchTeamStart: teamData
 ) => {
-  // CHECK AND UPDATE church-teams TABLE
-
   let hasChanged: boolean = false;
-
-  if (
-    churchTeamUpdated.is_worship !== churchTeamStart.is_worship ||
-    churchTeamUpdated.team_name !== churchTeamStart.team_name
-  ) {
+  if (churchTeamUpdated.team_name !== churchTeamStart.team_name) {
     hasChanged = true;
+    console.log("\x1b[41m Team Name has been changed \x1b[0m");
+    console.log(churchTeamStart.id);
   }
   const supabase = createClient();
   if (hasChanged) {
@@ -23,14 +19,11 @@ export const updateSetlist = async (
       .from("church-teams")
       .update({
         team_name: churchTeamUpdated.team_name,
-        is_worship: churchTeamUpdated.is_worship,
       })
       .eq("id", churchTeamStart.id)
-      .select()
-      .single();
-
+      .select();
     if (error) {
-      console.log("\x1b[41m Error in Team Data insert \x1b[0m");
+      console.log("\x1b[41m Error in Team Data insert church-teams \x1b[0m");
       console.log(error);
     } else {
       console.log("\x1b[42m Success in Team Data insert \x1b[0m");
@@ -38,21 +31,16 @@ export const updateSetlist = async (
   } else {
     console.log("\x1b[42m Team Data was not changed \x1b[0m");
   }
-  // END OF OCHECK AND UPDATE church-teams TABLE
-
-  // CHECK AND UPDATE team-members TABLE
-
-  // mappo attraverso le setlist di setlistData e inserisco il valore della setlist dentro updatedSetlist con lo stesso index
-  // in questo modo garantisco che gli setlistID sono gli stessi e nel caso in cui devo cancellare un campo devo solo
-  // controllare se il campo song del della setlist è vuota. Se è vuola vuol dire che c'era una setlist ma è stat cancellata
-
+};
+const upsertTeam = async (
+  churchTeamUpdated: teamData,
+  churchTeamStart: teamData
+) => {
   churchTeamStart.team_members.map((member, index) => {
     if (churchTeamUpdated.team_members[index]) {
       churchTeamUpdated.team_members[index].id = member.id;
     } else {
-      churchTeamUpdated.team_members.push({
-        id: member.id,
-      });
+      churchTeamUpdated.team_members.push(member);
     }
   });
 
@@ -64,23 +52,26 @@ export const updateSetlist = async (
       if (teamMember.profile) {
         newTeam.push({
           id: teamMember?.id || crypto.randomUUID(),
-          profile: teamMember.profile,
+          profile: teamMember.isTemp ? null : teamMember.profile,
+          temp_profile: teamMember.isTemp ? teamMember.profile : null,
           roles: teamMember.roles,
           team_id: churchTeamStart.id,
         });
       } else {
         console.log(
           "\x1b[36m%s\x1b[0m",
-          "Team Member " + index + " has been removed from the team"
+          "Team Member " +
+            churchTeamUpdated.team_members[index].name +
+            " has been removed from the team"
         );
         idsToDelete.push(teamMember.id);
       }
     }
   );
-  console.log("churchTeamUpdated");
-  console.log(churchTeamUpdated);
   console.log("newTeam");
   console.log(newTeam);
+
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("team-members")
@@ -93,6 +84,7 @@ export const updateSetlist = async (
     console.log("\x1b[36m%s\x1b[0m", data);
   }
 
+  //delete team members if necessary
   if (idsToDelete.length > 0) {
     idsToDelete.map(async (id, index) => {
       console.log("\x1b[36m%s\x1b[0m", "SUCCESS");
@@ -106,22 +98,16 @@ export const updateSetlist = async (
       }
     });
   }
+};
 
-  //   const { error } = await supabase
-  //     .from("setlist-songs")
-  //     .delete()
-  //     .eq("id", song.id);
-  //
+export const updateTeam = async (
+  churchTeamUpdated: teamData,
+  churchTeamStart: teamData
+) => {
+  // CHECK AND UPDATE church-teams TABLE
+  updateTeamData(churchTeamUpdated, churchTeamStart);
+  upsertTeam(churchTeamUpdated, churchTeamStart);
 
-  // if (error) {
-  //   console.error(error.code + " " + error.message);
-  //   console.log("\x1b[36m%s\x1b[0m", "ERRRRRROR");
-  //   return encodedRedirect("error", "/sign-up", error.message);
-  // }
-  // else {
-  //
-  // }
-  // });
   return encodedRedirect(
     "success",
     `/protected/teams/${churchTeamStart.id}`,

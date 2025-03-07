@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { FaPlus } from "react-icons/fa";
-
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
 export function SelectWorshipTeamMemberDrawer({
@@ -73,32 +73,47 @@ export function SelectWorshipTeamMemberDrawer({
                     <h4>Lista Membri</h4>
                   </div>
                   <div className="container-song-list">
-                    {members
-                      .filter(
-                        (member) => !state.some((m) => m.profile === member.profile)
-                      )
-                      .map((member, index) => {
-                        console.log("member");
-                        console.log(member);
-                        return (
-                          <div
-                            className="song-card-searchBar"
-                            style={{ cursor: "pointer" }}
-                            key={member.profile}
-                            onClick={() => {
-                              addMemberToTeam(member, teamId);
-                            }}
-                          >
-                            <div className="song-card-searchBar">
-                              <p className="song-card-searchBar">
-                                {member.name + " " + member.lastname}
-                                <br />
-                                <small>{member.roles.join(", ")}</small>
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
+                    <AnimatePresence>
+                      {members
+                        .filter(
+                          (member) =>
+                            !state.some((m) => m.profile === member.profile)
+                        )
+                        .map((member, index) => {
+                          return (
+                            <motion.div
+                              initial={{
+                                opacity: 0,
+                                y: 25,
+                              }}
+                              animate={{
+                                opacity: 1,
+                                y: 0,
+                              }}
+                              exit={{
+                                opacity: 0,
+                                x: 80,
+                              }}
+                              transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
+                              layout
+                              className="song-card-searchBar"
+                              style={{ cursor: "pointer" }}
+                              key={member.profile}
+                              onClick={() => {
+                                addMemberToTeam(member, teamId);
+                              }}
+                            >
+                              <div className="song-card-searchBar">
+                                <p className="song-card-searchBar">
+                                  {member.name + " " + member.lastname}
+                                  <br />
+                                  <small>{member.roles.join(", ")}</small>
+                                </p>
+                              </div>
+                            </motion.div>
+                          );
+                        })}{" "}
+                    </AnimatePresence>
                   </div>
                 </>
               </DrawerBody>

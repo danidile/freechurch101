@@ -16,7 +16,7 @@ export const addSetlist = async (formData: setListT) => {
     .single();
   const church: string = profile.church;
 
-    // Create Setlist
+  // Create Setlist
 
   const { data, error } = await supabase
     .from("setlist")
@@ -29,18 +29,18 @@ export const addSetlist = async (formData: setListT) => {
     })
     .select()
     .single();
-    // Take the id of the setlist just created
+  // Take the id of the setlist just created
   const sectionId = data.id;
 
-
-   // Format Team
+  // Format Team
 
   let expandedTeam: expandedTeamT[] = [];
   formData.teams.map((team: teamData) => {
     team.selected.map((member: any) => {
       expandedTeam.push({
         setlist: sectionId,
-        member: member.profile,
+        member: member.isTemp ? null : member.profile,
+        temp_profile: member.isTemp ? member.profile : null,
         team: team.id,
       });
     });
@@ -48,7 +48,7 @@ export const addSetlist = async (formData: setListT) => {
   console.log("expandedTeam");
   console.log(expandedTeam);
 
-   //Insert Team
+  //Insert Team
 
   const { error: errorTeam } = await supabase
     .from("event-team")
@@ -57,7 +57,7 @@ export const addSetlist = async (formData: setListT) => {
   console.log("errorTeam");
   console.log(errorTeam);
 
-    //Insert Songs
+  //Insert Songs
 
   formData.setListSongs.map(async (section, index) => {
     console.log(section);
