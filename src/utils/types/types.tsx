@@ -1,15 +1,17 @@
 import z from "zod";
 
-export const songSchema = z.object({
-  id: z.string().optional(),
-  song_title: z
-    .string()
-    .min(4, "Song Title must be at least 5 characters long"),
-  author: z.string(),
-  upload_key: z.string(),
-  lyrics: z.string(),
-});
-export type TsongSchema = z.infer<typeof songSchema>;
+export type songSchema = {
+  id: string;
+  song_title: string;
+
+  author?: string;
+  artist?: string;
+  upload_key: string;
+  lyrics: string;
+  album: string;
+  bpm?: string;
+  tempo?: string;
+};
 
 export type songType = {
   id: string;
@@ -255,6 +257,12 @@ export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;
 export type artistsT = {
   username: string;
   artist_name: string;
+};
+export type albumsT = {
+  id?: string;
+  album_name?: string;
+  release_date?: Date;
+  artist_username?: string;
 };
 
 export type notificationDetails = {

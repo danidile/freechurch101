@@ -54,9 +54,9 @@ export default async function fbasicUserData() {
       loggedIn: true,
       id: user?.id || null,
       email: user?.email || null,
-      name: data?.name || "Unknown",
+      name: data?.name || null,
       role: data?.role?.role_name || "user", // No array, safe access
-      lastname: data?.lastname || "",
+      lastname: data?.lastname || null,
       church_id: data?.church || null,
       pending_church_confirmation: churchpending ,
     };

@@ -1,27 +1,27 @@
 "use client";
-import { TsongSchema, artistsT, songSchema } from "@/utils/types/types";
+import { albumsT, artistsT, songSchema } from "@/utils/types/types";
 import { Button } from "@heroui/react";
-import { addSong } from "./addSongAction";
+import { addGlobalSong } from "./addGlobalSongAction";
 import { Input, Textarea } from "@heroui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, SetStateAction } from "react";
 import { toChordPro } from "@/utils/chordProFunctions/chordProFuncs";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
-export default function AddGlobalSong({ artists }: { artists: artistsT[] }) {
+export default function AddGlobalSong({
+  artists,
+  albums,
+}: {
+  artists: artistsT[];
+  albums: albumsT[];
+}) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
-  } = useForm<TsongSchema>({
-    resolver: zodResolver(songSchema),
-  });
-
-  const convertData = async (data: TsongSchema) => {
-    data.lyrics = state;
-    console.log(data);
-    addSong(data);
-  };
+  } = useForm<songSchema>();
+  const [artistChosen, setArtistChosen] = useState("");
 
   function addCommentsToText(inputText: string) {
     // Definizione delle parole chiave che identificano sezioni
@@ -95,6 +95,23 @@ export default function AddGlobalSong({ artists }: { artists: artistsT[] }) {
   }) => {
     setState(event.target.value);
   };
+  const convertData = async (data: songSchema) => {
+    data.lyrics = state;
+    console.log(data);
+    const watched = watch();
+    const artistUsername: string | undefined = artists.find(
+      (n) => n.artist_name === watched.artist
+    ).username;
+    const albumUsername: string | undefined = albums.find(
+      (n) => n.album_name === watched.album
+    ).id;
+    data.artist = artistUsername;
+    data.album = albumUsername;
+    console.log("artistUsername");
+    console.log(artistUsername);
+
+    addGlobalSong(data);
+  };
 
   return (
     <div className="container-sub">
@@ -105,44 +122,69 @@ export default function AddGlobalSong({ artists }: { artists: artistsT[] }) {
           <div className="flex gap-4 items-center">
             <Input
               {...register("song_title")}
-              label="Song Title"
+              label="Titolo canzone"
               variant="bordered"
               size="sm"
             />
+            <Input
+              {...register("author")}
+              label="Autore canzone"
+              variant="bordered"
+              size="sm"
+            />
+          </div>
+          <div className="flex gap-4 items-center">
             <Autocomplete
-              fullWidth
+              size="sm"
               variant="bordered"
               label="Seleziona l'artista"
-              {...register("author", { required: "Song Title is required" })}
+              {...register("artist", { required: "Song Title is required" })}
+              onSelectionChange={(e) => setArtistChosen(e.toString())}
             >
               {artists.map((artist: artistsT, index: number) => (
-                <AutocompleteItem key={index}>
+                <AutocompleteItem key={artist.username}>
                   {artist.artist_name}
                 </AutocompleteItem>
               ))}
             </Autocomplete>
-            {/* <Input
-              {...register("author", { required: "Song Title is required" })}
-              label="Author"
-              variant="bordered"
+            <Autocomplete
               size="sm"
-            /> */}
+              variant="bordered"
+              label="Seleziona l'album"
+              {...register("album")}
+              isDisabled={artistChosen.length < 1}
+            >
+              {albums
+                .filter((n) => n.artist_username === artistChosen)
+                .map((album: albumsT, index: number) => (
+                  <AutocompleteItem key={index}>
+                    {album.album_name}
+                  </AutocompleteItem>
+                ))}
+            </Autocomplete>
           </div>
 
-          <Input
-            {...register("upload_key", { required: "A key is required" })}
-            label="Key"
-            variant="bordered"
-            size="sm"
-          />
-
+          <div className="flex gap-4 items-center">
+            <Input
+              {...register("upload_key", { required: "A key is required" })}
+              label="Key"
+              variant="bordered"
+              size="sm"
+            />
+            <Input
+              {...register("bpm")}
+              label="BPM"
+              variant="bordered"
+              size="sm"
+            />
+          </div>
           <Button
             type="button"
             onClick={convertIntoChordPro}
             color="primary"
             variant="flat"
           >
-            Convert into ChordPro
+            Converti in formato ChordPro
           </Button>
           <Textarea
             {...register("lyrics")}
@@ -161,7 +203,7 @@ export default function AddGlobalSong({ artists }: { artists: artistsT[] }) {
             type="submit"
             disabled={isSubmitting}
           >
-            Add Song
+            Aggiungi Canzone
           </Button>
         </div>
       </form>

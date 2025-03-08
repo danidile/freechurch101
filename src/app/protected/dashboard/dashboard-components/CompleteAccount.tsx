@@ -24,19 +24,22 @@ export default function CompleteAccount({
 
   const convertData = async (data: basicUserData) => {
     console.log(data);
-    const index = churchList.findIndex(
-      (church) => church.churchName === data.church_name
-    );
     let updatedData: basicUserData = data;
-    updatedData.church_id = churchList[index].id;
+
+    if (data.church_name) {
+      const index = churchList.findIndex(
+        (church) => church.churchName === data.church_name
+      );
+      updatedData.church_id = churchList[index].id;
+    }
     completeAccountAction(updatedData);
   };
 
   return (
     <>
-      {!userData.church_id &&
-        !userData.pending_church_confirmation &&
-        !userData.name &&
+      {(!userData.church_id &&
+        !userData.pending_church_confirmation) ||
+        !userData.name ||
         !userData.lastname && (
           <form onSubmit={handleSubmit(convertData)}>
             <h1 className="text-2xl font-medium">Completa il tuo Profilo</h1>
@@ -62,6 +65,7 @@ export default function CompleteAccount({
                   />
                 )}
               </div>
+
               {!userData.church_id && !userData.pending_church_confirmation && (
                 <>
                   <Autocomplete

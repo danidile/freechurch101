@@ -1,10 +1,10 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { TsongSchema } from "@/utils/types/types";
+import { songSchema } from "@/utils/types/types";
 
 
-export const updateSong = async (data: TsongSchema) => {
+export const updateSong = async (data: songSchema) => {
     
     console.log("id is: " + data.id);
     
