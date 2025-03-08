@@ -6,11 +6,13 @@ import { getProfilesByChurch } from "@/hooks/GET/getProfilesByChurch";
 import PeopleDrawerList from "./peopleDrawerList";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
+import { getTempProfilesByChurch } from "@/hooks/GET/getTempProfilesByChurch";
 
 export default async function App() {
   const userData: basicUserData = await fbasicUserData();
   const profiles: profileT[] = await getProfilesByChurch(userData.church_id);
   let pendingRequests: pendingRequestsT[] = [] as pendingRequestsT[];
+  const tempProfiles: profileT[] = await getTempProfilesByChurch(userData.church_id);
 
   if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
     pendingRequests = await getPendingChurchMembershipRequests(
@@ -32,6 +34,7 @@ export default async function App() {
             pendingRequests.map((profile: profileT) => {
               return (
                 <PeopleDrawerList
+                tempProfiles={tempProfiles}
                   userData={userData}
                   profile={profile}
                   key={profile.id}
