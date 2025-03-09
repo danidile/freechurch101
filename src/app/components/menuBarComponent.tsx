@@ -91,7 +91,7 @@ export default function MenuBarComponent({
           ))}
         </NavbarMenu>
       </Navbar>
-      <MenuApp notifications={notifications} isLoggedIn={userData.loggedIn ? true : false} />
+      <MenuApp userdata={userData} notifications={notifications} isLoggedIn={userData.loggedIn ? true : false} />
     </>
   );
 }

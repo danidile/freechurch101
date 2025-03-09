@@ -14,17 +14,31 @@ const ROLES = {
     "create:team",
     "view:teams",
     "confirm:churchMembership",
+    "read:churchmembers",
   ],
-  church: ["view:songs", "create:songs", "update:songs", "delete:songs"],
+  churchfounder: [
+    "view:songs",
+    "create:songs",
+    "update:songs",
+    "delete:songs",
+    "view:setlists",
+    "create:setlists",
+    "update:setlists",
+    "delete:setlists",
+    "create:team",
+    "view:teams",
+    "confirm:churchMembership",
+    "read:churchmembers",
+  ],
   jel: ["view:songs", "create:songs", "update:songs", "delete:songs"],
-  user: ["view:songs", "create:songs", "delete:songs"],
+  user: ["view:songs", "view:songs", "view:songs"],
   gverf: ["view:songs", "create:songs", "update:songs", "delete:songs"],
 } as const;
 
 export function hasPermission(userRole: Role, permission: Permission) {
-  if(userRole){
-  return (ROLES[userRole] as readonly Permission[]).includes(permission);
-  }else{
+  if (userRole) {
+    return (ROLES[userRole] as readonly Permission[]).includes(permission);
+  } else {
     return false;
   }
 }
