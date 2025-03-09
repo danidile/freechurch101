@@ -17,12 +17,16 @@ import { Badge } from "@heroui/badge";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { basicUserData } from "@/utils/types/userData";
 
 export default function MenuApp({
   isLoggedIn,
   notifications,
+  userdata,
 }: {
   isLoggedIn: boolean;
+  userdata: basicUserData;
   notifications: number;
 }) {
   const pathname = usePathname(); // Get the full pathname
@@ -52,11 +56,12 @@ export default function MenuApp({
               {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
             </TransitionLink>
           )}
-          {isLoggedIn && (
-            <TransitionLink href="/people" className="pwaiconsmenu">
-              {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
-            </TransitionLink>
-          )}
+          {isLoggedIn &&
+            hasPermission(userdata.role as Role, "read:churchmembers") && (
+              <TransitionLink href="/people" className="pwaiconsmenu">
+                {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
+              </TransitionLink>
+            )}
           {isLoggedIn && (
             <TransitionLink
               href="/protected/notifications"
