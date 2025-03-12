@@ -14,6 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        
         <link rel="icon" href="/images/brand/cropped-Fav-2.png" sizes="48x48" />
         <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" />
 

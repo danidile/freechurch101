@@ -8,7 +8,7 @@ import { fetchUserFromServer } from "@/hooks/GET/userZustand";
 export default function Sidebar({ userData }: { userData: basicUserData }) {
   return (
     <div className="dashboard-sidebar-container">
-      <PWADashboard userData={userData} />
+      <PWADashboard pendingRequests={null} userData={userData} />
     </div>
   );
 }
