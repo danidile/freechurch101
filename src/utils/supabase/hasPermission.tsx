@@ -3,18 +3,33 @@ type Permission = (typeof ROLES)[Role][number];
 
 const ROLES = {
   admin: [
+    // SONGS
     "view:songs",
     "create:songs",
     "update:songs",
     "delete:songs",
+
+    // SETLISTS
     "view:setlists",
     "create:setlists",
     "update:setlists",
     "delete:setlists",
+
+    // TEAMS
     "create:team",
     "view:teams",
+
+    // CHURCHMEMBERSHIPS
     "confirm:churchMembership",
+
+    // CHURCHMEMBERS
     "read:churchmembers",
+
+    // ARTISTS
+    "read:artists",
+
+    // ALBUMS
+    "read:albums",
   ],
   churchfounder: [
     "view:songs",

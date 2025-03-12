@@ -3,25 +3,36 @@
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { createClient } from "@/utils/supabase/server";
 import { basicUserData } from "@/utils/types/userData";
+import { encodedRedirect } from "@/utils/utils";
+import { redirect } from "next/dist/server/api-utils";
 
 export const confirmBelongingAction = async (profileId: string) => {
   const supabase = createClient();
   const userData: basicUserData = await fbasicUserData();
+
   // Confirm church to profile
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("profiles")
-    .insert({ church: userData.id })
+    .update({ church: userData.church_id })
     .eq("id", profileId)
     .select();
   // DELETE Request to belong to church
-
-  const { error } = await supabase
-    .from("church-membership-request")
-    .delete()
-    .eq("profile", profileId);
+  // only if insert was successfull
   if (error) {
     console.log(error);
+  } else {
+    const { error: errorDelete } = await supabase
+      .from("church-membership-request")
+      .delete()
+      .eq("profile", profileId);
+    if (errorDelete) {
+      console.log(errorDelete);
+    }
   }
 
-  return data;
+  return encodedRedirect(
+    "success",
+    "/protected/dashboard",
+    "Profilo aggiunto con successo"
+  );
 };

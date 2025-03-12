@@ -32,10 +32,6 @@ export const completeAccountAction = async function completeAccountAction(
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
-    return encodedRedirect(
-      "success",
-      `/protected/dashboard`,
-      "Thanks for signing up! Please check your email for a verification link."
-    );
+    return encodedRedirect("success", `/protected/dashboard`, "");
   }
 };

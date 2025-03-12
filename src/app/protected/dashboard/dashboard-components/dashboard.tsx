@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import CompleteAccount from "./CompleteAccount";
+import CompleteAccount from "../account/CompleteAccount";
 import { redirect } from "next/navigation";
 import Sidebar from "./sidebar";
 import { basicUserData } from "@/utils/types/userData";
@@ -9,6 +9,7 @@ import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurch
 import { Alert, Button } from "@heroui/react";
 import Link from "next/link";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { pendingRequestsT } from "@/utils/types/types";
 
 export default async function Dashboard({
   userData,
@@ -30,39 +31,23 @@ export default async function Dashboard({
       churchList.unshift(church);
     }
   }
-  let pendingRequests = [];
+  let pendingRequests: pendingRequestsT[] = [];
 
   if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
     pendingRequests = await getPendingChurchMembershipRequests(
       userData.church_id
     );
-    console.log("pendingRequests");
-    console.log(pendingRequests);
   }
 
   if (userData) {
     return (
       <div className="flex flex-row w-full gap-12">
-        <Sidebar userData={userData} />
-        <div className="dashboard-container">
+        {/* <Sidebar userData={userData} /> */}
+        <div className="container-sub">
           <h6 className="text-md">
             Benvenuto {userData.name ? userData.name : userData.email}
           </h6>
-          {pendingRequests.length > 0 && (
-            <div className="flex items-center justify-center w-full">
-              <Link prefetch href="/protected/church/confirm-members">
-                <Alert
-                endContent={<FaExternalLinkAlt />
-                }
-                  color="warning"
-                  description="Alcuni account sono in attesa della tua conferma."
-                  title="In attesa di conferma"
-                />
-              </Link>
-            </div>
-          )}
-          <CompleteAccount churchList={churchList} userData={userData} />
-          <PWADashboard userData={userData} />
+          <PWADashboard pendingRequests={pendingRequests} userData={userData} />
         </div>
       </div>
     );

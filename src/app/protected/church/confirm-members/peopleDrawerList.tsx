@@ -23,7 +23,7 @@ import { confirmBelongingAction } from "./confirmBelongingAction";
 import { confirmAndUpdateTempUserAction } from "./confirmAndUpdateTempUserAction";
 import { useForm, Controller } from "react-hook-form";
 
-export default function PeopleDrawerList({
+export default function PeopleToConfirm({
   profile,
   userData,
   tempProfiles,
@@ -43,7 +43,7 @@ export default function PeopleDrawerList({
   const confirmBelonging = (profileId: string) => {
     console.log("profileId");
     console.log(profileId);
-    // confirmBelongingAction(profileId);
+    confirmBelongingAction(profileId);
   };
   const confirmAndUpdateTempUser = () => {
     console.log("profileId");
@@ -79,14 +79,14 @@ export default function PeopleDrawerList({
                 >
                   Conferma
                 </DropdownItem>
-                <DropdownItem
+                {/* <DropdownItem
                   color="primary"
                   key="confirm"
                   onPress={onOpen}
                   className="text-center"
                 >
                   Collega a profilo temporaneo
-                </DropdownItem>
+                </DropdownItem> */}
                 <DropdownItem
                   key="delete"
                   className="text-center text-danger"
