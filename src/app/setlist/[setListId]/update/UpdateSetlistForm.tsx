@@ -142,6 +142,7 @@ export default function UpdateSetlistForm({
         song_title: song.song_title,
         author: song.author,
         type: song.type,
+        key: "A",
       },
     ]);
   };

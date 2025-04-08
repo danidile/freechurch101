@@ -33,7 +33,6 @@ export default async function Page() {
                 >
                   <PiCirclesThreeBold />
                 </p>
-                <small className="setlist-weekday">1</small>
               </div>
               <div className="setlist-list" key={team.id}>
                 <p>
