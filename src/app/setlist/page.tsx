@@ -12,7 +12,7 @@ export default async function Page() {
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
-  let month = "start";
+  let month = "ve";
   return (
     <div className="container-sub">
       <h5 className="text-center m-5">Lista eventi</h5>
@@ -32,15 +32,20 @@ export default async function Page() {
           if (dateWeekDay == "dom") {
             isSunday = true;
           }
-          let newMonth = false;
-          if (setlistmonth !== month) {
-            month = setlistmonth;
-            newMonth = true;
-          }
+
           if (nextDate <= date) {
+            let newMonth = false;
+            if (setlistmonth !== month) {
+              month = setlistmonth;
+              newMonth = true;
+            }
             return (
               <>
-                {(newMonth || index === 1) && (<h6 className="capitalize">{setlistmonth}</h6>)}
+                {newMonth && (
+                  <div className="setlist-list-link mt-6">
+                      <h6 className="capitalize ml-0">{setlistmonth}</h6>
+                  </div>
+                )}
                 <TransitionLink
                   className="setlist-list-link"
                   href={`/setlist/${setlist.id}`}
