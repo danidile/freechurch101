@@ -845,8 +845,8 @@ tbody tr .tablecellnewteams {
 .team-show {
   border-radius: 1rem;
   position: relative;
-  margin: 10px;
-  padding: 1rem;
+  margin: 10px 0px;
+  padding: 1rem 0.5rem;
   background-color: rgb(247, 247, 247, 0.7);
 }
 
