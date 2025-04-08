@@ -55,9 +55,9 @@ export default function MenuBarComponent({
         </NavbarContent>
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarItem>
+          {/* <NavbarItem>
             <TransitionLink href="/esplora">Esplora</TransitionLink>
-          </NavbarItem>
+          </NavbarItem> */}
 
           <NavbarItem>
             <TransitionLink href="/songs">Canzoni</TransitionLink>
