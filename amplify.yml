@@ -4,6 +4,9 @@ frontend:
     preBuild:
       commands:
         - "npm ci --cache .npm --prefer-offline"
+        - nvm install 18.19.0
+        - nvm use 18.19.0
+        - npm ci
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
