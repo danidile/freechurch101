@@ -13,6 +13,7 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
+import CustomizeWidget from "@/app/components/CustomizeWidget";
 export default function ViewFullSetListComponent({
   setlistData,
   setlistsongs,
@@ -60,6 +61,8 @@ export default function ViewFullSetListComponent({
                 </Tooltip>
               </DrawerHeader>
               <DrawerBody>
+                <CustomizeWidget />
+
                 <h6>
                   <strong>{setlistData.event_title}</strong>
                 </h6>

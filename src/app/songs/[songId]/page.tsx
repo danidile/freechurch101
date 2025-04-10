@@ -2,15 +2,18 @@ import { getSongById } from "@/hooks/GET/getSongById";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
+import CustomizeWidget from "@/app/components/CustomizeWidget";
 
 export default async function Page({ params }: { params: { songId: string } }) {
   const songData = await getSongById(params.songId);
-    const userData: basicUserData = await fbasicUserData();
-  
+  const userData: basicUserData = await fbasicUserData();
+
   console.log(songData);
   if (songData) {
     return (
       <div className="container-sub">
+        <CustomizeWidget />
+
         <div className="song-presentation-container">
           <ChordProViewComponent userData={userData} setListSong={songData} />
         </div>

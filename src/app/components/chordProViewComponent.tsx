@@ -14,6 +14,7 @@ import {
 import { MdModeEdit, MdMoreVert } from "react-icons/md";
 import { basicUserData } from "@/utils/types/userData";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import CustomizeWidget from "./CustomizeWidget";
 export default function ChordProViewComponent({
   setListSong,
   userData,
@@ -41,7 +42,7 @@ export default function ChordProViewComponent({
   let song = parser.parse(chordSheet);
   const steps = stepsBetweenKeys(setListSong.upload_key, setListSong.key);
   song = song.transpose(steps);
-  const formatter = new ChordSheetJS.HtmlTableFormatter();
+  const formatter = new ChordSheetJS.HtmlDivFormatter();
 
   const disp = formatter.format(song);
 
@@ -96,20 +97,19 @@ export default function ChordProViewComponent({
     }
   };
   return (
-    <div>
+    <div className="relative">
       <div className="view-selector-container">
         {viewChords && (
-          <Button size="md" onPress={viewLyric}>
+          <Button size="md" variant="ghost" onPress={viewLyric}>
             Testo
           </Button>
         )}
         {!viewChords && (
-          <Button size="md" onPress={viewChord}>
+          <Button variant="ghost" size="md" onPress={viewChord}>
             Accordi
           </Button>
         )}
-
-        <div className="transopose-section">
+        <div className={`${viewChords ? 'opacity-100' : 'opacity-0'} transopose-section`} >
           <p>Tonalità:</p>
 
           <Button isIconOnly variant="light" onPress={transposeDown} size="md">
@@ -150,18 +150,20 @@ export default function ChordProViewComponent({
       </div>
 
       <div>
-        <h5 className="song-title">
-          {setListSong.song_title}
-        </h5>
+        <h5 className="song-title">{setListSong.song_title}</h5>
         <small>{setListSong.author}</small>
 
-        <p>Tonalità canzone: <span className="chord">{songKey}</span></p>
         {viewChords && (
-          <div
-            id="song-chords"
-            dangerouslySetInnerHTML={{ __html: state }}
-            style={{ whiteSpace: "pre-wrap" }}
-          />
+          <>
+            <p>
+              Tonalità canzone: <span className="chord">{songKey}</span>
+            </p>
+            <div
+              id="song-chords"
+              dangerouslySetInnerHTML={{ __html: state }}
+              style={{ whiteSpace: "pre-wrap" }}
+            />
+          </>
         )}
         {!viewChords && (
           <div

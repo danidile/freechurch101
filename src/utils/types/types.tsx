@@ -11,6 +11,7 @@ export type songSchema = {
   album: string;
   bpm?: string;
   tempo?: string;
+  type?: string;
 };
 
 export type songType = {

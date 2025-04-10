@@ -12,11 +12,12 @@ export const getSongById = async (songData: unknown) => {
     .eq("id", songData);
 
   if (songError) {
-    console.error("Errore nel recupero della canzone:", songError);
+    console.error("La canzone non è nella tabella songs:", songError);
     return null;
   }
 
   if (song && song.length > 0) {
+    song[0].type = "song";
     return song[0]; // Ritorna la canzone se trovata
   }
 
@@ -27,9 +28,13 @@ export const getSongById = async (songData: unknown) => {
     .eq("id", songData);
 
   if (globalSongError) {
-    console.error("Errore nel recupero della canzone globale:", globalSongError);
+    console.error(
+      "Errore nel recupero della canzone globale:",
+      globalSongError
+    );
     return null;
   }
+  song2[0].type = "global";
 
   return song2?.[0] || null;
 };

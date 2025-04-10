@@ -18,6 +18,10 @@ export default function UpdateSongForm(songData: songSchema) {
 
   const convertData = async (data: songSchema) => {
     data.lyrics = state;
+    data.type = songData.type;
+    console.log(data.type);
+    console.log(data.type);
+    console.log(data.type);
     updateSong(data);
   };
 

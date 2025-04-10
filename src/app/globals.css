@@ -150,7 +150,7 @@ main {
   background-color: white;
   position: fixed;
   bottom: 0px;
-  z-index: 999;
+  z-index: 40;
   width: 100vw;
   padding-bottom: 20px;
   display: flex;
@@ -301,7 +301,6 @@ Image {
   align-items: center;
   padding: 0px 0px 0px 15px;
   border-radius: 12px;
-  background-color: #d8d8d8;
 }
 
 .top-song-buttons {
@@ -471,14 +470,11 @@ tbody tr .tablecellnewteams {
   justify-content: space-around;
 }
 .view-selector-container {
-  border-bottom: 2px solid rgb(75, 75, 75);
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   max-width: 1000px;
   margin: 0px auto;
-  padding: 10px 10px;
-  background-color: #f3f3f3;
   justify-content: flex-start;
   align-items: center;
   justify-content: left;
@@ -1462,4 +1458,44 @@ tbody tr .tablecellnewteams {
 
 .calendar-date-selected {
   background-color: #a3b6e1;
+}
+
+.custom-widget {
+  position: absolute;
+  top: calc(50%);
+  right: 0px;
+  z-index: 40;
+}
+
+.container-style-list {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  align-items: center;
+}
+
+.number-input {
+  border: 1px solid #838383;
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+  max-width: 50px;
+}
+
+.chord-sheet .paragraph .row {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.chord-sheet .paragraph .row .column .chord{
+  position: relative;
+
+  top:0px;
+}
+.chord-sheet .paragraph .row .column .lyrics{
+  min-height: 17px;
+  min-width: 17px;
+}
+.chord-sheet .paragraph .row .column{
+  position: relative;
 }
