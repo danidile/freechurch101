@@ -105,7 +105,7 @@ export default function CustomizeWidget() {
                     defaultValue={14}
                     type="number"
                     min="14"
-                    max="20"
+                    max="18"
                   ></input>
                 </div>
 
