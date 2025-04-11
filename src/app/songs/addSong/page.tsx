@@ -6,8 +6,33 @@ import { Input, Textarea } from "@heroui/input";
 import { useForm } from "react-hook-form";
 import { useState, SetStateAction } from "react";
 import { toChordPro } from "@/utils/chordProFunctions/chordProFuncs";
+import { useRef } from "react";
 
 export default function App() {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const makeBold = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = state.slice(start, end);
+    const hasTrailingNewline = selectedText.endsWith('\n');
+    const cleanText = hasTrailingNewline
+      ? selectedText.slice(0, -1)
+      : selectedText;
+    
+    const wrapped = `<strong>${cleanText}</strong>${hasTrailingNewline ? '\n' : ''}`;
+    const newText = state.slice(0, start) + wrapped + state.slice(end);
+    setState(newText);
+
+    // Put cursor after the bolded text
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = start + 2;
+      textarea.selectionEnd = end + 2;
+    }, 0);
+  };
   const {
     register,
     handleSubmit,
@@ -130,6 +155,8 @@ export default function App() {
           >
             Convert into ChordPro
           </Button>
+          <button onClick={makeBold}>Bold</button>
+
           <Textarea
             {...register("lyrics")}
             value={state}
@@ -139,6 +166,8 @@ export default function App() {
             cols={100}
             variant="bordered"
             size="sm"
+            ref={textareaRef}
+
           />
 
           <Button
