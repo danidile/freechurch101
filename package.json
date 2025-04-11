@@ -52,7 +52,7 @@
     "@react-aria/utils": "^3.28.1",
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.45.4",
-    "aws-cdk-lib": "2.188.0",
+    "aws-cdk-lib": "2.126.0",
     "chordsheetjs": "^10.3.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
