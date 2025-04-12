@@ -7,12 +7,12 @@ import {
   DrawerFooter,
   Button,
   useDisclosure,
-  Select,
-  SelectSection,
-  SelectItem,
 } from "@heroui/react";
+import { FaPlus, FaMinus } from "react-icons/fa";
+
 import { FaCircle } from "react-icons/fa6";
 import { BiColor } from "react-icons/bi";
+import { useState } from "react";
 export const fontSizes = [
   { key: "14", label: "14" },
   { key: "15", label: "15" },
@@ -27,21 +27,34 @@ export const fontSizes = [
 ];
 export default function CustomizeWidget() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [fontSize, setFontSize] = useState(14);
 
-  const updateFontSize = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSize = e.target.value;
+  const updateFontSize = (element: string) => {
+    if (element === "plus") {
+      if (fontSize < 20) {
+        const newSize = fontSize + 1;
+        setFontSize(newSize);
+        console.log(fontSize);
+      }
+    } else if (element === "minus") {
+      if (fontSize > 13) {
+        const newSize = fontSize - 1;
+        setFontSize(newSize);
+        console.log(fontSize);
+      }
+    }
     const lyricsElements = document.querySelectorAll(".lyrics");
     const chordsElements = document.querySelectorAll(".chord");
     const commentElements = document.querySelectorAll(".comment");
-    const biggersize = Number(newSize) * 1.2;
+    const biggersize = Number(fontSize) * 1.2;
 
     lyricsElements.forEach((el) => {
-      (el as HTMLElement).style.fontSize = `${newSize}px`;
-      (el as HTMLElement).style.lineHeight = `${newSize}px`;
+      (el as HTMLElement).style.fontSize = `${fontSize}px`;
+      (el as HTMLElement).style.lineHeight = `${fontSize}px`;
     });
     chordsElements.forEach((el) => {
-      (el as HTMLElement).style.fontSize = `${newSize}px`;
-      (el as HTMLElement).style.lineHeight = `${Number(newSize) * 1.2}px`;
+      (el as HTMLElement).style.fontSize = `${fontSize}px`;
+      (el as HTMLElement).style.lineHeight = `${Number(fontSize) * 1.2}px`;
     });
     commentElements.forEach((el) => {
       (el as HTMLElement).style.fontSize = `${biggersize}px`;
@@ -99,14 +112,14 @@ export default function CustomizeWidget() {
               <DrawerBody>
                 <div className="container-style-list">
                   <p>Dimensione Carattere:</p>{" "}
-                  <input
-                    onChange={updateFontSize}
-                    className="number-input"
-                    defaultValue={14}
-                    type="number"
-                    min="14"
-                    max="18"
-                  ></input>
+                  <div className="flex gap-2">
+                    <Button isIconOnly onPress={() => updateFontSize("minus")}>
+                      <FaMinus />
+                    </Button>
+                    <Button isIconOnly onPress={() => updateFontSize("plus")}>
+                      <FaPlus />
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="container-style-list">
