@@ -48,9 +48,9 @@ export default async function Page({
 
           {hasPermission(userData.role as Role, "create:setlists") && (
             <div className="top-settings-bar">
-                        <CopyLinkButton />
+              <CopyLinkButton />
 
-                <MoreDropdownSetlist setlistId={params.setListId} />
+              <MoreDropdownSetlist setlistId={params.setListId} />
             </div>
           )}
         </div>

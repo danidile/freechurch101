@@ -34,13 +34,11 @@ export default function CustomizeWidget() {
       if (fontSize < 20) {
         const newSize = fontSize + 1;
         setFontSize(newSize);
-        console.log(fontSize);
       }
     } else if (element === "minus") {
       if (fontSize > 13) {
         const newSize = fontSize - 1;
         setFontSize(newSize);
-        console.log(fontSize);
       }
     }
     const lyricsElements = document.querySelectorAll(".lyrics");
