@@ -10,6 +10,7 @@ import {
   Button,
 } from "@heroui/react";
 import { Select, SelectSection, SelectItem } from "@heroui/select";
+import { TiUser } from "react-icons/ti";
 
 import { Link } from "@heroui/react";
 import { basicUserData } from "@/utils/types/userData";
@@ -31,9 +32,13 @@ export default function PeopleDrawerList({
     <div className="flex flex-row w-full gap-12" key={profile.id}>
       <Link className="people-link" onPress={onOpen} key={profile.id}>
         <div className="people-list" key={profile.id}>
-          <p key={profile.id}>
-            {profile.name} {profile.lastname}
-          </p>
+          <div className="flex flex-row gap-2 items-center">
+            <TiUser color={profile.isTemp ? "#f5a524" : "black"} />
+            <p key={profile.id}>
+              {profile.name} {profile.lastname}
+            </p>
+          </div>
+
           <span className="material-symbols-outlined">
             <MoreVertIcon className="text-default-400" />
           </span>
