@@ -15,6 +15,7 @@ export default async function Page({ params }: { params: { songId: string } }) {
         <CustomizeWidget />
 
         <div className="song-presentation-container">
+          
           <ChordProViewComponent userData={userData} setListSong={songData} />
         </div>
       </div>

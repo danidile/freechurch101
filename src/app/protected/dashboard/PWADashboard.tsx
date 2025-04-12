@@ -12,6 +12,7 @@ import Link from "next/link";
 import { pendingRequestsT } from "@/utils/types/types";
 import GetParamsMessage from "@/app/components/getParams";
 import { useSearchParams } from "next/navigation";
+import { TfiSharethis } from "react-icons/tfi";
 
 export default function PWADashboard({
   userData,
@@ -85,6 +86,10 @@ export default function PWADashboard({
           >
             <MdLibraryMusic className="dashboard-icon" />
             Global Songs
+          </Link>
+          <Link className="dashboard-list text-black" href="/protected/dashboard/share">
+            <TfiSharethis className="dashboard-icon" />
+            Condividi Canzoni
           </Link>
         </>
       )}

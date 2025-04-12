@@ -7,6 +7,7 @@ import { completeAccountAction } from "./completeAccountAction";
 import { basicUserData } from "@/utils/types/userData";
 import { Alert } from "@heroui/react";
 import Link from "next/link";
+import { FaLock } from "react-icons/fa6";
 
 export default function CompleteAccount({
   churchList,
@@ -78,18 +79,28 @@ export default function CompleteAccount({
               </Autocomplete>
               <small>
                 Se la tua chiesa non è nella lista{" "}
-                <Link href="/churches/addChurch">Clicca qui</Link>
+                <Link
+                  href="/churches/addChurch"
+                  className="text-blue-600 underline font-bold"
+                >
+                  Clicca qui
+                </Link>
               </small>
             </>
           )}
+          <Input
+            label="Email"
+            variant="bordered"
+            size="sm"
+            disabled
+            placeholder={userData.email}
+            endContent={
+              <FaLock className="text-l text-default-500 pointer-events-none flex-shrink-0 my-auto" />
+            }
+          />
+          <Input label="Telefono" variant="bordered" size="sm" />
+          
 
-          {userData.pending_church_confirmation && (
-            <Alert
-              color="primary"
-              description="Attendi che i responsabili della tua chiesa confermino il tuo account."
-              title="In attesa di conferma"
-            />
-          )}
           <Input
             {...register("id")}
             name="id"
@@ -99,6 +110,7 @@ export default function CompleteAccount({
           />
 
           <Button
+            className="mt-3"
             color="primary"
             variant="shadow"
             type="submit"
@@ -106,6 +118,13 @@ export default function CompleteAccount({
           >
             Aggiorna profilo
           </Button>
+          {userData.pending_church_confirmation && (
+            <Alert
+              color="primary"
+              description="Attendi che i responsabili della tua chiesa confermino il tuo account."
+              title="In attesa di conferma"
+            />
+          )}
         </div>
       </form>
     </>
