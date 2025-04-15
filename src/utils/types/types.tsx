@@ -218,8 +218,13 @@ export type setListT = {
   teams?: teamData[];
 };
 
-export type searchBar = {
-  text: string;
+export type teamData = {
+  id?: string;
+  team_name?: string;
+  team_leaders?: churchMembersT[];
+  team_members?: churchMembersT[];
+  is_worship?: boolean;
+  selected?: churchMembersT[];
 };
 
 export type churchMembersT = {
@@ -236,13 +241,8 @@ export type churchMembersT = {
   temp_profile?: string;
 };
 
-export type teamData = {
-  id?: string;
-  team_name?: string;
-  team_leaders?: churchMembersT[];
-  team_members?: churchMembersT[];
-  is_worship?: boolean;
-  selected?: churchMembersT[];
+export type searchBar = {
+  text: string;
 };
 
 export type ChurchMemberByTeam = {

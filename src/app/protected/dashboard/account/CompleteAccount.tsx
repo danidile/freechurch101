@@ -36,6 +36,8 @@ export default function CompleteAccount({
     }
     completeAccountAction(updatedData);
   };
+  console.log("userData");
+  console.log(userData);
 
   return (
     <>
@@ -59,35 +61,40 @@ export default function CompleteAccount({
               defaultValue={userData.lastname}
             />
           </div>
-
-          {!userData.pending_church_confirmation && (
-            <>
-              <Autocomplete
-                defaultSelectedKey={userData.church_id}
-                variant="bordered"
-                placeholder="La mia chiesa..."
-                {...register("church_name")}
-                label="Seleziona la tua chiesa"
-              >
-                {churchList.map(
-                  (church: { id: string; churchName: string }) => (
-                    <AutocompleteItem key={church.id} value={church.id}>
-                      {church.churchName}
-                    </AutocompleteItem>
-                  )
-                )}
-              </Autocomplete>
-              <small>
-                Se la tua chiesa non è nella lista{" "}
-                <Link
-                  href="/churches/addChurch"
-                  className="text-blue-600 underline font-bold"
-                >
-                  Clicca qui
-                </Link>
-              </small>
-            </>
+          {userData.church_id && (
+            <p>
+              La mia chiesa:<strong>{userData.church_name}</strong>
+            </p>
           )}
+          {!userData.pending_church_confirmation ||
+            (!userData.church_id && (
+              <>
+                <Autocomplete
+                  defaultSelectedKey={userData.church_id}
+                  variant="bordered"
+                  placeholder="La mia chiesa..."
+                  {...register("church_name")}
+                  label="Seleziona la tua chiesa"
+                >
+                  {churchList.map(
+                    (church: { id: string; churchName: string }) => (
+                      <AutocompleteItem key={church.id} value={church.id}>
+                        {church.churchName}
+                      </AutocompleteItem>
+                    )
+                  )}
+                </Autocomplete>
+                <small>
+                  Se la tua chiesa non è nella lista{" "}
+                  <Link
+                    href="/churches/addChurch"
+                    className="text-blue-600 underline font-bold"
+                  >
+                    Clicca qui
+                  </Link>
+                </small>
+              </>
+            ))}
           <Input
             label="Email"
             variant="bordered"
@@ -99,7 +106,6 @@ export default function CompleteAccount({
             }
           />
           <Input label="Telefono" variant="bordered" size="sm" />
-          
 
           <Input
             {...register("id")}

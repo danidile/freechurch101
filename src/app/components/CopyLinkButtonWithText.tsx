@@ -27,7 +27,7 @@ export default function CopyLinkButtonWithText() {
     <>
       <Popover placement="top">
         <PopoverTrigger>
-          <Button  size='md' onPress={handleCopy} color="primary"  variant={copied ? "ghost" : "light"}>
+          <Button  size='md' onPress={handleCopy} color="primary"  variant={copied ? "light" : "ghost"}>
             <RiLinkM />Condividi
           </Button>
         </PopoverTrigger>

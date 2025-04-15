@@ -195,7 +195,7 @@ export default function UpdateSetlistForm({
       teams: teamsState,
     };
     console.log("updatedSetlist");
-    // console.log(updatedSetlist.teams[0].selected);
+    console.log(updatedSetlist.teams[0].selected);
 
     if (page === "create") {
       addSetlist(updatedSetlist);
