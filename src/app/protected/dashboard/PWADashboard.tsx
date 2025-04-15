@@ -13,6 +13,8 @@ import { pendingRequestsT } from "@/utils/types/types";
 import GetParamsMessage from "@/app/components/getParams";
 import { useSearchParams } from "next/navigation";
 import { TfiSharethis } from "react-icons/tfi";
+import { TbMusicPlus } from "react-icons/tb";
+import { PiMusicNotesPlusFill } from "react-icons/pi";
 
 export default function PWADashboard({
   userData,
@@ -87,9 +89,19 @@ export default function PWADashboard({
             <MdLibraryMusic className="dashboard-icon" />
             Global Songs
           </Link>
-          <Link className="dashboard-list text-black" href="/protected/dashboard/share">
+          <Link
+            className="dashboard-list text-black"
+            href="/protected/dashboard/share"
+          >
             <TfiSharethis className="dashboard-icon" />
             Condividi Canzoni
+          </Link>
+          <Link
+            className="dashboard-list text-black"
+            href="/protected/dashboard/import-songs"
+          >
+            <PiMusicNotesPlusFill className="dashboard-icon" />
+            Importa Canzoni
           </Link>
         </>
       )}
