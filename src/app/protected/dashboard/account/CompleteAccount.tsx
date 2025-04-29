@@ -78,7 +78,7 @@ export default function CompleteAccount({
                 >
                   {churchList.map(
                     (church: { id: string; churchName: string }) => (
-                      <AutocompleteItem key={church.id} value={church.id}>
+                      <AutocompleteItem key={church.id} id={church.id}>
                         {church.churchName}
                       </AutocompleteItem>
                     )

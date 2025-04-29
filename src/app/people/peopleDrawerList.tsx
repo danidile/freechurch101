@@ -7,14 +7,12 @@ import {
   DrawerHeader,
   DrawerBody,
   useDisclosure,
-  Button,
+  
 } from "@heroui/react";
-import { Select, SelectSection, SelectItem } from "@heroui/select";
 import { TiUser } from "react-icons/ti";
 
 import { Link } from "@heroui/react";
 import { basicUserData } from "@/utils/types/userData";
-import { useState } from "react";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function PeopleDrawerList({

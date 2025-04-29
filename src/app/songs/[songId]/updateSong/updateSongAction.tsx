@@ -14,7 +14,12 @@ export const updateSong = async (data: songSchema) => {
   if (data.type === "song") {
     const { error } = await supabase
       .from("songs")
-      .update({ lyrics: data.lyrics })
+      .update({
+        author: data.author,
+        song_title: data.song_title,
+        lyrics: data.lyrics,
+        upload_key: data.upload_key,
+      })
       .eq("id", data.id)
       .select();
     console.log("id is: " + data.id);
@@ -32,7 +37,12 @@ export const updateSong = async (data: songSchema) => {
   if (data.type === "global") {
     const { error } = await supabase
       .from("global-songs")
-      .update({ lyrics: data.lyrics })
+      .update({
+        author: data.author,
+        song_title: data.song_title,
+        lyrics: data.lyrics,
+        upload_key: data.upload_key,
+      })
       .eq("id", data.id)
       .select();
     console.log("id is: " + data.id);

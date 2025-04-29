@@ -45,7 +45,7 @@ export default async function fbasicUserData() {
       console.error("Error fetching profile:", error.message);
     }
     let churchpending: boolean = false;
-    if (!data.church) {
+    if (!data || !data.church) {
       let { data: churchMembershipRequest } = await supabase
         .from("church-membership-request")
         .select("*")

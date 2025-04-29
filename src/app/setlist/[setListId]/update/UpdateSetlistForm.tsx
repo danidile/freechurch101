@@ -301,7 +301,7 @@ export default function UpdateSetlistForm({
                           aria-label="tonalità"
                         >
                           {keys.map((key) => (
-                            <SelectItem id={key} key={key} value={key}>
+                            <SelectItem id={key} key={key}>
                               {key}
                             </SelectItem>
                           ))}

@@ -1,0 +1,13 @@
+{
+    "extends": "./tsconfig.json",  // Inherit settings from your main tsconfig
+    "compilerOptions": {
+      "jsx": "react-jsx", // For React 17+ JSX Transform
+      "module": "commonjs",  // Jest uses CommonJS
+      "target": "ES6",  // Ensure Jest can work with ES6 features
+      "esModuleInterop": true  // Ensure compatibility with CommonJS modules
+      
+    },
+    
+    "include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"]
+  }
+  
