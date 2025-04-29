@@ -1,3 +1,4 @@
+
 import { redirect } from "next/navigation";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";

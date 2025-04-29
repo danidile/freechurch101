@@ -1,18 +1,12 @@
-import { createClient } from "@/utils/supabase/server";
-import Dashboard from "@/app/protected/dashboard/dashboard-components/dashboard";
+// app/protected/dashboard/page.tsx
 import { redirect } from "next/navigation";
+import DashboardWrapper from "./dashboard-wrapper";
 import fbasicUserData from "@/utils/supabase/getUserData";
-import { basicUserData } from "@/utils/types/userData";
-export default async function App() {
-  const userData: basicUserData = await fbasicUserData();
+import { getAllChurches } from "@/hooks/GET/getAllChurches";
 
-  if (userData) {
-    return (
-      <>
-        <Dashboard userData={userData} />
-      </>
-    );
-  } else {
-    redirect("/login");
-  }
+export default async function App() {
+  const userData = await fbasicUserData();
+  if (!userData) redirect("/login");
+
+  return <DashboardWrapper  userData={userData} />;
 }
