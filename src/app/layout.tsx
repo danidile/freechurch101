@@ -1,6 +1,7 @@
 import "./globals.css";
 import MenuBar from "./components/navbar";
 import { Viewport } from "next";
+import PullToRefreshLayout from "./components/PullToRefreshLayout";
 export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
@@ -11,6 +12,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html lang="en">
       <head>
@@ -45,8 +48,12 @@ export default function RootLayout({
         />
       </head>
       <body>
+      <PullToRefreshLayout>
+
         <MenuBar />
         <main>{children}</main>
+        </PullToRefreshLayout>
+
       </body>
     </html>
   );
