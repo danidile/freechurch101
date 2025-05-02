@@ -1,5 +1,5 @@
 "use client";
-import { MdDelete, MdMoreVert } from "react-icons/md";
+import { MdMoreVert } from "react-icons/md";
 import {
   Dropdown,
   DropdownTrigger,
@@ -15,7 +15,6 @@ import {
 } from "@/utils/types/types";
 import {
   Button,
-  Chip,
   Input,
   Popover,
   PopoverContent,
