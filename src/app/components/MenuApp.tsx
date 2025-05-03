@@ -39,7 +39,12 @@ export default function MenuApp({
   }, [pathname]); // Depend on pathname to re-run when it changes
 
   return (
-    <div className="appmenucontainer">
+    <div
+      className="appmenucontainer standalone:!block"
+      style={{
+        display: isLoggedIn ? "block" : "none",
+      }}
+    >
       <IconContext.Provider
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >

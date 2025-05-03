@@ -35,8 +35,11 @@ export default function MenuBarComponent({
   return (
     <>
       <Navbar
+            style={{
+              display: userData.loggedIn ? "none" : "block",
+            }}
         onMenuOpenChange={setIsMenuOpen}
-        className="menu-desktop standalone:hidden"
+        className="menu-desktop standalone:!hidden"
       >
         <NavbarContent>
           <NavbarMenuToggle
