@@ -55,7 +55,7 @@ export default function PullToRefreshLayout({ children }: { children: React.Reac
     <div>
       <div
         style={{
-          height: isRefreshing ? 120 : pullDistance,
+          height: isRefreshing ? 50 : pullDistance,
           transition: isRefreshing ? 'height 0.3s' : 'none',
           background: '#fff',
           textAlign: 'center',
@@ -63,7 +63,7 @@ export default function PullToRefreshLayout({ children }: { children: React.Reac
           fontSize: 15,
         }}
       >
-        {isRefreshing ? <Spinner size="sm" variant="simple" /> : pullDistance > 0 ? 'Pull to refresh' : ''}
+        {isRefreshing ? <Spinner size="sm" variant="simple" /> : pullDistance > 0 ? 'Ricarica Pagina' : ''}
       </div>
       <div>{children}</div>
     </div>

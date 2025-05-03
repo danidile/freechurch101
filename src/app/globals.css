@@ -550,9 +550,7 @@ tbody tr .tablecellnewteams {
     font-weight: 800;
     text-decoration: underline;
   }
-  .appmenucontainer {
-    display: block;
-  }
+
 }
 .loginwithgooglebutton {
   background-color: white;
