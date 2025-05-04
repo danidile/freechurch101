@@ -66,35 +66,34 @@ export default function CompleteAccount({
               La mia chiesa:<strong>{userData.church_name}</strong>
             </p>
           )}
-          {!userData.pending_church_confirmation ||
-            (!userData.church_id && (
-              <>
-                <Autocomplete
-                  defaultSelectedKey={userData.church_id}
-                  variant="bordered"
-                  placeholder="La mia chiesa..."
-                  {...register("church_name")}
-                  label="Seleziona la tua chiesa"
+          {!userData.pending_church_confirmation && !userData.church_id && (
+            <>
+              <Autocomplete
+                defaultSelectedKey={userData.church_id}
+                variant="bordered"
+                placeholder="La mia chiesa..."
+                {...register("church_name")}
+                label="Seleziona la tua chiesa"
+              >
+                {churchList.map(
+                  (church: { id: string; churchName: string }) => (
+                    <AutocompleteItem key={church.id} id={church.id}>
+                      {church.churchName}
+                    </AutocompleteItem>
+                  )
+                )}
+              </Autocomplete>
+              <small>
+                Se la tua chiesa non è nella lista{" "}
+                <Link
+                  href="/churches/addChurch"
+                  className="text-blue-600 underline font-bold"
                 >
-                  {churchList.map(
-                    (church: { id: string; churchName: string }) => (
-                      <AutocompleteItem key={church.id} id={church.id}>
-                        {church.churchName}
-                      </AutocompleteItem>
-                    )
-                  )}
-                </Autocomplete>
-                <small>
-                  Se la tua chiesa non è nella lista{" "}
-                  <Link
-                    href="/churches/addChurch"
-                    className="text-blue-600 underline font-bold"
-                  >
-                    Clicca qui
-                  </Link>
-                </small>
-              </>
-            ))}
+                  Clicca qui
+                </Link>
+              </small>
+            </>
+          )}
           <Input
             label="Email"
             variant="bordered"
