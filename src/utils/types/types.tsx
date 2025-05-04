@@ -216,6 +216,7 @@ export type setListT = {
     profile?: string;
   };
   teams?: teamData[];
+  setlistTeams?: GroupedMembers;
 };
 
 export type teamData = {

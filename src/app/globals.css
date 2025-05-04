@@ -158,7 +158,8 @@ main {
   justify-content: space-evenly;
   align-items: center;
 
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+  box-shadow:
+    rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
     rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 .app-menu-icons {
@@ -313,7 +314,8 @@ Image {
   font-size: 30px !important;
 }
 .hero-section {
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 80px -20px,
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px 30px 80px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   border-radius: var(--border-radius--lg);
   width: 95vw;
@@ -550,7 +552,6 @@ tbody tr .tablecellnewteams {
     font-weight: 800;
     text-decoration: underline;
   }
-
 }
 .loginwithgooglebutton {
   background-color: white;
@@ -771,10 +772,15 @@ tbody tr .tablecellnewteams {
 .setlist-list-link {
   cursor: pointer;
   max-width: 500px;
+  width: 100%;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.setlistviewmode-container {
+  max-width: 500px;
   width: 100%;
 }
 .setlist-date-avatar {
@@ -852,6 +858,11 @@ tbody tr .tablecellnewteams {
   text-overflow: ellipsis;
   font-weight: 600;
   width: 70%;
+}
+
+.setlist-name-exp {
+  width: calc(100% - 70px);
+  line-height: 1rem;
 }
 
 .setlist-day {
@@ -1374,12 +1385,14 @@ tbody tr .tablecellnewteams {
   margin: 20px auto;
   padding: 1.25rem;
   border-radius: 20px;
-  --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-    0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
+  --tw-shadow:
+    0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored:
+    0 20px 25px -5px var(--tw-shadow-color),
     0 8px 10px -6px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+    var(--tw-shadow);
 }
 .auth-form-pwa {
   width: 100%;
@@ -1485,15 +1498,15 @@ tbody tr .tablecellnewteams {
   flex-wrap: wrap;
 }
 
-.chord-sheet .paragraph .row .column .chord{
+.chord-sheet .paragraph .row .column .chord {
   position: relative;
 
-  top:0px;
+  top: 0px;
 }
-.chord-sheet .paragraph .row .column .lyrics{
+.chord-sheet .paragraph .row .column .lyrics {
   min-height: 17px;
   min-width: 17px;
 }
-.chord-sheet .paragraph .row .column{
+.chord-sheet .paragraph .row .column {
   position: relative;
 }

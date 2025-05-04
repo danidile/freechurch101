@@ -99,6 +99,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@react-aria/selection": "^3.23.1",
     "@react-aria/utils": "^3.28.1",
+    "@sentry/nextjs": "^9.15.0",
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.45.4",
     "chordsheetjs": "^10.3.0",
