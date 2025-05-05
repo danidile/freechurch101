@@ -1,55 +1,55 @@
-import { churchMembersT, teamData } from "@/utils/types/types";
-import { getChurchTeam } from "@/hooks/GET/getChurchTeam";
-import MoreDropdownTeams from "./MoreDropdownTeams";
-import GetParamsMessage from "@/app/components/getParams";
-
+import { getProfileById } from "@/hooks/GET/getProfileById";
+import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
+import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
+import { GroupedMembers, profileT, profileTeamsT } from "@/utils/types/types";
+import { Chip } from "@heroui/react";
+const roles = [
+  "Admin",
+  "Fondatore Chiesa",
+  "Admin Chiesa",
+  "Team Leader",
+  "4",
+  "5",
+  "6",
+  "7",
+  "Membro Chiesa",
+  "Utente senza Chiesa",
+];
 export default async function Page({
   params,
 }: {
-  params: { teamsId: string };
+  params: { peopleId: string };
 }) {
-  const churchTeam: teamData = await getChurchTeam(params.teamsId);
+  const profile: profileT = await getProfileById(params.peopleId);
+    let setlistTeams: GroupedMembers = await getSetListTeams(params.peopleId);
+  
+  const profileTeams: profileTeamsT[] = await getTeamsByProfile(
+    params.peopleId
+  );
 
-  if (churchTeam) {
-    return (
-      <div className="container-sub">
-        <div className="song-presentation-container">
-          <h6>
-            <strong>{churchTeam.team_name}</strong>
-          </h6>
-          <div className="top-settings-bar">
-            <div>
-              <MoreDropdownTeams teamsId={params.teamsId} />
-            </div>
-          </div>
-
-          {churchTeam.team_members.map((member: churchMembersT, index) => {
-            
+  return (
+    <div className="container-sub">
+      <h5>{profile.name + " " + profile.lastname}</h5>
+      <p>{profile.email}</p>
+      <Chip radius="sm" color="primary" variant="flat" className="my-3">
+        {roles[Number(profile.role)]}
+      </Chip>
+      {profileTeams.length >= 1 && (
+        <div className="">
+          Team di {profile.name}
+          {profileTeams.map((team) => {
             return (
-              <>
-                <div key={"Song" + index} className="setlist-song">
-                  <p>
-                    <strong>{member.name + " " + member.lastname}</strong>{" "}
-                    <br />
-                    {member.roles.join(", ")}
-                  </p>
-                </div>
-              </>
+              <div className="flex gap-1">
+                <p className="font-bold">{team.team_name}</p>
+                {team.roles.length >= 1 && <p className="italic">{" (" + team.roles.join(", ") + ")"}</p>}
+              </div>
             );
           })}
         </div>
-        <GetParamsMessage />
+      )}
+      <div>
+        <h6>Prossimi eventi </h6>
       </div>
-    );
-  } else {
-    return (
-      <div className="container-sub">
-        <div className="song-presentation-container">
-          <h6>
-            <strong>Nessun Team trovato</strong>
-          </h6>
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );
 }

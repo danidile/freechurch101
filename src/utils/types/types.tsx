@@ -188,6 +188,18 @@ export type profileT = {
   isTemp?: boolean;
 };
 
+export type profileTeamsT = {
+  team_name?: string;
+  roles?: string[];
+};
+
+export type TeamMemberRaw = {
+  team_id: {
+    team_name: string;
+  };
+  roles: string;
+};
+
 export type setListSongT = {
   id?: string;
   song?: string;
