@@ -85,11 +85,7 @@ export default function SetListTabs({
                       <p>{setlist.event_title}</p>
                       <div className="flex gap-1 flex-wrap leading-3 text-slate-600">
                         {Object.values(setlist.setlistTeams).flat().length >=
-                          1 && (
-                          <small className="font-semibold">
-                            Team di servizio:{" "}
-                          </small>
-                        )}
+                          1 && <small className="font-semibold">Team: </small>}
                         {Object.values(setlist.setlistTeams)
                           .flat()
                           .map((team) => {
@@ -103,6 +99,10 @@ export default function SetListTabs({
                                 className={`${
                                   team.profile === userData.id
                                     ? "font-bold"
+                                    : ""
+                                } ${
+                                  team.profile === userData.id
+                                    ? "text-cyan-800"
                                     : ""
                                 }`}
                               >

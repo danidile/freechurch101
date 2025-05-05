@@ -252,6 +252,7 @@ export type ChurchMemberByTeam = {
   profile: string;
   name: string;
   lastname: string;
+  status?: string;
 };
 
 export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;

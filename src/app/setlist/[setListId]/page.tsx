@@ -1,5 +1,8 @@
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
+import { FaCheck } from "react-icons/fa";
+import { FaCircle } from "react-icons/fa6";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -86,7 +89,21 @@ export default async function Page({
               <div className="team-show">
                 <h5>{team[0]}</h5>
                 {team[1].map((member) => {
-                  return <div>{member.name + " " + member.lastname}</div>;
+                  return (
+                    <div className="flex gap-2 items-center">
+                      {member.status === "pending" && (
+                        <FaCircle color="orange" size={10} />
+                      )}
+                      {member.status === "confirmed" && (
+                                              <FaCheck color="green" size={10} />
+
+                      )}
+                      {member.status === "denied" && (
+                        <FaCircle color="red" size={10} />
+                      )}
+                      {member.name + " " + member.lastname}
+                    </div>
+                  );
                 })}
               </div>
             </>

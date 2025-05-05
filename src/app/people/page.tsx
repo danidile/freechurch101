@@ -1,4 +1,3 @@
-
 import { redirect } from "next/navigation";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
@@ -6,7 +5,7 @@ import { profileT } from "@/utils/types/types";
 import { getProfilesByChurch } from "@/hooks/GET/getProfilesByChurch";
 import PeopleDrawerList from "./peopleDrawerList";
 import GetParamsMessage from "../components/getParams";
-import Link from "next/link";
+
 
 export default async function App() {
   const userData: basicUserData = await fbasicUserData();
@@ -16,7 +15,7 @@ export default async function App() {
     return (
       <div className="container-sub ">
         <h3 className="pb-6">People</h3>
-        <Link prefetch href="/people/add-temp-user">Aggiungi utenti temporanei</Link>
+        {/* <Link prefetch href="/people/add-temp-user">Aggiungi utenti temporanei</Link> */}
         <div className="flex-col gap-3">
           <GetParamsMessage />
           {profiles &&
