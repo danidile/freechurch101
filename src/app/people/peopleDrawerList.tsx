@@ -61,6 +61,7 @@ export default function PeopleDrawerList({
                     <b>{profile.name + " " + profile.lastname} </b>
                   </h5>
                   <small className="text-center">{profile.email}</small>
+                  <small>{profile.role} </small>
                 </>
               </DrawerBody>
             </>
