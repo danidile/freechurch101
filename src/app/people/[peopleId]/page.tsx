@@ -1,8 +1,15 @@
 import { getProfileById } from "@/hooks/GET/getProfileById";
+import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
 import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
 import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
-import { GroupedMembers, profileT, profileTeamsT } from "@/utils/types/types";
-import { Chip } from "@heroui/react";
+import {
+  GroupedMembers,
+  profileSetlistsT,
+  profileT,
+  profileTeamsT,
+} from "@/utils/types/types";
+import { Card, CardBody, CardFooter, CardHeader, Chip, Divider, Link } from "@heroui/react";
+import { FaCircle, FaCheck } from "react-icons/fa";
 const roles = [
   "Admin",
   "Fondatore Chiesa",
@@ -21,11 +28,16 @@ export default async function Page({
   params: { peopleId: string };
 }) {
   const profile: profileT = await getProfileById(params.peopleId);
-    let setlistTeams: GroupedMembers = await getSetListTeams(params.peopleId);
-  
+  const profileSetlist: profileSetlistsT[] = await getProfileSetList(
+    params.peopleId
+  );
+
   const profileTeams: profileTeamsT[] = await getTeamsByProfile(
     params.peopleId
   );
+  const currentDate = new Date();
+  const nextDate = new Date(currentDate);
+  nextDate.setDate(currentDate.getDate() - 1);
 
   return (
     <div className="container-sub">
@@ -41,7 +53,9 @@ export default async function Page({
             return (
               <div className="flex gap-1">
                 <p className="font-bold">{team.team_name}</p>
-                {team.roles.length >= 1 && <p className="italic">{" (" + team.roles.join(", ") + ")"}</p>}
+                {team.roles.length >= 1 && (
+                  <p className="italic">{" (" + team.roles.join(", ") + ")"}</p>
+                )}
               </div>
             );
           })}
@@ -49,6 +63,53 @@ export default async function Page({
       )}
       <div>
         <h6>Prossimi eventi </h6>
+        {profileSetlist.map((setlist: profileSetlistsT) => {
+          const date = new Date(setlist.date);
+          if (date > currentDate) {
+            return (
+              <div>
+                <Card className="max-w-[400px]">
+                  <CardHeader className="flex gap-3">
+                   
+                    <div className="flex flex-col">
+                      <p className="text-md">HeroUI</p>
+                      <p className="text-small text-default-500">heroui.com</p>
+                    </div>
+                  </CardHeader>
+                  <Divider />
+                  <CardBody>
+                    <p>
+                      Make beautiful websites regardless of your design
+                      experience.
+                    </p>
+                  </CardBody>
+                  <Divider />
+                  <CardFooter>
+                    <Link
+                      isExternal
+                      showAnchorIcon
+                      href="https://github.com/heroui-inc/heroui"
+                    >
+                      Visit source code on GitHub.
+                    </Link>
+                  </CardFooter>
+                </Card>
+                <h6>{setlist.event_title}</h6>
+                <h6>{setlist.team_name}</h6>
+                <small>{setlist.date}</small>
+                {setlist.status === "pending" && (
+                  <FaCircle color="orange" size={10} />
+                )}
+                {setlist.status === "confirmed" && (
+                  <FaCheck color="green" size={10} />
+                )}
+                {setlist.status === "denied" && (
+                  <FaCircle color="red" size={10} />
+                )}
+              </div>
+            );
+          }
+        })}
       </div>
     </div>
   );
