@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { basicUserData } from "@/utils/types/userData";
+import { sendErrorToSentry } from "../sentry/SentryErrorDealer";
 type ProfileData = {
   name: string;
   lastname: string;
@@ -52,6 +53,7 @@ export default async function fbasicUserData() {
     // Now, TypeScript knows that 'error' exists in the response object
     if (error) {
       console.error("Error fetching profile:", error.message);
+      sendErrorToSentry( error.message, userData );
     }
     let churchpending: boolean = false;
     if (!data || !data.church) {

@@ -1,14 +1,10 @@
 import { createClient } from "@/utils/supabase/server";
-import CompleteAccount from "../account/CompleteAccount";
 import { redirect } from "next/navigation";
-import Sidebar from "./sidebar";
 import { basicUserData } from "@/utils/types/userData";
 import PWADashboard from "../PWADashboard";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
-import { Alert, Button } from "@heroui/react";
-import Link from "next/link";
-import { FaExternalLinkAlt } from "react-icons/fa";
+
 import { pendingRequestsT } from "@/utils/types/types";
 
 export default async function Dashboard({
