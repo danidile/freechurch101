@@ -8,9 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "build:staging": "cross-env NODE_ENV=staging next build",
-    "build:prod": "cross-env NODE_ENV=production next build",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "build:prod": "cross-env NODE_ENV=production next build"
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
@@ -140,7 +138,6 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
-    "@types/jest": "^29.5.14",
     "@types/node": "^20.17.32",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^18.3.20",
@@ -149,10 +146,8 @@
     "dotenv": "^16.5.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
-    "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "tailwindcss": "^3.4.1",
-    "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }
