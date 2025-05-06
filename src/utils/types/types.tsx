@@ -321,3 +321,11 @@ export type pendingRequestsT = {
     lastname?: string;
   };
 };
+
+export type profileSetlistsT = {
+  id: string;
+  team_name: string;
+  event_title: string;
+  date: string;
+  status: string;
+};
