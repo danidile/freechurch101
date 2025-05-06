@@ -8,8 +8,17 @@ import {
   profileT,
   profileTeamsT,
 } from "@/utils/types/types";
-import { Card, CardBody, CardFooter, CardHeader, Chip, Divider, Link } from "@heroui/react";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Chip,
+  Divider,
+  Link,
+} from "@heroui/react";
 import { FaCircle, FaCheck } from "react-icons/fa";
+import { MdEvent } from "react-icons/md";
 const roles = [
   "Admin",
   "Fondatore Chiesa",
@@ -38,7 +47,8 @@ export default async function Page({
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
-
+  console.log("profileSetlist");
+  console.log(profileSetlist);
   return (
     <div className="container-sub">
       <h5>{profile.name + " " + profile.lastname}</h5>
@@ -61,56 +71,66 @@ export default async function Page({
           })}
         </div>
       )}
-      <div>
-        <h6>Prossimi eventi </h6>
-        {profileSetlist.map((setlist: profileSetlistsT) => {
-          const date = new Date(setlist.date);
-          if (date > currentDate) {
-            return (
-              <div>
-                <Card className="max-w-[400px]">
-                  <CardHeader className="flex gap-3">
-                   
-                    <div className="flex flex-col">
-                      <p className="text-md">HeroUI</p>
-                      <p className="text-small text-default-500">heroui.com</p>
+
+      {profileSetlist.length >= 1 && (
+        <div>
+          <Card className="max-w-[400px] my-4">
+            <CardHeader className="flex gap-3 border-b-2 border-gray-800">
+              {" "}
+              <MdEvent size={25} />
+              <h6>Prossimi eventi </h6>
+            </CardHeader>
+            <CardBody>
+              {profileSetlist.map((setlist: profileSetlistsT) => {
+                const date = new Date(setlist.date);
+                const readableDate = date.toLocaleString("it-IT", {
+                  weekday: "long", // "Sunday"
+                  year: "numeric", // "2024"
+                  month: "long", // "November"
+                  day: "numeric", // "10"
+                });
+                if (date > currentDate) {
+                  return (
+                    <div className="border-b-1 border-slate-400 my-1 p-2">
+                      <div className="flex gap-3 border-b-1 border-gray-300">
+                        <div className="flex items-center justify-center h-10 w-10">
+                          {setlist.status === "pending" && (
+                            <FaCircle color="orange" size={10} />
+                          )}
+                          {setlist.status === "confirmed" && (
+                            <FaCheck color="green" size={10} />
+                          )}
+                          {setlist.status === "denied" && (
+                            <FaCircle color="red" size={10} />
+                          )}
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-md">{setlist.event_title}</p>
+                          <p className="text-small text-default-500 capitalize">
+                            {readableDate}
+                          </p>
+                        </div>
+                      </div>
+
+                      <p>
+                        <span className="capitalize">{readableDate}</span> sei
+                        di turno con il {setlist.team_name}.
+                      </p>
+                      <Link
+                        isExternal
+                        showAnchorIcon
+                        href="https://github.com/heroui-inc/heroui"
+                      >
+                        Pagina evento
+                      </Link>
                     </div>
-                  </CardHeader>
-                  <Divider />
-                  <CardBody>
-                    <p>
-                      Make beautiful websites regardless of your design
-                      experience.
-                    </p>
-                  </CardBody>
-                  <Divider />
-                  <CardFooter>
-                    <Link
-                      isExternal
-                      showAnchorIcon
-                      href="https://github.com/heroui-inc/heroui"
-                    >
-                      Visit source code on GitHub.
-                    </Link>
-                  </CardFooter>
-                </Card>
-                <h6>{setlist.event_title}</h6>
-                <h6>{setlist.team_name}</h6>
-                <small>{setlist.date}</small>
-                {setlist.status === "pending" && (
-                  <FaCircle color="orange" size={10} />
-                )}
-                {setlist.status === "confirmed" && (
-                  <FaCheck color="green" size={10} />
-                )}
-                {setlist.status === "denied" && (
-                  <FaCircle color="red" size={10} />
-                )}
-              </div>
-            );
-          }
-        })}
-      </div>
+                  );
+                }
+              })}{" "}
+            </CardBody>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

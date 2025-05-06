@@ -31,7 +31,6 @@ export default function MenuBarComponent({
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuItems = ["songs", "setlist"];
-  console.log(userData);
   return (
     <>
       <Navbar
