@@ -28,10 +28,13 @@ export const completeAccountAction = async function completeAccountAction(
     })
     .select();
 
-  if (error) {
+  if (error || churchDataError) {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
-    return encodedRedirect("success", `/protected/dashboard`, "");
+    return encodedRedirect(
+      "success",
+      `/protected/dashboard`, ""
+    );
   }
 };

@@ -45,9 +45,10 @@ const ROLES = {
     "confirm:churchMembership",
     "read:churchmembers",
   ],
-  jel: ["view:songs", "create:songs", "update:songs", "delete:songs"],
+  churchadmin: ["view:songs", "create:songs", "update:songs", "delete:songs"],
+  teamleader: ["view:songs", "create:songs", "update:songs", "delete:songs"],
+  churchmember: ["view:songs", "create:songs", "update:songs", "delete:songs"],
   user: ["view:songs", "view:songs", "view:songs"],
-  gverf: ["view:songs", "create:songs", "update:songs", "delete:songs"],
 } as const;
 
 export function hasPermission(userRole: Role, permission: Permission) {
