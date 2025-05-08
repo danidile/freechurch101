@@ -1,7 +1,8 @@
 "use client";
 import Link, { LinkProps } from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { Spinner } from "@heroui/react";
 
 interface TransitionLinkProps extends LinkProps {
   children: React.ReactNode;
@@ -21,10 +22,11 @@ export const TransitionLink: React.FC<TransitionLinkProps> = ({
 }) => {
   const router = useRouter();
   const currentPath = usePathname(); // Get current pathname
-
+  const [isPressed, setIsPressed] = useState(false);
   const handleTransition = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
+    setIsPressed(true);
     e.preventDefault();
     const main = document.querySelector("main");
 

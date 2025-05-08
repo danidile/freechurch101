@@ -278,10 +278,12 @@ Image {
   font-weight: 400;
 }
 .button-style {
-  padding: 10px 20px;
-  border-radius: 1rem;
+  padding: 7px 15px;
+  border-radius: 0.5rem;
   color: white;
-  background-color: #006fee;
+  background-color: #111111;
+  margin-right: 0px;
+  margin-left: auto;
 }
 .button-transpose {
   padding: 10px 30px;

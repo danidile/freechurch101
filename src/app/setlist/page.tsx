@@ -4,29 +4,32 @@ import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
 import { setListT } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { TransitionLink } from "../components/TransitionLink";
-import { FaListUl } from "react-icons/fa6";
-import SetlistViewMode from "../components/SetListTabsComponent";
-import { Tab, Tabs } from "@heroui/tabs";
 import SetListTabs from "../components/SetListTabsComponent";
+import NewEventButtonComponent from "./dropdownNewEventButtonComponent";
 
 export default async function Page() {
   const userData: basicUserData = await fbasicUserData();
   const setlists: setListT[] = await getSetListsByChurch(userData.church_id);
-  
-  return (
-    <div className="container-sub">
-      <h5 className="text-center m-5">Lista eventi</h5>
-      <SetListTabs userData={userData} setlists={setlists} />
 
-      {hasPermission(userData.role as Role, "create:setlists") && (
-        <TransitionLink
-          href="/setlist/addSetlist"
-          className="button-style my-10"
-          prefetch
-        >
-          Crea nuova Setlist!
-        </TransitionLink>
-      )}
+  return (
+    <div className="container-sub !max-w-96">
+      <h5 className="text-center m-5">Prossimi eventi</h5>
+      <div className="w-full flex justify-end">
+        {hasPermission(userData.role as Role, "create:setlists") && (
+          <>
+            <TransitionLink
+              href="/setlist/addSetlist"
+              className="button-style"
+              prefetch
+            >
+              Nuovo Evento
+            </TransitionLink>
+
+          </>
+        )}
+      </div>
+
+      <SetListTabs userData={userData} setlists={setlists} />
     </div>
   );
 }
