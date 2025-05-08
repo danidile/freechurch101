@@ -1,22 +1,8 @@
 import { getProfileById } from "@/hooks/GET/getProfileById";
 import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
-import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
 import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
-import {
-  GroupedMembers,
-  profileSetlistsT,
-  profileT,
-  profileTeamsT,
-} from "@/utils/types/types";
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Chip,
-  Divider,
-  Link,
-} from "@heroui/react";
+import { profileSetlistsT, profileT, profileTeamsT } from "@/utils/types/types";
+import { Card, CardBody, CardHeader, Chip, Link } from "@heroui/react";
 import { FaCircle, FaCheck } from "react-icons/fa";
 import { MdEvent } from "react-icons/md";
 const roles = [
@@ -74,7 +60,7 @@ export default async function Page({
 
       {profileSetlist.length >= 1 && (
         <div>
-          <Card shadow="none" className="max-w-[400px] my-4 border-none">
+          <Card shadow="none" className="max-w-full my-4 border-none">
             <CardHeader className="flex gap-3 border-b-2 border-gray-800">
               {" "}
               <MdEvent size={25} />
@@ -91,34 +77,51 @@ export default async function Page({
                 });
                 if (date > currentDate) {
                   return (
-                    <div className="border-b-1 border-slate-400 my-1 p-2 w-96">
-                      <div className="flex gap-3 border-b-1 border-gray-300">
-                        <div className="flex items-center justify-center h-10 w-10">
-                          {setlist.status === "pending" && (
-                            <FaCircle color="orange" size={10} />
-                          )}
-                          {setlist.status === "confirmed" && (
-                            <FaCheck color="green" size={10} />
-                          )}
-                          {setlist.status === "denied" && (
-                            <FaCircle color="red" size={10} />
-                          )}
-                        </div>
-                        <div className="flex flex-col">
-                          <p className="text-md">{setlist.event_title}</p>
+                    <div className="border-1 rounded-lg border-slate-300 my-1 w-96 p-3">
+                      <div className="flex gap-3 relative">
+                        <div className="flex flex-col w-full max-w-full">
+                          <div
+                            className="flex w-full max-w-full
+                          justify-between"
+                          >
+                            <p className="text-md">{setlist.event_title}</p>
+                            <>
+                              {" "}
+                              {setlist.status === "pending" && (
+                                <Chip variant="flat" color="warning">
+                                  In Attesa
+                                </Chip>
+                              )}
+                              {setlist.status === "confirmed" && (
+                                <Chip variant="flat" color="success">
+                                  Confermato
+                                </Chip>
+                              )}
+                              {setlist.status === "denied" && (
+                                <Chip variant="flat" color="danger">
+                                  Rifiutato
+                                </Chip>
+                              )}
+                            </>
+                          </div>
+
                           <p className="text-small text-default-500 capitalize">
                             {readableDate}
                           </p>
                         </div>
                       </div>
 
-                      <p>Team: {setlist.team_name}.</p>
-                      <Link
-                        showAnchorIcon
-                        href={`/setlist/${setlist.setlist_id}`}
-                      >
-                        Pagina evento
-                      </Link>
+                      <p className="text-small text-default-800 capitalize">
+                        Team: {setlist.team_name}.
+                      </p>
+                      <div className="flex justify-end">
+                        <Link
+                          showAnchorIcon
+                          href={`/setlist/${setlist.setlist_id}`}
+                        >
+                          Pagina evento
+                        </Link>
+                      </div>
                     </div>
                   );
                 }

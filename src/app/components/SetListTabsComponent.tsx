@@ -61,7 +61,7 @@ export default function SetListTabs({
             return (
               <>
                 {newMonth && (
-                  <div className="setlist-list-link mt-6">
+                  <div className="setlist-list-link mt-3">
                     <h6 className="capitalize ml-0">{setlistmonth}</h6>
                   </div>
                 )}
