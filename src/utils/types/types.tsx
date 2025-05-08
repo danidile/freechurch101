@@ -324,6 +324,7 @@ export type pendingRequestsT = {
 
 export type profileSetlistsT = {
   id: string;
+  setlist_id: string;
   team_name: string;
   event_title: string;
   date: string;

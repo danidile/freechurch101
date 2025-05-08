@@ -74,7 +74,7 @@ export default async function Page({
 
       {profileSetlist.length >= 1 && (
         <div>
-          <Card className="max-w-[400px] my-4">
+          <Card shadow="none" className="max-w-[400px] my-4 border-none">
             <CardHeader className="flex gap-3 border-b-2 border-gray-800">
               {" "}
               <MdEvent size={25} />
@@ -91,7 +91,7 @@ export default async function Page({
                 });
                 if (date > currentDate) {
                   return (
-                    <div className="border-b-1 border-slate-400 my-1 p-2">
+                    <div className="border-b-1 border-slate-400 my-1 p-2 w-96">
                       <div className="flex gap-3 border-b-1 border-gray-300">
                         <div className="flex items-center justify-center h-10 w-10">
                           {setlist.status === "pending" && (
@@ -112,14 +112,10 @@ export default async function Page({
                         </div>
                       </div>
 
-                      <p>
-                        <span className="capitalize">{readableDate}</span> sei
-                        di turno con il {setlist.team_name}.
-                      </p>
+                      <p>Team: {setlist.team_name}.</p>
                       <Link
-                        isExternal
                         showAnchorIcon
-                        href="https://github.com/heroui-inc/heroui"
+                        href={`/setlist/${setlist.setlist_id}`}
                       >
                         Pagina evento
                       </Link>
