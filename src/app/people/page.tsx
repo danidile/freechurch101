@@ -25,7 +25,7 @@ export default async function App() {
               return (
                 <div className="flex flex-row w-full gap-12" key={profile.id}>
                   <Link
-                    className="people-link"
+                    className="people-link border-1 rounded-xl border-slate-300 my-1"
                     href={`/people/${profile.id}`}
                     key={profile.id}
                   >

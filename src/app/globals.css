@@ -282,7 +282,7 @@ Image {
   border-radius: 0.5rem;
   color: white;
   background-color: #111111;
-  margin-right: 0px;
+  margin-right: 20px;
   margin-left: auto;
 }
 .button-transpose {
@@ -784,17 +784,19 @@ tbody tr .tablecellnewteams {
 .setlistviewmode-container {
   max-width: 500px;
   width: 100%;
+  padding: 10px;
 }
 .setlist-date-avatar {
+  top: -4px;
   width: 50px;
   height: 50px;
-  background-color: #eeeeee;
+  background-color: #ffffff00;
   border-radius: 0.7rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-right: 30px;
+  margin-right: 20px;
   position: relative;
 }
 .setlist-list {
@@ -871,7 +873,7 @@ tbody tr .tablecellnewteams {
   white-space: nowrap;
   overflow: visible !important;
   font-size: 25px;
-  line-height: 10px;
+  line-height: 25px;
   font-weight: 600;
 }
 .setlist-weekday {
@@ -1355,7 +1357,7 @@ tbody tr .tablecellnewteams {
   justify-content: space-between;
   align-items: center;
   margin: 0px auto;
-  border-radius: 1rem;
+  border-radius: 0.75rem /* 12px */;
   background-color: rgb(247, 247, 247, 0);
   transition: 0.5s;
 }
