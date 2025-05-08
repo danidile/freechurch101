@@ -60,7 +60,7 @@ export default async function Page({
 
       {profileSetlist.length >= 1 && (
         <div>
-          <Card shadow="none" className="max-w-full my-4 border-none">
+          <Card shadow="none" className="max-w-full my-4 w-96 border-none">
             <CardHeader className="flex gap-3 border-b-2 border-gray-800">
               {" "}
               <MdEvent size={25} />
@@ -77,11 +77,11 @@ export default async function Page({
                 });
                 if (date > currentDate) {
                   return (
-                    <div className="border-1 rounded-lg border-slate-300 my-1 w-96 p-3">
+                    <div className="border-1 rounded-lg border-slate-300 my-1  !max-w-full p-3">
                       <div className="flex gap-3 relative">
                         <div className="flex flex-col w-full max-w-full">
                           <div
-                            className="flex w-full max-w-full
+                            className="flex  max-w-full
                           justify-between"
                           >
                             <p className="text-md">{setlist.event_title}</p>
