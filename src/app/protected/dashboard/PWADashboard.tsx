@@ -15,6 +15,7 @@ import { useSearchParams } from "next/navigation";
 import { TfiSharethis } from "react-icons/tfi";
 import { TbMusicPlus } from "react-icons/tb";
 import { PiMusicNotesPlusFill } from "react-icons/pi";
+import { LuCalendarDays } from "react-icons/lu";
 
 export default function PWADashboard({
   userData,
@@ -114,6 +115,11 @@ export default function PWADashboard({
         <HiMiniDocumentText className="dashboard-icon" />
         Legal
       </Link>
+      {userData.role === "admin" &&( <Link className="dashboard-list text-black" href="/calendario">
+        <LuCalendarDays className="dashboard-icon" />
+        Calendario
+      </Link>)}
+     
       <Button
         fullWidth
         color="danger"
