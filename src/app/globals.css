@@ -382,7 +382,7 @@ Image {
 .song-card-searchBar small {
   cursor: inherit !important; /* Forces child elements to inherit the cursor */
 }
-.chord-sheet .chord,
+
 .chord {
   color: rgb(130, 29, 29);
   font-weight: 800;
@@ -392,17 +392,16 @@ Image {
   font-family: "Space Mono", monospace;
 }
 
-.chord-sheet .lyrics {
+.lyrics {
   font-size: 1rem;
 }
-.chord-sheet .comment {
+.comment {
   font-weight: 800;
   text-decoration: underline;
+  margin-top: 10px;
 }
 
-.comment::before {
-  white-space: pre;
-}
+
 
 .chord-sheet .paragraph {
   margin: 0px 0px 20px 0px;

@@ -9,7 +9,7 @@ export const FormatSetlistSongs = ({
   setlistsongs: setListSongT[];
 }) => {
   const formattaCanzoni = async (data: setListSongT[]) => {
-    await formatSetlistSongs(data);
+    // await formatSetlistSongs(data);
     console.log("songs ImpoRted");
   };
 
