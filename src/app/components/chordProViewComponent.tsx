@@ -24,8 +24,10 @@ export default function ChordProViewComponent({
   userData?: basicUserData;
 }) {
   const [song, setSong] = useState<setListSongT>(setListSong);
+  const steps = stepsBetweenKeys(setListSong.upload_key!, setListSong.key!);
+
   const [viewChords, setViewChords] = useState(true);
-  const [transpose, setTranspose] = useState(0);
+  const [transpose, setTranspose] = useState(steps);
   const [parsedLyrics, setParsedLyrics] = useState<
     ReturnType<typeof parseChordSheet>
   >([]);
