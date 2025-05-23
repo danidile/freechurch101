@@ -26,6 +26,7 @@ export default async function fbasicUserData() {
   };
   if (userError) {
     console.error("Not logged in:", userError.message);
+    return null;
   } else {
     let userData: basicUserData = {
       loggedIn: false,
@@ -35,9 +36,7 @@ export default async function fbasicUserData() {
   if (user) {
     const { data, error } = (await supabase
       .from("profiles")
-      .select(
-        "name, lastname, role(role_name), church(id,church_name)"
-      )
+      .select("name, lastname, role(role_name), church(id,church_name)")
       .eq("id", user.id) // Filter by the user's id
       .single()) as unknown as SupabaseResponse; // Use the full SupabaseResponse type
     userData = {
@@ -53,7 +52,7 @@ export default async function fbasicUserData() {
     // Now, TypeScript knows that 'error' exists in the response object
     if (error) {
       console.error("Error fetching profile:", error.message);
-      sendErrorToSentry( error.message, userData );
+      sendErrorToSentry(error.message, userData);
     }
     let churchpending: boolean = false;
     if (!data || !data.church) {

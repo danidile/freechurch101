@@ -73,7 +73,7 @@ export default function NotificationList({
   console.log("notificationState");
   console.log(notificationState);
   return (
-    <>
+    <div className=" max-w-[500px] w-full">
       <Tabs
         key="underlined"
         aria-label="Tabs variants"
@@ -111,6 +111,6 @@ export default function NotificationList({
           }
         )}
       </Tabs>
-    </>
+    </div>
   );
 }

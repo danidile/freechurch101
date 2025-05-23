@@ -27,7 +27,7 @@ export function SelectSongsDrawer({
   section,
 }: {
   type: string;
-  songsList: TsongNameAuthor[];
+  songsList: setListSongT[];
   addOrUpdatefunction: (song: setListSongT, section: number) => void;
   section: number;
 }) {
@@ -37,7 +37,7 @@ export function SelectSongsDrawer({
 
   const aggiornaLista = () => {
     const filteredSongs = songsList.filter(
-      (song: songType) =>
+      (song: setListSongT) =>
         song.song_title.toLowerCase().includes(searchText.toLowerCase()) ||
         song.author.toLowerCase().includes(searchText.toLowerCase())
     );
@@ -112,7 +112,7 @@ export function SelectSongsDrawer({
                         <div
                           className="song-card-searchBar"
                           style={{ cursor: "pointer" }}
-                          key={song.id}
+                          key={song.song + index}
                           onClick={() => {
                             addOrUpdatefunction(song, section);
                             onClose();

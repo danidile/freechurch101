@@ -1,26 +1,7 @@
 "use client";
 import { TransitionLink } from "./TransitionLink";
-import { Tabs, Tab } from "@heroui/tabs";
-import { FaListUl } from "react-icons/fa";
 import { setListT } from "@/utils/types/types";
 import { basicUserData } from "@/utils/types/userData";
-import { Chip } from "@heroui/react";
-
-export const animals = [
-  { key: "cat", label: "Cat" },
-  { key: "dog", label: "Dog" },
-  { key: "elephant", label: "Elephant" },
-  { key: "lion", label: "Lion" },
-  { key: "tiger", label: "Tiger" },
-  { key: "giraffe", label: "Giraffe" },
-  { key: "dolphin", label: "Dolphin" },
-  { key: "penguin", label: "Penguin" },
-  { key: "zebra", label: "Zebra" },
-  { key: "shark", label: "Shark" },
-  { key: "whale", label: "Whale" },
-  { key: "otter", label: "Otter" },
-  { key: "crocodile", label: "Crocodile" },
-];
 
 export default function SetListTabs({
   setlists,
@@ -62,7 +43,9 @@ export default function SetListTabs({
               <>
                 {newMonth && (
                   <div className="setlist-list-link mt-3">
-                    <h6 className="capitalize !font-semibold ml-0">{setlistmonth}</h6>
+                    <h6 className="capitalize !font-semibold ml-0">
+                      {setlistmonth}
+                    </h6>
                   </div>
                 )}
                 <TransitionLink
