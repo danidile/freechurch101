@@ -75,7 +75,10 @@ export default function NotificationElement({
         className="setlist-list-link"
         onClick={onOpen}
       >
-        <div className="setlist-list" key={notification.id}>
+        <div
+          className="setlist-list !rounded-xl !border-slate-300 !my-1 "
+          key={notification.id}
+        >
           <div className="setlist-date-avatar">
             <p
               className={` setlist-day ${

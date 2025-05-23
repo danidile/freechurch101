@@ -14,15 +14,16 @@ export default function UpdateSongForm(songData: songSchema) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<songSchema>({});
+  } = useForm<songSchema>({
+    defaultValues: {
+      ...songData, // or explicitly: song_title: songData.song_title, etc.
+    },
+  });
 
   const convertData = async (data: songSchema) => {
     data.lyrics = state;
-    data.type = songData.type;
-    console.log(data.type);
-    console.log(data.type);
-    console.log(data.type);
-    updateSong(data);
+
+    await updateSong(data);
   };
 
   const [state, setState] = useState(songData.lyrics);
@@ -36,7 +37,6 @@ export default function UpdateSongForm(songData: songSchema) {
     console.log(event.target.value);
     setState(event.target.value);
   };
-  console.log(songData);
   return (
     <>
       <form onSubmit={handleSubmit(convertData)}>
@@ -47,7 +47,6 @@ export default function UpdateSongForm(songData: songSchema) {
             <Input
               {...register("song_title")}
               label="Song Title"
-              defaultValue={songData.song_title}
               variant="bordered"
               size="sm"
             />
@@ -59,29 +58,23 @@ export default function UpdateSongForm(songData: songSchema) {
               {...register("author", { required: "Song Title is required" })}
               name="author"
               label="Author"
-              defaultValue={songData.author}
               variant="bordered"
               size="sm"
             />
           </div>
 
           <Input
-            {...register("upload_key", { required: "A key is required" })}
-            label="Key"
-            name="key"
-            defaultValue={songData.upload_key}
+            {...register("upload_key")}
+            label="Tonalità"
+            name="upload_key"
             variant="bordered"
             size="sm"
           />
-          {errors.upload_key && (
-            <p className="text-red-500">{`${errors.upload_key.message}`}</p>
-          )}
 
           <Input
             {...register("id", { required: "" })}
             name="id"
             label="id"
-            defaultValue={songData.id}
             className="hidden"
           />
 
@@ -95,11 +88,11 @@ export default function UpdateSongForm(songData: songSchema) {
           </Button>
           <Textarea
             {...register("lyrics")}
-            value={state}
             variant="bordered"
             size="sm"
             onChange={handleInputChange}
             maxRows={50}
+            name="lyrics"
             minRows={35}
             cols={60}
           />

@@ -63,19 +63,14 @@ export const updateSetlistSongs = async (
   // Update songs
 
   updatedSetlist.setListSongs.map(async (song, index) => {
-    if (song.type === "global-songs") {
-      song.global_song = song.song;
-      song.song = null;
-      console.log("\x1b[36m%s\x1b[0m", "Song was global_");
-    }
-    if (song.song || song.global_song) {
+
+    if (song.song) {
       // Check if the field is empty
       const { data, error } = await supabase.from("setlist-songs").upsert(
         {
           setlist_id: setlistData.id,
           id: song.id,
           song: song.song,
-          global_song: song.global_song,
           key: song.key,
           order: index,
         },

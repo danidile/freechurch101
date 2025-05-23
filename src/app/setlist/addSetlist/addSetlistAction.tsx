@@ -60,25 +60,16 @@ export const addSetlist = async (formData: setListT) => {
   //Insert Songs
 
   formData.setListSongs.map(async (section, index) => {
-    console.log(section);
-    if (section.type === "songs") {
-      const { error } = await supabase
-        .from("setlist-songs")
-        .insert({
-          setlist_id: sectionId,
-          song: section.song,
-          key: section.key,
-          order: index,
-        })
-        .select();
-    } else if (section.type === "global-songs") {
-      const { error } = await supabase.from("setlist-songs").insert({
+    const { error } = await supabase
+      .from("setlist-songs")
+      .insert({
         setlist_id: sectionId,
-        global_song: section.song,
+        song: section.song,
         key: section.key,
         order: index,
-      });
-    }
+      })
+      .select();
+
     console.log(error);
   });
 
