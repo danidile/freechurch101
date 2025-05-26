@@ -40,23 +40,20 @@ export default function MenuBarComponent({
         onMenuOpenChange={setIsMenuOpen}
         className="menu-desktop standalone:!hidden"
       >
-        <NavbarContent>
-          <NavbarMenuToggle
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            className="sm:hidden"
-          />
-          <NavbarBrand>
-            <TransitionLink href="/">
-              <Image
-                className="max-h-8 overflow-visible"
-                src="/images/brand/LOGO_.png"
-                alt=""
-              />
-            </TransitionLink>
-          </NavbarBrand>
-        </NavbarContent>
-
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
+        <NavbarBrand>
+          <TransitionLink href="/">
+            <Image
+              className="max-h-8 overflow-visible"
+              src="/images/brand/LOGO_.png"
+              alt=""
+            />
+          </TransitionLink>
+        </NavbarBrand>
+        <NavbarContent className="hidden sm:flex gap-4 flex-row justify-center">
           <NavbarItem>
             <TransitionLink href="/songs">Canzoni</TransitionLink>
           </NavbarItem>
@@ -64,7 +61,7 @@ export default function MenuBarComponent({
           {userData.loggedIn && (
             <NavbarItem>
               <TransitionLink aria-current="page" href="/setlist">
-                Setlist
+                Eventi
               </TransitionLink>
             </NavbarItem>
           )}

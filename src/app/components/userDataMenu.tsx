@@ -14,7 +14,7 @@ export default function UserDataMenu({
 
   if (userData.loggedIn) {
     return (
-      <NavbarContent justify="end">
+      <>
         <NavbarItem>
           <Button
             as={Link}
@@ -30,18 +30,16 @@ export default function UserDataMenu({
             Sign out
           </Button>
         </NavbarItem>
-      </NavbarContent>
+      </>
     );
   }
 
   return (
-    <NavbarContent justify="end">
       <NavbarItem>
         <Link href="/login">
           <Button color="primary">Login</Button>
         </Link>
       </NavbarItem>
-    </NavbarContent>
   );
 }
 

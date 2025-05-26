@@ -68,10 +68,7 @@ export default function MenuApp({
               </TransitionLink>
             )}
           {isLoggedIn && (
-            <TransitionLink
-              href="/notifications"
-              className="pwaiconsmenu"
-            >
+            <TransitionLink href="/notifications" className="pwaiconsmenu">
               {parameter === "/notifications" ? (
                 <Badge size="sm" color="primary" content={notifications}>
                   <IoNotificationsSharp />

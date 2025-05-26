@@ -401,7 +401,9 @@ Image {
   margin-top: 10px;
 }
 .menu-desktop{
-  
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 
