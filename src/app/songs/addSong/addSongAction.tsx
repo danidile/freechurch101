@@ -1,32 +1,33 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { TsongSchema } from "@/utils/types/types";
+import { songSchema } from "@/utils/types/types";
+import fbasicUserData from "@/utils/supabase/getUserData";
+import { basicUserData } from "@/utils/types/userData";
 
-
-export const addSong = async (data: TsongSchema) => {
-    console.log(data.id);
-    const supabase = createClient();  
+export const addSong = async (data: songSchema) => {
+  const supabase = createClient();
+  const userData: basicUserData = await fbasicUserData();
+  if (userData) {
     const { error } = await supabase
-      .from('songs')
-      .insert({ song_title: data.song_title,
+      .from("songs")
+      .insert({
+        song_title: data.song_title,
         author: data.author,
         lyrics: data.lyrics,
-        upload_key: data.upload_key })
+        upload_key: data.upload_key,
+        church: userData.church_id,
+      })
       .select();
-    
-    // if (!songName || !author) {
-    //   return { error: "Email and password are required" };
-    // }
     if (error) {
       console.error(error.code + " " + error.message);
-      return encodedRedirect("error", "/", error.message);
+      return encodedRedirect("error", "/songs", error.message);
     } else {
       return encodedRedirect(
         "success",
         "/songs",
-        "Grazie per aver aggiunto la canzone!",
+        "Grazie per aver aggiunto la canzone!"
       );
     }
-  };
-
+  }
+};

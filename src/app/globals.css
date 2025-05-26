@@ -150,7 +150,7 @@ main {
   background-color: white;
   position: fixed;
   bottom: 0px;
-  z-index: 999;
+  z-index: 40;
   width: 100vw;
   padding-bottom: 20px;
   display: flex;
@@ -158,7 +158,8 @@ main {
   justify-content: space-evenly;
   align-items: center;
 
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+  box-shadow:
+    rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
     rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 .app-menu-icons {
@@ -204,6 +205,10 @@ Image {
   flex-direction: column;
   justify-content: center;
 }
+.team-title-container {
+  display: flex;
+  justify-content: space-between;
+}
 .setlist-section {
   display: flex;
   flex-direction: row;
@@ -234,7 +239,10 @@ Image {
 .song-list-setlist Button {
   margin-right: 0px;
 }
-
+.setlist-container-title {
+  padding: 1rem;
+  position: relative;
+}
 .song-list-link {
   display: flex;
   justify-content: space-between;
@@ -269,7 +277,14 @@ Image {
   top: -5px;
   font-weight: 400;
 }
-
+.button-style {
+  padding: 7px 15px;
+  border-radius: 0.5rem;
+  color: white;
+  background-color: #111111;
+  margin-right: 20px;
+  margin-left: auto;
+}
 .button-transpose {
   padding: 10px 30px;
   border: 1px solid rgb(189, 189, 189);
@@ -277,7 +292,7 @@ Image {
 }
 .transpose-button-container {
   display: flex;
-  margin: 0px ;
+  margin: 0px;
   gap: 15px;
   justify-content: left;
   align-items: center;
@@ -289,7 +304,6 @@ Image {
   align-items: center;
   padding: 0px 0px 0px 15px;
   border-radius: 12px;
-  background-color: #d8d8d8;
 }
 
 .top-song-buttons {
@@ -302,7 +316,8 @@ Image {
   font-size: 30px !important;
 }
 .hero-section {
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 80px -20px,
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px 30px 80px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   border-radius: var(--border-radius--lg);
   width: 95vw;
@@ -367,7 +382,7 @@ Image {
 .song-card-searchBar small {
   cursor: inherit !important; /* Forces child elements to inherit the cursor */
 }
-.chord-sheet .chord,
+
 .chord {
   color: rgb(130, 29, 29);
   font-weight: 800;
@@ -377,17 +392,16 @@ Image {
   font-family: "Space Mono", monospace;
 }
 
-.chord-sheet .lyrics {
+.lyrics {
   font-size: 1rem;
 }
-.chord-sheet .comment {
+.comment {
   font-weight: 800;
   text-decoration: underline;
+  margin-top: 10px;
 }
 
-.comment::before {
-  white-space: pre;
-}
+
 
 .chord-sheet .paragraph {
   margin: 0px 0px 20px 0px;
@@ -400,6 +414,7 @@ Image {
 .song-presentation-container {
   max-width: 600px;
   width: 100%;
+  position: relative;
   border: 1px solid #f8f8f8;
   background-color: white;
   padding: 1rem;
@@ -458,14 +473,11 @@ tbody tr .tablecellnewteams {
   justify-content: space-around;
 }
 .view-selector-container {
-  border-bottom: 2px solid rgb(75, 75, 75);
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
   max-width: 1000px;
   margin: 0px auto;
-  padding: 10px 10px;
-  background-color: #f3f3f3;
   justify-content: flex-start;
   align-items: center;
   justify-content: left;
@@ -542,8 +554,9 @@ tbody tr .tablecellnewteams {
     text-decoration: underline;
   }
 }
-.appmenucontainer {
-  display: block;
+.loginwithgooglebutton {
+  background-color: white;
+  border: 1px solid #838383;
 }
 .TransitionLink svg {
   width: 20px;
@@ -759,22 +772,30 @@ tbody tr .tablecellnewteams {
 }
 .setlist-list-link {
   cursor: pointer;
+  max-width: 500px;
+  width: 100%;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.setlistviewmode-container {
+  max-width: 500px;
   width: 100%;
+  padding: 10px;
 }
 .setlist-date-avatar {
+  top: -4px;
   width: 50px;
   height: 50px;
-  background-color: #eeeeee;
+  background-color: #ffffff00;
   border-radius: 0.7rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-right: 30px;
+  margin-right: 20px;
   position: relative;
 }
 .setlist-list {
@@ -828,9 +849,9 @@ tbody tr .tablecellnewteams {
 
 .team-show {
   border-radius: 1rem;
-
-  margin: 10px;
-  padding: 1rem;
+  position: relative;
+  margin: 10px 0px;
+  padding: 1rem 0.5rem;
   background-color: rgb(247, 247, 247, 0.7);
 }
 
@@ -842,11 +863,16 @@ tbody tr .tablecellnewteams {
   width: 70%;
 }
 
+.setlist-name-exp {
+  width: calc(100% - 70px);
+  line-height: 1rem;
+}
+
 .setlist-day {
   white-space: nowrap;
   overflow: visible !important;
   font-size: 25px;
-  line-height: 10px;
+  line-height: 25px;
   font-weight: 600;
 }
 .setlist-weekday {
@@ -856,9 +882,12 @@ tbody tr .tablecellnewteams {
   bottom: 0px;
 }
 .top-settings-bar {
+  right: 1rem;
+  top: calc(50% - 20px);
+  position: absolute;
   display: flex;
-  width: 100%;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 1rem;
   align-items: flex-end;
 }
 
@@ -1268,6 +1297,7 @@ tbody tr .tablecellnewteams {
     columns: 2;
   }
 }
+
 @media (max-width: 750px) {
   .dashboard-sidebar-container {
     display: none;
@@ -1326,7 +1356,7 @@ tbody tr .tablecellnewteams {
   justify-content: space-between;
   align-items: center;
   margin: 0px auto;
-  border-radius: 1rem;
+  border-radius: 0.75rem /* 12px */;
   background-color: rgb(247, 247, 247, 0);
   transition: 0.5s;
 }
@@ -1358,12 +1388,14 @@ tbody tr .tablecellnewteams {
   margin: 20px auto;
   padding: 1.25rem;
   border-radius: 20px;
-  --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-    0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
+  --tw-shadow:
+    0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored:
+    0 20px 25px -5px var(--tw-shadow-color),
     0 8px 10px -6px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+    var(--tw-shadow);
 }
 .auth-form-pwa {
   width: 100%;
@@ -1377,22 +1409,22 @@ tbody tr .tablecellnewteams {
 
 .teammember-section {
   width: 100%;
-
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  padding: 1rem;
+  padding: 0.3rem;
 }
 .teammember-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 0px;
   padding: 10px;
-  background-color: #f8f8f85e;
+  border-radius: 1rem;
+  background-color: #f8f8f8;
   /* border-bottom: 1px solid #959595; */
 }
 .teammember-section p {
@@ -1404,6 +1436,7 @@ tbody tr .tablecellnewteams {
 .team-members-skills-div {
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   justify-content: left;
   align-items: center;
@@ -1418,4 +1451,88 @@ tbody tr .tablecellnewteams {
 
 .notification-icon {
   width: 30px;
+}
+
+.calendar-date {
+  padding-left: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 0px;
+  position: relative;
+  height: 100px;
+  width: 100%;
+  border: 0.5px solid #cbcbcb;
+}
+
+.calendar-date-not-selected {
+  background-color: #ffffff;
+}
+
+.calendar-date-selected {
+  background-color: #efbebe;
+}
+.calendar-date-empty {
+  background-color: #dedede;
+}
+.calendar-event {
+  height: 20px;
+  width: 100%;
+  padding-left: 4px;
+  border-radius: 4px 0px 0px 4px;
+  border-left: 2px solid #ea7b7b;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+.calendar-event-title{
+  position: relative;
+  top: -3px;
+}
+
+.calendar-number {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.custom-widget {
+  position: absolute;
+  top: calc(50%);
+  right: 0px;
+  z-index: 40;
+}
+
+.container-style-list {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  align-items: center;
+}
+
+.number-input {
+  border: 1px solid #838383;
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+  max-width: 50px;
+}
+
+.chord-sheet .paragraph .row {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.chord-sheet .paragraph .row .column .chord {
+  position: relative;
+
+  top: 0px;
+}
+.chord-sheet .paragraph .row .column .lyrics {
+  min-height: 17px;
+  min-width: 17px;
+}
+.chord-sheet .paragraph .row .column {
+  position: relative;
 }

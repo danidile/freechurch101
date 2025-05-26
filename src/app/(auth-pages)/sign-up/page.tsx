@@ -99,9 +99,11 @@ export default function Signup({
           />
 
           <Button
+            fullWidth
             color="primary"
-            variant="shadow"
+            variant="bordered"
             type="submit"
+            className="my-4"
             disabled={isSubmitting}
           >
             {isSubmitting ? <Spinner color="white" size="sm" /> : "Registrati"}

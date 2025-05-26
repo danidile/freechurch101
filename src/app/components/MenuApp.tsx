@@ -6,12 +6,7 @@ import {
   MdOutlineLibraryMusic,
   MdLibraryMusic,
 } from "react-icons/md";
-import {
-  RiHome5Fill,
-  RiHome5Line,
-  RiTeamFill,
-  RiTeamLine,
-} from "react-icons/ri";
+import { RiTeamFill, RiTeamLine } from "react-icons/ri";
 import {
   IoSettings,
   IoSettingsOutline,
@@ -22,13 +17,16 @@ import { Badge } from "@heroui/badge";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
-import { notificationT } from "@/utils/types/types";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { basicUserData } from "@/utils/types/userData";
 
 export default function MenuApp({
   isLoggedIn,
   notifications,
+  userdata,
 }: {
   isLoggedIn: boolean;
+  userdata: basicUserData;
   notifications: number;
 }) {
   const pathname = usePathname(); // Get the full pathname
@@ -41,7 +39,12 @@ export default function MenuApp({
   }, [pathname]); // Depend on pathname to re-run when it changes
 
   return (
-    <div className="appmenucontainer standalone:block">
+    <div
+      className="appmenucontainer standalone:!block"
+      style={{
+        display: isLoggedIn ? "block" : "none",
+      }}
+    >
       <IconContext.Provider
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >
@@ -58,23 +61,30 @@ export default function MenuApp({
               {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
             </TransitionLink>
           )}
-          {isLoggedIn && (
-            <TransitionLink href="/people" className="pwaiconsmenu">
-              {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
-            </TransitionLink>
-          )}
+          {isLoggedIn &&
+            hasPermission(userdata.role as Role, "read:churchmembers") && (
+              <TransitionLink href="/people" className="pwaiconsmenu">
+                {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
+              </TransitionLink>
+            )}
           {isLoggedIn && (
             <TransitionLink
-              href="/protected/notifications"
+              href="/notifications"
               className="pwaiconsmenu"
             >
-              {parameter === "/protected/notifications" ? (
+              {parameter === "/notifications" ? (
                 <Badge size="sm" color="primary" content={notifications}>
                   <IoNotificationsSharp />
                 </Badge>
               ) : (
                 <div>
-                  <Badge size="sm" color="primary" content={notifications}>
+                  <Badge
+                    isInvisible={notifications === 0 ? true : false}
+                    size="sm"
+                    color="danger"
+                    showOutline={false}
+                    content={notifications}
+                  >
                     <IoNotificationsOutline />
                   </Badge>
                 </div>

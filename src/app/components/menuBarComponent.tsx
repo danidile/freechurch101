@@ -31,12 +31,14 @@ export default function MenuBarComponent({
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuItems = ["songs", "setlist"];
-  console.log(userData);
   return (
     <>
       <Navbar
+            style={{
+              display: userData.loggedIn ? "none" : "block",
+            }}
         onMenuOpenChange={setIsMenuOpen}
-        className="menu-desktop standalone:hidden"
+        className="menu-desktop standalone:!hidden"
       >
         <NavbarContent>
           <NavbarMenuToggle
@@ -55,9 +57,9 @@ export default function MenuBarComponent({
         </NavbarContent>
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarItem>
+          {/* <NavbarItem>
             <TransitionLink href="/esplora">Esplora</TransitionLink>
-          </NavbarItem>
+          </NavbarItem> */}
 
           <NavbarItem>
             <TransitionLink href="/songs">Canzoni</TransitionLink>
@@ -91,7 +93,7 @@ export default function MenuBarComponent({
           ))}
         </NavbarMenu>
       </Navbar>
-      <MenuApp notifications={notifications} isLoggedIn={userData.loggedIn ? true : false} />
+      <MenuApp userdata={userData} notifications={notifications} isLoggedIn={userData.loggedIn ? true : false} />
     </>
   );
 }

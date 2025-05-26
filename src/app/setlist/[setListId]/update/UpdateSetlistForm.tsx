@@ -1,5 +1,5 @@
 "use client";
-import { MdDelete, MdMoreVert } from "react-icons/md";
+import { MdMoreVert } from "react-icons/md";
 import {
   Dropdown,
   DropdownTrigger,
@@ -15,7 +15,6 @@ import {
 } from "@/utils/types/types";
 import {
   Button,
-  Chip,
   Input,
   Popover,
   PopoverContent,
@@ -32,6 +31,7 @@ import { updateSetlist } from "./updateSetlist";
 import { SelectSongsDrawer } from "./SelectSongsDrawer";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function UpdateSetlistForm({
   teams,
@@ -64,7 +64,7 @@ export default function UpdateSetlistForm({
     setlistData?.setListSongs || []
   );
   const [teamsState, setTeamsState] = useState<teamData[]>(
-    teams.filter((team) => team.selected.length > 0) || []
+    (teams || []).filter((team) => team.selected.length > 0)
   );
   const [team, setTeam] = useState<churchMembersT[]>([]);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
@@ -95,19 +95,29 @@ export default function UpdateSetlistForm({
     setTeamsState((prevTeams) =>
       prevTeams.map((team) =>
         team.id === teamId
-          ? { ...team, selected: [...(team.selected || []), member] }
+          ? {
+              ...team,
+              selected: team.selected?.some((m) => m.id === member.id)
+                ? team.selected
+                : [...(team.selected || []), member],
+            }
           : team
       )
     );
   };
-  const removeMemberToTeam = (profile: string) => {
+
+  const removeMemberToTeam = (profile: string, teamId: string) => {
     setTeamsState((prevTeams) =>
-      prevTeams.map((team) => ({
-        ...team,
-        selected: team.selected.filter(
-          (section) => section.profile !== profile
-        ),
-      }))
+      prevTeams.map((team) =>
+        team.id === teamId
+          ? {
+              ...team,
+              selected: team.selected.filter(
+                (member) => member.profile !== profile
+              ),
+            }
+          : team
+      )
     );
   };
 
@@ -131,6 +141,7 @@ export default function UpdateSetlistForm({
         song_title: song.song_title,
         author: song.author,
         type: song.type,
+        key: "A",
       },
     ]);
   };
@@ -182,8 +193,6 @@ export default function UpdateSetlistForm({
       setListSongs: state,
       teams: teamsState,
     };
-    console.log("updatedSetlist");
-    console.log(updatedSetlist);
 
     if (page === "create") {
       addSetlist(updatedSetlist);
@@ -230,91 +239,114 @@ export default function UpdateSetlistForm({
             </div>
 
             <h5 className="mt-6">Canzoni</h5>
-            <div className="team-show">
-              {state.map((section, index) => {
-                return (
-                  <div className="setlist-section" key={section.id}>
-                    <Input
-                      name={"type" + section.id}
-                      key={section.id}
-                      value={section.id.toString()}
-                      className="hide-input"
-                      {...register(`sections.${index}.id`)}
-                    />
-                    <SelectSongsDrawer
-                      section={index}
-                      type="update"
-                      songsList={songsList}
-                      addOrUpdatefunction={updateSongtoSetlist} // Pass function correctly
-                    />
-                    <p>
-                      <b>{section.song_title} </b>
-                    </p>
+            {state.length > 0 && (
+              <div className="team-show">
+                <AnimatePresence>
+                  {state.map((section, index) => {
+                    return (
+                      <motion.div
+                        initial={{
+                          opacity: 0,
+                          x: 85,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          x: 0,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          x: 80,
+                        }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
+                        layout
+                        className="setlist-section"
+                        key={section.id}
+                      >
+                        <Input
+                          name={"type" + section.id}
+                          key={section.id}
+                          value={section.id.toString()}
+                          className="hide-input"
+                          {...register(`sections.${index}.id`)}
+                        />
+                        <SelectSongsDrawer
+                          section={index}
+                          type="update"
+                          songsList={songsList}
+                          addOrUpdatefunction={updateSongtoSetlist} // Pass function correctly
+                        />
+                        <p>
+                          <b>{section.song_title} </b>
+                        </p>
 
-                    <Select
-                      size="sm"
-                      className="key-selector"
-                      defaultSelectedKeys={
-                        new Set([
-                          keys.includes(section.key) ? section.key : keys[0],
-                        ])
-                      } // Ensure it's a valid key
-                      {...register(`sections.${index}.key`, {
-                        onChange: (e) => {
-                          const newKey = e.target.value;
-                          updateKey(index, newKey); // Pass the actual key value
-                        },
-                      })}
-                      aria-label="tonalità"
-                    >
-                      {keys.map((key) => (
-                        <SelectItem id={key} key={key} value={key}>
-                          {key}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                    <Popover placement="bottom" showArrow={true}>
-                      <PopoverTrigger>
-                        <Button
-                          isIconOnly
-                          radius="full"
-                          variant="flat"
+                        <Select
                           size="sm"
+                          className="key-selector"
+                          defaultSelectedKeys={
+                            new Set([
+                              keys.includes(section.key)
+                                ? section.key
+                                : keys[0],
+                            ])
+                          } // Ensure it's a valid key
+                          {...register(`sections.${index}.key`, {
+                            onChange: (e) => {
+                              const newKey = e.target.value;
+                              updateKey(index, newKey); // Pass the actual key value
+                            },
+                          })}
+                          aria-label="tonalità"
                         >
-                          <MdMoreVert className="text-2xl" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <div className="px-1 py-2 flex-col gap-2">
-                          <div className="my-1"></div>
-                          <Button
-                            size="sm"
-                            className="mx-0"
-                            fullWidth
-                            color="danger"
-                            type="button"
-                            variant="light"
-                            id={section.id}
-                            onPress={() => removeSection(section.id)}
-                            accessKey={String(index)}
-                          >
-                            Elimina
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                );
-              })}
-              <div className="transpose-button-container">
-                <SelectSongsDrawer
-                  type="add"
-                  songsList={songsList}
-                  addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
-                  section={null}
-                />
+                          {keys.map((key) => (
+                            <SelectItem id={key} key={key}>
+                              {key}
+                            </SelectItem>
+                          ))}
+                        </Select>
+                        <Popover placement="bottom" showArrow={true}>
+                          <PopoverTrigger>
+                            <Button
+                              isIconOnly
+                              radius="full"
+                              variant="flat"
+                              size="sm"
+                            >
+                              <MdMoreVert className="text-2xl" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <div className="px-1 py-2 flex-col gap-2">
+                              <div className="my-1"></div>
+                              <Button
+                                size="sm"
+                                className="mx-0"
+                                fullWidth
+                                color="danger"
+                                type="button"
+                                variant="light"
+                                id={section.id}
+                                onPress={() => removeSection(section.id)}
+                                accessKey={String(index)}
+                              >
+                                Elimina
+                              </Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </motion.div>
+                    );
+                  })}{" "}
+                </AnimatePresence>
               </div>
-            </div>
+            )}
+          </div>
+          <div className="transpose-button-container mr-8">
+            <SelectSongsDrawer
+              type="add"
+              songsList={songsList}
+              addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
+              section={null}
+            />
           </div>
           <div>{/* <pre>{JSON.stringify(state, null, 2)}</pre> */}</div>
 
@@ -344,59 +376,100 @@ export default function UpdateSetlistForm({
                   ))}
               </DropdownMenu>
             </Dropdown>
-            {teamsState.map((section) => {
-              return (
-                <div className="team-show">
-                  <h5>{section.team_name}</h5>
-
-                  {section.selected &&
-                    section.selected.map((member, index) => {
-                      return (
-                        <div
-                          className="teammember-container !py-1"
-                          key={member.profile}
-                        >
-                          <div className="teammember-section !py-1">
-                            <Input
-                              name={"type" + member.profile}
-                              key={member.id}
-                              value={member.profile}
-                              className="hide-input"
-                              {...register(`sections.${index}.id`)}
-                            />
-                            <p>
-                              <b>{member.name + " " + member.lastname}</b>
-                            </p>
-                            <Button
-                              size="sm"
-                              className="mx-0"
-                              isIconOnly
-                              color="danger"
-                              type="button"
-                              variant="light"
-                              id={member.profile}
-                              onPress={() => removeMemberToTeam(member.profile)}
-                              accessKey={String(index)}
+            <AnimatePresence>
+              {teamsState.map((section, index) => {
+                return (
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      x: 85,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      x: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      x: 80,
+                    }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
+                    layout
+                    className="team-show"
+                  >
+                    <div className="team-title-container">
+                      <h5>{section.team_name}</h5>{" "}
+                      <SelectWorshipTeamMemberDrawer
+                        state={section.selected}
+                        type="add"
+                        teamMembers={section.team_members}
+                        addMemberToTeam={addMemberToTeam} // Pass function correctly
+                        section={null}
+                        teamId={section.id}
+                      />
+                    </div>
+                    <AnimatePresence>
+                      {section.selected &&
+                        section.selected.map((member, index) => {
+                          return (
+                            <motion.div
+                              initial={{
+                                opacity: 0,
+                                x: 85,
+                              }}
+                              animate={{
+                                opacity: 1,
+                                x: 0,
+                              }}
+                              exit={{
+                                opacity: 0,
+                                x: 80,
+                              }}
+                              transition={{
+                                duration: 0.2,
+                                delay: index * 0.06,
+                              }} // Aggiunge un ritardo progressivo
+                              layout
+                              className="teammember-container !py-1"
+                              key={member.profile}
                             >
-                              <RiDeleteBinLine size={20} />
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  <div className="transpose-button-container">
-                    <SelectWorshipTeamMemberDrawer
-                      state={section.selected}
-                      type="add"
-                      teamMembers={section.team_members}
-                      addMemberToTeam={addMemberToTeam} // Pass function correctly
-                      section={null}
-                      teamId={section.id}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+                              <div className="teammember-section !py-1">
+                                <Input
+                                  name={"type" + member.profile}
+                                  key={member.id}
+                                  value={member.profile}
+                                  className="hide-input"
+                                  {...register(`sections.${index}.id`)}
+                                />
+                                <p>
+                                  <b>{member.name + " " + member.lastname}</b>
+                                </p>
+                                <Button
+                                  size="sm"
+                                  className="mx-0"
+                                  isIconOnly
+                                  color="danger"
+                                  type="button"
+                                  variant="light"
+                                  id={member.profile}
+                                  onPress={() =>
+                                    removeMemberToTeam(
+                                      member.profile,
+                                      section.id
+                                    )
+                                  }
+                                  accessKey={String(index)}
+                                >
+                                  <RiDeleteBinLine size={20} />
+                                </Button>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
 
           <br />

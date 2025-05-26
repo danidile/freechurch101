@@ -1,10 +1,9 @@
 "use client";
-import { TsongSchema, songSchema } from "@/utils/types/types";
+import { songSchema } from "@/utils/types/types";
 import { Button } from "@heroui/react";
 import { addSong } from "./addSongAction";
 import { Input, Textarea } from "@heroui/input";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, SetStateAction } from "react";
 import { toChordPro } from "@/utils/chordProFunctions/chordProFuncs";
 
@@ -13,11 +12,9 @@ export default function App() {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<TsongSchema>({
-    resolver: zodResolver(songSchema),
-  });
+  } = useForm<songSchema>({});
 
-  const convertData = async (data: TsongSchema) => {
+  const convertData = async (data: songSchema) => {
     data.lyrics = state;
     console.log(data);
     // addSong(data);

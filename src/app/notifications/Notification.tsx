@@ -57,56 +57,64 @@ export default function NotificationElement({
   }
   if (nextDate <= date) {
     return (
-      <>
-        <AnimatePresence>
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 25,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            exit={{
-              opacity: 0,
-              y: 25,
-            }}
-            layout
-            transition={{ duration: 0.5 }}
-            className="setlist-list-link"
-            onClick={onOpen}
-          >
-            <div className="setlist-list" key={notification.id}>
-              <div className="setlist-date-avatar">
-                <p
-                  className={`setlist-day ${
-                    isSunday ? "text-red-400" : "text-black"
-                  }`}
-                >
-                  {dateDay}
-                </p>
-                <small className="setlist-weekday">{dateWeekDay}</small>
-              </div>
+      <motion.div
+        initial={{
+          opacity: 0,
+          x: 85,
+        }}
+        animate={{
+          opacity: 1,
+          x: 0,
+        }}
+        exit={{
+          opacity: 0,
+          x: 80,
+        }}
+        transition={{ duration: 0.3, delay: 0.1 }} // Aggiunge un ritardo progressivo
+        layout
+        className="setlist-list-link"
+        onClick={onOpen}
+      >
+        <div
+          className="setlist-list !rounded-xl !border-slate-300 !my-1 "
+          key={notification.id}
+        >
+          <div className="setlist-date-avatar">
+            <p
+              className={` setlist-day ${
+                isSunday ? "text-red-400" : "text-black"
+              }`}
+            >
+              {dateDay}
+            </p>
+            <small className="setlist-weekday">{dateWeekDay}</small>
+          </div>
 
-              <p className="setlist-name" key={notification.id}>
-                {notification.setlist.event_title}
-                <br />
-                <small>{notification.team.team_name}</small>
-              </p>
-              <FaCircle size={15} color={details.color} />
-            </div>
-          </motion.div>
-          <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
-            <ModalContent>
-              {(onClose) => (
-                <>
-                  <ModalHeader className="flex flex-col gap-1"></ModalHeader>
-                  <ModalBody>
-                    <h5>{notification.setlist.event_title}</h5>
-                    <p>{readableCurrentDate}</p>
-                  </ModalBody>
-                  <ModalFooter>
+          <p className="setlist-name" key={notification.id}>
+            {notification.setlist.event_title}
+            <br />
+            <small>{notification.team.team_name}</small>
+          </p>
+          <FaCircle size={15} color={details.color} />
+        </div>
+        <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+                <ModalBody>
+                  <h5>{notification.setlist.event_title}</h5>
+                  <p>
+                    {" "}
+                    Dai la tua disponibilità a servire{" "}
+                    <span className="capitalize underline">
+                      {readableCurrentDate}
+                    </span>{" "}
+                    con il <b>{notification.team.team_name}.</b>
+                  </p>
+                </ModalBody>
+                <ModalFooter>
+                  {(type === "confirmed" || type === "pending") && (
                     <Button
                       fullWidth
                       color="danger"
@@ -118,6 +126,8 @@ export default function NotificationElement({
                     >
                       Rifiuta
                     </Button>
+                  )}
+                  {(type === "denied" || type === "pending") && (
                     <Button
                       fullWidth
                       color="primary"
@@ -129,13 +139,13 @@ export default function NotificationElement({
                     >
                       Conferma
                     </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </Modal>
-        </AnimatePresence>
-      </>
+                  )}
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </motion.div>
     );
   }
 }

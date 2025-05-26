@@ -1,13 +1,15 @@
 "use server";
 import { expandedTeamT, setListT } from "@/utils/types/types";
 import { createClient } from "@/utils/supabase/server";
+import { SupabaseClient } from "@supabase/supabase-js";
+
 import { encodedRedirect } from "@/utils/utils";
 
-export const updateSetlist = async (
+export const updateSetlistData = async (
   updatedSetlist: setListT,
-  setlistData: setListT
+  setlistData: setListT,
+  supabase: SupabaseClient
 ) => {
-  // check if generic data has changed
   let hasChanged: boolean = false;
 
   if (
@@ -17,7 +19,6 @@ export const updateSetlist = async (
     hasChanged = true;
   }
 
-  const supabase = createClient();
   //If data ahs changed update it
   if (hasChanged) {
     const { data: setlistSuccess, error: setlistError } = await supabase
@@ -38,7 +39,12 @@ export const updateSetlist = async (
   } else {
     console.log("\x1b[42m Setlist Data was not changed \x1b[0m");
   }
-
+};
+export const updateSetlistSongs = async (
+  updatedSetlist: setListT,
+  setlistData: setListT,
+  supabase: SupabaseClient
+) => {
   // mappo attraverso le setlist di setlistData e inserisco il valore della setlist dentro updatedSetlist con lo stesso index
   // in questo modo garantisco che gli setlistID sono gli stessi e nel caso in cui devo cancellare un campo devo solo
   // controllare se il campo song del della setlist è vuota. Se è vuola vuol dire che c'era una setlist ma è stat cancellata
@@ -57,19 +63,14 @@ export const updateSetlist = async (
   // Update songs
 
   updatedSetlist.setListSongs.map(async (song, index) => {
-    if (song.type === "global-songs") {
-      song.global_song = song.song;
-      song.song = null;
-      console.log("\x1b[36m%s\x1b[0m", "Song was global_");
-    }
-    if (song.song || song.global_song) {
+
+    if (song.song) {
       // Check if the field is empty
       const { data, error } = await supabase.from("setlist-songs").upsert(
         {
           setlist_id: setlistData.id,
           id: song.id,
           song: song.song,
-          global_song: song.global_song,
           key: song.key,
           order: index,
         },
@@ -93,27 +94,87 @@ export const updateSetlist = async (
   console.log(updatedSetlist);
   console.log("setlistData");
   console.log(setlistData);
+};
+export const updateSetlistTeam = async (
+  updatedSetlist: setListT,
+  setlistData: setListT,
+  supabase: SupabaseClient
+) => {
+  if (!setlistData.id) return;
+
+  console.log("⚙️ setlistData.teams", setlistData.teams);
+  console.log("⚙️ updatedSetlist.teams", updatedSetlist.teams);
 
   const updateTeam: expandedTeamT[] = [];
-  updatedSetlist.teams.map((team) => {
-    team.selected.map((member) => {
+  const updatedIds = new Set<string>();
+
+  updatedSetlist.teams?.forEach((team) => {
+    team.selected?.forEach((member) => {
+      const memberId = member.id || crypto.randomUUID();
+      updatedIds.add(memberId);
+
       updateTeam.push({
-        id: member.id || crypto.randomUUID(),
-        setlist: setlistData.id,
-        member: member.profile,
-        team: team.id,
+        id: memberId,
+        setlist: setlistData.id!,
+        member: member.isTemp ? null : member.profile || null,
+        temp_profile: member.isTemp ? member.profile || null : null,
+        team: team.id!,
       });
     });
   });
-  console.log("updateTeam");
-  console.log(updateTeam);
-  const { data, error: errorTeam } = await supabase
+
+  console.log("✅ updatedIds", Array.from(updatedIds));
+  console.log("🆕 updateTeam", updateTeam);
+
+  const previousIds: string[] = [];
+  setlistData.teams?.forEach((team) => {
+    team.selected?.forEach((member) => {
+      if (member.id) {
+        previousIds.push(member.id);
+      }
+    });
+  });
+
+  console.log("📦 previousIds", previousIds);
+
+  const toDeleteIds = previousIds.filter((id) => !updatedIds.has(id));
+
+  console.log("❌ toDeleteIds", toDeleteIds);
+
+  if (toDeleteIds.length > 0) {
+    const { error: deleteError } = await supabase
+      .from("event-team")
+      .delete()
+      .in("id", toDeleteIds);
+
+    if (deleteError) {
+      console.error("🔥 Error deleting removed team members", deleteError);
+    } else {
+      console.log("🗑️ Deleted members successfully", toDeleteIds);
+    }
+  }
+
+  const { error: upsertError } = await supabase
     .from("event-team")
     .upsert(updateTeam, { onConflict: "id" });
-  if (errorTeam) {
-    console.log("\x1b[36m%s\x1b[0m", "ERRORTEAM");
-    console.log("\x1b[36m%s\x1b[0m", errorTeam);
+
+  if (upsertError) {
+    console.error("🔥 Error upserting team members", upsertError);
+  } else {
+    console.log("✅ Upserted team members");
   }
+};
+
+export const updateSetlist = async (
+  updatedSetlist: setListT,
+  setlistData: setListT
+) => {
+  // check if generic data has changed
+  const supabase = createClient();
+
+  updateSetlistData(updatedSetlist, setlistData, supabase);
+  updateSetlistSongs(updatedSetlist, setlistData, supabase);
+  updateSetlistTeam(updatedSetlist, setlistData, supabase);
 
   return encodedRedirect(
     "success",

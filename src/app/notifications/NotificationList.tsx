@@ -8,6 +8,7 @@ import {
 import { useState } from "react";
 import NotificationElement from "./Notification";
 import { Tabs, Tab } from "@heroui/react";
+import { AnimatePresence } from "framer-motion";
 
 export default function NotificationList({
   notifications,
@@ -72,7 +73,7 @@ export default function NotificationList({
   console.log("notificationState");
   console.log(notificationState);
   return (
-    <>
+    <div className=" max-w-[500px] w-full">
       <Tabs
         key="underlined"
         aria-label="Tabs variants"
@@ -81,31 +82,36 @@ export default function NotificationList({
       >
         {Object.entries(notificationState).map(
           ([status, notificationsByType]) => {
-            return (
-              <Tab
-                className="w-full"
-                key={notificationsByType.details.title}
-                title={notificationsByType.details.title}
-              >
-                {notificationsByType.notifications &&
-                  notificationsByType.notifications.map(
-                    (notification: notificationT) => {
-                      return (
-                        <NotificationElement
-                          details={notificationsByType.details}
-                          type="pending"
-                          notification={notification}
-                          nextDate={nextDate}
-                          moveFromList={moveFromList}
-                        />
-                      );
-                    }
-                  )}
-              </Tab>
-            );
+            if(!notificationsByType.notifications) return null
+            if (notificationsByType.notifications.length > 0) {
+              return (
+                <Tab
+                  className="w-full"
+                  key={notificationsByType.details.title}
+                  title={notificationsByType.details.title}
+                >
+                  <AnimatePresence>
+                    {notificationsByType.notifications &&
+                      notificationsByType.notifications.map(
+                        (notification: notificationT) => {
+                          return (
+                            <NotificationElement
+                              details={notificationsByType.details}
+                              type={status}
+                              notification={notification}
+                              nextDate={nextDate}
+                              moveFromList={moveFromList}
+                            />
+                          );
+                        }
+                      )}
+                  </AnimatePresence>
+                </Tab>
+              );
+            }
           }
         )}
       </Tabs>
-    </>
+    </div>
   );
 }

@@ -1,15 +1,18 @@
 import z from "zod";
 
-export const songSchema = z.object({
-  id: z.string().optional(),
-  song_title: z
-    .string()
-    .min(4, "Song Title must be at least 5 characters long"),
-  author: z.string(),
-  upload_key: z.string(),
-  lyrics: z.string(),
-});
-export type TsongSchema = z.infer<typeof songSchema>;
+export type songSchema = {
+  id: string;
+  song_title: string;
+
+  author?: string;
+  artist?: string;
+  upload_key: string;
+  lyrics: string;
+  album: string;
+  bpm?: string;
+  tempo?: string;
+  type?: string;
+};
 
 export type songType = {
   id: string;
@@ -182,6 +185,20 @@ export type profileT = {
   name?: string;
   lastname?: string;
   role?: number;
+  isTemp?: boolean;
+  church?: string;
+};
+
+export type profileTeamsT = {
+  team_name?: string;
+  roles?: string[];
+};
+
+export type TeamMemberRaw = {
+  team_id: {
+    team_name: string;
+  };
+  roles: string;
 };
 
 export type setListSongT = {
@@ -212,10 +229,16 @@ export type setListT = {
     profile?: string;
   };
   teams?: teamData[];
+  setlistTeams?: GroupedMembers;
 };
 
-export type searchBar = {
-  text: string;
+export type teamData = {
+  id?: string;
+  team_name?: string;
+  team_leaders?: churchMembersT[];
+  team_members?: churchMembersT[];
+  is_worship?: boolean;
+  selected?: churchMembersT[];
 };
 
 export type churchMembersT = {
@@ -228,15 +251,12 @@ export type churchMembersT = {
   roles?: string[];
   profile?: string;
   team_name?: string;
+  isTemp?: boolean;
+  temp_profile?: string;
 };
 
-export type teamData = {
-  id?: string;
-  team_name?: string;
-  team_leaders?: churchMembersT[];
-  team_members?: churchMembersT[];
-  is_worship?: boolean;
-  selected?: churchMembersT[];
+export type searchBar = {
+  text: string;
 };
 
 export type ChurchMemberByTeam = {
@@ -245,6 +265,7 @@ export type ChurchMemberByTeam = {
   profile: string;
   name: string;
   lastname: string;
+  status?: string;
 };
 
 export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;
@@ -252,6 +273,12 @@ export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;
 export type artistsT = {
   username: string;
   artist_name: string;
+};
+export type albumsT = {
+  id?: string;
+  album_name?: string;
+  release_date?: Date;
+  artist_username?: string;
 };
 
 export type notificationDetails = {
@@ -282,4 +309,25 @@ export type expandedTeamT = {
   setlist?: string;
   member?: string;
   team?: string;
+  temp_profile?: string;
+};
+
+export type pendingRequestsT = {
+  id?: string;
+  created_at?: string;
+  profile?: {
+    id?: string;
+    name?: string;
+    email?: string;
+    lastname?: string;
+  };
+};
+
+export type profileSetlistsT = {
+  id: string;
+  setlist_id: string;
+  team_name: string;
+  event_title: string;
+  date: string;
+  status: string;
 };

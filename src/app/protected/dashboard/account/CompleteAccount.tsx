@@ -1,10 +1,13 @@
 "use client";
-import { Button, Input, Link } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { useForm } from "react-hook-form";
 
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { completeAccountAction } from "./completeAccountAction";
 import { basicUserData } from "@/utils/types/userData";
+import { Alert } from "@heroui/react";
+import Link from "next/link";
+import { FaLock } from "react-icons/fa6";
 
 export default function CompleteAccount({
   churchList,
@@ -23,11 +26,18 @@ export default function CompleteAccount({
 
   const convertData = async (data: basicUserData) => {
     console.log(data);
-    const index = churchList.findIndex(church => church.churchName === data.church_name);
-    let updatedData:basicUserData = data;
-    updatedData.church_id = churchList[index].id;
+    let updatedData: basicUserData = data;
+
+    if (data.church_name) {
+      const index = churchList.findIndex(
+        (church) => church.churchName === data.church_name
+      );
+      updatedData.church_id = churchList[index].id;
+    }
     completeAccountAction(updatedData);
   };
+  console.log("userData");
+  console.log(userData);
 
   return (
     <>
@@ -43,7 +53,6 @@ export default function CompleteAccount({
               size="sm"
               defaultValue={userData.name}
             />
-
             <Input
               {...register("lastname")}
               label="Cognome"
@@ -52,7 +61,12 @@ export default function CompleteAccount({
               defaultValue={userData.lastname}
             />
           </div>
-          {!userData.church_id && (
+          {userData.church_id && (
+            <p>
+              La mia chiesa:<strong>{userData.church_name}</strong>
+            </p>
+          )}
+          {!userData.pending_church_confirmation && !userData.church_id && (
             <>
               <Autocomplete
                 defaultSelectedKey={userData.church_id}
@@ -63,7 +77,7 @@ export default function CompleteAccount({
               >
                 {churchList.map(
                   (church: { id: string; churchName: string }) => (
-                    <AutocompleteItem key={church.id} value={church.id} >
+                    <AutocompleteItem key={church.id} id={church.id}>
                       {church.churchName}
                     </AutocompleteItem>
                   )
@@ -71,12 +85,26 @@ export default function CompleteAccount({
               </Autocomplete>
               <small>
                 Se la tua chiesa non è nella lista{" "}
-                <Link size="sm" underline="hover" href="/churches/addChurch">
+                <Link
+                  href="/churches/addChurch"
+                  className="text-blue-600 underline font-bold"
+                >
                   Clicca qui
                 </Link>
               </small>
             </>
           )}
+          <Input
+            label="Email"
+            variant="bordered"
+            size="sm"
+            disabled
+            placeholder={userData.email}
+            endContent={
+              <FaLock className="text-l text-default-500 pointer-events-none flex-shrink-0 my-auto" />
+            }
+          />
+          <Input label="Telefono" variant="bordered" size="sm" />
 
           <Input
             {...register("id")}
@@ -87,6 +115,7 @@ export default function CompleteAccount({
           />
 
           <Button
+            className="mt-3"
             color="primary"
             variant="shadow"
             type="submit"
@@ -94,6 +123,13 @@ export default function CompleteAccount({
           >
             Aggiorna profilo
           </Button>
+          {userData.pending_church_confirmation && (
+            <Alert
+              color="primary"
+              description="Attendi che i responsabili della tua chiesa confermino il tuo account."
+              title="In attesa di conferma"
+            />
+          )}
         </div>
       </form>
     </>

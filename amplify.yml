@@ -1,19 +1,25 @@
 version: 1
 frontend:
-    phases:
-        preBuild:
-            commands:
-                - 'npm ci --cache .npm --prefer-offline'
-        build:
-            commands:
-                - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
-                - echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY" >> .env
-                - 'npm run build'
-    artifacts:
-        baseDirectory: .next
-        files:
-            - '**/*'
-    cache:
-        paths:
-            - '.next/cache/**/*'
-            - '.npm/**/*'
+  phases:
+    preBuild:
+      commands:
+        - nvm install 20
+        - nvm use 20
+        - npm ci
+    build:
+      commands:
+        - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
+        - echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY" >> .env
+        - echo "ZOHO_EMAIL=$ZOHO_EMAIL" >> .env # Add your new variable here
+        - echo "ZOHO_APP_PASSWORD=$ZOHO_APP_PASSWORD" >> .env # Add your new variable here
+        - NODE_OPTIONS="--max-old-space-size=4096" npm run build
+
+        - "npm run build"
+  artifacts:
+    baseDirectory: .next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - ".next/cache/**/*"
+      - ".npm/**/*"

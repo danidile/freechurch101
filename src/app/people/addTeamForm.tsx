@@ -31,19 +31,11 @@ export default function AddTeamForm() {
   const convertData = async () => {};
   const [teams, setTeams] = useState();
   const [state, setState] = useState<Tsections[]>([]);
-  const AddSectionComponent = (key: React.Key) => {
-    
-  };
-  const removeSection = (event: React.MouseEvent<HTMLButtonElement>) => {
-    
-  };
+  const AddSectionComponent = (key: React.Key) => {};
+  const removeSection = (event: React.MouseEvent<HTMLButtonElement>) => {};
 
   const AddSection = (event: React.MouseEvent<HTMLButtonElement>) => {
     const target = event.currentTarget as HTMLInputElement;
-   
-     
-
-      
   };
 
   return (
@@ -89,7 +81,7 @@ export default function AddTeamForm() {
                         type="button"
                         variant="bordered"
                         id={element.key}
-                        onClick={removeSection}
+                        onPress={() => removeSection}
                         accessKey={String(index)}
                       >
                         <DeleteForeverOutlinedIcon />

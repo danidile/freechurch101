@@ -36,6 +36,7 @@ export default function SongslistComponent({
 
     setSongList(filteredSongs);
   };
+
   return (
     <>
       <div className="songs-header">
@@ -63,9 +64,9 @@ export default function SongslistComponent({
           </Button>
         </form>
         {hasPermission(userData.role as Role, "create:songs") && (
-          <Button color="primary" variant="ghost">
-            <a href="/songs/addSong">Aggiungi una canzone!</a>
-          </Button>
+          <Link prefetch href="/songs/addSong">
+            Aggiungi una canzone!
+          </Link>
         )}
       </div>
       <div className="container-song-list">

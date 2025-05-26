@@ -1,7 +1,7 @@
 "use client";
 import { Button, Link } from "@heroui/react";
 import ChordSheetJS from "chordsheetjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 import { setListSongT } from "@/utils/types/types";
 import { FaPlus, FaMinus } from "react-icons/fa";
@@ -14,6 +14,8 @@ import {
 import { MdModeEdit, MdMoreVert } from "react-icons/md";
 import { basicUserData } from "@/utils/types/userData";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import CustomizeWidget from "./CustomizeWidget";
+import { parseChordSheet } from "../songs/[songId]/parseChordSheet";
 export default function ChordProViewComponent({
   setListSong,
   userData,
@@ -21,101 +23,58 @@ export default function ChordProViewComponent({
   setListSong: setListSongT;
   userData?: basicUserData;
 }) {
-  const keys = [
-    "A",
-    "A#",
-    "B",
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#",
-  ];
+  const [song, setSong] = useState<setListSongT>(setListSong);
+  const steps = stepsBetweenKeys(setListSong.upload_key!, setListSong.key!);
 
-  const chordSheet = setListSong.lyrics;
-  const parser = new ChordSheetJS.ChordProParser();
-  let song = parser.parse(chordSheet);
-  const steps = stepsBetweenKeys(setListSong.upload_key, setListSong.key);
-  song = song.transpose(steps);
-  const formatter = new ChordSheetJS.HtmlTableFormatter();
-
-  const disp = formatter.format(song);
-
-  const [state, setState] = useState(disp);
-  const [count, setCount] = useState(0);
-  const [songKey, setSongKey] = useState(
-    setListSong.key || setListSong.upload_key
-  );
-
-  const transposeUp = () => {
-    console.log("transposeUp");
-    setCount((prevCount) => {
-      const newCount = prevCount + 1;
-      const newchords = song.transpose(newCount); // Use newCount here
-      const disp = formatter.format(newchords);
-      setState(disp);
-      return newCount; // Return updated count
-    });
-    setSongKey(
-      keys[(keys.findIndex((key) => key === songKey) + 1) % keys.length]
-    );
-  };
-
-  const transposeDown = () => {
-    console.log("transposeDown");
-    setCount((prevCount) => {
-      const newCount = prevCount - 1;
-      const newchords = song.transpose(newCount); // Use newCount here
-      const disp = formatter.format(newchords);
-      setState(disp);
-      return newCount; // Return updated count
-    });
-    setSongKey(
-      keys[
-        (keys.findIndex((key) => key === songKey) - 1 + keys.length) %
-          keys.length
-      ]
-    );
-  };
   const [viewChords, setViewChords] = useState(true);
+  const [transpose, setTranspose] = useState(steps);
+  const [parsedLyrics, setParsedLyrics] = useState<
+    ReturnType<typeof parseChordSheet>
+  >([]);
 
-  const viewChord = () => {
-    if (viewChords === false) {
-      setViewChords(true);
+  useEffect(() => {
+    if (song) {
+      const parsed = parseChordSheet(song.lyrics!, transpose);
+      setParsedLyrics(parsed);
+      console.log(parsed);
     }
-    console.log(viewChords);
-  };
-
-  const viewLyric = () => {
-    if (viewChords === true) {
-      setViewChords(false);
-    }
-  };
+  }, [song, transpose]);
   return (
-    <div>
+    <div className="relative">
       <div className="view-selector-container">
         {viewChords && (
-          <Button size="md" onPress={viewLyric}>
+          <Button
+            size="md"
+            variant="ghost"
+            onPress={() => setViewChords(false)}
+          >
             Testo
           </Button>
         )}
         {!viewChords && (
-          <Button size="md" onPress={viewChord}>
+          <Button variant="ghost" size="md" onPress={() => setViewChords(true)}>
             Accordi
           </Button>
         )}
-
-        <div className="transopose-section">
+        <div
+          className={`${viewChords ? "opacity-100" : "opacity-0"} transopose-section`}
+        >
           <p>Tonalità:</p>
 
-          <Button isIconOnly variant="light" onPress={transposeDown} size="md">
+          <Button
+            isIconOnly
+            variant="light"
+            onPress={() => setTranspose((prev) => (prev >= -10 ? prev - 1 : 0))}
+            size="md"
+          >
             <FaMinus />
           </Button>
-          <Button isIconOnly variant="light" onPress={transposeUp} size="md">
+          <Button
+            isIconOnly
+            variant="light"
+            onPress={() => setTranspose((prev) => (prev <= 11 ? prev + 1 : 0))}
+            size="md"
+          >
             <FaPlus />
           </Button>
         </div>
@@ -150,24 +109,32 @@ export default function ChordProViewComponent({
       </div>
 
       <div>
-        <h5 className="song-title">
-          {setListSong.song_title} - {setListSong.author}
-        </h5>
-        Tonalità canzone: <span className="chord">{songKey}</span>
-        {viewChords && (
-          <div
-            id="song-chords"
-            dangerouslySetInnerHTML={{ __html: state }}
-            style={{ whiteSpace: "pre-wrap" }}
-          />
-        )}
-        {!viewChords && (
-          <div
-            id="song-lyrics"
-            dangerouslySetInnerHTML={{ __html: state }}
-            style={{ whiteSpace: "pre-wrap" }}
-          />
-        )}
+        <h5 className="song-title">{setListSong.song_title}</h5>
+        <small>{setListSong.author}</small>
+        {parsedLyrics.map((line, index) => {
+          if (line.type === "section") {
+            return (
+              <p key={index} className="comment">
+                <b> {line.text}</b>
+              </p>
+            );
+          }
+
+          if (line.type === "chords") {
+            if (!viewChords) return null;
+            return (
+              <p key={index} className="chord">
+                {line.text}
+              </p>
+            );
+          }
+
+          return (
+            <p key={index} className="lyrics">
+              {line.text}
+            </p>
+          );
+        })}
       </div>
     </div>
   );

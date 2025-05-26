@@ -1,22 +1,18 @@
 import { createClient } from "@/utils/supabase/server";
-import CompleteAccount from "./CompleteAccount";
 import { redirect } from "next/navigation";
-import Sidebar from "./sidebar";
 import { basicUserData } from "@/utils/types/userData";
 import PWADashboard from "../PWADashboard";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
+
+import { pendingRequestsT } from "@/utils/types/types";
 
 export default async function Dashboard({
   userData,
 }: {
   userData: basicUserData;
 }) {
-
   const supabase = createClient();
-  let accountCompleted = false;
-  if ((userData.name && userData.lastname) || userData.church_id) {
-    accountCompleted = true;
-  }
-
   const { data: churches } = await supabase
     .from("churches")
     .select("id , church_name");
@@ -31,17 +27,23 @@ export default async function Dashboard({
       churchList.unshift(church);
     }
   }
+  let pendingRequests: pendingRequestsT[] = [];
+
+  if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
+    pendingRequests = await getPendingChurchMembershipRequests(
+      userData.church_id
+    );
+  }
+
   if (userData) {
     return (
       <div className="flex flex-row w-full gap-12">
-
-        <Sidebar userData={userData} />
-        <div className="dashboard-container">
-          <h6 className="text-md">Benvenuto {userData.email}</h6>
-          {!accountCompleted && (
-            <CompleteAccount churchList={churchList} userData={userData} />
-          )}
-          <PWADashboard userData={userData} />
+        {/* <Sidebar userData={userData} /> */}
+        <div className="container-sub">
+          <h6 className="text-md">
+            Benvenuto {userData.name ? userData.name : userData.email}
+          </h6>
+          <PWADashboard pendingRequests={pendingRequests} userData={userData} />
         </div>
       </div>
     );

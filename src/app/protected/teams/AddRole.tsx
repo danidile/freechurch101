@@ -23,7 +23,6 @@ import { FaPlus } from "react-icons/fa";
 import { useState } from "react";
 
 export function AddRole({
-  
   churchMemberId,
   addRolefunction,
   type,
@@ -43,15 +42,15 @@ export function AddRole({
       <Button
         isIconOnly
         radius="full"
-        variant="light"
+        variant="flat"
         size="sm"
-        className="mx-0 "
+        className="ml-6 "
         onPress={onOpen}
       >
         <FaPlus />
       </Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>

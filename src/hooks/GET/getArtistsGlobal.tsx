@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 export const getArtistsGlobal = async () => {
   const supabase = createClient();
 
-  const { data: globalSongs, error } = await supabase
+  const { data: Artists, error } = await supabase
     .from("artists")
     .select("*")
     .order("artist_name", { ascending: true });
@@ -13,5 +13,5 @@ export const getArtistsGlobal = async () => {
   if (error) {
     console.error("Errore durante il fetch:", error);
   }
-  return globalSongs;
+  return Artists;
 };

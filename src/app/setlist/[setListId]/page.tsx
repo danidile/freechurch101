@@ -1,5 +1,8 @@
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
+import { FaCheck } from "react-icons/fa";
+import { FaCircle } from "react-icons/fa6";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
 import ModalLyrics from "./modalLyrics";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -7,11 +10,18 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
-import { GroupedMembers, setListSongT, setListT, teamData } from "@/utils/types/types";
+import {
+  GroupedMembers,
+  setListSongT,
+  setListT,
+  teamData,
+} from "@/utils/types/types";
 import ViewFullSetListComponent from "./viewFullSetListComponent";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
+import Link from "next/link";
+import { Button } from "@heroui/button";
 
 export default async function Page({
   params,
@@ -35,17 +45,21 @@ export default async function Page({
   return (
     <div className="container-sub">
       <div className="song-presentation-container">
-        <h6>
-          <strong>{setlistData.event_title}</strong>
-        </h6>
-        <p>{readableDate}</p>
-        {hasPermission(userData.role as Role, "create:setlists") && (
-          <div className="top-settings-bar">
-            <div>
-              <MoreDropdownSetlist setlistId={params.setListId} />
-            </div>
-          </div>
-        )}
+        <div className="team-show">
+          <h6>
+            <strong className="capitalize">{setlistData.event_title}</strong>
+          </h6>
+          <p className="capitalize">{readableDate}</p>
+
+          {userData &&
+            hasPermission(userData.role as Role, "create:setlists") && (
+              <div className="top-settings-bar">
+                <CopyLinkButton />
+
+                <MoreDropdownSetlist setlistId={params.setListId} />
+              </div>
+            )}
+        </div>
 
         {setlistsongs
           .sort((a, b) => a.order - b.order)
@@ -54,38 +68,48 @@ export default async function Page({
               <>
                 <div key={"Song" + index} className="setlist-list-id">
                   <p>
-                    <strong>{song.song_title}</strong> <br />
+                    <strong>{song.song_title}</strong> {" - "}
+                    {song.key}
                   </p>
-                  <div className="key-button">{song.key}</div>
                   <ModalLyrics songData={song} />
                 </div>
               </>
             );
           })}
-        <div className="center- gap-3 mt-5 mb-20">
-          <ViewFullSetListComponent
-            setlistData={setlistData}
-            setlistsongs={setlistsongs}
-          />
-        </div>
+
+        {setlistsongs.length > 0 && (
+          <div className="center- gap-3 mt-5 mb-20">
+            <Link prefetch href={`/setlist/${params.setListId}/view`}>
+              <Button color="primary"> Visualizza set completo</Button>
+            </Link>
+          </div>
+        )}
+
         {Object.entries(setlistTeams).map((team) => {
           return (
             <>
               <div className="team-show">
                 <h5>{team[0]}</h5>
                 {team[1].map((member) => {
-                  return <div>{member.name + " " + member.lastname}</div>;
+                  return (
+                    <div className="flex gap-2 items-center">
+                      {member.status === "pending" && (
+                        <FaCircle color="orange" size={10} />
+                      )}
+                      {member.status === "confirmed" && (
+                        <FaCheck color="green" size={10} />
+                      )}
+                      {member.status === "denied" && (
+                        <FaCircle color="red" size={10} />
+                      )}
+                      {member.name + " " + member.lastname}
+                    </div>
+                  );
                 })}
               </div>
             </>
           );
         })}
-
-        <div className="center- gap-3">
-          <span className="material-symbols-outlined">
-            <CopyLinkButton />
-          </span>
-        </div>
       </div>
     </div>
   );
