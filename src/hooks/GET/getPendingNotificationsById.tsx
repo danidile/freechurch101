@@ -8,26 +8,30 @@ import {
 } from "@/utils/types/types";
 
 export const getPendingNotificationsById = async (
-  userId: string
+  userId: string | null
 ): Promise<number> => {
-  const supabase = createClient();
-  const today = new Date().toISOString().split("T")[0]; // Get today's date in "YYYY-MM-DD"
+  if (userId) {
+    const supabase = createClient();
+    const today = new Date().toISOString().split("T")[0]; // Get today's date in "YYYY-MM-DD"
 
-  let { data: notifications, error } = await supabase
-    .from("event-team")
-    .select(
-      `id, 
+    let { data: notifications, error } = await supabase
+      .from("event-team")
+      .select(
+        `id, 
        setlist:setlist!inner(date, event_title), 
        team:team!inner(team_name),status`
-    )
-    .eq("member", userId)
-    .eq("status", "pending")
-    .gte("setlist.date", today);
+      )
+      .eq("member", userId)
+      .eq("status", "pending")
+      .gte("setlist.date", today);
 
-  if (error) {
-    console.error(error);
+    if (error) {
+      console.error(error);
+      return 0;
+    }
+
+    return notifications.length;
+  } else {
     return 0;
   }
-
-  return notifications.length;
 };

@@ -1,5 +1,4 @@
 "use client";
-import logoutTest from "@/app/components/logOutAction";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { basicUserData } from "@/utils/types/userData";
 import { Alert, Button } from "@heroui/react";
@@ -13,9 +12,9 @@ import { pendingRequestsT } from "@/utils/types/types";
 import GetParamsMessage from "@/app/components/getParams";
 import { useSearchParams } from "next/navigation";
 import { TfiSharethis } from "react-icons/tfi";
-import { TbMusicPlus } from "react-icons/tb";
 import { PiMusicNotesPlusFill } from "react-icons/pi";
 import { LuCalendarDays } from "react-icons/lu";
+import logoutAction from "@/app/components/logOutAction";
 
 export default function PWADashboard({
   userData,
@@ -28,7 +27,7 @@ export default function PWADashboard({
   const success = searchParams.get("success");
   const error = searchParams.get("error");
   async function logouter() {
-    logoutTest();
+    logoutAction();
   }
   return (
     <ul className="container-dashboard-list">

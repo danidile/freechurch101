@@ -82,6 +82,7 @@ export default function NotificationList({
       >
         {Object.entries(notificationState).map(
           ([status, notificationsByType]) => {
+            if(!notificationsByType.notifications) return null
             if (notificationsByType.notifications.length > 0) {
               return (
                 <Tab
