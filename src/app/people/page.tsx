@@ -3,7 +3,6 @@ import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
 import { profileT } from "@/utils/types/types";
 import { getProfilesByChurch } from "@/hooks/GET/getProfilesByChurch";
-import PeopleDrawerList from "./peopleDrawerList";
 import GetParamsMessage from "../components/getParams";
 import Link from "next/link";
 import { TiUser } from "react-icons/ti";

@@ -20,6 +20,8 @@ import ViewFullSetListComponent from "./viewFullSetListComponent";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
+import Link from "next/link";
+import { Button } from "@heroui/button";
 
 export default async function Page({
   params,
@@ -49,13 +51,14 @@ export default async function Page({
           </h6>
           <p className="capitalize">{readableDate}</p>
 
-          {hasPermission(userData.role as Role, "create:setlists") && (
-            <div className="top-settings-bar">
-              <CopyLinkButton />
+          {userData &&
+            hasPermission(userData.role as Role, "create:setlists") && (
+              <div className="top-settings-bar">
+                <CopyLinkButton />
 
-              <MoreDropdownSetlist setlistId={params.setListId} />
-            </div>
-          )}
+                <MoreDropdownSetlist setlistId={params.setListId} />
+              </div>
+            )}
         </div>
 
         {setlistsongs
@@ -76,10 +79,9 @@ export default async function Page({
 
         {setlistsongs.length > 0 && (
           <div className="center- gap-3 mt-5 mb-20">
-            <ViewFullSetListComponent
-              setlistData={setlistData}
-              setlistsongs={setlistsongs}
-            />
+            <Link prefetch href={`/setlist/${params.setListId}/view`}>
+              <Button color="primary"> Visualizza set completo</Button>
+            </Link>
           </div>
         )}
 
@@ -95,8 +97,7 @@ export default async function Page({
                         <FaCircle color="orange" size={10} />
                       )}
                       {member.status === "confirmed" && (
-                                              <FaCheck color="green" size={10} />
-
+                        <FaCheck color="green" size={10} />
                       )}
                       {member.status === "denied" && (
                         <FaCircle color="red" size={10} />

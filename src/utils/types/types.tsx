@@ -186,6 +186,7 @@ export type profileT = {
   lastname?: string;
   role?: number;
   isTemp?: boolean;
+  church?: string;
 };
 
 export type profileTeamsT = {

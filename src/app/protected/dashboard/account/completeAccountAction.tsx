@@ -2,10 +2,13 @@
 import { basicUserData } from "@/utils/types/userData";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
+import { useUser } from "@/utils/context/UserContext";
 
 export const completeAccountAction = async function completeAccountAction(
   data: basicUserData
 ) {
+  const { refreshUser } = useUser();
+
   const supabase = createClient();
   if (!data) {
     return { error: "Email and password are required" };
@@ -27,14 +30,12 @@ export const completeAccountAction = async function completeAccountAction(
       profile: data.id,
     })
     .select();
+  refreshUser();
 
   if (error || churchDataError) {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
-    return encodedRedirect(
-      "success",
-      `/protected/dashboard`, ""
-    );
+    return encodedRedirect("success", `/protected/dashboard`, "");
   }
 };

@@ -1,22 +1,15 @@
 import { getProfileById } from "@/hooks/GET/getProfileById";
 import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
 import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
+import fbasicUserData from "@/utils/supabase/getUserData";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { profileSetlistsT, profileT, profileTeamsT } from "@/utils/types/types";
+import { basicUserData } from "@/utils/types/userData";
 import { Card, CardBody, CardHeader, Chip, Link } from "@heroui/react";
-import { FaCircle, FaCheck } from "react-icons/fa";
 import { MdEvent } from "react-icons/md";
-const roles = [
-  "Admin",
-  "Fondatore Chiesa",
-  "Admin Chiesa",
-  "Team Leader",
-  "4",
-  "5",
-  "6",
-  "7",
-  "Membro Chiesa",
-  "Utente senza Chiesa",
-];
+
+import ModalRoleUpdate from "./modalRoleUpdate";
+
 export default async function Page({
   params,
 }: {
@@ -30,6 +23,8 @@ export default async function Page({
   const profileTeams: profileTeamsT[] = await getTeamsByProfile(
     params.peopleId
   );
+  const userData: basicUserData = await fbasicUserData();
+
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
@@ -39,9 +34,12 @@ export default async function Page({
     <div className="container-sub">
       <h5>{profile.name + " " + profile.lastname}</h5>
       <p>{profile.email}</p>
-      <Chip radius="sm" color="primary" variant="flat" className="my-3">
-        {roles[Number(profile.role)]}
-      </Chip>
+      <ModalRoleUpdate
+        peopleId={params.peopleId}
+        profile={profile}
+        userData={userData}
+      />
+
       {profileTeams.length >= 1 && (
         <div className="">
           Team di {profile.name}
@@ -57,7 +55,6 @@ export default async function Page({
           })}
         </div>
       )}
-
       {profileSetlist.length >= 1 && (
         <div>
           <Card shadow="none" className="max-w-full my-4 w-96 border-none">

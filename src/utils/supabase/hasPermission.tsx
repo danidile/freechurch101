@@ -30,6 +30,8 @@ const ROLES = {
 
     // ALBUMS
     "read:albums",
+    //ROLES
+    "update:role",
   ],
   churchfounder: [
     "view:songs",
@@ -44,8 +46,15 @@ const ROLES = {
     "view:teams",
     "confirm:churchMembership",
     "read:churchmembers",
+    "update:role",
   ],
-  churchadmin: ["view:songs", "create:songs", "update:songs", "delete:songs"],
+  churchadmin: [
+    "view:songs",
+    "create:songs",
+    "update:songs",
+    "delete:songs",
+    "update:role",
+  ],
   teamleader: ["view:songs", "create:songs", "update:songs", "delete:songs"],
   churchmember: ["view:songs", "create:songs", "update:songs", "delete:songs"],
   user: ["view:songs", "view:songs", "view:songs"],
