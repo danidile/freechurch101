@@ -26,7 +26,9 @@ export default async function fbasicUserData() {
   };
   if (userError) {
     console.error("Not logged in:", userError.message);
-    return null;
+    return {
+      loggedIn: false,
+    };
   } else {
     let userData: basicUserData = {
       loggedIn: false,

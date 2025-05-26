@@ -34,9 +34,9 @@ export default function MenuBarComponent({
   return (
     <>
       <Navbar
-            style={{
-              display: userData.loggedIn ? "none" : "block",
-            }}
+        style={{
+          display: userData.loggedIn ? "none" : "block",
+        }}
         onMenuOpenChange={setIsMenuOpen}
         className="menu-desktop standalone:!hidden"
       >
@@ -57,10 +57,6 @@ export default function MenuBarComponent({
         </NavbarContent>
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          {/* <NavbarItem>
-            <TransitionLink href="/esplora">Esplora</TransitionLink>
-          </NavbarItem> */}
-
           <NavbarItem>
             <TransitionLink href="/songs">Canzoni</TransitionLink>
           </NavbarItem>
@@ -93,7 +89,11 @@ export default function MenuBarComponent({
           ))}
         </NavbarMenu>
       </Navbar>
-      <MenuApp userdata={userData} notifications={notifications} isLoggedIn={userData.loggedIn ? true : false} />
+      <MenuApp
+        userdata={userData}
+        notifications={notifications}
+        isLoggedIn={userData.loggedIn ? true : false}
+      />
     </>
   );
 }
