@@ -15,7 +15,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ErrorBoundary>
         <head>
           <link
             rel="icon"
@@ -61,7 +60,6 @@ export default function RootLayout({
             <main>{children}</main>
           </PullToRefreshLayout>
         </body>
-      </ErrorBoundary>
     </html>
   );
 }
