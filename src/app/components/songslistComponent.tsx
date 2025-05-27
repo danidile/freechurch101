@@ -72,7 +72,7 @@ export default function SongslistComponent({
       <div className="container-song-list">
         {songList.map((song) => {
           return (
-            <Link className="songlist-link" href={`/songs/${song.id}`}>
+            <Link className="songlist-link" href={ userData.loggedIn ? `/songs/${song.id}` : `/globalsongs/${song.id}` }>
               <div className="song-list" key={song.id}>
                 <p key={song.id}>
                   {song.song_title}

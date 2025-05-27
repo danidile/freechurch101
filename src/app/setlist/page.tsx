@@ -5,7 +5,6 @@ import { setListT } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { TransitionLink } from "../components/TransitionLink";
 import SetListTabs from "../components/SetListTabsComponent";
-import NewEventButtonComponent from "./dropdownNewEventButtonComponent";
 import { FiPlus } from "react-icons/fi";
 
 export default async function Page() {

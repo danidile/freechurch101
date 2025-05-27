@@ -1,5 +1,4 @@
-const chordRegex =
-  /\b((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b)?(?:m|dim|aug|maj|1|2|3|4|5|6|7|8|9|sus|add|m7|maj7|7b5|m9|add9|dim7|maj9|b5|sus4)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b)?)?)\b/g;
+const chordRegex = /\b((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b)?(?:-?|m|maj|min|dim|aug|sus|add|7|9|11|13|m7|maj7|7b5|m9|add9|dim7|maj9|b5|sus4)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b)?)?)\b/gi;
 
 type ParsedLine =
   | { type: "section"; text: string }
@@ -100,11 +99,13 @@ function isSectionLine(line: string): boolean {
     return regex.test(clean);
   });
 }
+
 function toEnglishChord(chord: string) {
-  const match = chord.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([#b]?)(.*)$/);
+  const match = chord.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([#b]?)([-m]?)(.*)$/);
   if (match) {
-    const [, root, accidental, suffix] = match;
-    return (IT_TO_EN[root] || root) + accidental + suffix;
+    const [, root, accidental, minor, suffix] = match;
+    const m = minor === "-" ? "m" : minor;
+    return (IT_TO_EN[root] || root) + accidental + m + suffix;
   }
   return chord;
 }
@@ -171,7 +172,7 @@ export function parseChordSheet(
       const matches = Array.from(trimmed.matchAll(chordRegex));
       const matchRatio = matches.length / trimmed.split(/\s+/).length;
 
-      if (matchRatio > 0.5) {
+      if (matches.length > 0 && matchRatio > 0.25) {
         const transposed = transposeChordLine(trimmed, transpose);
         parsed.push({ type: "chords", text: transposed });
         continue;

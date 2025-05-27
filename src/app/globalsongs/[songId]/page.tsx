@@ -3,9 +3,10 @@ import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
 import CustomizeWidget from "@/app/components/CustomizeWidget";
+import { getGlobalSongById } from "@/hooks/GET/getGlobalSongById";
 
 export default async function Page({ params }: { params: { songId: string } }) {
-  const songData = await getSongById(params.songId);
+  const songData = await getGlobalSongById(params.songId);
   const userData: basicUserData = await fbasicUserData();
 
   console.log(songData);

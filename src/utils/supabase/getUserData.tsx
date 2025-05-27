@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { basicUserData } from "@/utils/types/userData";
 import { sendErrorToSentry } from "../sentry/SentryErrorDealer";
+
 type ProfileData = {
   name: string;
   lastname: string;
@@ -15,24 +16,21 @@ type SupabaseResponse = {
   data: ProfileData | null;
   error: Error | null; // Add error here
 };
+
 export default async function fbasicUserData() {
+  let userData: basicUserData = {
+    loggedIn: false,
+    role: "user",
+  };
   const supabase = createClient();
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  let userData: basicUserData = {
-    loggedIn: true,
-  };
+  console.log("USERDATA", user);
   if (userError) {
     console.error("Not logged in:", userError.message);
-    return {
-      loggedIn: false,
-    };
-  } else {
-    let userData: basicUserData = {
-      loggedIn: false,
-    };
+    return userData;
   }
 
   if (user) {
@@ -56,6 +54,7 @@ export default async function fbasicUserData() {
       console.error("Error fetching profile:", error.message);
       sendErrorToSentry(error.message, userData);
     }
+
     let churchpending: boolean = false;
     if (!data || !data.church) {
       let { data: churchMembershipRequest } = await supabase
@@ -69,14 +68,6 @@ export default async function fbasicUserData() {
         userData.pending_church_confirmation = churchpending;
       }
     }
-
-    console.log("userData");
-    console.log(userData);
-  } else {
-    userData = {
-      loggedIn: false,
-      role: null,
-    };
   }
 
   return userData;

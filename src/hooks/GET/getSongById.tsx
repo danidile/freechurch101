@@ -12,8 +12,15 @@ export const getSongById = async (songData: unknown) => {
     .eq("id", songData);
 
   if (songError) {
-    console.error("La canzone non è nella tabella songs:", songError);
-    return null;
+    const { data: globalSong, error: globalSongError } = await supabase
+      .from("global-songs")
+      .select("*")
+      .eq("id", songData);
+    if (globalSongError) {
+      console.error("La canzone non è ne nella tabella songs ne global-songs:", songError);
+    } else {
+      return globalSong[0];
+    }
   } else {
     return song[0];
   }
