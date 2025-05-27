@@ -43,7 +43,7 @@ export default function AlbumsListComponent({
               <ul>
                 {songs.map((song) => (
                   <li key={song.id}>
-                    <Link href={`/songs/${song.id}`}>{song.song_title}</Link>
+                    <Link href={`/globalsongs/${song.id}`}>{song.song_title}</Link>
                   </li>
                 ))}
               </ul>

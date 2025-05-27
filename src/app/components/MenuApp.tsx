@@ -40,7 +40,7 @@ export default function MenuApp({
 
   return (
     <div
-      className="appmenucontainer standalone:!block"
+      className="appmenucontainer standalone:!block browser:!hidden"
       style={{
         display: isLoggedIn ? "block" : "none",
       }}

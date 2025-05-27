@@ -22,7 +22,7 @@ export default function UserDataMenu({
             href="/protected/dashboard"
             variant="flat"
           >
-            Profile
+            Profilo
           </Button>
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">

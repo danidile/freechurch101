@@ -84,7 +84,7 @@ export default function PWADashboard({
           </Link>
           <Link
             className="dashboard-list text-black"
-            href="/protected/global-songs"
+            href="/globalsongs"
           >
             <MdLibraryMusic className="dashboard-icon" />
             Global Songs

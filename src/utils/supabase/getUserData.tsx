@@ -27,7 +27,6 @@ export default async function fbasicUserData() {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  console.log("USERDATA", user);
   if (userError) {
     console.error("Not logged in:", userError.message);
     return userData;
