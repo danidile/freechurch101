@@ -406,7 +406,12 @@ Image {
   justify-content: center;
 }
 
-
+.cover-artist-list{
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 0.8rem;
+}
 .chord-sheet .paragraph {
   margin: 0px 0px 20px 0px;
 }
@@ -624,7 +629,9 @@ tbody tr .tablecellnewteams {
   margin: 20px auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
   width: 1200px;
   max-width: 1200px;
 }

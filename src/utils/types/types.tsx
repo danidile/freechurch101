@@ -331,3 +331,22 @@ export type profileSetlistsT = {
   date: string;
   status: string;
 };
+
+// Album table type (only selecting album_name)
+export type AlbumReference = {
+  album_name: string | null;
+};
+
+// Song from 'global-songs' with a joined album
+export type SongWithAlbum = {
+  id: string;
+  song_title: string;
+  lyrics: string;
+  author: string;
+  Upload_key: string;
+  artist: string;
+  album: AlbumReference | null; // joined album
+};
+
+// Grouped object by album name
+export type GroupedSongsByAlbum = Record<string, SongWithAlbum[]>;

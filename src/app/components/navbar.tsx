@@ -3,7 +3,6 @@ import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "../../utils/supabase/getUserData";
 
 import { getPendingNotificationsById } from "@/hooks/GET/getPendingNotificationsById";
-import MenuBarComponent from "./menuBarComponent";
 
 export default async function MenuBar() {
   const userData: basicUserData | null = await fbasicUserData();
@@ -11,8 +10,8 @@ export default async function MenuBar() {
   const notifications: number = await getPendingNotificationsById(userData.id);
   return (
     <>
-      <MenuBarComponent userData={userData} notifications={notifications} />
-      {/* <MenuBarComponentSecondary userData={userData} notifications={notifications} /> */}
+      {/* <MenuBarComponent userData={userData} notifications={notifications} /> */}
+      <MenuBarComponentSecondary userData={userData} notifications={notifications} />
     </>
   );
 }

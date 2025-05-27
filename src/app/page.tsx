@@ -56,7 +56,7 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <img className="exp-c-image" src={"images/sdv-Worship.jpg"} />
+              <img className="exp-c-image" src={"images/sdvworship.webp"} />
             </div>
           </Link>
           <Link href="/artists/mirkoegiorgia">
@@ -86,7 +86,7 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <img className="exp-c-image" src={"images/Sounds.jpg"} />
+              <img className="exp-c-image" src={"images/Soundsmusicitalia.webp"} />
             </div>
           </Link>
           <Link href="/artists/truedevotion">
@@ -101,7 +101,7 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <img className="exp-c-image" src={"images/true-devotion.jpg"} />
+              <img className="exp-c-image" src={"images/truedevotion.webp"} />
             </div>
           </Link>
         </div>
@@ -116,7 +116,7 @@ export default function Home() {
               <div className="titolo-feed">
                 <img
                   className="profile-pic-feed-post"
-                  src={"images/CuorePuroSDVWorship.jpeg"}
+                  src={"images/sdvworship.webp"}
                 />
                 <div>
                   <p className="nome-utente-feed">Cuore Puro</p>
@@ -143,7 +143,7 @@ export default function Home() {
               <div className="titolo-feed">
                 <img
                   className="profile-pic-feed-post"
-                  src={"images/Sounds.jpg"}
+                  src={"images/Soundsmusicitalia.webp"}
                 />
                 <div>
                   <p className="nome-utente-feed">Intimità</p>
@@ -186,7 +186,7 @@ export default function Home() {
               <div className="titolo-feed">
                 <img
                   className="profile-pic-feed-post"
-                  src={"images/true-devotion.jpg"}
+                  src={"images/truedevotion.webp"}
                 />
                 <div>
                   <p className="nome-utente-feed">In Terra Come in Cielo</p>
@@ -210,7 +210,7 @@ export default function Home() {
               <div className="titolo-feed">
                 <img
                   className="profile-pic-feed-post"
-                  src={"images/timoteo-pepe.jpeg"}
+                  src={"images/timoteopepe.webp"}
                 />
                 <div>
                   <p className="nome-utente-feed">Luogo Sacro</p>
@@ -234,7 +234,7 @@ export default function Home() {
               <div className="titolo-feed">
                 <img
                   className="profile-pic-feed-post"
-                  src={"images/davidedilecce.png"}
+                  src={"images/davidedilecce.webp"}
                 />
                 <div>
                   <p className="nome-utente-feed">Offro a te</p>
@@ -257,7 +257,7 @@ export default function Home() {
               <div className="titolo-feed">
                 <img
                   className="profile-pic-feed-post"
-                  src={"images/davidedilecce.png"}
+                  src={"images/davidedilecce.webp"}
                 />
                 <div>
                   <p className="nome-utente-feed">Voglio bruciare per Te</p>
