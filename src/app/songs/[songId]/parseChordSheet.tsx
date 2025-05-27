@@ -23,6 +23,7 @@ const sectionKeywords = [
   "break",
   "solo",
   "coda",
+  "bridge",
 
   // Italian
   "intro",
@@ -36,6 +37,7 @@ const sectionKeywords = [
   "finale",
   "coda",
   "verso",
+  "pre-coro",
   "ripresa",
   "special",
   "assolo",
@@ -147,6 +149,9 @@ function transposeChord(chord: string, semitones: number): string {
 function transposeChordLine(line: string, semitones: number): string {
   return line.replace(chordRegex, (chord) => transposeChord(chord, semitones));
 }
+function isItalianChord(chord: string): boolean {
+  return /^(Do|Re|Mi|Fa|Sol|La|Si)/i.test(chord);
+}
 export function parseChordSheet(
   input: string,
   transpose: number = 0
@@ -178,10 +183,26 @@ export function parseChordSheet(
     if (chordRegex.test(trimmed)) {
       chordRegex.lastIndex = 0;
 
+      const words = trimmed.split(/\s+/);
       const matches = Array.from(trimmed.matchAll(chordRegex));
-      const matchRatio = matches.length / trimmed.split(/\s+/).length;
+      const chordLikeWords = matches.map((m) => m[0]);
 
-      if (matches.length > 0 && matchRatio > 0.25) {
+      const matchRatio = chordLikeWords.length / words.length;
+      const punctuation = /[.,;!?]/.test(trimmed);
+      const italianChordCount = chordLikeWords.filter(isItalianChord).length;
+
+      const italianLongChordsCount = chordLikeWords.filter(
+        (w) => isItalianChord(w) && w.length > 1
+      ).length;
+      // Tuned heuristic: allow some punctuation, relax ratio, but still require a good portion of longer chords
+
+      if (
+        matches.length > 0 &&
+        matchRatio > 0.5 &&
+        (!punctuation || matchRatio > 0.) &&
+        (italianChordCount === 0 ||
+          italianLongChordsCount >= Math.floor(italianChordCount / 3))
+      ) {
         const transposed = transposeChordLine(trimmed, transpose);
         parsed.push({ type: "chords", text: transposed });
         continue;
