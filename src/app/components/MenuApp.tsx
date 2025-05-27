@@ -40,10 +40,8 @@ export default function MenuApp({
 
   return (
     <div
-      className="appmenucontainer standalone:!hidden browser:!hidden"
-      style={{
-        display: isLoggedIn ? "block" : "none",
-      }}
+      className="appmenucontainer browser:!hidden"
+      
     >
       <IconContext.Provider
         value={{ size: "1.2rem", className: "app-menu-icons" }}
