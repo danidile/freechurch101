@@ -1,19 +1,16 @@
-import SongslistComponent from "../components/songslistComponent";
 import { basicUserData } from "@/utils/types/userData";
-import fbasicUserData from "../../utils/supabase/getUserData";
-import { getSongs } from "@/hooks/GET/getSongs";
-import { sendErrorToSentry } from "@/utils/sentry/SentryErrorDealer";
+import fbasicUserData from "@/utils/supabase/getUserData";
+import GlobalSongslistComponent from "@/app/components/globalsongslistComponent";
+import { getGlobalSongs } from "@/hooks/GET/getGlobalSongs";
+import { getArtistsGlobal } from "@/hooks/GET/getArtistsGlobal";
 
 export default async function Page() {
-  const songs = await getSongs();
-
+  const globalSongs = await getGlobalSongs();
   const userData: basicUserData = await fbasicUserData();
-  const error = { message: "Error" };
-
-  if (songs) {
+  if (globalSongs) {
     return (
       <div className="container-sub">
-        <SongslistComponent songs={songs} userData={userData} />
+        <GlobalSongslistComponent songs={globalSongs} userData={userData} />
       </div>
     );
   } else {

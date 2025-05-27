@@ -27,7 +27,7 @@ export default function MenuBarComponentSecondary({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
-      <Navbar onMenuOpenChange={setIsMenuOpen} disableAnimation={false}>
+      <Navbar onMenuOpenChange={setIsMenuOpen} isMenuOpen={isMenuOpen}>
         <NavbarContent>
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -55,16 +55,21 @@ export default function MenuBarComponentSecondary({
                   Esplora
                 </Link>
               </NavbarItem>
+              <NavbarItem>
+                <Link prefetch color="foreground" href="/globalsongs">
+                  Canzoni
+                </Link>
+              </NavbarItem>
             </>
           )}
 
-          <NavbarItem>
-            <Link prefetch color="foreground" href="/songs">
-              Canzoni
-            </Link>
-          </NavbarItem>
           {userData.loggedIn && (
             <>
+              <NavbarItem>
+                <Link prefetch color="foreground" href="/songs">
+                  Canzoni
+                </Link>
+              </NavbarItem>
               <NavbarItem isActive>
                 <Link prefetch aria-current="page" href="/setlist">
                   Eventi
@@ -84,30 +89,49 @@ export default function MenuBarComponentSecondary({
         {/* // Mobile Menu */}
         <NavbarMenu>
           <NavbarItem>
-            <Link prefetch color="foreground" href="/songs">
+            <Link
+              prefetch
+              onClick={() => setIsMenuOpen(false)}
+              color="foreground"
+              href="/songs"
+            >
               Canzoni
             </Link>
           </NavbarItem>
           <NavbarItem isActive>
-            <Link prefetch aria-current="page" href="/setlist">
+            <Link
+              prefetch
+              onClick={() => setIsMenuOpen(false)}
+              aria-current="page"
+              href="/setlist"
+            >
               Eventi
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link prefetch color="foreground" href="/calendario">
+            <Link
+              prefetch
+              onClick={() => setIsMenuOpen(false)}
+              color="foreground"
+              href="/calendario"
+            >
               Calendario
             </Link>
           </NavbarItem>
-          <NavbarItem className=" lg:flex">
-            <Link prefetch href="/login">
-              Accedi
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link prefetch color="primary" href="/sign-up">
-              Iscriviti
-            </Link>
-          </NavbarItem>
+          {!userData.loggedIn && (
+            <>
+              <NavbarItem className=" lg:flex">
+                <Link prefetch href="/login">
+                  Accedi
+                </Link>
+              </NavbarItem>
+              <NavbarItem>
+                <Link prefetch color="primary" href="/sign-up">
+                  Iscriviti
+                </Link>
+              </NavbarItem>
+            </>
+          )}
         </NavbarMenu>
       </Navbar>
       <MenuApp

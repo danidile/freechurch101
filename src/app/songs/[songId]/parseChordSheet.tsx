@@ -1,4 +1,5 @@
-const chordRegex = /\b((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b)?(?:-?|m|maj|min|dim|aug|sus|add|7|9|11|13|m7|maj7|7b5|m9|add9|dim7|maj9|b5|sus4)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b)?)?)\b/gi;
+const chordRegex =
+  /\b((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b|♯|♭)?(?:-?|m|maj|min|dim|aug|sus|add|7|9|11|13|m7|maj7|7b5|m9|add9|dim7|maj9|b5|sus4)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b|♯|♭)?)?)\b/gi;
 
 type ParsedLine =
   | { type: "section"; text: string }
@@ -101,7 +102,13 @@ function isSectionLine(line: string): boolean {
 }
 
 function toEnglishChord(chord: string) {
-  const match = chord.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([#b]?)([-m]?)(.*)$/);
+  // Capitalize only the first letter and lowercase the rest for Italian chords
+  const normalizedChord =
+    chord.charAt(0).toUpperCase() + chord.slice(1).toLowerCase();
+
+  const match = normalizedChord.match(
+    /^(Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(-?m?)(.*)$/
+  );
   if (match) {
     const [, root, accidental, minor, suffix] = match;
     const m = minor === "-" ? "m" : minor;
@@ -111,15 +118,20 @@ function toEnglishChord(chord: string) {
 }
 
 function toItalianChord(chord: string, wasItalian: boolean) {
-  const match = chord.match(/^([A-G])([#b]?)(.*)$/);
+  // Convert root note to uppercase
+  const match = chord.match(/^([A-G])([#b♯♭]?)(.*)$/i);
   if (!match) return chord;
-  const [, root, accidental, suffix] = match;
+
+  let [, root, accidental, suffix] = match;
+  root = root.toUpperCase();
+
   return (wasItalian ? EN_TO_IT[root] || root : root) + accidental + suffix;
 }
 
 function transposeChord(chord: string, semitones: number): string {
   const wasItalian = /^(Do|Re|Mi|Fa|Sol|La|Si)/.test(chord);
   const english = toEnglishChord(chord);
+  console.log();
 
   const match = english.match(/^([A-G][b#]?)(.*)$/);
   if (!match) return chord;
@@ -133,10 +145,7 @@ function transposeChord(chord: string, semitones: number): string {
   return toItalianChord(newRoot + suffix, wasItalian);
 }
 function transposeChordLine(line: string, semitones: number): string {
-  return line.replace(
-    /\b(?:Do|Re|Mi|Fa|Sol|La|Si|[A-G])[#b]?(?:m|maj|min|dim|aug|sus|add|7|9|11|13)?\b/g,
-    (chord) => transposeChord(chord, semitones)
-  );
+  return line.replace(chordRegex, (chord) => transposeChord(chord, semitones));
 }
 export function parseChordSheet(
   input: string,

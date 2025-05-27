@@ -10,7 +10,6 @@ export const addGlobalSong = async (data: songSchema) => {
     .from("global-songs")
     .insert({
       song_title: data.song_title,
-
       author: data.author,
       artist: data.artist,
       album: data.album,
@@ -25,11 +24,11 @@ export const addGlobalSong = async (data: songSchema) => {
   // }
   if (error) {
     console.error(error.code + " " + error.message);
-    return encodedRedirect("success", "/songs", error.message);
+    return encodedRedirect("success", "/globalsongs", error.message);
   } else {
     return encodedRedirect(
       "success",
-      "/protected/global-songs",
+      "/globalsongs",
       "Canzone aggiunta con successo!"
     );
   }
