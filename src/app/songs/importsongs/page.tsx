@@ -20,8 +20,9 @@ export default async function Page() {
       song_title: song.song_title,
       author: song.author,
       upload_key: song.upload_key,
-      church: "24a8b487-5c81-47c9-8d6c-28fe08a1917c",
       lyrics: disp, // update the lyrics field with formatted HTML
+      artist: song.artist,
+      album: song.album,
     };
   });
 

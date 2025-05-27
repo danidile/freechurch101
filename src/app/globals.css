@@ -389,24 +389,29 @@ Image {
   line-height: 0.9rem;
   padding: 0px 2px;
   margin: 0px;
+  white-space: pre;
   font-family: "Space Mono", monospace;
 }
 
 .lyrics {
+  white-space: pre;
+
   font-size: 1rem;
 }
 .comment {
+  white-space: pre;
+
   font-weight: 800;
   text-decoration: underline;
   margin-top: 10px;
 }
-.menu-desktop{
+.menu-desktop {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-.cover-artist-list{
+.cover-artist-list {
   width: 60px;
   height: 60px;
   object-fit: cover;
@@ -1497,7 +1502,7 @@ tbody tr .tablecellnewteams {
   overflow: hidden;
   position: relative;
 }
-.calendar-event-title{
+.calendar-event-title {
   position: relative;
   top: -3px;
 }

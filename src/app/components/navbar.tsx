@@ -6,7 +6,6 @@ import { getPendingNotificationsById } from "@/hooks/GET/getPendingNotifications
 
 export default async function MenuBar() {
   const userData: basicUserData | null = await fbasicUserData();
-  console.log(userData);
   const notifications: number = await getPendingNotificationsById(userData.id);
   return (
     <>

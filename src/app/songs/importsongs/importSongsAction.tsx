@@ -6,7 +6,7 @@ export const importSongs = async (data: songType[]) => {
   const supabase = createClient();
   data.map(async (song) => {
     const { error } = await supabase
-      .from("songs")
+      .from("global-songs")
       .upsert(song)
       .select();
     if (error) console.log(error);

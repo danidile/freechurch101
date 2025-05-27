@@ -1,21 +1,21 @@
-import isLoggedIn from "@/utils/supabase/getuser";
 import LoginForm from "./loginForm";
 import { TalertMessage } from "@/utils/types/types";
 import { redirect } from "next/navigation";
+import fbasicUserData from "@/utils/supabase/getUserData";
+import { basicUserData } from "@/utils/types/userData";
 
 export default async function Login({
   searchParams,
 }: {
   searchParams: TalertMessage;
 }) {
-  const loggedIn = await isLoggedIn();
-  if (loggedIn) {
+  const userData: basicUserData = await fbasicUserData();
+  if (userData.loggedIn) {
     redirect("/protected/dashboard");
-  } else {
-    return (
-      <div className="container-sub">
-        <LoginForm searchParams={searchParams} />
-      </div>
-    );
   }
+  return (
+    <div className="container-sub">
+      <LoginForm searchParams={searchParams} />
+    </div>
+  );
 }
