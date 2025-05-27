@@ -27,7 +27,7 @@ export default function MenuBarComponentSecondary({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
-      <Navbar onMenuOpenChange={setIsMenuOpen} isMenuOpen={isMenuOpen}>
+      <Navbar onMenuOpenChange={setIsMenuOpen} isMenuOpen={isMenuOpen} className="standalone:!hidden">
         <NavbarContent>
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}

@@ -128,9 +128,7 @@ small {
 .pwaiconsmenu:active {
   background-color: rgb(238, 238, 238);
 }
-.appmenucontainer {
-  display: none;
-}
+
 
 main {
   transition-property: opacity, transform, filter, background;
@@ -186,15 +184,22 @@ Image {
   overflow: visible;
 }
 .header-homepage {
+  padding: 2rem;
   height: calc(100vh - 70px);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   background-image: url(/images/bg-3.webp);
   background-size: cover;
   background-position: 15%;
   color: white;
+}
+.mobile-mockup {
+  width: 500px;
+  height: 500px;
+  max-width: 90vw;
+  object-fit: contain;
 }
 .container-sub {
   width: 100%;
@@ -541,6 +546,17 @@ tbody tr .tablecellnewteams {
   max-width: 70vw;
 }
 @media only screen and (max-width: 850px) {
+  .header-homepage {
+    padding: 2rem;
+    height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* background-image: url(/images/bg-3.webp);
+  background-size: cover;
+  background-position: 15%; */
+  }
   .song-list {
     padding: 0.2rem;
   }
