@@ -118,11 +118,8 @@ export function SelectWorshipTeamMemberDrawer({
                 </>
               </DrawerBody>
               <DrawerFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
+                <Button fullWidth color="primary" onPress={onClose}>
+                  Chiudi
                 </Button>
               </DrawerFooter>
             </>

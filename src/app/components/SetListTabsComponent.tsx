@@ -72,11 +72,6 @@ export default function SetListTabs({
                         {Object.values(setlist.setlistTeams)
                           .flat()
                           .map((team) => {
-                            if (team.name === "Daniele") {
-                              console.log(userData.id);
-                              console.log(team.profile);
-                            }
-
                             return (
                               <small
                                 className={`${

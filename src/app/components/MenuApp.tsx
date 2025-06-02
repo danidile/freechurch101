@@ -39,10 +39,7 @@ export default function MenuApp({
   }, [pathname]); // Depend on pathname to re-run when it changes
 
   return (
-    <div
-      className="appmenucontainer browser:!hidden"
-      
-    >
+    <div className="appmenucontainer browser:!hidden">
       <IconContext.Provider
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >

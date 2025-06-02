@@ -1,3 +1,5 @@
+import { Note } from "tonal";
+
 const chordRegex =
   /\b((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b|♯|♭)?(?:-?|m|maj|min|dim|aug|sus|add|7|9|11|13|m7|maj7|7b5|m9|add9|dim7|maj9|b5|sus4)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b|♯|♭)?)?)\b/gi;
 
@@ -24,6 +26,7 @@ const sectionKeywords = [
   "solo",
   "coda",
   "bridge",
+
 
   // Italian
   "intro",
@@ -63,28 +66,6 @@ const EN_TO_IT: Record<string, string> = {
   B: "Si",
 };
 
-const FLAT_EQUIVALENTS: Record<string, string> = {
-  Db: "C#",
-  Eb: "D#",
-  Gb: "F#",
-  Ab: "G#",
-  Bb: "A#",
-};
-
-const CHORDS = [
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#",
-  "A",
-  "A#",
-  "B",
-];
 function isSectionLine(line: string): boolean {
   const trimmed = line.trim();
 
@@ -129,29 +110,33 @@ function toItalianChord(chord: string, wasItalian: boolean) {
 
   return (wasItalian ? EN_TO_IT[root] || root : root) + accidental + suffix;
 }
-
-function transposeChord(chord: string, semitones: number): string {
-  const wasItalian = /^(Do|Re|Mi|Fa|Sol|La|Si)/.test(chord);
-  const english = toEnglishChord(chord);
-  console.log();
-
-  const match = english.match(/^([A-G][b#]?)(.*)$/);
-  if (!match) return chord;
-
-  let [_, root, suffix] = match;
-  root = FLAT_EQUIVALENTS[root] || root;
-  const index = CHORDS.indexOf(root);
-  if (index === -1) return chord;
-
-  const newRoot = CHORDS[(index + semitones + CHORDS.length) % CHORDS.length];
-  return toItalianChord(newRoot + suffix, wasItalian);
-}
 function transposeChordLine(line: string, semitones: number): string {
   return line.replace(chordRegex, (chord) => transposeChord(chord, semitones));
 }
 function isItalianChord(chord: string): boolean {
   return /^(Do|Re|Mi|Fa|Sol|La|Si)/i.test(chord);
 }
+
+function transposeChord(chord: string, semitones: number): string {
+  const wasItalian = /^(Do|Re|Mi|Fa|Sol|La|Si)/.test(chord);
+  const englishChord = toEnglishChord(chord); // normalize input
+
+  const match = englishChord.match(/^([A-G](?:#|b)?)(.*)$/);
+  if (!match) return chord;
+
+  const [, root, suffix] = match;
+
+  // Transpose the root note by semitones using tonal Note.transpose
+  const transposedRoot = Note.transpose(root, semitones + "m");
+
+  if (!transposedRoot) return chord;
+
+  // Convert back to Italian if necessary
+  const transposedChord = toItalianChord(transposedRoot + suffix, wasItalian);
+
+  return transposedChord;
+}
+
 export function parseChordSheet(
   input: string,
   transpose: number = 0
@@ -199,7 +184,7 @@ export function parseChordSheet(
       if (
         matches.length > 0 &&
         matchRatio > 0.5 &&
-        (!punctuation || matchRatio > 0.) &&
+        (!punctuation || matchRatio > 0) &&
         (italianChordCount === 0 ||
           italianLongChordsCount >= Math.floor(italianChordCount / 3))
       ) {

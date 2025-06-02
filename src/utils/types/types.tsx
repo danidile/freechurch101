@@ -31,6 +31,7 @@ export const eventSchema = z.object({
   eventType: z.string().optional().default("1"),
   eventTitle: z.string().optional().default(""),
   date: z.string().date().optional().default("2025-01-01"),
+  private: z.boolean(),
   start: z.string().optional().default("todo"),
   sections: z
     .object({
@@ -115,6 +116,7 @@ export type formValues = {
   church?: string;
   event_title?: string;
   date?: string;
+  private?: boolean;
   sections?: {
     id?: string;
     song_title?: string;
@@ -224,6 +226,7 @@ export type setListT = {
   date?: string;
   setListSongs?: setListSongT[];
   type?: string;
+  private?: boolean;
   teamMembers?: {
     id?: string;
     profile?: string;
