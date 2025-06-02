@@ -14,7 +14,8 @@ export const updateSetlistData = async (
 
   if (
     updatedSetlist.date !== setlistData.date.split("T")[0] ||
-    updatedSetlist.event_title !== setlistData.event_title
+    updatedSetlist.event_title !== setlistData.event_title ||
+    updatedSetlist.private !== setlistData.private
   ) {
     hasChanged = true;
   }
@@ -26,6 +27,7 @@ export const updateSetlistData = async (
       .update({
         date: updatedSetlist.date,
         event_title: updatedSetlist.event_title,
+        private: updatedSetlist.private,
       })
       .eq("id", setlistData.id)
       .select();
@@ -63,7 +65,6 @@ export const updateSetlistSongs = async (
   // Update songs
 
   updatedSetlist.setListSongs.map(async (song, index) => {
-
     if (song.song) {
       // Check if the field is empty
       const { data, error } = await supabase.from("setlist-songs").upsert(

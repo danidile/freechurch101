@@ -89,6 +89,7 @@ export default function UpdateSongForm(songData: songSchema) {
           <Textarea
             {...register("lyrics")}
             variant="bordered"
+            className="song-text-area"
             size="sm"
             onChange={handleInputChange}
             maxRows={50}

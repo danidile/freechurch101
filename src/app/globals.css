@@ -129,7 +129,6 @@ small {
   background-color: rgb(238, 238, 238);
 }
 
-
 main {
   transition-property: opacity, transform, filter, background;
   transition-timing-function: ease-in-out;
@@ -395,7 +394,6 @@ Image {
   padding: 0px 2px;
   margin: 0px;
   white-space: pre;
-  font-family: "Space Mono", monospace;
 }
 
 .lyrics {
@@ -882,7 +880,7 @@ tbody tr .tablecellnewteams {
 .team-show {
   border-radius: 1rem;
   position: relative;
-  margin: 10px 0px;
+  margin: 5px 0px;
   padding: 1rem 0.5rem;
   background-color: rgb(247, 247, 247, 0.7);
 }

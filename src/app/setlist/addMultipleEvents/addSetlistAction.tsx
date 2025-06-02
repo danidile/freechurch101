@@ -26,7 +26,6 @@ export const addSetlist = async (formData: setListT) => {
       created_by: user?.id,
       date: formData.date,
       event_title: formData.event_title,
-      private: formData.private,
     })
     .select()
     .single();

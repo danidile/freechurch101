@@ -15,13 +15,17 @@ import {
 } from "@/utils/types/types";
 import {
   Button,
+  Checkbox,
   Input,
   Popover,
   PopoverContent,
   PopoverTrigger,
   Select,
   SelectItem,
+  Tooltip,
 } from "@heroui/react";
+import { IoMdInformationCircleOutline } from "react-icons/io";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -69,8 +73,7 @@ export default function UpdateSetlistForm({
   const [team, setTeam] = useState<churchMembersT[]>([]);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
   let x: string;
-  console.log("team");
-  console.log(team);
+
   const {
     handleSubmit,
     register,
@@ -121,17 +124,6 @@ export default function UpdateSetlistForm({
     );
   };
 
-  // TeamData
-
-  // -------------------------------------------
-
-  // const removeMemberToTeam = (profile: string) => {
-  //   setTeam(team.filter((section) => section.profile !== profile));
-  // };
-  // -------------------------------------------
-
-  // END TeamData
-
   const addSongtoSetlist = (song: setListSongT) => {
     setState([
       ...state,
@@ -180,7 +172,7 @@ export default function UpdateSetlistForm({
     });
   };
 
-  const convertData = async () => {
+  const convertData = async (data: formValues) => {
     const newTeam: any = [];
     team.map((member) => {
       newTeam.push({ profile: member.profile });
@@ -190,10 +182,13 @@ export default function UpdateSetlistForm({
       id: setlistData?.id || crypto.randomUUID(),
       event_title: watchAllFields.event_title,
       date: watchAllFields.date,
+      private: data.private,
       setListSongs: state,
       teams: teamsState,
     };
 
+    console.log("data");
+    console.log(data);
     if (page === "create") {
       addSetlist(updatedSetlist);
     } else if (page === "update") {
@@ -227,6 +222,26 @@ export default function UpdateSetlistForm({
                 placeholder="Serata di Preghiera..."
               />
             </div>
+            <div className="flex justify-center">
+              <Checkbox
+                {...register("private")}
+                defaultSelected={eventDetails?.private || false}
+              >
+                Evento Privato
+              </Checkbox>
+              <Tooltip content="Selezionando 'evento privato' l'evento sarà visibile solo ai leader della chiesa e membri aggiunti alla turnazione.">
+                <Button
+                  isIconOnly
+                  radius="md"
+                  variant="light"
+                  size="sm"
+                  className="ml-1"
+                >
+                  <IoMdInformationCircleOutline size={"22"} />
+                </Button>
+              </Tooltip>
+            </div>
+
             <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
               <Input
                 type="date"
@@ -352,7 +367,7 @@ export default function UpdateSetlistForm({
 
           <br />
 
-          <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+          <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
             <div className="form-div crea-setlist-container">
               <h5>Turnazioni</h5>
             </div>
@@ -361,19 +376,22 @@ export default function UpdateSetlistForm({
                 <Button variant="bordered">Aggiungi Team</Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
-                {teams
-                  .filter(
-                    (team) =>
-                      !teamsState.some((el) => el.team_name === team.team_name)
-                  )
-                  .map((team: teamData) => (
-                    <DropdownItem
-                      key={team.id}
-                      onPress={() => addTeam(team.id)}
-                    >
-                      {team.team_name}
-                    </DropdownItem>
-                  ))}
+                {teams &&
+                  teams
+                    .filter(
+                      (team) =>
+                        !teamsState.some(
+                          (el) => el.team_name === team.team_name
+                        )
+                    )
+                    .map((team: teamData) => (
+                      <DropdownItem
+                        key={team.id}
+                        onPress={() => addTeam(team.id)}
+                      >
+                        {team.team_name}
+                      </DropdownItem>
+                    ))}
               </DropdownMenu>
             </Dropdown>
             <AnimatePresence>
@@ -477,6 +495,7 @@ export default function UpdateSetlistForm({
             color="primary"
             variant="shadow"
             type="submit"
+            fullWidth
             disabled={isSubmitting}
           >
             {page === "create" && "Crea"}
