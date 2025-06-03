@@ -40,9 +40,7 @@ export default async function Dashboard({
       <div className="flex flex-row w-full gap-12">
         {/* <Sidebar userData={userData} /> */}
         <div className="container-sub">
-          <h6 className="text-md">
-            Benvenuto {userData.name ? userData.name : userData.email}
-          </h6>
+          
           <PWADashboard pendingRequests={pendingRequests} userData={userData} />
         </div>
       </div>
