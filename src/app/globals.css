@@ -689,7 +689,7 @@ tbody tr .tablecellnewteams {
   font-weight: 500;
 }
 .container-dashboard-list {
-  margin-top: 20px;
+  margin-top: 10px;
   width: 100%;
   justify-content: center;
   gap: 20px;
@@ -1566,4 +1566,12 @@ tbody tr .tablecellnewteams {
 }
 .chord-sheet .paragraph .row .column {
   position: relative;
+}
+
+
+.avatar-pwa{
+  height: 80px;
+  width: 80px;
+  object-fit: cover;
+  border-radius: 50%;
 }
