@@ -829,6 +829,8 @@ tbody tr .tablecellnewteams {
   position: relative;
 }
 .setlist-list {
+  position: relative;
+  overflow: hidden;
   padding: 0.5rem;
   width: 100%;
   max-width: 500px;
@@ -1500,18 +1502,16 @@ tbody tr .tablecellnewteams {
   background-color: #ffffff;
 }
 
-.calendar-date-selected {
-  background-color: #efbebe;
-}
+
 .calendar-date-empty {
   background-color: #dedede;
 }
 .calendar-event {
+  cursor: pointer;
   height: 20px;
   width: 100%;
   padding-left: 4px;
-  border-radius: 4px 0px 0px 4px;
-  border-left: 2px solid #ea7b7b;
+  border-radius: 2px 0px 0px 2px;
   white-space: nowrap;
   overflow: hidden;
   position: relative;
@@ -1519,6 +1519,7 @@ tbody tr .tablecellnewteams {
 .calendar-event-title {
   position: relative;
   top: -3px;
+  left: 2px;
 }
 
 .calendar-number {

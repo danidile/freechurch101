@@ -53,6 +53,16 @@ export default function SetListTabs({
                   href={`/setlist/${setlist.id}`}
                 >
                   <div className="setlist-list" key={setlist.id}>
+                    <div
+                      style={{
+                        left: "0px",
+                        height: "100%",
+                        width: "5px",
+                        backgroundColor:  setlist.color,
+                        position: "absolute"
+                      }}
+                    ></div>
+
                     <div className="setlist-date-avatar">
                       <p
                         className={`setlist-day ${

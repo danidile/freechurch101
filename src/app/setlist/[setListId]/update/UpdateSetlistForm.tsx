@@ -13,6 +13,8 @@ import {
   setListT,
   teamData,
 } from "@/utils/types/types";
+import { TwitterPicker, ColorResult } from "react-color";
+
 import {
   Button,
   Checkbox,
@@ -36,6 +38,9 @@ import { SelectSongsDrawer } from "./SelectSongsDrawer";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { AnimatePresence, motion } from "framer-motion";
+import { IoMdColorFilter } from "react-icons/io";
+import { BiColorFill } from "react-icons/bi";
+import colors from "@/utils/eventsColors";
 
 export default function UpdateSetlistForm({
   teams,
@@ -66,6 +71,9 @@ export default function UpdateSetlistForm({
   ];
   const [state, setState] = useState<setListSongT[]>(
     setlistData?.setListSongs || []
+  );
+  const [eventColor, setEventColor] = useState<string>(
+    setlistData.color || "#fe564b"
   );
   const [teamsState, setTeamsState] = useState<teamData[]>(
     (teams || []).filter((team) => team.selected.length > 0)
@@ -185,6 +193,7 @@ export default function UpdateSetlistForm({
       private: data.private,
       setListSongs: state,
       teams: teamsState,
+      color: eventColor,
     };
 
     console.log("data");
@@ -200,14 +209,32 @@ export default function UpdateSetlistForm({
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
 
+  const handleColorChange = (color: ColorResult) => {
+    setEventColor(color.hex);
+  };
+
   return (
     <div className="container-sub">
       <div className="form-div crea-setlist-container">
         <form onSubmit={handleSubmit(convertData)}>
-          <h4>
-            {page === "create" && "Crea"}
-            {page === "update" && "Aggiorna"} Evento
-          </h4>
+          <div className="flex items-center">
+            <div className="flex items-center gap-2">
+              <Popover placement="bottom-start">
+                <PopoverTrigger>
+                  <Button isIconOnly style={{ backgroundColor: eventColor }}>
+                    <BiColorFill color="white" size={24} />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent style={{ borderWidth: "0px !important" }}>
+                  <TwitterPicker colors={colors} onChange={handleColorChange} />
+                </PopoverContent>
+              </Popover>
+              <h4>
+                {page === "create" && "Crea"}
+                {page === "update" && "Aggiorna"} Evento
+              </h4>
+            </div>
+          </div>
 
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
             <div className="gap-1.5">

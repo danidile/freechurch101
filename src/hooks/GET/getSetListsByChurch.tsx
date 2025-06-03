@@ -9,11 +9,11 @@ export const getSetListsByChurch = async (churchId: string) => {
   let setlistsFull;
   const { data: setlist, error } = await supabase
     .from("setlist")
-    .select("id,event_title,date")
+    .select("id,event_title,date,private,color")
     .eq("church", churchId)
     .order("date", { ascending: true });
   if (setlist) {
-     setlistsFull = await Promise.all(
+    setlistsFull = await Promise.all(
       setlist.map(async (singleSetlist) => {
         const setlistTeams: GroupedMembers = await getSetListTeams(
           singleSetlist.id

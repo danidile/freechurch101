@@ -105,21 +105,15 @@ export default function PWADashboard({
           </Link>
         </>
       )}
-      <Link href="" className="dashboard-list text-black">
+      {/* <Link href="" className="dashboard-list text-black">
         {" "}
         <IoSettingsSharp className="dashboard-icon" />
         Impostazioni
-      </Link>
+      </Link> */}
       <Link className="dashboard-list text-black" href="/legal">
         <HiMiniDocumentText className="dashboard-icon" />
         Legal
       </Link>
-      {userData.role === "admin" && (
-        <Link prefetch className="dashboard-list text-black" href="/calendario">
-          <LuCalendarDays className="dashboard-icon" />
-          Calendario
-        </Link>
-      )}
 
       <Button
         fullWidth

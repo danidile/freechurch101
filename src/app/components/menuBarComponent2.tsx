@@ -80,6 +80,11 @@ export default function MenuBarComponentSecondary({
                   People
                 </Link>
               </NavbarItem>
+              <NavbarItem>
+                <Link prefetch color="foreground" href="/calendar">
+                  Calendario
+                </Link>
+              </NavbarItem>
             </>
           )}
         </NavbarContent>
@@ -108,12 +113,22 @@ export default function MenuBarComponentSecondary({
               Eventi
             </Link>
           </NavbarItem>
+          <NavbarItem isActive>
+            <Link
+              prefetch
+              onClick={() => setIsMenuOpen(false)}
+              aria-current="page"
+              href="/people"
+            >
+              Persone
+            </Link>
+          </NavbarItem>
           <NavbarItem>
             <Link
               prefetch
               onClick={() => setIsMenuOpen(false)}
               color="foreground"
-              href="/calendario"
+              href="/calendar"
             >
               Calendario
             </Link>

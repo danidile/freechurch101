@@ -13,6 +13,8 @@ import {
   IoNotificationsOutline,
   IoNotificationsSharp,
 } from "react-icons/io5";
+import { FaRegCalendarAlt } from "react-icons/fa";
+
 import { Badge } from "@heroui/badge";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
@@ -58,8 +60,9 @@ export default function MenuApp({
           )}
           {isLoggedIn &&
             hasPermission(userdata.role as Role, "read:churchmembers") && (
-              <TransitionLink href="/people" className="pwaiconsmenu">
-                {parameter === "people" ? <RiTeamFill /> : <RiTeamLine />}
+              <TransitionLink href="/calendar" className="pwaiconsmenu">
+                {parameter === "people" ? <FaRegCalendarAlt /> : <FaRegCalendarAlt />
+}
               </TransitionLink>
             )}
           {isLoggedIn && (
