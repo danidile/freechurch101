@@ -68,7 +68,7 @@ export default function UpdateSetlistForm({
     setlistData?.setListSongs || []
   );
   const [eventColor, setEventColor] = useState<string>(
-    setlistData.color || "#fe564b"
+    setlistData?.color || "#fe564b"
   );
   const [teamsState, setTeamsState] = useState<teamData[]>(
     (teams || []).filter((team) => team.selected.length > 0)
