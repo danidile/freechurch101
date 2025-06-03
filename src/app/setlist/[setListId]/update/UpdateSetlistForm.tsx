@@ -1,20 +1,12 @@
 "use client";
 import { MdMoreVert } from "react-icons/md";
 import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@heroui/dropdown";
-import {
   churchMembersT,
   eventSchema,
   setListSongT,
   setListT,
   teamData,
 } from "@/utils/types/types";
-import { TwitterPicker, ColorResult } from "react-color";
-
 import {
   Button,
   Checkbox,
@@ -24,10 +16,14 @@ import {
   PopoverTrigger,
   Select,
   SelectItem,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
   Tooltip,
 } from "@heroui/react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-
+import { TwitterPicker, ColorResult } from "react-color";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -38,7 +34,6 @@ import { SelectSongsDrawer } from "./SelectSongsDrawer";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { AnimatePresence, motion } from "framer-motion";
-import { IoMdColorFilter } from "react-icons/io";
 import { BiColorFill } from "react-icons/bi";
 import colors from "@/utils/eventsColors";
 
@@ -80,7 +75,6 @@ export default function UpdateSetlistForm({
   );
   const [team, setTeam] = useState<churchMembersT[]>([]);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
-  let x: string;
 
   const {
     handleSubmit,
@@ -90,10 +84,6 @@ export default function UpdateSetlistForm({
   } = useForm<formValues>({
     resolver: zodResolver(eventSchema),
   });
-
-  // TeamData
-
-  // -------------------------------------------
 
   const addTeam = (id: string) => {
     setTeamsState([
