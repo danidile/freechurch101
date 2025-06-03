@@ -233,6 +233,7 @@ export type setListT = {
   };
   teams?: teamData[];
   setlistTeams?: GroupedMembers;
+  color?: string;
 };
 
 export type teamData = {

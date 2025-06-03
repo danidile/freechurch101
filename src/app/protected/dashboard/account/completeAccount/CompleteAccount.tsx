@@ -45,6 +45,7 @@ export default function CompleteAccount({
         <h1 className="text-2xl font-medium">Completa il tuo Profilo</h1>
 
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+          <Link href="/protected/dashboard/account/updateImage">Aggiorna immagine profilo.</Link>
           <div className="flex gap-4 items-center">
             <Input
               {...register("name")}
@@ -104,7 +105,6 @@ export default function CompleteAccount({
               <FaLock className="text-l text-default-500 pointer-events-none flex-shrink-0 my-auto" />
             }
           />
-          <Input label="Telefono" variant="bordered" size="sm" />
 
           <Input
             {...register("id")}
