@@ -1,3 +1,4 @@
+import { CalendarDate } from "@internationalized/date";
 import z from "zod";
 
 export type songSchema = {
@@ -354,3 +355,16 @@ export type SongWithAlbum = {
 
 // Grouped object by album name
 export type GroupedSongsByAlbum = Record<string, SongWithAlbum[]>;
+
+export type RangeValue = {
+  profile?: string;
+  id?: string;
+  start: CalendarDate;
+  end: CalendarDate;
+};
+export type RangeValueString = {
+  profile?: string;
+  id?: string;
+  start: string;
+  end: string;
+};

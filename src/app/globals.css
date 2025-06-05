@@ -1502,7 +1502,6 @@ tbody tr .tablecellnewteams {
   background-color: #ffffff;
 }
 
-
 .calendar-date-empty {
   background-color: #dedede;
 }
@@ -1568,10 +1567,14 @@ tbody tr .tablecellnewteams {
   position: relative;
 }
 
-
-.avatar-pwa{
+.avatar-pwa {
   height: 80px;
   width: 80px;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.calendar-heroui [data-unavailable="true"] {
+  @apply !text-white;
+  background-color: hsla(347, 90%, 51%, 0.754);
 }

@@ -31,6 +31,8 @@ export default function UpdateSongForm(songData: songSchema) {
     setState(toChordPro(state));
     console.log(state);
   };
+
+  
   const handleInputChange = (event: {
     target: { value: SetStateAction<string> };
   }) => {
@@ -80,7 +82,7 @@ export default function UpdateSongForm(songData: songSchema) {
 
           <Button
             type="button"
-            onClick={convertIntoChordPro}
+            onPress={convertIntoChordPro}
             color="primary"
             variant="flat"
           >
