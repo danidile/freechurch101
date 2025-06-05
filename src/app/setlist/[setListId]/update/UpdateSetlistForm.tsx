@@ -1,6 +1,14 @@
 "use client";
 import { MdMoreVert } from "react-icons/md";
 import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@heroui/react";
+
+import {
   churchMembersT,
   eventSchema,
   setListSongT,
@@ -42,13 +50,11 @@ export default function UpdateSetlistForm({
   page,
   songsList,
   setlistData,
-  worshipTeamMembers,
 }: {
   teams: teamData[];
   page: string;
   songsList: TsongNameAuthor[];
   setlistData: setListT;
-  worshipTeamMembers: churchMembersT[];
 }) {
   const keys = [
     "A",
@@ -64,6 +70,11 @@ export default function UpdateSetlistForm({
     "G",
     "G#",
   ];
+  const date = new Date();
+  const todaysDate = date.toISOString().split("T")[0];
+  const [eventDate, setEventDate] = useState<string>(
+    setlistData?.date.split("T")[0] || todaysDate
+  );
   const [state, setState] = useState<setListSongT[]>(
     setlistData?.setListSongs || []
   );
@@ -75,6 +86,12 @@ export default function UpdateSetlistForm({
   );
   const [team, setTeam] = useState<churchMembersT[]>([]);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
+  const [previousEventDate, setPreviousEventDate] = useState<string>(
+    setlistData?.date.split("T")[0] || todaysDate
+  );
+  const [pendingDate, setPendingDate] = useState<string>(
+    setlistData?.date.split("T")[0] || todaysDate
+  );
 
   const {
     handleSubmit,
@@ -90,6 +107,15 @@ export default function UpdateSetlistForm({
       ...teamsState,
       teams[teams.findIndex((section) => section.id === id)],
     ]);
+  };
+  const getUnavailableMembers = (newDate: string, teams: teamData[]) => {
+    return teams.flatMap((team) =>
+      team.selected.filter((member) =>
+        member.blockouts?.some(
+          (blockout) => newDate >= blockout.start && newDate <= blockout.end
+        )
+      )
+    );
   };
 
   const addMemberToTeam = (member: churchMembersT, teamId: string) => {
@@ -196,11 +222,27 @@ export default function UpdateSetlistForm({
   };
   // console.log("teams");
   // console.log(teams);
-  const date = new Date();
-  const todaysDate = date.toISOString().split("T")[0];
 
   const handleColorChange = (color: ColorResult) => {
     setEventColor(color.hex);
+  };
+
+  //date modal change
+  const [isDateConflictModalOpen, setIsDateConflictModalOpen] = useState(false);
+  const [conflictedMembers, setConflictedMembers] = useState<churchMembersT[]>(
+    []
+  );
+
+  const handleDateChange = (newDate: string) => {
+    const unavailable = getUnavailableMembers(newDate, teamsState);
+
+    if (unavailable.length > 0) {
+      setConflictedMembers(unavailable);
+      setPendingDate(newDate);
+      setIsDateConflictModalOpen(true);
+    } else {
+      setEventDate(newDate);
+    }
   };
 
   return (
@@ -266,7 +308,22 @@ export default function UpdateSetlistForm({
                 label="Event Date"
                 variant="bordered"
                 size="sm"
-                defaultValue={eventDetails?.date.split("T")[0] || todaysDate}
+                value={eventDate || ""} // controlled input
+                onChange={(e) => {
+                  const newDate = e.target.value;
+                  const unavailable = getUnavailableMembers(
+                    newDate,
+                    teamsState
+                  );
+                  console.log(eventDate);
+                  if (unavailable.length > 0) {
+                    setPreviousEventDate(eventDate);
+                    setIsDateConflictModalOpen(true);
+                    setPendingDate(newDate);
+                  } else {
+                    setEventDate(newDate);
+                  }
+                }}
               />
             </div>
 
@@ -432,7 +489,7 @@ export default function UpdateSetlistForm({
                     className="team-show"
                   >
                     <div className="team-title-container">
-                      <h5>{section.team_name}</h5>{" "}
+                      <h5 className="mb-6">{section.team_name}</h5>
                       <SelectWorshipTeamMemberDrawer
                         state={section.selected}
                         type="add"
@@ -440,11 +497,20 @@ export default function UpdateSetlistForm({
                         addMemberToTeam={addMemberToTeam} // Pass function correctly
                         section={null}
                         teamId={section.id}
+                        date={eventDate}
                       />
                     </div>
                     <AnimatePresence>
                       {section.selected &&
                         section.selected.map((member, index) => {
+                          const isUnavailable =
+                            member.blockouts &&
+                            member.blockouts.some((b) => {
+                              const start = new Date(b.start);
+                              const end = new Date(b.end);
+                              const target = new Date(eventDate);
+                              return target >= start && target <= end;
+                            });
                           return (
                             <motion.div
                               initial={{
@@ -464,7 +530,7 @@ export default function UpdateSetlistForm({
                                 delay: index * 0.06,
                               }} // Aggiunge un ritardo progressivo
                               layout
-                              className="teammember-container !py-1"
+                              className={`teammember-container !py-1 ${isUnavailable ? " !bg-red-50" : ""}`}
                               key={member.profile}
                             >
                               <div className="teammember-section !py-1">
@@ -476,7 +542,14 @@ export default function UpdateSetlistForm({
                                   {...register(`sections.${index}.id`)}
                                 />
                                 <p>
-                                  <b>{member.name + " " + member.lastname}</b>
+                                  <b>
+                                    {member.name + " " + member.lastname}
+                                    {isUnavailable && (
+                                      <span className="text-red-500 block text-sm mt-1">
+                                        Non è disponibile in questa data.
+                                      </span>
+                                    )}
+                                  </b>
                                 </p>
                                 <Button
                                   size="sm"
@@ -520,6 +593,48 @@ export default function UpdateSetlistForm({
           </Button>
         </form>
       </div>
+      <Modal
+        isOpen={isDateConflictModalOpen}
+        onClose={() => setIsDateConflictModalOpen(false)}
+      >
+        <ModalContent>
+          <ModalHeader>Membri non disponibili</ModalHeader>
+          <ModalBody>
+            <p>Alcuni membri non sono disponibili per la data selezionata:</p>
+            <ul className="list-disc list-inside">
+              {conflictedMembers.map((member) => (
+                <li key={member.id}>
+                  {member.name} {member.lastname}
+                </li>
+              ))}
+            </ul>
+            <p>
+              Vuoi mantenere la data e rimuovere questi membri, o annullare la
+              modifica?
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="danger"
+              onPress={() => {
+                setEventDate(pendingDate); // ❌ will cause "gg/mm/aaaa"
+                setIsDateConflictModalOpen(false);
+              }}
+            >
+              Mantieni data nuova
+            </Button>
+
+            <Button
+              onPress={() => {
+                setIsDateConflictModalOpen(false);
+                setEventDate(previousEventDate); // Restore previous valid date
+              }}
+            >
+              Annulla
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

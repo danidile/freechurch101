@@ -258,6 +258,7 @@ export type churchMembersT = {
   team_name?: string;
   isTemp?: boolean;
   temp_profile?: string;
+  blockouts?: { start: string; end: string }[];
 };
 
 export type searchBar = {

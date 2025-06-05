@@ -10,16 +10,12 @@ export default async function songs() {
   const songs = await getSongsCompact();
   const setlistData: null = null;
   const userData: basicUserData = await fbasicUserData();
-  const worshipTeamMembers: churchMembersT[] = await getChurchWorshipTeam(
-    userData.church_id
-  );
   const teams: teamData[] = await getChurchTeams(userData.church_id);
 
   return (
     <div className="container-sub">
       <UpdateSetlistForm
         teams={teams}
-        worshipTeamMembers={worshipTeamMembers}
         page="create"
         setlistData={setlistData}
         songsList={songs}
