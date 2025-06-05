@@ -5,7 +5,7 @@ import { basicUserData, calendarMonth } from "@/utils/types/userData";
 import { Tabs, Tab, Card, CardBody, RadioGroup, Radio } from "@heroui/react";
 import CalendarTabs from "./CalendarTabsComponent";
 
-export default async function Page() {
+export default async function CalendarPage() {
   const userData: basicUserData = await fbasicUserData();
   const setlists: setListT[] = await getSetListsByChurch(userData.church_id);
   const today = new Date();
@@ -22,7 +22,6 @@ export default async function Page() {
       eventsByDate.get(key)!.push(event);
     }
   }
-  
 
   // Loop for the next 3 months
   for (let i = 0; i < 3; i++) {
@@ -43,8 +42,6 @@ export default async function Page() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <CalendarTabs months={months} eventsByDate={eventsByDate} ></CalendarTabs>
-    </div>
+    <CalendarTabs months={months} eventsByDate={eventsByDate}></CalendarTabs>
   );
 }

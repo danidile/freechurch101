@@ -4,7 +4,7 @@ import { getNotificationsById } from "@/hooks/GET/getNotificationsById";
 import { GroupedNotificationsT } from "@/utils/types/types";
 import NotificationList from "./NotificationList";
 
-export default async function Page() {
+export default async function NotificationPage() {
   const userData: basicUserData = await fbasicUserData();
   const notifications: GroupedNotificationsT = await getNotificationsById(
     userData.id
