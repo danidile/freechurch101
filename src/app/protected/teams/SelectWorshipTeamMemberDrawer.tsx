@@ -1,9 +1,7 @@
 "use client";
 import { churchMembersT, setListSongT, songType } from "@/utils/types/types";
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import {
   Button,
-  Input,
   Drawer,
   DrawerContent,
   DrawerHeader,
@@ -22,6 +20,7 @@ export function SelectWorshipTeamMemberDrawer({
   addMemberToTeam,
   type,
   section,
+  date,
 }: {
   teamId: string;
   state: churchMembersT[];
@@ -29,6 +28,7 @@ export function SelectWorshipTeamMemberDrawer({
   teamMembers: churchMembersT[];
   addMemberToTeam: (song: setListSongT, teamId: string) => void;
   section: number;
+  date: string;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [members, setmembers] = useState(teamMembers);
@@ -80,6 +80,15 @@ export function SelectWorshipTeamMemberDrawer({
                             !state.some((m) => m.profile === member.profile)
                         )
                         .map((member, index) => {
+                          const isUnavailable =
+                            member.blockouts &&
+                            member.blockouts.some((b) => {
+                              const start = new Date(b.start);
+                              const end = new Date(b.end);
+                              const target = new Date(date);
+                              return target >= start && target <= end;
+                            });
+
                           return (
                             <motion.div
                               initial={{
@@ -96,18 +105,28 @@ export function SelectWorshipTeamMemberDrawer({
                               }}
                               transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
                               layout
-                              className="song-card-searchBar"
+                              className={`song-card-searchBar ${isUnavailable ? "opacity-50 !cursor-default" : ""}`}
                               style={{ cursor: "pointer" }}
                               key={member.profile}
                               onClick={() => {
-                                addMemberToTeam(member, teamId);
+                                if (!isUnavailable)
+                                  addMemberToTeam(member, teamId);
                               }}
                             >
-                              <div className="song-card-searchBar">
+                              <div
+                                className={`song-card-searchBar ${isUnavailable ? "opacity-50 !cursor-default" : ""}`}
+                              >
                                 <p className="song-card-searchBar">
                                   {member.name + " " + member.lastname}
                                   <br />
-                                  <small>{member.roles.join(", ")}</small>
+                                  {!isUnavailable && (
+                                    <small>{member.roles.join(", ")}</small>
+                                  )}
+                                  {isUnavailable && (
+                                    <span className="text-red-500 block text-sm mt-1">
+                                      Non è disponibile in questa data.
+                                    </span>
+                                  )}
                                 </p>
                               </div>
                             </motion.div>

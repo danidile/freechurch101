@@ -1455,7 +1455,7 @@ tbody tr .tablecellnewteams {
   align-items: center;
   gap: 0px;
   padding: 10px;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   background-color: #f8f8f8;
   /* border-bottom: 1px solid #959595; */
 }

@@ -8,20 +8,31 @@ export const getTeamByIdFunction = async (teamId: string) => {
 
   let { data: teamMembers, error: errorTeamMembers } = await supabase
     .from("team-members")
-    .select(
-      "id, roles, profile(id,name, lastname, email),temp_profile(id,name, lastname,email)"
-    )
+    .select("id, roles, profile(id,name, lastname, email)")
     .eq("team_id", teamId);
   if (errorTeamMembers) {
     console.error("Error fetching setlist:", errorTeamMembers);
     return null;
   }
 
-  const formattedTeamMembers = teamMembers?.map((member) => {
-    if (member.profile) {
+  const formattedTeamMembers = await Promise.all(
+    teamMembers.map(async (member) => {
       const profile = Array.isArray(member.profile)
         ? member.profile[0]
         : member.profile;
+
+      const { data: blockouts, error: blockoutError } = await supabase
+        .from("blockouts")
+        .select("start, end")
+        .eq("profile", profile.id);
+
+      if (blockoutError) {
+        console.error(
+          `Error fetching blockouts for ${profile.id}`,
+          blockoutError
+        );
+      }
+
       return {
         id: member.id,
         profile: profile.id,
@@ -30,22 +41,10 @@ export const getTeamByIdFunction = async (teamId: string) => {
         lastname: profile.lastname,
         email: profile.email,
         isTemp: false,
+        blockouts: blockouts || [],
       };
-    } else if (member.temp_profile) {
-      const temp_profile = Array.isArray(member.temp_profile)
-        ? member.temp_profile[0]
-        : member.temp_profile;
-      return {
-        id: member.id,
-        profile: temp_profile.id,
-        roles: member.roles,
-        name: temp_profile.name,
-        lastname: temp_profile.lastname,
-        email: temp_profile.email,
-        isTemp: true,
-      };
-    } 
-  });
+    })
+  );
   return formattedTeamMembers;
 };
 
