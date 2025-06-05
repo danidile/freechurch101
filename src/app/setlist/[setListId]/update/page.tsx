@@ -42,7 +42,6 @@ export default async function songs({
           page="update"
           setlistData={setlistData}
           songsList={songs}
-          worshipTeamMembers={worshipTeamMembers}
         />
       </div>
     );
