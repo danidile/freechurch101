@@ -44,6 +44,7 @@ export default function ChordProViewComponent({
   );
 
   const toggleView = () => setViewChords((v) => !v);
+
   const changeTranspose = (delta: number) =>
     setTranspose((prev) => Math.max(-10, Math.min(11, prev + delta)));
 
@@ -183,10 +184,7 @@ export default function ChordProViewComponent({
                     {line.text}
                   </p>
                 );
-              if (
-                line.type === "lyrics" ||
-                (line.type === "chords" && !viewChords)
-              )
+              if (line.type === "lyrics")
                 return (
                   <p key={i} className="lyrics">
                     {line.text}

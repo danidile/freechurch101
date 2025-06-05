@@ -26,7 +26,7 @@ export default async function Page() {
   console.log("profileSetlist");
   console.log(profileSetlist);
   return (
-    <div className="container-sub">
+    <div>
       <h5>{profile.name + " " + profile.lastname}</h5>
       <p>{profile.email}</p>
       <ModalRoleUpdate
