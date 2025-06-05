@@ -8,12 +8,15 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
+import ChordSheetJS from "chordsheetjs";
+
 import { useEffect, useMemo, useState } from "react";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 import { parseChordSheet } from "../songs/[songId]/parseChordSheet";
 import { setListSongT } from "@/utils/types/types";
 import { basicUserData } from "@/utils/types/userData";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import isChordProFormat from "./isChordProFormat";
 
 export default function ChordProViewComponent({
   setListSong,
@@ -22,7 +25,15 @@ export default function ChordProViewComponent({
   setListSong: setListSongT;
   userData?: basicUserData;
 }) {
+  // Check if uses chordpro format
+  const [isChordPro, setIsChordPro] = useState(false);
+  useEffect(() => {
+    setIsChordPro(isChordProFormat(setListSong.lyrics));
+  }, [setListSong.lyrics]);
+
+  // if it doesnt use custom parser.
   const [viewChords, setViewChords] = useState(true);
+
   const [transpose, setTranspose] = useState(
     stepsBetweenKeys(setListSong.upload_key!, setListSong.key!)
   );
@@ -36,6 +47,66 @@ export default function ChordProViewComponent({
   const changeTranspose = (delta: number) =>
     setTranspose((prev) => Math.max(-10, Math.min(11, prev + delta)));
 
+  // IF IT USES CHORDPRO USE CHORDSHEETSJS
+
+  const keys = [
+    "A",
+    "A#",
+    "B",
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+  ];
+
+  const chordSheet = setListSong.lyrics;
+  const parser = new ChordSheetJS.ChordProParser();
+  let song = parser.parse(chordSheet);
+  const steps = stepsBetweenKeys(setListSong.upload_key, setListSong.key);
+  song = song.transpose(steps);
+  const formatter = new ChordSheetJS.HtmlDivFormatter();
+  const disp = formatter.format(song);
+
+  const [state, setState] = useState(disp);
+  const [count, setCount] = useState(0);
+  const [songKey, setSongKey] = useState(
+    setListSong.key || setListSong.upload_key
+  );
+
+  const transposeUp = () => {
+    setCount((prevCount) => {
+      const newCount = prevCount + 1;
+      const newchords = song.transpose(newCount); // Use newCount here
+      const disp = formatter.format(newchords);
+      setState(disp);
+      return newCount; // Return updated count
+    });
+    setSongKey(
+      keys[(keys.findIndex((key) => key === songKey) + 1) % keys.length]
+    );
+  };
+
+  const transposeDown = () => {
+    setCount((prevCount) => {
+      const newCount = prevCount - 1;
+      const newchords = song.transpose(newCount); // Use newCount here
+      const disp = formatter.format(newchords);
+      setState(disp);
+      return newCount; // Return updated count
+    });
+    setSongKey(
+      keys[
+        (keys.findIndex((key) => key === songKey) - 1 + keys.length) %
+          keys.length
+      ]
+    );
+  };
+
   return (
     <div className="relative">
       <div className="view-selector-container">
@@ -43,12 +114,30 @@ export default function ChordProViewComponent({
           {viewChords ? "Testo" : "Accordi"}
         </Button>
 
-        <div className={`${viewChords ? "opacity-100" : "opacity-0"} transopose-section`}>
+        <div
+          className={`${viewChords ? "opacity-100" : "opacity-0"} transopose-section`}
+        >
           <p>Tonalità:</p>
-          <Button isIconOnly variant="light" onPress={() => changeTranspose(-1)} size="md">
+          <Button
+            isIconOnly
+            variant="light"
+            onPress={() => {
+              changeTranspose(-1);
+              transposeDown();
+            }}
+            size="md"
+          >
             <FaMinus />
           </Button>
-          <Button isIconOnly variant="light" onPress={() => changeTranspose(1)} size="md">
+          <Button
+            isIconOnly
+            variant="light"
+            onPress={() => {
+              changeTranspose(1);
+              transposeUp();
+            }}
+            size="md"
+          >
             <FaPlus />
           </Button>
         </div>
@@ -79,14 +168,56 @@ export default function ChordProViewComponent({
       <div>
         <h5 className="song-title">{setListSong.song_title}</h5>
         <small>{setListSong.author}</small>
-
-        {parsedLyrics.map((line, i) => {
-          if (line.type === "section") return <p key={i} className="comment"><b>{line.text}</b></p>;
-          if (line.type === "chords" && viewChords)
-            return <p key={i} className="chord">{line.text}</p>;
-          if (line.type === "lyrics" || (line.type === "chords" && !viewChords))
-            return <p key={i} className="lyrics">{line.text}</p>;
-        })}
+        {!isChordPro && (
+          <>
+            {parsedLyrics.map((line, i) => {
+              if (line.type === "section")
+                return (
+                  <p key={i} className="comment">
+                    <b>{line.text}</b>
+                  </p>
+                );
+              if (line.type === "chords" && viewChords)
+                return (
+                  <p key={i} className="chord">
+                    {line.text}
+                  </p>
+                );
+              if (
+                line.type === "lyrics" ||
+                (line.type === "chords" && !viewChords)
+              )
+                return (
+                  <p key={i} className="lyrics">
+                    {line.text}
+                  </p>
+                );
+            })}
+          </>
+        )}
+        {isChordPro && (
+          <>
+            {viewChords && (
+              <>
+                <p>
+                  Tonalità canzone: <span className="chord">{songKey}</span>
+                </p>
+                <div
+                  id="song-chords"
+                  dangerouslySetInnerHTML={{ __html: state }}
+                  style={{ whiteSpace: "pre-wrap" }}
+                />
+              </>
+            )}
+            {!viewChords && (
+              <div
+                id="song-lyrics"
+                dangerouslySetInnerHTML={{ __html: state }}
+                style={{ whiteSpace: "pre-wrap" }}
+              />
+            )}
+          </>
+        )}
       </div>
     </div>
   );

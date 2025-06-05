@@ -16,6 +16,7 @@ import { PiMusicNotesPlusFill } from "react-icons/pi";
 import { LuCalendarDays } from "react-icons/lu";
 import logoutAction from "@/app/components/logOutAction";
 import { useState } from "react";
+import { FaCalendarTimes } from "react-icons/fa";
 
 export default function PWADashboard({
   userData,
@@ -87,9 +88,15 @@ export default function PWADashboard({
         className="dashboard-list text-black"
         href="/protected/dashboard/account"
       >
-        {" "}
         <FaUserCircle className="dashboard-icon" />
         Il mio Account
+      </Link>
+      <Link
+        className="dashboard-list text-black"
+        href="/protected/blockouts"
+      >
+        <FaCalendarTimes className="dashboard-icon" />
+        Blocco date
       </Link>
       <Link className="dashboard-list text-black" href="/people">
         <BiSolidChurch className="dashboard-icon" />

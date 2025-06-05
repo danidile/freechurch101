@@ -24,9 +24,11 @@ export default async function fbasicUserData() {
   };
   const supabase = createClient();
   const {
-    data: { user },
+    data: { session },
     error: userError,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getSession();
+
+  const user = session?.user;
   if (userError) {
     console.error("Not logged in:", userError.message);
     return userData;

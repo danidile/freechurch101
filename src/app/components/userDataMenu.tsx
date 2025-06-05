@@ -50,9 +50,10 @@ export default function UserDataMenu({
               <DropdownItem key="profile" className="h-10 gap-2">
                 <p className="font-semibold">{userData.email}</p>
               </DropdownItem>
-              <DropdownItem key="settings" href="/protected/dashboard/account">
-                Il mio profilo
+              <DropdownItem key="settings" href="/protected/blockouts">
+                Blocca date
               </DropdownItem>
+              
               {hasPermission(userData.role as Role, "view:teams") && (
                 <>
                   <DropdownItem key="teams" href="/protected/teams">
@@ -71,6 +72,7 @@ export default function UserDataMenu({
                   >
                     Importa Canzoni
                   </DropdownItem>
+                  /protected/blockouts
                 </>
               )}
 
