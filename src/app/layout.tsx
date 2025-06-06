@@ -1,7 +1,9 @@
+
 import "./globals.css";
 import MenuBar from "./components/navbar";
 import { Viewport } from "next";
 import PullToRefreshLayout from "./components/PullToRefreshLayout";
+import { ZustandProviders } from "./zustandProvider";
 
 export const viewport: Viewport = {
   maximumScale: 1,
@@ -46,10 +48,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <PullToRefreshLayout>
-          <MenuBar />
-          <main>{children}</main>
-        </PullToRefreshLayout>
+        <ZustandProviders>
+          <PullToRefreshLayout>
+            <MenuBar />
+            <main>{children}</main>
+          </PullToRefreshLayout>
+        </ZustandProviders>
       </body>
     </html>
   );

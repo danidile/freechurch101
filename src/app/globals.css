@@ -7,17 +7,7 @@
     text-wrap: balance;
   }
 }
-:root {
-  --primary: #583cfa50;
-  --secondary: #2dd4bf;
-  --surface: #1a1a1a;
-  --surface-light: #2a2a2a;
-  --white: #ffffff;
-  --grey: #9ca3af;
-  --danger: #e8083e;
-  --success: #02864a;
-  --pending: #fb8d1a;
-}
+
 body {
   -webkit-tap-highlight-color: transparent;
   font-family: "DM Sans", serif;
@@ -1610,7 +1600,14 @@ tbody tr .tablecellnewteams {
   background-color: #f7f7f7;
   border: 1px solid #e3e3e3;
 }
-
+.logoutcolors{
+  color: hsla(347, 90%, 51%, 0.754);
+}
+.logoutcolors:hover {
+  background-color: hsla(347, 90%, 51%, 0.254);
+  color:hsla(347, 90%, 51%, 1);
+  border: 1px solid hsla(347, 90%, 51%, 0.4);
+}
 .sidebar-container {
   width: 100%;
   max-width: 300px;

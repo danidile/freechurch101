@@ -1,18 +1,20 @@
-"use server";
+"use client";
 
 import fbasicUserData from "@/utils/supabase/getUserData";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 import { basicUserData } from "@/utils/types/userData";
+import { useUserStore } from "@/store/useUserStore";
 
-export const getSongs = async () => {
+export const getSongs = async (userData: basicUserData) => {
   const supabase = createClient();
-  const user: basicUserData = await fbasicUserData();
-  if (user.loggedIn) {
+
+  console.log("user", userData);
+  if (userData.loggedIn ) {
     const { data: songs, error } = await supabase
       .from("songs")
       .select("*")
       .order("song_title", { ascending: true })
-      .eq("church", user.church_id);
+      .eq("church", userData.church_id);
     if (error) {
       console.error("Errore durante il fetch:", error);
     }

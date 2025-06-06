@@ -1,5 +1,4 @@
 "use client";
-import { basicUserData } from "@/utils/types/userData";
 import {
   Navbar,
   NavbarBrand,
@@ -7,95 +6,96 @@ import {
   NavbarItem,
   NavbarMenuToggle,
   NavbarMenu,
-  NavbarMenuItem,
   Image,
-  Button,
 } from "@heroui/react";
 import Link from "next/link";
 import { useState } from "react";
 import UserDataMenu from "./userDataMenu";
-import { useUserStore } from "../store";
 import MenuApp from "./MenuApp";
-
+import { useUserStore } from "@/store/useUserStore";
 export default function MenuBarComponentSecondary({
-  userData,
   notifications,
 }: {
-  userData: basicUserData;
   notifications: number;
 }) {
+  const { userData } = useUserStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
-      <Navbar onMenuOpenChange={setIsMenuOpen} isMenuOpen={isMenuOpen} className="standalone:!hidden">
+      <Navbar
+        onMenuOpenChange={setIsMenuOpen}
+        isMenuOpen={isMenuOpen}
+        className="standalone:!hidden"
+      >
         <NavbarContent>
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             className="sm:hidden"
           />
           <NavbarBrand>
-            <Image
-              className="max-h-8 overflow-visible"
-              src="/images/brand/LOGO_.png"
-              alt=""
-            />
+            <Link href={"/"}>
+              <Image
+                className="max-h-8 overflow-visible"
+                src="/images/brand/LOGO_.png"
+                alt=""
+              />
+            </Link>
           </NavbarBrand>
         </NavbarContent>
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          {!userData.loggedIn && (
-            <>
-              <NavbarItem>
-                <Link prefetch color="foreground" href="/">
-                  Home
-                </Link>
-              </NavbarItem>
-              <NavbarItem>
-                <Link prefetch color="foreground" href="/esplora">
-                  Esplora
-                </Link>
-              </NavbarItem>
-              <NavbarItem>
-                <Link prefetch color="foreground" href="/globalsongs">
-                  Canzoni
-                </Link>
-              </NavbarItem>
-            </>
-          )}
+          {!userData ||
+            (!userData.loggedIn && (
+              <>
+                <NavbarItem>
+                  <Link color="foreground" href="/">
+                    Home
+                  </Link>
+                </NavbarItem>
+                <NavbarItem>
+                  <Link color="foreground" href="/esplora">
+                    Esplora
+                  </Link>
+                </NavbarItem>
+                <NavbarItem>
+                  <Link color="foreground" href="/globalsongs">
+                    Canzoni
+                  </Link>
+                </NavbarItem>
+              </>
+            ))}
 
-          {userData.loggedIn && (
+          {userData && userData.loggedIn && (
             <>
               <NavbarItem>
-                <Link prefetch color="foreground" href="/songs">
+                <Link color="foreground" href="/songs">
                   Canzoni
                 </Link>
               </NavbarItem>
               <NavbarItem isActive>
-                <Link prefetch aria-current="page" href="/setlist">
+                <Link aria-current="page" href="/setlist">
                   Eventi
                 </Link>
               </NavbarItem>
               <NavbarItem>
-                <Link prefetch color="foreground" href="/people">
+                <Link color="foreground" href="/people">
                   People
                 </Link>
               </NavbarItem>
               <NavbarItem>
-                <Link prefetch color="foreground" href="/calendar">
+                <Link color="foreground" href="/calendar">
                   Calendario
                 </Link>
               </NavbarItem>
             </>
           )}
         </NavbarContent>
-
-        <UserDataMenu userData={userData} />
+        {userData && <UserDataMenu userData={userData} />}
 
         {/* // Mobile Menu */}
         <NavbarMenu>
           <NavbarItem>
             <Link
-              prefetch
               onClick={() => setIsMenuOpen(false)}
               color="foreground"
               href="/songs"
@@ -105,7 +105,6 @@ export default function MenuBarComponentSecondary({
           </NavbarItem>
           <NavbarItem isActive>
             <Link
-              prefetch
               onClick={() => setIsMenuOpen(false)}
               aria-current="page"
               href="/setlist"
@@ -115,7 +114,6 @@ export default function MenuBarComponentSecondary({
           </NavbarItem>
           <NavbarItem isActive>
             <Link
-              prefetch
               onClick={() => setIsMenuOpen(false)}
               aria-current="page"
               href="/people"
@@ -125,7 +123,6 @@ export default function MenuBarComponentSecondary({
           </NavbarItem>
           <NavbarItem>
             <Link
-              prefetch
               onClick={() => setIsMenuOpen(false)}
               color="foreground"
               href="/calendar"
@@ -133,26 +130,26 @@ export default function MenuBarComponentSecondary({
               Calendario
             </Link>
           </NavbarItem>
-          {!userData.loggedIn && (
-            <>
-              <NavbarItem className=" lg:flex">
-                <Link prefetch href="/login">
-                  Accedi
-                </Link>
-              </NavbarItem>
-              <NavbarItem>
-                <Link prefetch color="primary" href="/sign-up">
-                  Iscriviti
-                </Link>
-              </NavbarItem>
-            </>
-          )}
+          {!userData ||
+            (!userData.loggedIn && (
+              <>
+                <NavbarItem className=" lg:flex">
+                  <Link href="/login">Accedi</Link>
+                </NavbarItem>
+                <NavbarItem>
+                  <Link color="primary" href="/sign-up">
+                    Iscriviti
+                  </Link>
+                </NavbarItem>
+              </>
+            ))}
         </NavbarMenu>
       </Navbar>
+
       <MenuApp
-        userdata={userData}
+        userdata={userData || null}
         notifications={notifications}
-        isLoggedIn={userData.loggedIn ? true : false}
+
       />
     </>
   );

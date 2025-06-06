@@ -15,7 +15,7 @@ export default async function Login({
   }
   return (
     <div className="container-sub">
-      <LoginForm searchParams={searchParams} />
+      <LoginForm />
     </div>
   );
 }

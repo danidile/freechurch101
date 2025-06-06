@@ -1,31 +1,36 @@
-import type { Metadata } from "next";
+"use client";
 
-import { basicUserData } from "@/utils/types/userData";
-import fbasicUserData from "@/utils/supabase/getUserData";
-import { encodedRedirect } from "@/utils/utils";
-import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "./sidebar";
+import { useUserStore } from "@/store/useUserStore";
 
-export const metadata: Metadata = {
-  title: "ChurchLab",
-  description: "Dai struttura alla tua chiesa",
-};
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const userData: basicUserData = await fbasicUserData();
-  console.log(userData.loggedIn);
-  if (userData.loggedIn) {
-    return (
-      <div className="flex flex-row">
-        <Sidebar userData={userData} />
-        <div className="dashboard-container">{children}</div>
-      </div>
-    );
-  } else {
-    return redirect("/login");
+}) {
+  const { userData, loading, fetchUser } = useUserStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!userData.loggedIn && !loading) {
+      fetchUser().then(() => {
+        if (!useUserStore.getState().userData.loggedIn) {
+          router.push("/login");
+        }
+      });
+    }
+  }, [userData.loggedIn, loading]);
+
+  if (loading || !userData.loggedIn) {
+    return <p>Loading...</p>; // Or a skeleton/loading component
   }
+
+  return (
+    <div className="flex flex-row">
+      <Sidebar userData={userData} />
+      <div className="dashboard-container">{children}</div>
+    </div>
+  );
 }

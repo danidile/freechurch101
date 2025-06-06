@@ -8,7 +8,7 @@ export default function GetParamsMessage() {
   const error = searchParams.get("error");
 
   return (
-    <div className="my-2 mx-auto">
+    <div className="my-0 mx-auto">
       {success && <Alert description={success} color="success" />}
       {error && <Alert description={error} color="danger" />}
     </div>

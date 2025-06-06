@@ -6,7 +6,6 @@ import {
   MdOutlineLibraryMusic,
   MdLibraryMusic,
 } from "react-icons/md";
-import { RiTeamFill, RiTeamLine } from "react-icons/ri";
 import {
   IoSettings,
   IoSettingsOutline,
@@ -14,7 +13,6 @@ import {
   IoNotificationsSharp,
 } from "react-icons/io5";
 import { FaRegCalendarAlt } from "react-icons/fa";
-
 import { Badge } from "@heroui/badge";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
@@ -23,11 +21,9 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { basicUserData } from "@/utils/types/userData";
 
 export default function MenuApp({
-  isLoggedIn,
   notifications,
   userdata,
 }: {
-  isLoggedIn: boolean;
   userdata: basicUserData;
   notifications: number;
 }) {
@@ -53,19 +49,22 @@ export default function MenuApp({
               <MdOutlineLibraryMusic />
             )}
           </TransitionLink>
-          {isLoggedIn && (
+          {userdata.loggedIn && (
             <TransitionLink href="/setlist" className="pwaiconsmenu">
               {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
             </TransitionLink>
           )}
-          {isLoggedIn &&
+          {userdata.loggedIn &&
             hasPermission(userdata.role as Role, "read:churchmembers") && (
               <TransitionLink href="/calendar" className="pwaiconsmenu">
-                {parameter === "people" ? <FaRegCalendarAlt /> : <FaRegCalendarAlt />
-}
+                {parameter === "people" ? (
+                  <FaRegCalendarAlt />
+                ) : (
+                  <FaRegCalendarAlt />
+                )}
               </TransitionLink>
             )}
-          {isLoggedIn && (
+          {userdata.loggedIn && (
             <TransitionLink href="/notifications" className="pwaiconsmenu">
               {parameter === "/notifications" ? (
                 <Badge size="sm" color="primary" content={notifications}>
@@ -93,7 +92,4 @@ export default function MenuApp({
       </IconContext.Provider>
     </div>
   );
-}
-function usestate(): { parameter: any; setParameter: any } {
-  throw new Error("Function not implemented.");
 }

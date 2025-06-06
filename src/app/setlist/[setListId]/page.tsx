@@ -2,11 +2,7 @@ import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
 import { FaCheck } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa6";
-import { IoMdCloseCircleOutline } from "react-icons/io";
-
 import ModalLyrics from "./modalLyrics";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
@@ -14,9 +10,7 @@ import {
   GroupedMembers,
   setListSongT,
   setListT,
-  teamData,
 } from "@/utils/types/types";
-import ViewFullSetListComponent from "./viewFullSetListComponent";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
@@ -79,7 +73,7 @@ export default async function Page({
 
         {setlistsongs.length > 0 && (
           <div className="center- gap-3 mt-5 mb-20">
-            <Link prefetch href={`/setlist/${params.setListId}/view`}>
+            <Link  href={`/setlist/${params.setListId}/view`}>
               <Button color="primary"> Visualizza set completo</Button>
             </Link>
           </div>

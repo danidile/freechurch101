@@ -38,9 +38,7 @@ export default async function Page() {
       url: "timoteopepe",
     },
   ];
-  const songs = await getSongs();
 
-  const userData: basicUserData = await fbasicUserData();
   if (albums) {
     return (
       <div className="container-sub">
@@ -72,9 +70,6 @@ export default async function Page() {
         </div>
 
         <h3 className="text-center">Trova la tua canzone!</h3>
-        <SongsListSearch songs={songs} userData={userData} />
-
-        <ExploreListComponent albums={albums} userData={userData} />
       </div>
     );
   } else {

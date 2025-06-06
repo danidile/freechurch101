@@ -8,7 +8,6 @@ export default async function Layout({
   return (
     <div className=" flex flex-col gap-12 items-start">
       {children}
-      <GetParamsMessage />
     </div>
   );
 }

@@ -14,17 +14,26 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { I18nProvider } from "@react-aria/i18n";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { updateBlockoutsAction } from "./updateBlockoutsAction";
 import { RangeValue, RangeValueString } from "@/utils/types/types";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function BlockDatesComponent({
   preBlockedDates,
 }: {
   preBlockedDates: RangeValueString[];
 }) {
+  const { userData, fetchUser, loading } = useUserStore();
+
+  useEffect(() => {
+    if (!userData) fetchUser();
+  }, [userData]);
+
+  if (loading) return <p>Loading...</p>;
+  if (!userData) return <p>No user found</p>;
   const router = useRouter();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -105,7 +114,7 @@ export default function BlockDatesComponent({
               firstDayOfWeek="mon"
             />
           </div>
-          <div className="container-sub">
+          <div className="flex flex-col">
             {blockedDates.map((date, idx) => (
               <div key={idx} className="flex gap-3 items-center my-2">
                 <p className="capitalize ">

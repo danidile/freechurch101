@@ -1,10 +1,9 @@
 "use client";
 import { Spinner } from "@heroui/spinner";
-
+import { signUpAction } from "@/app/actions";
 import { signInAction } from "@/app/actions";
 import { FormMessage } from "@/app/components/form-message";
-import { Input, Button } from "@heroui/react";
-import Link from "next/link";
+import { Input, Button, CardHeader, CardFooter } from "@heroui/react";
 import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,12 +12,10 @@ import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 import SignInWithGoogleButton from "../SignInWithGoogleButton";
+import { Tabs, Tab, Card, CardBody } from "@heroui/react";
+import GetParamsMessage from "@/app/components/getParams";
 
-export default function LoginForm({
-  searchParams,
-}: {
-  searchParams: TalertMessage;
-}) {
+export default function LoginForm() {
   const {
     register,
     handleSubmit,
@@ -26,8 +23,11 @@ export default function LoginForm({
   } = useForm<TauthSchema>({
     resolver: zodResolver(authSchema),
   });
-
-  const convertData = async (data: TauthSchema) => {
+  const [selected, setSelected] = useState<string>("accedi");
+  const signUpFunction = async (data: TauthSchema) => {
+    await signUpAction(data);
+  };
+  const loginFunction = async (data: TauthSchema) => {
     await signInAction(data); // Ensure this is awaited
   };
   const [isVisible, setIsVisible] = useState(false);
@@ -35,88 +35,144 @@ export default function LoginForm({
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <>
-      <form
-        className="browser:auth-form standalone:auth-form-pwa "
-        onSubmit={handleSubmit(convertData)}
-      >
-        <h1 className="text-2xl font-medium">Accedi</h1>
+    <div className="container-sub">
+      <div className="flex flex-col">
+        <Card className="max-w-full w-[340px]">
+          <CardHeader className="text-center">
+            <h1 className="text-2xl font-medium capitalize mx-auto my-4">
+              {selected}
+            </h1>
+          </CardHeader>
+          <CardBody>
+            <Tabs
+              fullWidth
+              aria-label="Tabs form"
+              selectedKey={selected}
+              size="md"
+              onSelectionChange={(key) => setSelected(String(key))}
+            >
+              <Tab key="accedi" title="Accedi">
+                <form
+                  className="flex flex-col gap-4"
+                  onSubmit={handleSubmit(loginFunction)}
+                >
+                  <Input
+                    {...register("email")}
+                    isRequired
+                    label="Email"
+                    placeholder="email..."
+                    type="email"
+                  />
+                  <Input
+                    {...register("password")}
+                    isRequired
+                    label="Password"
+                    minLength={8}
+                    placeholder="password..."
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={toggleVisibility}
+                      >
+                        {isVisible ? (
+                          <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <FaEye className="text-xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
+                    type={isVisible ? "text" : "password"}
+                  />
+                  <p className="text-center text-small">
+                    Non hai ancora un account?{" "}
+                    <Button size="sm" onPress={() => setSelected("iscriviti")}>
+                      Iscriviti
+                    </Button>
+                  </p>
+                  <Button
+                    fullWidth
+                    color="primary"
+                    variant="shadow"
+                    type="submit"
+                    className="mb-4"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <Spinner color="white" size="sm" />
+                    ) : (
+                      "Accedi"
+                    )}
+                  </Button>
+                  <SignInWithGoogleButton />
+                </form>
+              </Tab>
 
-        <p className="text-sm text-foreground">
-          Non hai un account?{" "}
-          <Link
-            className="text-foreground font-medium underline"
-            href="/sign-up"
-          >
-            Registrati
-          </Link>
-        </p>
-        <div className="w-80  max-w-screen  flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Input
-            {...register("email")}
-            label="Email"
-            name="email"
-            placeholder="you@example.com"
-            required
-          />
-
-          <Input
-            {...register("password")}
-            label="Password"
-            name="password"
-            minLength={8}
-            placeholder="Your password"
-            required
-            endContent={
-              <button
-                aria-label="toggle password visibility"
-                className="focus:outline-none"
-                type="button"
-                onClick={toggleVisibility}
-              >
-                {isVisible ? (
-                  <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
-                ) : (
-                  <FaEye className="text-xl text-default-400 pointer-events-none" />
-                )}
-              </button>
-            }
-            type={isVisible ? "text" : "password"}
-          />
-          {searchParams.message && (
-            <FormMessage
-              message={{
-                message:
-                  searchParams.message ||
-                  searchParams.error ||
-                  searchParams.success ||
-                  "",
-              }}
-            />
-          )}
-
-          <Button
-            fullWidth
-            color="primary"
-            variant="shadow"
-            type="submit"
-            className="my-4"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? <Spinner color="white" size="sm" /> : "Accedi"}
-          </Button>
-        </div>
-        <SignInWithGoogleButton />
-      </form>
-
-      <div className="flex justify-between items-center">
-        <Link
-          className="text-xs text-foreground underline py-3"
-          href="/forgot-password"
-        >
-          Hai dimenticato la Password?
-        </Link>
+              <Tab key="iscriviti" title="Iscriviti">
+                <form
+                  className="flex flex-col gap-4"
+                  onSubmit={handleSubmit(signUpFunction)}
+                >
+                  <Input
+                    {...register("email")}
+                    isRequired
+                    label="Email"
+                    placeholder="email..."
+                    type="email"
+                  />
+                  <Input
+                    {...register("password")}
+                    isRequired
+                    label="Password"
+                    minLength={8}
+                    placeholder="password..."
+                    endContent={
+                      <button
+                        aria-label="toggle password visibility"
+                        className="focus:outline-none"
+                        type="button"
+                        onClick={toggleVisibility}
+                      >
+                        {isVisible ? (
+                          <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
+                        ) : (
+                          <FaEye className="text-xl text-default-400 pointer-events-none" />
+                        )}
+                      </button>
+                    }
+                    type={isVisible ? "text" : "password"}
+                  />
+                  <p className="text-center text-small">
+                    Already have an account?{" "}
+                    <Button size="sm" onPress={() => setSelected("accedi")}>
+                      Accedi
+                    </Button>
+                  </p>
+                  <Button
+                    fullWidth
+                    color="primary"
+                    variant="shadow"
+                    type="submit"
+                    className="mb-4"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <Spinner color="white" size="sm" />
+                    ) : (
+                      "Iscriviti"
+                    )}
+                  </Button>
+                  <SignInWithGoogleButton />
+                </form>
+              </Tab>
+            </Tabs>
+          </CardBody>
+          <CardFooter>
+            <GetParamsMessage />
+          </CardFooter>
+        </Card>
       </div>
-    </>
+    </div>
   );
 }

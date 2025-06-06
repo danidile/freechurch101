@@ -10,17 +10,7 @@ export default async function Page({
   params: { setListId: string };
 }) {
   const setlistData: setListT = await getSetList(params.setListId);
-
   let setlistsongs: setListSongT[] = await getSetListSongs(params.setListId);
-  let setlistTeams: GroupedMembers = await getSetListTeams(params.setListId);
-
-  const date = new Date(setlistData.date);
-  const readableDate = date.toLocaleString("it-IT", {
-    weekday: "long", // "Sunday"
-    year: "numeric", // "2024"
-    month: "long", // "November"
-    day: "numeric", // "10"
-  });
   return (
     <div className="container-sub">
       <ViewFullSetListComponent

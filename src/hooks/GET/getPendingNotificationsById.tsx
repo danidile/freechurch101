@@ -1,37 +1,31 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import {
-  GroupedNotificationsT,
-  notificationT,
-  teamData,
-} from "@/utils/types/types";
 
-export const getPendingNotificationsById = async (
-  userId: string | null
-): Promise<number> => {
-  if (userId) {
-    const supabase = createClient();
-    const today = new Date().toISOString().split("T")[0]; // Get today's date in "YYYY-MM-DD"
+export const getPendingNotificationsById = async () => {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return 0; // Safeguard for null user
 
-    let { data: notifications, error } = await supabase
-      .from("event-team")
-      .select(
-        `id, 
+  const today = new Date().toISOString().split("T")[0]; // Get today's date in "YYYY-MM-DD"
+
+  let { data: notifications, error } = await supabase
+    .from("event-team")
+    .select(
+      `id, 
        setlist:setlist!inner(date, event_title), 
        team:team!inner(team_name),status`
-      )
-      .eq("member", userId)
-      .eq("status", "pending")
-      .gte("setlist.date", today);
+    )
+    .eq("member", user.id)
+    .eq("status", "pending")
+    .gte("setlist.date", today);
 
-    if (error) {
-      console.error(error);
-      return 0;
-    }
-
-    return notifications.length;
-  } else {
+  if (error) {
+    console.error(error);
     return 0;
   }
+
+  return notifications.length;
 };
