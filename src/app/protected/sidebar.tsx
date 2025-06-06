@@ -33,60 +33,49 @@ export default function Sidebar({ userData }: { userData: basicUserData }) {
       </div>
       <ul className="sidebar-ul">
         <li>
-          <Link
-            className="sidebar-link"
-            prefetch
-            href="/protected/dashboard/account"
-          >
+          <Link className="sidebar-link" href="/protected/dashboard/account">
             <FaUserCircle className="dashboard-icon" />
             Account
           </Link>
         </li>
+        {userData.church_id && (
+          <>
+            <li>
+              <Link className="sidebar-link" href="/protected/calendar">
+                <FaRegCalendarAlt />
+                Calendario
+              </Link>
+            </li>
+            <li>
+              <Link className="sidebar-link" href="/protected/notifications">
+                <IoNotificationsSharp />
+                Notifiche
+              </Link>
+            </li>
+            <li>
+              <Link className="sidebar-link" href="/protected/blockouts">
+                <FaCalendarTimes className="dashboard-icon" />
+                Blocca Date
+              </Link>
+            </li>
+            <li>
+              <Link className="sidebar-link" href="/protected/teams">
+                <HiUserGroup className="dashboard-icon" />
+                Team
+              </Link>
+            </li>
+          </>
+        )}
+
         <li>
-          <Link className="sidebar-link" prefetch href="/protected/calendar">
-            <FaRegCalendarAlt />
-            Calendario
-          </Link>
-        </li>
-        <li>
-          <Link
-            className="sidebar-link"
-            prefetch
-            href="/protected/notifications"
-          >
-            <IoNotificationsSharp />
-            Notifiche
-          </Link>
-        </li>
-        <li>
-          <Link className="sidebar-link" prefetch href="/protected/blockouts">
-            <FaCalendarTimes className="dashboard-icon" />
-            Blocca Date
-          </Link>
-        </li>
-        <li>
-          <Link className="sidebar-link" prefetch href="/protected/teams">
-            <HiUserGroup className="dashboard-icon" />
-            Team
-          </Link>
-        </li>
-        <li>
-          <Link
-            className="sidebar-link"
-            prefetch
-            href="/protected/dashboard/account"
-          >
+          <Link className="sidebar-link" href="/protected/dashboard/account">
             <IoSettingsSharp className="dashboard-icon" />
             Impostazioni
           </Link>
         </li>
 
         <li>
-          <Link
-            className="sidebar-link"
-            prefetch
-            href="/protected/dashboard/account"
-          >
+          <Link className="sidebar-link logoutcolors" href="/protected/dashboard/account">
             <MdOutlineLogout />
             Esci
           </Link>

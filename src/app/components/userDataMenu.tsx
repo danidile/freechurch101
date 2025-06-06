@@ -1,3 +1,4 @@
+"use client";
 import {
   NavbarContent,
   NavbarItem,
@@ -13,19 +14,21 @@ import isLoggedIn from "@/utils/supabase/getuser";
 import logoutTest from "@/app/components/logOutAction";
 import { basicUserData } from "@/utils/types/userData";
 import { useState } from "react";
-import { HiUserGroup } from "react-icons/hi2";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import { MdLibraryMusic } from "react-icons/md";
-import { PiMusicNotesPlusFill } from "react-icons/pi";
-import { TfiSharethis } from "react-icons/tfi";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function UserDataMenu({
   userData,
 }: {
   userData: basicUserData;
 }) {
+  const router = useRouter();
+  const { fetchUser } = useUserStore();
   async function logouter() {
-    logoutTest();
+    await logoutTest();
+    await fetchUser(); // client refetch
+    router.push("/protected/dashboard/account"); // redirect AFTER store is up-to-date
   }
   const [avatarUrl, setAvatarUrl] = useState(
     `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
@@ -50,10 +53,16 @@ export default function UserDataMenu({
               <DropdownItem key="profile" className="h-10 gap-2">
                 <p className="font-semibold">{userData.email}</p>
               </DropdownItem>
-              <DropdownItem key="settings" href="/protected/blockouts">
-                Blocca date
+
+              <DropdownItem key="settings" href="/protected/dashboard/account">
+                Account
               </DropdownItem>
-              
+              {userData.church_id && (
+                <DropdownItem key="settings" href="/protected/blockouts">
+                  Blocca date
+                </DropdownItem>
+              )}
+
               {hasPermission(userData.role as Role, "view:teams") && (
                 <>
                   <DropdownItem key="teams" href="/protected/teams">
@@ -76,13 +85,17 @@ export default function UserDataMenu({
                 </>
               )}
 
-              <DropdownItem className="text-red-500" key="logout" color="danger" onPress={logouter}>
+              <DropdownItem
+                className="text-red-500"
+                key="logout"
+                color="danger"
+                onPress={logouter}
+              >
                 Esci
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </NavbarItem>
-        
       </>
     );
   }

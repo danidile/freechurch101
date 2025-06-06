@@ -1,10 +1,6 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
-import {
-  churchMembersT,
-  GroupedMembers,
-  setListSongT,
-} from "@/utils/types/types";
+import { GroupedMembers } from "@/utils/types/types";
 
 export const getSetListTeams = async (setlistId: string) => {
   const supabase = createClient();
@@ -38,6 +34,7 @@ export const getSetListTeams = async (setlistId: string) => {
       return acc;
     }, {});
     console.log("groupedByTeam");
+    console.log("TestTTTTTTTT");
     console.log(groupedByTeam);
     return groupedByTeam;
   }

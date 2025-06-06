@@ -9,6 +9,7 @@ import {
   DropdownItem,
 } from "@heroui/react";
 import ChordSheetJS from "chordsheetjs";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 import { useEffect, useMemo, useState } from "react";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
@@ -17,14 +18,15 @@ import { setListSongT } from "@/utils/types/types";
 import { basicUserData } from "@/utils/types/userData";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import isChordProFormat from "./isChordProFormat";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ChordProViewComponent({
   setListSong,
-  userData,
 }: {
   setListSong: setListSongT;
-  userData?: basicUserData;
 }) {
+  const { userData} = useUserStore();
+
   // Check if uses chordpro format
   const [isChordPro, setIsChordPro] = useState(false);
   useEffect(() => {
@@ -159,6 +161,21 @@ export default function ChordProViewComponent({
                   href={`/songs/${setListSong.id}/updateSong`}
                 >
                   Aggiorna
+                </Link>
+              </DropdownItem>
+              <DropdownItem
+                startContent={<FaRegTrashAlt color="red" />}
+                key="edit"
+                variant="flat"
+                color="danger"
+              >
+                <Link
+                  color="danger"
+                  className="w-full text-center"
+                  size="sm"
+                  href={`/songs/${setListSong.id}/updateSong`}
+                >
+                  Elimina canzone
                 </Link>
               </DropdownItem>
             </DropdownMenu>

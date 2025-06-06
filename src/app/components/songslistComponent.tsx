@@ -64,7 +64,7 @@ export default function SongslistComponent({
           </Button>
         </form>
         {hasPermission(userData.role as Role, "create:songs") && (
-          <Link prefetch href="/songs/addSong">
+          <Link  href="/songs/addSong">
             Aggiungi una canzone!
           </Link>
         )}

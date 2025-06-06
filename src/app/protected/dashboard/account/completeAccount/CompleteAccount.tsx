@@ -8,36 +8,59 @@ import { basicUserData } from "@/utils/types/userData";
 import { Alert } from "@heroui/react";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa6";
+import LoadingSongsPage from "@/app/songs/loading";
+import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
+import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
+import { useUserStore } from "@/store/useUserStore";
+import { useState, useEffect } from "react";
+import { getChurches } from "@/hooks/GET/getChurches";
+import { useRouter } from "next/navigation";
 
-export default function CompleteAccount({
-  churchList,
-  userData,
-}: {
-  churchList: Array<{ id: string; churchName: string }>;
-  userData: basicUserData;
-}) {
+export default function CompleteAccount() {
+  const router = useRouter();
+
+  const { userData, fetchUser, loading } = useUserStore();
+  const [churchesList, setChurchesList] = useState<any[] | null>(null);
+  const [loadingChurches, setLoadingChurches] = useState(true);
+
+  // Step 1: Make sure user is fetched on first mount
+  useEffect(() => {
+    if (!userData.loggedIn) {
+      fetchUser();
+    }
+  }, []);
+
+  // Step 2: Once user is available, fetch songs
+  useEffect(() => {
+    if (!loading && userData.loggedIn) {
+      if (!userData.church_id) {
+        getChurches().then((fetchedChurchesList) => {
+          setChurchesList(fetchedChurchesList);
+          setLoadingChurches(false);
+        });
+      }
+    }
+  }, [loading, userData]);
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<basicUserData>({
-    // No resolver needed, only TypeScript type
-  });
+  } = useForm<basicUserData>();
+
+  if (loading || loadingChurches || !userData.loggedIn)
+    return <LoadingSongsPage />;
 
   const convertData = async (data: basicUserData) => {
-    console.log(data);
-    let updatedData: basicUserData = data;
-
     if (data.church_name) {
-      const index = churchList.findIndex(
+      const index = churchesList.findIndex(
         (church) => church.churchName === data.church_name
       );
-      updatedData.church_id = churchList[index].id;
+      data.church_id = churchesList[index].id;
     }
-    completeAccountAction(updatedData);
+    completeAccountAction(data);
+    await fetchUser(); // client refetch
+    router.push("/protected/dashboard/account"); // redirect AFTER store is up-to-date
   };
-  console.log("userData");
-  console.log(userData);
 
   return (
     <>
@@ -45,7 +68,9 @@ export default function CompleteAccount({
         <h1 className="text-2xl font-medium">Completa il tuo Profilo</h1>
 
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Link href="/protected/dashboard/account/updateImage">Aggiorna immagine profilo.</Link>
+          <Link href="/protected/dashboard/account/updateImage">
+            Aggiorna immagine profilo.
+          </Link>
           <div className="flex gap-4 items-center">
             <Input
               {...register("name")}
@@ -76,7 +101,7 @@ export default function CompleteAccount({
                 {...register("church_name")}
                 label="Seleziona la tua chiesa"
               >
-                {churchList.map(
+                {churchesList.map(
                   (church: { id: string; churchName: string }) => (
                     <AutocompleteItem key={church.id} id={church.id}>
                       {church.churchName}
@@ -123,13 +148,7 @@ export default function CompleteAccount({
           >
             Aggiorna profilo
           </Button>
-          {userData.pending_church_confirmation && (
-            <Alert
-              color="primary"
-              description="Attendi che i responsabili della tua chiesa confermino il tuo account."
-              title="In attesa di conferma"
-            />
-          )}
+          
         </div>
       </form>
     </>

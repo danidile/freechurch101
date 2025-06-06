@@ -54,7 +54,7 @@ export default function PWADashboard({
       {userData.pending_church_confirmation && (
         <Link
           className="dashboard-list !p-0"
-          prefetch
+          
           href="/protected/church/confirm-members"
         >
           <Alert
@@ -73,7 +73,7 @@ export default function PWADashboard({
       {pendingRequests && pendingRequests.length > 0 && (
         <Link
           className="dashboard-list !p-0"
-          prefetch
+          
           href="/protected/church/confirm-members"
         >
           <Alert

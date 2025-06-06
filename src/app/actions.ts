@@ -30,7 +30,7 @@ export const signUpAction = async (data: TauthSchema) => {
     return encodedRedirect(
       "success",
       "/login",
-      "Registrazione effettuata con successo! Controlla la tua mail per il link di verifica."
+      "Registrazione effettuata con successo! Controlla la tua mail per il link di verifica. "
     );
   }
 };
@@ -53,7 +53,7 @@ export const signInAction = async (formData: TauthSchema) => {
     );
   }
 
-  return redirect("/protected/dashboard");
+  return redirect("/protected/dashboard/account");
 };
 
 export const forgotPasswordAction = async (data: TlostPasswordSchema) => {

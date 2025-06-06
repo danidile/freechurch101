@@ -2,12 +2,16 @@
 
 import { createClient } from "@/utils/supabase/server";
 
-export const getBlockoutsByUserId = async (userId: string) => {
+export const getBlockoutsByUserId = async () => {
   const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { data: blockouts, error } = await supabase
     .from("blockouts")
     .select("id,profile,start,end")
-    .eq("profile", userId)
+    .eq("profile", user.id)
     .order("start", { ascending: true });
 
   if (error) {
