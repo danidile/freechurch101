@@ -25,6 +25,7 @@ export default function UserDataMenu({
 }) {
   const router = useRouter();
   const { fetchUser } = useUserStore();
+
   async function logouter() {
     await logoutTest();
     await fetchUser(); // client refetch
@@ -103,21 +104,11 @@ export default function UserDataMenu({
   return (
     <>
       <NavbarContent justify="end">
-        <NavbarItem >
+        <NavbarItem>
           <Link href="/login">Accedi</Link>
         </NavbarItem>
-
       </NavbarContent>
     </>
   );
 }
 
-// Fetch user data on the server
-export async function getServerSideProps() {
-  const userData = await isLoggedIn(); // Ensure `isLoggedIn` is an async function
-  return {
-    props: {
-      userData, // Pass fetched user data as props
-    },
-  };
-}

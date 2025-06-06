@@ -10,7 +10,7 @@ type UserStore = {
 
 export const useUserStore = create<UserStore>((set) => ({
   userData: {
-    loggedIn: null,
+    loggedIn: false,
     role: "user", // No array, safe access
   },
   loading: false,

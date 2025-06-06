@@ -1,9 +1,4 @@
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Sidebar from "./sidebar";
-import { useUserStore } from "@/store/useUserStore";
-import LoadingSidebar from "./loading";
 
 export default function ProtectedLayout({
   children,

@@ -8,8 +8,10 @@ import { pendingRequestsT } from "@/utils/types/types";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
 import LoadingSongsPage from "@/app/songs/loading";
-
+import { Spinner } from "@heroui/spinner";
+import { useRouter } from "next/navigation";
 export default function Dashboard() {
+  const router = useRouter();
   const { userData, loading, fetchUser } = useUserStore();
   const [pendingRequests, setPendingRequests] = useState<
     pendingRequestsT[] | null
@@ -37,8 +39,17 @@ export default function Dashboard() {
     }
   }, [loading, userData]);
 
-  if (loading || loadingRequests || !userData.loggedIn)
-    return <LoadingSongsPage />;
+  useEffect(() => {
+    if (!loading && !userData.loggedIn) {
+      router.push("/login");
+    }
+  }, [loading, userData.loggedIn, router]);
+  if (loading || loadingRequests)
+    return (
+      <div className="container-sub">
+        <Spinner size="lg" />
+      </div>
+    );
 
   if (userData) {
     return (
