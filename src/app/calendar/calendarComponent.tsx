@@ -6,6 +6,7 @@ import CalendarTabs from "./CalendarTabsComponent";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import LoadingSongsPage from "../songs/loading";
+import { Spinner } from "@heroui/spinner";
 
 export default function CalendarComponent() {
   const { userData, fetchUser, loading } = useUserStore();
@@ -44,7 +45,11 @@ export default function CalendarComponent() {
     }
   }
   if (loading || loadingSetlists || !userData.loggedIn)
-    return <LoadingSongsPage />;
+    return (
+      <div className="container-sub">
+        <Spinner size="lg" />
+      </div>
+    );
 
   // Loop for the next 3 months
   for (let i = 0; i < 3; i++) {

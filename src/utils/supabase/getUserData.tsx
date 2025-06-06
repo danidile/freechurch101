@@ -22,22 +22,7 @@ export default async function fbasicUserData() {
     loggedIn: false,
     role: "user",
   };
-  // const isDev = process.env.NODE_ENV === "development";
 
-  // if (isDev) {
-  //   // Dummy data for local dev to avoid hitting Supabase
-  //   return {
-  //     loggedIn: true,
-  //     id: "d8c5266d-4b5f-447a-bf8d-9e5d8575e5d3",
-  //     email: "test@example.com",
-  //     name: "Test",
-  //     lastname: "User",
-  //     role: "admin",
-  //     church_id: "24a8b487-5c81-47c9-8d6c-28fe08a1917c",
-  //     church_name: "Test Church",
-  //     pending_church_confirmation: false,
-  //   };
-  // }
   const supabase = createClient();
   const {
     data: { user },

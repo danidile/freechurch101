@@ -4,7 +4,7 @@ import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
 import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
 import { useUserStore } from "@/store/useUserStore";
 import { profileSetlistsT } from "@/utils/types/types";
-import { Button, Card, CardBody, CardHeader, Chip, Link } from "@heroui/react";
+import { Button, Card, CardBody, CardHeader, Chip, Link, Spinner } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
 import { Alert } from "@heroui/alert";
@@ -37,7 +37,11 @@ export default function AccountComponent() {
   }, [loading, userData]);
 
   if (loading || loadingSongs || !userData.loggedIn)
-    return <LoadingSongsPage />;
+    return (
+      <div className="container-sub">
+        <Spinner size="lg" />
+      </div>
+    );
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
@@ -73,7 +77,7 @@ export default function AccountComponent() {
       )}
       {userData.pending_church_confirmation && (
         <Alert
-        className="my-5"
+          className="my-5"
           color="primary"
           description="Attendi che i responsabili della tua chiesa confermino il tuo account."
           title="In attesa di conferma"
