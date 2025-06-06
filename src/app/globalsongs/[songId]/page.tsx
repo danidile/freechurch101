@@ -13,7 +13,7 @@ export default async function Page({ params }: { params: { songId: string } }) {
     return (
       <div className="container-sub">
         <div className="song-presentation-container">
-          <ChordProViewComponent userData={userData} setListSong={songData} />
+          <ChordProViewComponent setListSong={songData} />
         </div>
       </div>
     );
