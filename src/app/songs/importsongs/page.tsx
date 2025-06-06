@@ -7,38 +7,38 @@ import { importSongs } from "./importSongsAction";
 import { ImportaCanzoni } from "./ImportaCanzoni";
 
 export default async function Page() {
-  const songData: songType[] = await getSongs();
-  const parser = new ChordSheetJS.ChordProParser();
+  // const songData: songType[] = await getSongs();
+  // const parser = new ChordSheetJS.ChordProParser();
 
-  const updatedSongs = await songData.map((song: songType) => {
-    const songElement = parser.parse(song.lyrics);
-    const formatter = new ChordSheetJS.TextFormatter();
-    const disp = formatter.format(songElement);
+  // const updatedSongs = await songData.map((song: songType) => {
+  //   const songElement = parser.parse(song.lyrics);
+  //   const formatter = new ChordSheetJS.TextFormatter();
+  //   const disp = formatter.format(songElement);
 
-    return {
-      id: song.id,
-      song_title: song.song_title,
-      author: song.author,
-      upload_key: song.upload_key,
-      lyrics: disp, // update the lyrics field with formatted HTML
-      artist: song.artist,
-      album: song.album,
-    };
-  });
+  //   return {
+  //     id: song.id,
+  //     song_title: song.song_title,
+  //     author: song.author,
+  //     upload_key: song.upload_key,
+  //     lyrics: disp, // update the lyrics field with formatted HTML
+  //     artist: song.artist,
+  //     album: song.album,
+  //   };
+  // });
 
-  console.log(songData);
-  if (updatedSongs) {
-    return (
-      <div className="container-sub">
-        <p>Titolo</p>
-        <ImportaCanzoni updatedSongs={updatedSongs}></ImportaCanzoni>
+  // console.log(songData);
+  // if (updatedSongs) {
+  return (
+    <div className="container-sub">
+      <p>Titolo</p>
+      {/* <ImportaCanzoni updatedSongs={updatedSongs}></ImportaCanzoni>
         {songData.map((song,index) => {
           return <p>{index+ " "+song.song_title}</p>;
-        })}
-      </div>
-    );
-  } else {
-    console.log("ERRORERRRRRR" + songData);
-    return <div className="container-sub">Errore</div>;
-  }
+        })} */}
+    </div>
+  );
+  // } else {
+  //   console.log("ERRORERRRRRR" + songData);
+  //   return <div className="container-sub">Errore</div>;
+  // }
 }
