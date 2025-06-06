@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "./sidebar";
 import { useUserStore } from "@/store/useUserStore";
+import LoadingSidebar from "./loading";
 
 export default function RootLayout({
   children,
@@ -24,7 +25,8 @@ export default function RootLayout({
   }, [userData.loggedIn, loading]);
 
   if (loading || !userData.loggedIn) {
-    return <p>Loading...</p>; // Or a skeleton/loading component
+
+    return <LoadingSidebar />; // Or a skeleton/loading component
   }
 
   return (

@@ -20,6 +20,9 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { updateBlockoutsAction } from "./updateBlockoutsAction";
 import { RangeValue, RangeValueString } from "@/utils/types/types";
 import { useUserStore } from "@/store/useUserStore";
+import { addBlockoutAction } from "./addBlockoutsAction";
+import { deleteBlockoutAction } from "./deleteBlockoutsAction";
+import LoadingBlockoutsPage from "./loading";
 
 export default function BlockDatesComponent({
   preBlockedDates,
@@ -32,9 +35,8 @@ export default function BlockDatesComponent({
     if (!userData) fetchUser();
   }, [userData]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingBlockoutsPage/>;
   if (!userData) return <p>No user found</p>;
-  const router = useRouter();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [value, setValue] = useState<RangeValue | null>({
@@ -57,31 +59,26 @@ export default function BlockDatesComponent({
     // year: "numeric",
   });
 
-  const addBlock = (onClose: () => void) => {
+  const addBlock = async (onClose: () => void) => {
     if (value) {
       const updated = [...blockedDates, value].sort((a, b) =>
         a.start.compare(b.start)
       );
       setBlockedDates(updated);
     }
+    console.log("value", value);
+    const sanitized: RangeValueString = {
+      start: value.start.toString(), // or start.toDate(getLocalTimeZone()).toLocaleDateString("sv-SE")
+      end: value.end.toString(),
+    };
+    await addBlockoutAction({ blockedDates: sanitized });
     onClose();
   };
 
-  const updateBlockouts = async () => {
-    const sanitized = blockedDates.map(({ id, profile, start, end }) => ({
-      start: start.toString(), // or start.toDate(getLocalTimeZone()).toLocaleDateString("sv-SE")
-      end: end.toString(),
-      id,
-      profile,
-    }));
-    console.log(sanitized);
+  const deleteBlock = async (blockId: string, idx: number) => {
+    await deleteBlockoutAction({ blockId });
 
-    await updateBlockoutsAction({
-      blockedDates: sanitized,
-      preBlockedDates,
-    });
-
-    router.refresh();
+    setBlockedDates((prev) => prev.filter((_, i) => i !== idx));
   };
 
   return (
@@ -114,10 +111,13 @@ export default function BlockDatesComponent({
               firstDayOfWeek="mon"
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col items-center justify-center">
             {blockedDates.map((date, idx) => (
-              <div key={idx} className="flex gap-3 items-center my-2">
-                <p className="capitalize ">
+              <div
+                key={idx}
+                className="flex flex-row my-2 gap-3 items-center mx-auto"
+              >
+                <p className="capitalize">
                   {formatter.format(date.start.toDate(getLocalTimeZone()))} –{" "}
                   {formatter.format(date.end.toDate(getLocalTimeZone()))}
                 </p>
@@ -126,9 +126,9 @@ export default function BlockDatesComponent({
                   size="sm"
                   variant="flat"
                   color="danger"
-                  onPress={() =>
-                    setBlockedDates((prev) => prev.filter((_, i) => i !== idx))
-                  }
+                  onPress={() => {
+                    deleteBlock(date.id, idx);
+                  }}
                 >
                   <FaRegTrashAlt />
                 </Button>
@@ -201,11 +201,6 @@ export default function BlockDatesComponent({
             </Modal>
           </div>
         </CardBody>
-        <CardFooter className="border-t-1 p-5">
-          <Button fullWidth color="danger" size="lg" onPress={updateBlockouts}>
-            Aggiorna giorni blocco
-          </Button>
-        </CardFooter>
       </Card>
     </I18nProvider>
   );

@@ -26,9 +26,7 @@ import { useForm, Controller } from "react-hook-form";
 export default function PeopleToConfirm({
   profile,
   userData,
-  tempProfiles,
 }: {
-  tempProfiles: profileT[];
   profile: pendingRequestsT;
   userData: basicUserData;
 }) {
@@ -99,58 +97,6 @@ export default function PeopleToConfirm({
           </span>
         </div>
       </Link>
-      <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Profilo Temporaneo?
-              </ModalHeader>
-              <ModalBody>
-                <p>
-                  Avevi creato un profilo temporaneo per questo utente? Se sì
-                  selezionalo per passare tutte le informazioni del profilo
-                  temporaneo a questo utente.
-                </p>
-                <p>
-                  <b>Lista profili temporanei</b>
-                </p>
-                <form onSubmit={handleSubmit(confirmAndUpdateTempUser)}>
-                  <Input
-                    {...register("profileId")}
-                    className="hidden"
-                    value={profile.profile.id}
-                  ></Input>
-                  <Controller
-                    name="tempProfileId"
-                    control={control}
-                    render={({ field }) => (
-                      <RadioGroup {...field}>
-                        {tempProfiles.map((profile) => (
-                          <Radio key={profile.id} value={String(profile.id)}>
-                            {profile.name} {profile.lastname}
-                          </Radio>
-                        ))}
-                      </RadioGroup>
-                    )}
-                  />
-
-                  <Button
-                    color="primary"
-                    variant="shadow"
-                    type="submit"
-                    fullWidth
-                    className="mt-8 mb-4"
-                    disabled={isSubmitting}
-                  >
-                    Aggiorna profilo temporaneo
-                  </Button>
-                </form>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </div>
   );
 }

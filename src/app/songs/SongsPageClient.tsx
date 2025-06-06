@@ -11,22 +11,23 @@ export default function SongsPageClient() {
   const [songs, setSongs] = useState<any[] | null>(null);
   const [loadingSongs, setLoadingSongs] = useState(true);
 
-  // Step 1: Make sure user is fetched on first mount
   useEffect(() => {
-    if (!userData.loggedIn) {
-      fetchUser();
-    }
-  }, []);
+    const fetchData = async () => {
+      // Step 1: Ensure user is fetched
+      if (!userData.loggedIn && !loading) {
+        await fetchUser();
+      }
 
-  // Step 2: Once user is available, fetch songs
-  useEffect(() => {
-    if (!loading && userData.loggedIn) {
-      getSongs(userData).then((fetchedSongs) => {
+      // Step 2: Once user is available, fetch songs
+      if (userData.loggedIn && !loading) {
+        const fetchedSongs = await getSongs(userData);
         setSongs(fetchedSongs);
         setLoadingSongs(false);
-      });
-    }
-  }, [loading, userData]);
+      }
+    };
+
+    fetchData();
+  }, [userData.loggedIn, loading]);
 
   if (loading || loadingSongs || !userData.loggedIn)
     return <LoadingSongsPage />;

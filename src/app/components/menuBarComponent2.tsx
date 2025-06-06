@@ -133,14 +133,10 @@ export default function MenuBarComponentSecondary({
           {!userData ||
             (!userData.loggedIn && (
               <>
-                <NavbarItem className=" lg:flex">
+                <NavbarItem >
                   <Link href="/login">Accedi</Link>
                 </NavbarItem>
-                <NavbarItem>
-                  <Link color="primary" href="/sign-up">
-                    Iscriviti
-                  </Link>
-                </NavbarItem>
+
               </>
             ))}
         </NavbarMenu>
