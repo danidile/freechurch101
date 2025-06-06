@@ -1,15 +1,15 @@
 "use client";
 import { redirect } from "next/navigation";
-import PWADashboard from "../PWADashboard";
+
+import { pendingRequestsT, profileT } from "@/utils/types/types";
+import PeopleToConfirm from "./peopleDrawerList";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
-
-import { pendingRequestsT } from "@/utils/types/types";
-import { useUserStore } from "@/store/useUserStore";
-import { useEffect, useState } from "react";
 import LoadingSongsPage from "@/app/songs/loading";
+import { useUserStore } from "@/store/useUserStore";
+import { useState, useEffect } from "react";
 
-export default function Dashboard() {
+export default function PendiRequestsComponent() {
   const { userData, loading, fetchUser } = useUserStore();
   const [pendingRequests, setPendingRequests] = useState<
     pendingRequestsT[] | null
@@ -42,10 +42,23 @@ export default function Dashboard() {
 
   if (userData) {
     return (
-      <div className="flex flex-row w-full gap-12">
-        {/* <Sidebar userData={userData} /> */}
-        <div className="container-sub">
-          <PWADashboard pendingRequests={pendingRequests} userData={userData} />
+      <div className="container-sub ">
+        <h3>Conferma </h3>
+        <small className="max-w-96 mb-10 text-slate-400">
+          Le persone elencate in questa lista vogliono diventare parte della tua
+          chiesa. Confermi che ne fanno parte?
+        </small>
+        <div className="flex-col gap-3">
+          {pendingRequests &&
+            pendingRequests.map((profile: profileT) => {
+              return (
+                <PeopleToConfirm
+                  userData={userData}
+                  profile={profile}
+                  key={profile.id}
+                />
+              );
+            })}
         </div>
       </div>
     );

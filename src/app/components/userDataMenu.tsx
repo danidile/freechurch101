@@ -103,14 +103,10 @@ export default function UserDataMenu({
   return (
     <>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
+        <NavbarItem >
           <Link href="/login">Accedi</Link>
         </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="/sign-up" variant="flat">
-            Iscriviti
-          </Button>
-        </NavbarItem>
+
       </NavbarContent>
     </>
   );

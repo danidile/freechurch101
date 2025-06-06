@@ -5,22 +5,44 @@ import {
   NotificationsT,
   notificationT,
 } from "@/utils/types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NotificationElement from "./Notification";
 import { Tabs, Tab } from "@heroui/react";
 import { AnimatePresence } from "framer-motion";
+import { getSongs } from "@/hooks/GET/getSongs";
+import { useUserStore } from "@/store/useUserStore";
+import LoadingSongsPage from "../songs/loading";
+import { getNotificationsById } from "@/hooks/GET/getNotificationsById";
 
-export default function NotificationList({
-  notifications,
-}: {
-  notifications: GroupedNotificationsT;
-}) {
+export default function NotificationList() {
+  const { userData, fetchUser, loading } = useUserStore();
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
+  const [notificationState, setNotificationState] =
+    useState<GroupedNotificationsT>();
+
+  useEffect(() => {
+    const fetchEverything = async () => {
+      if (!userData.loggedIn && !loading) {
+        await fetchUser();
+      }
+
+      // Now wait until user is definitely available
+      if (userData.loggedIn && !loading) {
+        const fetchedNotifications = await getNotificationsById(userData.id);
+        setNotificationState(fetchedNotifications);
+        setLoadingNotifications(false);
+      }
+    };
+
+    fetchEverything();
+  }, [userData.loggedIn, loading]);
+
+  if (loading || loadingNotifications || !userData.loggedIn)
+    return <LoadingSongsPage />;
+
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
-
-  const [notificationState, setNotificationState] =
-    useState<GroupedNotificationsT>(notifications);
 
   const moveFromList = (
     NotificationId: string,
@@ -82,7 +104,7 @@ export default function NotificationList({
       >
         {Object.entries(notificationState).map(
           ([status, notificationsByType]) => {
-            if(!notificationsByType.notifications) return null
+            if (!notificationsByType.notifications) return null;
             if (notificationsByType.notifications.length > 0) {
               return (
                 <Tab

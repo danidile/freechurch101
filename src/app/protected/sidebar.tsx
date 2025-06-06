@@ -11,11 +11,26 @@ import {
 import { HiUserGroup } from "react-icons/hi2";
 import { IoNotificationsSharp, IoSettingsSharp } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
+import logoutAction from "../components/logOutAction";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/useUserStore";
 
-export default function Sidebar({ userData }: { userData: basicUserData }) {
+export default function Sidebar({
+  userData,
+}: {
+  userData: basicUserData | null;
+}) {
+  const router = useRouter();
+  const { fetchUser } = useUserStore();
+
   const [avatarUrl, setAvatarUrl] = useState(
     `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
   );
+  async function logouter() {
+    await logoutAction();
+    await fetchUser();
+    router.push("/protected/dashboard/account"); 
+  }
   return (
     <div className="hidden md:block sidebar-container">
       <div className="text-center">
@@ -75,10 +90,10 @@ export default function Sidebar({ userData }: { userData: basicUserData }) {
         </li>
 
         <li>
-          <Link className="sidebar-link logoutcolors" href="/protected/dashboard/account">
+          <button className="sidebar-link logoutcolors" onClick={logouter}>
             <MdOutlineLogout />
             Esci
-          </Link>
+          </button>
         </li>
       </ul>
     </div>
