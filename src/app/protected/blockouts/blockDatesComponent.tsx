@@ -35,9 +35,6 @@ export default function BlockDatesComponent({
     if (!userData) fetchUser();
   }, [userData]);
 
-  if (loading) return <LoadingBlockoutsPage/>;
-  if (!userData) return <p>No user found</p>;
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [value, setValue] = useState<RangeValue | null>({
     start: today(getLocalTimeZone()).add({ days: 3 }),
@@ -80,6 +77,8 @@ export default function BlockDatesComponent({
 
     setBlockedDates((prev) => prev.filter((_, i) => i !== idx));
   };
+  if (loading) return <LoadingBlockoutsPage />;
+  if (!userData) return <p>No user found</p>;
 
   return (
     <I18nProvider locale="it-IT-u-ca-gregory">

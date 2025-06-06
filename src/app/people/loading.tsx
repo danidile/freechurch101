@@ -11,8 +11,8 @@ export default function LoadingPeoplePage() {
             <div className="people-link border-1 rounded-xl border-slate-300 my-1"></div>
             <div key={i} className="songlist-link opacity-30">
               <div className="people-list">
-                <Skeleton className="w-full rounded-lg">
-                  <div className="h-9 w-full rounded-lg bg-secondary-300" />
+                <Skeleton className="w-2/5 h-4 rounded-lg">
+                  <div className="h-3 w-2/5 rounded-lg bg-default-300" />
                 </Skeleton>
               </div>
             </div>

@@ -1,5 +1,4 @@
 "use client";
-import { basicUserData } from "@/utils/types/userData";
 import { Avatar } from "@heroui/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,13 +14,9 @@ import logoutAction from "../components/logOutAction";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 
-export default function Sidebar({
-  userData,
-}: {
-  userData: basicUserData | null;
-}) {
+export default function Sidebar({}: {}) {
   const router = useRouter();
-  const { fetchUser } = useUserStore();
+  const { fetchUser, userData } = useUserStore();
 
   const [avatarUrl, setAvatarUrl] = useState(
     `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
@@ -29,7 +24,7 @@ export default function Sidebar({
   async function logouter() {
     await logoutAction();
     await fetchUser();
-    router.push("/protected/dashboard/account"); 
+    router.push("/protected/dashboard/account");
   }
   return (
     <div className="hidden md:block sidebar-container">
