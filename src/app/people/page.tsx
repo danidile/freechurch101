@@ -1,5 +1,5 @@
 import PeopleComponent from "./peopleComponent";
 
-export default async function App() {
+export default function Page() {
   return <PeopleComponent />;
 }

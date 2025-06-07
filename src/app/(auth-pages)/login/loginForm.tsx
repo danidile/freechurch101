@@ -8,14 +8,18 @@ import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TalertMessage } from "@/utils/types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 import SignInWithGoogleButton from "../SignInWithGoogleButton";
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
 import GetParamsMessage from "@/app/components/getParams";
+import { useUserStore } from "@/store/useUserStore";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -26,14 +30,22 @@ export default function LoginForm() {
   const [selected, setSelected] = useState<string>("accedi");
   const signUpFunction = async (data: TauthSchema) => {
     await signUpAction(data);
+    fetchUser();
   };
   const loginFunction = async (data: TauthSchema) => {
-    await signInAction(data); // Ensure this is awaited
+    await signInAction(data);
+    fetchUser();
   };
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  const { userData, loading, fetchUser } = useUserStore();
+  useEffect(() => {
+    if (!loading && userData.loggedIn && userData.fetched) {
+      router.push("/protected/dashboard/account");
+    }
+  }, [loading, userData.loggedIn, userData.fetched]);
   return (
     <div className="container-sub">
       <div className="flex flex-col">
@@ -168,9 +180,6 @@ export default function LoginForm() {
               </Tab>
             </Tabs>
           </CardBody>
-          <CardFooter>
-            <GetParamsMessage />
-          </CardFooter>
         </Card>
       </div>
     </div>

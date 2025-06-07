@@ -23,9 +23,6 @@ export default function PWADashboard({
   userData: basicUserData;
   pendingRequests: pendingRequestsT[];
 }) {
-  const searchParams = useSearchParams();
-  const success = searchParams.get("success");
-  const error = searchParams.get("error");
   async function logouter() {
     logoutAction();
   }
@@ -57,7 +54,6 @@ export default function PWADashboard({
       {userData.pending_church_confirmation && (
         <Link
           className="dashboard-list !p-0"
-          
           href="/protected/church/confirm-members"
         >
           <Alert
@@ -67,16 +63,10 @@ export default function PWADashboard({
           />
         </Link>
       )}
-      {(success || error) && (
-        <div className="dashboard-list !p-0 !bg-transparent">
-          <GetParamsMessage />
-        </div>
-      )}
 
       {pendingRequests && pendingRequests.length > 0 && (
         <Link
           className="dashboard-list !p-0"
-          
           href="/protected/church/confirm-members"
         >
           <Alert
@@ -94,10 +84,7 @@ export default function PWADashboard({
         <FaUserCircle className="dashboard-icon" />
         Il mio Account
       </Link>
-      <Link
-        className="dashboard-list text-black"
-        href="/protected/blockouts"
-      >
+      <Link className="dashboard-list text-black" href="/protected/blockouts">
         <FaCalendarTimes className="dashboard-icon" />
         Blocco date
       </Link>
