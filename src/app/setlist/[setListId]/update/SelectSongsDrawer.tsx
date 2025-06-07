@@ -112,7 +112,7 @@ export function SelectSongsDrawer({
                         <div
                           className="song-card-searchBar"
                           style={{ cursor: "pointer" }}
-                          key={song.song + index}
+                          key={(song.id + index).toString()}
                           onClick={() => {
                             addOrUpdatefunction(song, section);
                             onClose();

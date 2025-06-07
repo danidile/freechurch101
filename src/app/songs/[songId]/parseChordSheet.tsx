@@ -1,4 +1,4 @@
-import { Note } from "tonal";
+import { Note, Interval } from "tonal";
 
 const chordRegex =
   /\b((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b|♯|♭)?(?:-?|m|maj|min|dim|aug|sus|add|7|9|11|13|m7|maj7|7b5|m9|add9|dim7|maj9|b5|sus4)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(?:#|b|♯|♭)?)?)\b/gi;
@@ -26,7 +26,6 @@ const sectionKeywords = [
   "solo",
   "coda",
   "bridge",
-
 
   // Italian
   "intro",
@@ -127,8 +126,8 @@ function transposeChord(chord: string, semitones: number): string {
   const [, root, suffix] = match;
 
   // Transpose the root note by semitones using tonal Note.transpose
-  const transposedRoot = Note.transpose(root, semitones + "m");
-
+  const interval = Interval.fromSemitones(semitones);
+  const transposedRoot = Note.transpose(root, interval);
   if (!transposedRoot) return chord;
 
   // Convert back to Italian if necessary
