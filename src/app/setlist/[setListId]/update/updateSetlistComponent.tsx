@@ -1,19 +1,9 @@
 "use client";
 import { getSetList } from "@/hooks/GET/getSetList";
 import UpdateSetlistForm from "./UpdateSetlistForm";
-import {
-  churchMembersT,
-  setListSongT,
-  setListT,
-  songType,
-  teamData,
-  TsongNameAuthor,
-} from "@/utils/types/types";
+import { setListT, TsongNameAuthor } from "@/utils/types/types";
 import { getSongsCompact } from "@/hooks/GET/getSongsCompact";
 import { getSetListSongsCompact } from "@/hooks/GET/getSetListSongsCompact";
-import fbasicUserData from "@/utils/supabase/getUserData";
-import { basicUserData } from "@/utils/types/userData";
-import { getChurchWorshipTeam } from "@/hooks/GET/getChurchWorshipTeam";
 
 import { getSelectedChurchTeams } from "@/hooks/GET/getSelectedChurchTeams";
 import { useEffect, useState } from "react";

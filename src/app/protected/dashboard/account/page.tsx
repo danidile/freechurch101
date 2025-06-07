@@ -1,6 +1,9 @@
-
 import AccountComponent from "./accountComponent";
 
 export default async function Page() {
-  return <AccountComponent />;
+  return (
+    <div className="container-sub">
+      <AccountComponent />
+    </div>
+  );
 }
