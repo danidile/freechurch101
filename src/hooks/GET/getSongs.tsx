@@ -8,8 +8,7 @@ import { useUserStore } from "@/store/useUserStore";
 export const getSongs = async (userData: basicUserData) => {
   const supabase = createClient();
 
-  console.log("user", userData);
-  if (userData.loggedIn ) {
+  if (userData.loggedIn) {
     const { data: songs, error } = await supabase
       .from("songs")
       .select("*")

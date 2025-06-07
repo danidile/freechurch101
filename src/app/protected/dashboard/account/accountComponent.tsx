@@ -4,39 +4,49 @@ import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
 import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
 import { useUserStore } from "@/store/useUserStore";
 import { profileSetlistsT } from "@/utils/types/types";
-import { Button, Card, CardBody, CardHeader, Chip, Link, Spinner } from "@heroui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  Link,
+  Spinner,
+} from "@heroui/react";
 import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
 import { Alert } from "@heroui/alert";
 
 export default function AccountComponent() {
-  const { userData, fetchUser, loading } = useUserStore();
+  const { userData, loading } = useUserStore();
   const [setlists, setSetlists] = useState<any[] | null>(null);
   const [teams, setTeams] = useState<any[] | null>(null);
   const [loadingSongs, setLoadingSongs] = useState(true);
 
-  // Step 1: Make sure user is fetched on first mount
   useEffect(() => {
-    if (!userData.loggedIn) {
-      fetchUser();
-    }
-  }, []);
-
-  // Step 2: Once user is available, fetch songs
-  useEffect(() => {
-    if (!loading && userData.loggedIn) {
-      getProfileSetList(userData.id).then((fetchedProfileSetLists) => {
+    const fetchData = async () => {
+      if (
+        !loading &&
+        userData.loggedIn &&
+        userData.fetched &&
+        !setlists &&
+        !teams
+      ) {
+        setLoadingSongs(true);
+        const [fetchedProfileSetLists, fetchedTeams] = await Promise.all([
+          getProfileSetList(userData.id),
+          getTeamsByProfile(userData.id),
+        ]);
         setSetlists(fetchedProfileSetLists);
-        setLoadingSongs(false);
-      });
-      getTeamsByProfile(userData.id).then((fetchedTeams) => {
         setTeams(fetchedTeams);
         setLoadingSongs(false);
-      });
-    }
-  }, [loading, userData]);
+      }
+    };
 
-  if (loading || loadingSongs || !userData.loggedIn)
+    fetchData();
+  }, [userData.loggedIn, userData.fetched, userData.id, loading]);
+
+  if (loading || loadingSongs)
     return (
       <div className="container-sub">
         <Spinner size="lg" />
@@ -94,7 +104,7 @@ export default function AccountComponent() {
           Team di {userData.name}
           {teams.map((team) => {
             return (
-              <div className="flex gap-1">
+              <div key={team.id} className="flex gap-1">
                 <p className="font-bold">{team.team_name}</p>
                 {team.roles.length >= 1 && (
                   <p className="italic">{" (" + team.roles.join(", ") + ")"}</p>
@@ -123,7 +133,10 @@ export default function AccountComponent() {
                 });
                 if (date > currentDate) {
                   return (
-                    <div className="border-1 rounded-lg border-slate-300 my-1  !max-w-full p-3">
+                    <div
+                      key={setlist.id}
+                      className="border-1 rounded-lg border-slate-300 my-1  !max-w-full p-3"
+                    >
                       <div className="flex gap-3 relative">
                         <div className="flex flex-col w-full max-w-full">
                           <div

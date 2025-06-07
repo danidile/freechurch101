@@ -89,8 +89,10 @@ export default function MenuBarComponentSecondary({
               </NavbarItem>
             </>
           )}
+          <NavbarItem>
+            <UserDataMenu userData={userData} />
+          </NavbarItem>
         </NavbarContent>
-        {userData && <UserDataMenu userData={userData} />}
 
         {/* // Mobile Menu */}
         <NavbarMenu>
@@ -133,20 +135,15 @@ export default function MenuBarComponentSecondary({
           {!userData ||
             (!userData.loggedIn && (
               <>
-                <NavbarItem >
+                <NavbarItem>
                   <Link href="/login">Accedi</Link>
                 </NavbarItem>
-
               </>
             ))}
         </NavbarMenu>
       </Navbar>
 
-      <MenuApp
-        userdata={userData || null}
-        notifications={notifications}
-
-      />
+      <MenuApp userdata={userData || null} notifications={notifications} />
     </>
   );
 }

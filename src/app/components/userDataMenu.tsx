@@ -2,8 +2,6 @@
 import {
   NavbarContent,
   NavbarItem,
-  Link,
-  Button,
   Avatar,
   Dropdown,
   DropdownItem,
@@ -13,10 +11,11 @@ import {
 import isLoggedIn from "@/utils/supabase/getuser";
 import logoutTest from "@/app/components/logOutAction";
 import { basicUserData } from "@/utils/types/userData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
+import Link from "next/link";
 
 export default function UserDataMenu({
   userData,
@@ -31,9 +30,14 @@ export default function UserDataMenu({
     await fetchUser(); // client refetch
     router.push("/protected/dashboard/account"); // redirect AFTER store is up-to-date
   }
-  const [avatarUrl, setAvatarUrl] = useState(
-    `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
-  );
+  const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
+  useEffect(() => {
+    if (userData?.id) {
+      setAvatarUrl(
+        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
+      );
+    }
+  }, [userData?.id]);
   if (userData.loggedIn) {
     return (
       <>
@@ -50,32 +54,46 @@ export default function UserDataMenu({
                 }}
               />
             </DropdownTrigger>
+
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem key="profile" className="h-10 gap-2">
                 <p className="font-semibold">{userData.email}</p>
               </DropdownItem>
 
-              <DropdownItem key="settings" href="/protected/dashboard/account">
+              <DropdownItem
+                as={Link}
+                key="account"
+                href="/protected/dashboard/account"
+              >
                 Account
               </DropdownItem>
               {userData.church_id && (
-                <DropdownItem key="settings" href="/protected/blockouts">
+                <DropdownItem
+                  as={Link}
+                  key="blockouts"
+                  href="/protected/blockouts"
+                >
                   Blocca date
                 </DropdownItem>
               )}
 
               {hasPermission(userData.role as Role, "view:teams") && (
                 <>
-                  <DropdownItem key="teams" href="/protected/teams">
+                  <DropdownItem as={Link} key="teams" href="/protected/teams">
                     Teams
                   </DropdownItem>
-                  <DropdownItem key="songs" href="/globalsongs">
+                  <DropdownItem as={Link} key="songs" href="/globalsongs">
                     Global Songs
                   </DropdownItem>
-                  <DropdownItem key="share" href="/protected/dashboard/share">
+                  <DropdownItem
+                    as={Link}
+                    key="share"
+                    href="/protected/dashboard/share"
+                  >
                     Condividi Canzoni
                   </DropdownItem>
                   <DropdownItem
+                    as={Link}
                     key="import "
                     className="flex"
                     href="/protected/dashboard/import-songs"
@@ -111,4 +129,3 @@ export default function UserDataMenu({
     </>
   );
 }
-

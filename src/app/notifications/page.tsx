@@ -1,7 +1,3 @@
-import { basicUserData } from "@/utils/types/userData";
-import fbasicUserData from "@/utils/supabase/getUserData";
-import { getNotificationsById } from "@/hooks/GET/getNotificationsById";
-import { GroupedNotificationsT } from "@/utils/types/types";
 import NotificationList from "./NotificationList";
 
 export default async function NotificationPage() {

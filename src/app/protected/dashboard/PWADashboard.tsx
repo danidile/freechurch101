@@ -13,7 +13,7 @@ import { useSearchParams } from "next/navigation";
 import { TfiSharethis } from "react-icons/tfi";
 import { PiMusicNotesPlusFill } from "react-icons/pi";
 import logoutAction from "@/app/components/logOutAction";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCalendarTimes } from "react-icons/fa";
 
 export default function PWADashboard({
@@ -29,9 +29,14 @@ export default function PWADashboard({
   async function logouter() {
     logoutAction();
   }
-  const [avatarUrl, setAvatarUrl] = useState(
-    `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
-  );
+  const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
+  useEffect(() => {
+    if (userData?.id) {
+      setAvatarUrl(
+        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
+      );
+    }
+  }, [userData?.id]);
   return (
     <ul className="container-dashboard-list">
       <div className="flex gap-6 justify-center items-center mb-4">

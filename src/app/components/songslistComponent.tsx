@@ -64,15 +64,20 @@ export default function SongslistComponent({
           </Button>
         </form>
         {hasPermission(userData.role as Role, "create:songs") && (
-          <Link  href="/songs/addSong">
-            Aggiungi una canzone!
-          </Link>
+          <Link href="/songs/addSong">Aggiungi una canzone!</Link>
         )}
       </div>
       <div className="container-song-list">
         {songList.map((song) => {
           return (
-            <Link className="songlist-link" href={ userData.loggedIn ? `/songs/${song.id}` : `/globalsongs/${song.id}` }>
+            <Link
+              className="songlist-link"
+              href={
+                userData.loggedIn
+                  ? `/songs/${song.id}`
+                  : `/globalsongs/${song.id}`
+              }
+            >
               <div className="song-list" key={song.id}>
                 <p key={song.id}>
                   {song.song_title}

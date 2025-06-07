@@ -23,17 +23,30 @@ import { useUserStore } from "@/store/useUserStore";
 import { addBlockoutAction } from "./addBlockoutsAction";
 import { deleteBlockoutAction } from "./deleteBlockoutsAction";
 import LoadingBlockoutsPage from "./loading";
+import { getBlockoutsByUserId } from "@/hooks/GET/getBlockoutsByUserId";
 
-export default function BlockDatesComponent({
-  preBlockedDates,
-}: {
-  preBlockedDates: RangeValueString[];
-}) {
-  const { userData, fetchUser, loading } = useUserStore();
+export default function BlockDatesComponent({}: {}) {
+  const { userData, loading } = useUserStore();
 
+  const [blockedDates, setBlockedDates] = useState<RangeValue[]>([]);
   useEffect(() => {
-    if (!userData) fetchUser();
-  }, [userData]);
+    const fetchEverything = async () => {
+      // Now wait until user is definitely available
+      if (userData.loggedIn && !loading) {
+        const fetchedBlockouts = await getBlockoutsByUserId();
+        setBlockedDates(
+          fetchedBlockouts.map(({ id, profile, start, end }) => ({
+            start: parseDate(start.toString()),
+            end: parseDate(end.toString()),
+            id,
+            profile,
+          })) || null
+        );
+      }
+    };
+
+    fetchEverything();
+  }, [userData.loggedIn, loading]);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [value, setValue] = useState<RangeValue | null>({
@@ -41,14 +54,6 @@ export default function BlockDatesComponent({
     end: today(getLocalTimeZone()).add({ days: 7 }),
   });
 
-  const [blockedDates, setBlockedDates] = useState<RangeValue[]>(
-    preBlockedDates.map(({ id, profile, start, end }) => ({
-      start: parseDate(start.toString()),
-      end: parseDate(end.toString()),
-      id,
-      profile,
-    })) || null
-  );
   const formatter = new Intl.DateTimeFormat("it-IT", {
     weekday: "short",
     day: "2-digit",
@@ -77,8 +82,6 @@ export default function BlockDatesComponent({
 
     setBlockedDates((prev) => prev.filter((_, i) => i !== idx));
   };
-  if (loading) return <LoadingBlockoutsPage />;
-  if (!userData) return <p>No user found</p>;
 
   return (
     <I18nProvider locale="it-IT-u-ca-gregory">
