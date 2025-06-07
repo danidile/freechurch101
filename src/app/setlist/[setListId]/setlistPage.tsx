@@ -5,7 +5,7 @@ import { FaCheck } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa6";
 import ModalLyrics from "./modalLyrics";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
-import { GroupedMembers, setListSongT, setListT } from "@/utils/types/types";
+import { GroupedMembers, setListT } from "@/utils/types/types";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
@@ -13,7 +13,6 @@ import Link from "next/link";
 import { Button } from "@heroui/button";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
-import LoadingSetlistsPage from "../loading";
 
 export default async function SetlistPage({
   setListId,
@@ -49,8 +48,7 @@ export default async function SetlistPage({
     }
   }, [loading, userData]);
 
-  if (loading || loadingSetlist || !userData.loggedIn)
-    return <LoadingSetlistsPage />;
+
 
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {

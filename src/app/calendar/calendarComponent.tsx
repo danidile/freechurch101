@@ -9,23 +9,13 @@ import LoadingSongsPage from "../songs/loading";
 import { Spinner } from "@heroui/spinner";
 
 export default function CalendarComponent() {
-  const { userData, fetchUser, loading } = useUserStore();
+  const { userData, loading } = useUserStore();
   const [setlists, setSetlists] = useState<any[] | null>(null);
-  const [loadingSetlists, setLoadingSetlists] = useState(true);
 
-  // Step 1: Make sure user is fetched on first mount
-  useEffect(() => {
-    if (!userData.loggedIn) {
-      fetchUser();
-    }
-  }, []);
-
-  // Step 2: Once user is available, fetch songs
   useEffect(() => {
     if (!loading && userData.loggedIn) {
       getSetListsByChurch(userData.church_id).then((fetchedSetlists) => {
         setSetlists(fetchedSetlists);
-        setLoadingSetlists(false);
       });
     }
   }, [loading, userData]);
@@ -44,12 +34,7 @@ export default function CalendarComponent() {
       eventsByDate.get(key)!.push(event);
     }
   }
-  if (loading || loadingSetlists || !userData.loggedIn)
-    return (
-      <div className="container-sub">
-        <Spinner size="lg" />
-      </div>
-    );
+
 
   // Loop for the next 3 months
   for (let i = 0; i < 3; i++) {

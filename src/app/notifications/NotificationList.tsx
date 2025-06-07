@@ -7,7 +7,7 @@ import {
 } from "@/utils/types/types";
 import { useEffect, useState } from "react";
 import NotificationElement from "./Notification";
-import { Tabs, Tab } from "@heroui/react";
+import { Tabs, Tab, Spinner } from "@heroui/react";
 import { AnimatePresence } from "framer-motion";
 import { getSongs } from "@/hooks/GET/getSongs";
 import { useUserStore } from "@/store/useUserStore";
@@ -38,7 +38,11 @@ export default function NotificationList() {
   }, [userData.loggedIn, loading]);
 
   if (loading || loadingNotifications || !userData.loggedIn)
-    return <LoadingSongsPage />;
+    return (
+      <div className="container-sub">
+        <Spinner size="lg" />
+      </div>
+    );
 
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
@@ -92,8 +96,6 @@ export default function NotificationList() {
     onClose();
   };
 
-  console.log("notificationState");
-  console.log(notificationState);
   return (
     <div className=" max-w-[500px] w-full">
       <Tabs

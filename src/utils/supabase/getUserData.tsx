@@ -21,6 +21,7 @@ export default async function fbasicUserData() {
   let userData: basicUserData = {
     loggedIn: false,
     role: "user",
+    fetched: true,
   };
 
   const supabase = createClient();
@@ -54,6 +55,7 @@ export default async function fbasicUserData() {
     if (error) {
       console.error("Error fetching profile:", error.message);
       sendErrorToSentry(error.message, userData);
+      return userData;
     }
 
     let churchpending: boolean = false;

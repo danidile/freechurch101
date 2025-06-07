@@ -7,30 +7,22 @@ import SongslistComponent from "../components/songslistComponent";
 import LoadingSongsPage from "./loading";
 
 export default function SongsPageClient() {
-  const { userData, fetchUser, loading } = useUserStore();
+  const { userData, loading } = useUserStore();
   const [songs, setSongs] = useState<any[] | null>(null);
   const [loadingSongs, setLoadingSongs] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Step 1: Ensure user is fetched
-      if (!userData.loggedIn && !loading) {
-        await fetchUser();
-      }
 
-      // Step 2: Once user is available, fetch songs
-      if (userData.loggedIn && !loading) {
-        const fetchedSongs = await getSongs(userData);
-        setSongs(fetchedSongs);
-        setLoadingSongs(false);
-      }
+  useEffect(() => {
+    const fetchSongs = async () => {
+      const fetchedSongs = await getSongs(userData);
+      setSongs(fetchedSongs);
+      setLoadingSongs(false);
     };
 
-    fetchData();
-  }, [userData.loggedIn, loading]);
+    fetchSongs();
+  }, [userData?.loggedIn]);
 
-  if (loading || loadingSongs || !userData.loggedIn)
-    return <LoadingSongsPage />;
+  if (loading || loadingSongs) return <LoadingSongsPage />;
 
   if (songs && songs.length > 0) {
     return (
@@ -39,11 +31,11 @@ export default function SongsPageClient() {
       </div>
     );
   }
-
+  console.log(userData);
   return (
     <div className="container-sub">
       <h1>No songs found</h1>
-      <a href="/songs/addSong">Add a New Song!</a>
+      {/* <a href="/songs/addSong">Add a New Song!</a> */}
     </div>
   );
 }

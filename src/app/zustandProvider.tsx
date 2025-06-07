@@ -1,18 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUserStore } from "@/store/useUserStore";
-import { usePathname, useRouter } from "next/navigation";
 
 export function ZustandProviders({ children }: { children: React.ReactNode }) {
-  const { userData, fetchUser } = useUserStore();
+  const { userData, fetchUser, loading } = useUserStore();
 
   useEffect(() => {
-    // Fetch user data on mount if not logged in yet
-    if (!userData?.loggedIn) {
+    if (!userData.fetched && !loading) {
       fetchUser();
     }
-  }, [userData?.loggedIn, fetchUser]);
+  }, [userData?.fetched, loading]);
 
   return <>{children}</>;
 }

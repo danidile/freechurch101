@@ -1,7 +1,7 @@
 "use client";
 import { Avatar } from "@heroui/react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaUserCircle,
   FaCalendarTimes,
@@ -18,14 +18,20 @@ export default function Sidebar({}: {}) {
   const router = useRouter();
   const { fetchUser, userData } = useUserStore();
 
-  const [avatarUrl, setAvatarUrl] = useState(
-    `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
-  );
+  const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
+  useEffect(() => {
+  if (userData?.id) {
+    setAvatarUrl(
+      `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
+    );
+  }
+}, [userData?.id]);
   async function logouter() {
     await logoutAction();
     await fetchUser();
     router.push("/protected/dashboard/account");
   }
+
   return (
     <div className="hidden md:block sidebar-container">
       <div className="text-center">
@@ -38,8 +44,14 @@ export default function Sidebar({}: {}) {
             setAvatarUrl("/images/userAvatarDefault.jpg"); // your default image path
           }}
         />
-        <h6 className="font-bold">{userData.name + " " + userData.lastname}</h6>
-        <p>{userData.email}</p>
+        {userData.name && (
+          <>
+            <h6 className="font-bold">
+              {userData.name + " " + userData.lastname}
+            </h6>
+            <p>{userData.email}</p>
+          </>
+        )}
       </div>
       <ul className="sidebar-ul">
         <li>

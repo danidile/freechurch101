@@ -1,15 +1,23 @@
-import Sidebar from "./sidebar";
+  "use client";
+  import { useUserStore } from "@/store/useUserStore";
+  import { useEffect } from "react";
+  import Sidebar from "./sidebar";
+  import { useRouter } from "next/navigation";
+  import LoginPage from "../(auth-pages)/login/page";
 
-export default function ProtectedLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+  export default function ProtectedLayout({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) {
+    const { userData, loading } = useUserStore();
 
-  return (
-    <div className="flex flex-row">
-      <Sidebar />
-      <div className="dashboard-container">{children}</div>
-    </div>
-  );
-}
+    if (!loading && !userData.loggedIn && userData.fetched) return <LoginPage />;
+
+    return (
+      <div className="flex flex-row">
+        <Sidebar />
+        <div className="dashboard-container">{children}</div>
+      </div>
+    );
+  }
