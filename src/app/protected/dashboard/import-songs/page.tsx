@@ -1,6 +1,6 @@
 import RetriveShareForm from "./retriveShareFormComponent";
 
-export default async function App() {
+export default function Page() {
   return (
     <div className="container-sub">
       <RetriveShareForm />

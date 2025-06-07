@@ -1,6 +1,6 @@
 import LoginForm from "./loginForm";
 
-export default function LoginPage() {
+export default function Page() {
   return (
     <div className="container-sub">
       <LoginForm />

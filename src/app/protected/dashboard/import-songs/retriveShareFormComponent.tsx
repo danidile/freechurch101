@@ -27,9 +27,7 @@ export default function RetriveShareForm() {
     console.log(event.text);
     retriveShareFormAction(event.text);
   };
-  const searchParams = useSearchParams();
-  const success = searchParams.get("success");
-  const error = searchParams.get("error");
+
   return (
     <>
       <Card className="max-w-[400px] my-5">
@@ -75,11 +73,7 @@ export default function RetriveShareForm() {
           </form>
         </CardBody>
       </Card>
-      {(success || error) && (
-        <div className="dashboard-list !p-0 !bg-transparent">
-          <GetParamsMessage />
-        </div>
-      )}
+
     </>
   );
 }

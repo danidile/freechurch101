@@ -25,7 +25,11 @@ export const signUpAction = async (data: TauthSchema) => {
   if (error) {
     console.error(error.code + " " + error.message);
 
-    return encodedRedirect("error", "/sign-up", translateSupabaseError(error.message));
+    return encodedRedirect(
+      "error",
+      "/sign-up",
+      translateSupabaseError(error.message)
+    );
   } else {
     return encodedRedirect(
       "success",
@@ -53,7 +57,6 @@ export const signInAction = async (formData: TauthSchema) => {
     );
   }
 
-  return redirect("/protected/dashboard/account");
 };
 
 export const forgotPasswordAction = async (data: TlostPasswordSchema) => {

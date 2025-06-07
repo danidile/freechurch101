@@ -1,5 +1,4 @@
 "use client";
-import { redirect } from "next/navigation";
 import PWADashboard from "../PWADashboard";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
@@ -24,15 +23,11 @@ export default function Dashboard() {
     }
   }, [loading, userData]);
 
-  if (userData) {
-    return (
-      <div className="flex flex-row w-full gap-12">
-        <div className="container-sub">
-          <PWADashboard pendingRequests={pendingRequests} userData={userData} />
-        </div>
+  return (
+    <div className="flex flex-row w-full gap-12">
+      <div className="container-sub">
+        <PWADashboard pendingRequests={pendingRequests} userData={userData} />
       </div>
-    );
-  } else {
-    redirect("/login");
-  }
+    </div>
+  );
 }
