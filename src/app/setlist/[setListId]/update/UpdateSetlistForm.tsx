@@ -51,7 +51,7 @@ export default function UpdateSetlistForm({
   songsList,
   setlistData,
 }: {
-  teams: teamData[];
+  teams: teamData[] | null;
   page: string;
   songsList: TsongNameAuthor[];
   setlistData: setListT;
@@ -73,7 +73,7 @@ export default function UpdateSetlistForm({
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
   const [eventDate, setEventDate] = useState<string>(
-    setlistData?.date.split("T")[0] || todaysDate
+    setlistData?.date?.split("T")[0] || todaysDate
   );
   const [state, setState] = useState<setListSongT[]>(
     setlistData?.setListSongs || []
@@ -87,10 +87,10 @@ export default function UpdateSetlistForm({
   const [team, setTeam] = useState<churchMembersT[]>([]);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
   const [previousEventDate, setPreviousEventDate] = useState<string>(
-    setlistData?.date.split("T")[0] || todaysDate
+    setlistData?.date?.split("T")[0] || todaysDate
   );
   const [pendingDate, setPendingDate] = useState<string>(
-    setlistData?.date.split("T")[0] || todaysDate
+    setlistData?.date?.split("T")[0] || todaysDate
   );
 
   const {

@@ -13,8 +13,9 @@ import Link from "next/link";
 import { Button } from "@heroui/button";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
+import { Spinner } from "@heroui/spinner";
 
-export default async function SetlistPage({
+export default  function SetlistPage({
   setListId,
 }: {
   setListId: string;
@@ -25,12 +26,6 @@ export default async function SetlistPage({
   const [setlistTeams, setSetlistTeams] = useState<GroupedMembers | null>(null);
   const [loadingSetlist, setLoadingSetlist] = useState(true);
 
-  // Step 1: Make sure user is fetched on first mount
-  useEffect(() => {
-    if (!userData.loggedIn) {
-      fetchUser();
-    }
-  }, []);
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
@@ -49,7 +44,9 @@ export default async function SetlistPage({
   }, [loading, userData]);
 
 
-
+if(loadingSetlist){
+return <Spinner/>
+}
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"

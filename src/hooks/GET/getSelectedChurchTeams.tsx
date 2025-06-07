@@ -1,5 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
-import { churchMembersT, teamData } from "@/utils/types/types";
+import { createClient } from "@/utils/supabase/client";
+import { teamData } from "@/utils/types/types";
 import { getChurchTeams } from "./getChurchTeams";
 
 export const getSelectedChurchTeams = async (
