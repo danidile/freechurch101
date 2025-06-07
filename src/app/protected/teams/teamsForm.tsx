@@ -13,10 +13,11 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Spinner,
 } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createTeam } from "./create-team/createTeamAction";
 import { updateTeam } from "./[teamsId]/update/updateTeam";
 import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
@@ -33,10 +34,13 @@ export default function TeamsForm({
   churchMembers: churchMembersT[];
 }) {
   const churchTeamStart = churchTeam;
-
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const [state, setState] = useState<churchMembersT[]>(
     churchTeam?.team_members || []
   );
+  const [churchMembersState, setChurchMembersState] = useState<
+    churchMembersT[]
+  >(churchMembers || []);
 
   const {
     handleSubmit,
@@ -110,6 +114,7 @@ export default function TeamsForm({
   // END MANAGE TEAM-MEMBERS
 
   const convertData = async () => {
+    setSubmitting(true);
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
     const churchTeamUpdated: teamData = {
       id: churchTeamStart?.id || crypto.randomUUID(),
@@ -117,13 +122,13 @@ export default function TeamsForm({
       is_worship: watchAllFields.is_worship,
       team_members: state,
     };
-    console.log("churchTeamUpdated");
-    console.log(churchTeamUpdated);
+
     if (page === "create") {
-      createTeam(churchTeamUpdated);
+      await createTeam(churchTeamUpdated);
     } else if (page === "update") {
-      updateTeam(churchTeamUpdated, churchTeamStart);
+      await updateTeam(churchTeamUpdated, churchTeamStart);
     }
+    setSubmitting(false);
   };
 
   return (
@@ -223,7 +228,7 @@ export default function TeamsForm({
               <SelectTeamMemberDrawer
                 state={state}
                 type="add"
-                churchMembers={churchMembers}
+                churchMembers={churchMembersState}
                 addMemberToTeam={addMemberToTeam} // Pass function correctly
                 section={null}
               />
@@ -235,11 +240,16 @@ export default function TeamsForm({
               type="submit"
               disabled={isSubmitting}
             >
-              {page === "create" && "Crea"}
-              {page === "update" && "Aggiorna"} Team
+              {submitting ? (
+                <Spinner color="white" size="sm" />
+              ) : (
+                <>
+                  {page === "create" && "Crea"}
+                  {page === "update" && "Aggiorna"} Team
+                </>
+              )}
             </Button>
           </div>
-          <div>{/* <pre>{JSON.stringify(state, null, 2)}</pre> */}</div>
         </form>
       </div>
     </div>

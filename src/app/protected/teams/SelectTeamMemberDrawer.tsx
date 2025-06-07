@@ -33,7 +33,7 @@ export function SelectTeamMemberDrawer({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [members, setmembers] = useState(churchMembers);
   const [searchText, setSearchText] = useState(""); // Local state for search input
-
+  
   const aggiornaLista = () => {
     // const filteredSongs = songsList.filter(
     //   (song: songType) =>

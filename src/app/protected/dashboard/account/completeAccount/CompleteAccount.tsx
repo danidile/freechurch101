@@ -19,16 +19,8 @@ import { useRouter } from "next/navigation";
 export default function CompleteAccount() {
   const router = useRouter();
 
+  const [churchesList, setChurchesList] = useState<any[] | null>([]);
   const { userData, fetchUser, loading } = useUserStore();
-  const [churchesList, setChurchesList] = useState<any[] | null>(null);
-  const [loadingChurches, setLoadingChurches] = useState(true);
-
-  // Step 1: Make sure user is fetched on first mount
-  useEffect(() => {
-    if (!userData.loggedIn) {
-      fetchUser();
-    }
-  }, []);
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
@@ -36,7 +28,6 @@ export default function CompleteAccount() {
       if (!userData.church_id) {
         getChurches().then((fetchedChurchesList) => {
           setChurchesList(fetchedChurchesList);
-          setLoadingChurches(false);
         });
       }
     }
@@ -46,9 +37,6 @@ export default function CompleteAccount() {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<basicUserData>();
-
-  if (loading || loadingChurches || !userData.loggedIn)
-    return <LoadingSongsPage />;
 
   const convertData = async (data: basicUserData) => {
     if (data.church_name) {
@@ -77,7 +65,7 @@ export default function CompleteAccount() {
               label="Nome"
               variant="bordered"
               size="sm"
-              defaultValue={userData.name}
+              defaultValue={userData.name || ""}
             />
             <Input
               {...register("lastname")}
@@ -148,7 +136,6 @@ export default function CompleteAccount() {
           >
             Aggiorna profilo
           </Button>
-          
         </div>
       </form>
     </>

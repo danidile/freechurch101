@@ -8,7 +8,7 @@ const ROLES = {
     "create:songs",
     "update:songs",
     "delete:songs",
-
+    "create:team",
     // SETLISTS
     "view:setlists",
     "create:setlists",
