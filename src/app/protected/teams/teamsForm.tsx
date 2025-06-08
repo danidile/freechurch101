@@ -9,20 +9,18 @@ import {
 import {
   Button,
   Input,
-  Checkbox,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Spinner,
 } from "@heroui/react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createTeam } from "./create-team/createTeamAction";
 import { updateTeam } from "./[teamsId]/update/updateTeam";
 import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
 import { Chip } from "@heroui/react";
 import { AddRole } from "./AddRole";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function TeamsForm({
   churchMembers,
@@ -34,7 +32,6 @@ export default function TeamsForm({
   churchMembers: churchMembersT[];
 }) {
   const churchTeamStart = churchTeam;
-  const [submitting, setSubmitting] = useState<boolean>(false);
   const [state, setState] = useState<churchMembersT[]>(
     churchTeam?.team_members || []
   );
@@ -46,9 +43,13 @@ export default function TeamsForm({
     handleSubmit,
     register,
     watch,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<teamFormValues>({
-    resolver: zodResolver(eventSchema),
+    resolver: zodResolver(eventSchema), // ← MISSING!
+    defaultValues: {
+      team_name: churchTeam?.team_name ?? "Worship Team",
+      is_worship: churchTeam?.is_worship ?? false,
+    },
   });
 
   // MANAGE roleS
@@ -114,7 +115,7 @@ export default function TeamsForm({
   // END MANAGE TEAM-MEMBERS
 
   const convertData = async () => {
-    setSubmitting(true);
+    console.log("pre");
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
     const churchTeamUpdated: teamData = {
       id: churchTeamStart?.id || crypto.randomUUID(),
@@ -124,11 +125,12 @@ export default function TeamsForm({
     };
 
     if (page === "create") {
+      console.log("1");
       await createTeam(churchTeamUpdated);
+      console.log("2");
     } else if (page === "update") {
       await updateTeam(churchTeamUpdated, churchTeamStart);
     }
-    setSubmitting(false);
   };
 
   return (
@@ -166,7 +168,6 @@ export default function TeamsForm({
                       key={member.id}
                       value={member.profile.toString()}
                       className="hide-input"
-                      {...register(`sections.${index}.id`)}
                     />
                     <p>
                       <b>{member.name + " " + member.lastname}</b>
@@ -240,14 +241,8 @@ export default function TeamsForm({
               type="submit"
               disabled={isSubmitting}
             >
-              {submitting ? (
-                <Spinner color="white" size="sm" />
-              ) : (
-                <>
-                  {page === "create" && "Crea"}
-                  {page === "update" && "Aggiorna"} Team
-                </>
-              )}
+              {page === "create" && "Crea"}
+              {page === "update" && "Aggiorna"} Team
             </Button>
           </div>
         </form>

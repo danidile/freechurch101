@@ -36,6 +36,7 @@ export default function LoginForm() {
   const loginFunction = async (data: TauthSchema) => {
     await signInAction(data);
     fetchUser();
+    router.push("/protected/dashboard/account"); // Or wherever you want to redirect
   };
   const [isVisible, setIsVisible] = useState(false);
 

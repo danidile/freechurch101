@@ -1,5 +1,5 @@
 import CreateTeamComponent from "./createTeamComponent";
 
-export default async function songs() {
+export default function songs() {
   return <CreateTeamComponent />;
 }
