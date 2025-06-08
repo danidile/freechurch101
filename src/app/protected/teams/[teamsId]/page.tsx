@@ -24,7 +24,6 @@ export default async function Page({
           </div>
 
           {churchTeam.team_members.map((member: churchMembersT, index) => {
-            
             return (
               <>
                 <div key={"Song" + index} className="setlist-list">
@@ -38,7 +37,6 @@ export default async function Page({
             );
           })}
         </div>
-        <GetParamsMessage />
       </div>
     );
   } else {

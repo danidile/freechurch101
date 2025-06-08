@@ -1,11 +1,12 @@
-"use client";
-import { useSearchParams } from "next/navigation";
+// components/getParams.tsx (Server Component)
 import { Alert } from "@heroui/react";
 
-export default function GetParamsMessage() {
-  const searchParams = useSearchParams();
-  const success = searchParams.get("success");
-  const error = searchParams.get("error");
+export default function GetParamsMessage({
+  searchParams,
+}: {
+  searchParams: { success?: string; error?: string };
+}) {
+  const { success, error } = searchParams;
 
   return (
     <div className="my-0 mx-auto">

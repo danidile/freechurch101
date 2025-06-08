@@ -16,6 +16,7 @@ import { Tabs, Tab, Card, CardBody } from "@heroui/react";
 import GetParamsMessage from "@/app/components/getParams";
 import { useUserStore } from "@/store/useUserStore";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -97,12 +98,12 @@ export default function LoginForm() {
                     }
                     type={isVisible ? "text" : "password"}
                   />
-                  <p className="text-center text-small">
-                    Non hai ancora un account?{" "}
-                    <Button size="sm" onPress={() => setSelected("iscriviti")}>
-                      Iscriviti
-                    </Button>
-                  </p>
+                  <Link
+                    href="/forgot-password"
+                    className="text-center text-small text-blue-600 underline"
+                  >
+                    Password dimenticata?
+                  </Link>
                   <Button
                     fullWidth
                     color="primary"
@@ -156,7 +157,7 @@ export default function LoginForm() {
                     type={isVisible ? "text" : "password"}
                   />
                   <p className="text-center text-small">
-                    Already have an account?{" "}
+                    Hai già un account?{" "}
                     <Button size="sm" onPress={() => setSelected("accedi")}>
                       Accedi
                     </Button>
