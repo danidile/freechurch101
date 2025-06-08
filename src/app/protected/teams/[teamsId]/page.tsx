@@ -1,7 +1,6 @@
 import { churchMembersT, teamData } from "@/utils/types/types";
 import { getChurchTeam } from "@/hooks/GET/getChurchTeam";
 import MoreDropdownTeams from "./MoreDropdownTeams";
-import GetParamsMessage from "@/app/components/getParams";
 
 export default async function Page({
   params,

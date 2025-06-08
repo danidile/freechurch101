@@ -17,7 +17,7 @@ export default function CreateTeamComponent() {
   const [loadingSongs, setLoadingSongs] = useState(true);
 
   useEffect(() => {
-    const fetchSongs = async () => {
+    const fetchChurchMembers = async () => {
       if (!loading && userData.loggedIn) {
         const fetchedSongs = await getChurchMembersCompact(userData.church_id);
         setChurchMembers(fetchedSongs);
@@ -25,7 +25,7 @@ export default function CreateTeamComponent() {
       }
     };
 
-    fetchSongs();
+    fetchChurchMembers();
   }, [loading, userData.loggedIn]);
   if (loadingSongs || !churchMembers) {
     return (

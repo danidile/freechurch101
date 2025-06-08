@@ -13,6 +13,7 @@ export const createTeam = async (formData: teamData) => {
     .select("*")
     .eq("id", user?.id)
     .single();
+
   const church: string = profile.church;
 
   const { data, error } = await supabase
@@ -24,9 +25,10 @@ export const createTeam = async (formData: teamData) => {
     })
     .select()
     .single();
+  console.log(data);
 
   if (error) {
-    console.log(error);
+    console.log("Error in insert to church-teams", error);
   }
   const teamId = data.id;
 

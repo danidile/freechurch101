@@ -106,7 +106,7 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
 
   if (password !== confirmPassword) {
     encodedRedirect(
-      "error",
+      "success",
       "/protected/reset-password",
       "Passwords do not match"
     );
