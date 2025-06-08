@@ -56,13 +56,15 @@ export const signInAction = async (formData: TauthSchema) => {
       translateSupabaseError(error.message)
     );
   }
-
 };
 
 export const forgotPasswordAction = async (data: TlostPasswordSchema) => {
   const email = data.email;
   const supabase = createClient();
-  const origin = headers().get("origin");
+  const origin =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://churchlab.it";
 
   if (!email) {
     return encodedRedirect("error", "/forgot-password", "Email is required");

@@ -2,7 +2,7 @@
 import { getSongsCompact } from "@/hooks/GET/getSongsCompact";
 import UpdateSetlistForm from "../[setListId]/update/UpdateSetlistForm";
 
-import { churchMembersT, teamData, TsongNameAuthor } from "@/utils/types/types";
+import { teamData, TsongNameAuthor } from "@/utils/types/types";
 import { getChurchTeams } from "@/hooks/GET/getChurchTeams";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
