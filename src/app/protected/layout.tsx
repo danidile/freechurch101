@@ -17,7 +17,9 @@ export default function ProtectedLayout({
 
   return (
     <div className="flex flex-row">
-      <Sidebar />
+      <div className="hidden md:block sidebar-container">
+        <Sidebar />
+      </div>
       <div className="dashboard-container">{children}</div>
     </div>
   );

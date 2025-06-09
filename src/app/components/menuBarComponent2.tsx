@@ -89,10 +89,8 @@ export default function MenuBarComponentSecondary({
               </NavbarItem>
             </>
           )}
-          <NavbarItem>
-            <UserDataMenu userData={userData} />
-          </NavbarItem>
         </NavbarContent>
+        <UserDataMenu userData={userData} />
 
         {/* // Mobile Menu */}
         <NavbarMenu>
@@ -105,33 +103,38 @@ export default function MenuBarComponentSecondary({
               Canzoni
             </Link>
           </NavbarItem>
-          <NavbarItem isActive>
-            <Link
-              onClick={() => setIsMenuOpen(false)}
-              aria-current="page"
-              href="/setlist"
-            >
-              Eventi
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive>
-            <Link
-              onClick={() => setIsMenuOpen(false)}
-              aria-current="page"
-              href="/people"
-            >
-              Persone
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link
-              onClick={() => setIsMenuOpen(false)}
-              color="foreground"
-              href="/calendar"
-            >
-              Calendario
-            </Link>
-          </NavbarItem>
+          {userData.loggedIn && (
+            <>
+              <NavbarItem isActive>
+                <Link
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-current="page"
+                  href="/setlist"
+                >
+                  Eventi
+                </Link>
+              </NavbarItem>
+              <NavbarItem isActive>
+                <Link
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-current="page"
+                  href="/people"
+                >
+                  Persone
+                </Link>
+              </NavbarItem>
+              <NavbarItem>
+                <Link
+                  onClick={() => setIsMenuOpen(false)}
+                  color="foreground"
+                  href="/calendar"
+                >
+                  Calendario
+                </Link>
+              </NavbarItem>
+            </>
+          )}
+
           {!userData ||
             (!userData.loggedIn && (
               <>
