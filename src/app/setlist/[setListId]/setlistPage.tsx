@@ -15,17 +15,12 @@ import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import { Spinner } from "@heroui/spinner";
 
-export default  function SetlistPage({
-  setListId,
-}: {
-  setListId: string;
-}) {
+export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, fetchUser, loading } = useUserStore();
   const [setlistSongs, setSetlistSongs] = useState<any[] | null>(null);
   const [setlistData, setSetlistData] = useState<setListT | null>(null);
   const [setlistTeams, setSetlistTeams] = useState<GroupedMembers | null>(null);
   const [loadingSetlist, setLoadingSetlist] = useState(true);
-
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
@@ -43,10 +38,9 @@ export default  function SetlistPage({
     }
   }, [loading, userData]);
 
-
-if(loadingSetlist){
-return <Spinner/>
-}
+  if (loadingSetlist) {
+    return <Spinner />;
+  }
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"
@@ -63,15 +57,13 @@ return <Spinner/>
             <strong className="capitalize">{setlistData.event_title}</strong>
           </h6>
           <p className="capitalize">{readableDate}</p>
-
-          {userData &&
-            hasPermission(userData.role as Role, "create:setlists") && (
-              <div className="top-settings-bar">
-                <CopyLinkButton />
-
+          <div className="top-settings-bar">
+            <CopyLinkButton />
+            {userData &&
+              hasPermission(userData.role as Role, "create:setlists") && (
                 <MoreDropdownSetlist setlistId={setListId} />
-              </div>
-            )}
+              )}
+          </div>
         </div>
 
         {setlistSongs

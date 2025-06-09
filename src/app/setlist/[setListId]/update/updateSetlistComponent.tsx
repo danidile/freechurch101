@@ -15,7 +15,6 @@ export default function UpdateSetlistComponent({
   setListId: string;
 }) {
   const { userData, loading } = useUserStore();
-
   const [setlistData, setSetlistData] = useState<setListT | null>({});
   const [songs, setSongs] = useState<TsongNameAuthor[] | null>([]);
   const [isLoading, setIsLoading] = useState(true);

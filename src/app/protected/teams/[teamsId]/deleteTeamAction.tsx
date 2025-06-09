@@ -15,14 +15,14 @@ export const deleteTeamAction = async (teamId: string) => {
     .delete()
     .eq("id", teamId);
 
-  if (setlistSongsError ) {
-    console.error("Error deleting rows:", setlistSongsError );
+  if (setlistSongsError) {
+    console.error("Error deleting rows:", setlistSongsError);
   } else {
     console.log("Rows deleted successfully");
-    // return encodedRedirect(
-    //   "success",
-    //   "/setlist",
-    //   "SetList eliminata con successo!"
-    // );
+    return encodedRedirect(
+      "success",
+      "/protected/teams",
+      "Team eliminato con successo!"
+    );
   }
 };

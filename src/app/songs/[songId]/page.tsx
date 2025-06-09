@@ -5,14 +5,12 @@ import CustomizeWidget from "@/app/components/CustomizeWidget";
 export default async function Page({ params }: { params: { songId: string } }) {
   const songData = await getSongById(params.songId);
 
-  console.log(songData);
   if (songData) {
     return (
       <div className="container-sub">
         <CustomizeWidget />
 
         <div className="song-presentation-container">
-          
           <ChordProViewComponent setListSong={songData} />
         </div>
       </div>
