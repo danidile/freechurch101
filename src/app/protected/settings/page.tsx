@@ -25,7 +25,7 @@ export default function Sidebar({}: {}) {
   }
 
   return (
-    <div className="hidden md:block sidebar-container">
+    <div>
       <div className="text-center"></div>
       <ul className="sidebar-ul">
         <li>
