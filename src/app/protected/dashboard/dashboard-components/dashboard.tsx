@@ -5,6 +5,7 @@ import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurch
 import { pendingRequestsT } from "@/utils/types/types";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
+import Sidebar from "../../sidebar";
 export default function Dashboard() {
   const { userData, loading } = useUserStore();
   const [pendingRequests, setPendingRequests] = useState<
@@ -26,7 +27,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-row w-full gap-12">
       <div className="container-sub">
-        <PWADashboard pendingRequests={pendingRequests} userData={userData} />
+        <Sidebar />
       </div>
     </div>
   );

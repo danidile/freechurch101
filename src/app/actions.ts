@@ -50,12 +50,9 @@ export const signInAction = async (formData: TauthSchema) => {
   });
 
   if (error) {
-    return encodedRedirect(
-      "error",
-      "/login",
-      translateSupabaseError(error.message)
-    );
+    return { message: error.message };
   }
+  return { data };
 };
 
 export const forgotPasswordAction = async (data: TlostPasswordSchema) => {

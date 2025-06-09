@@ -14,7 +14,7 @@ import logoutAction from "../components/logOutAction";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 
-export default function Sidebar({}: {}) {
+export default function Sidebar() {
   const router = useRouter();
   const { fetchUser, userData } = useUserStore();
 
@@ -90,7 +90,7 @@ export default function Sidebar({}: {}) {
         )}
 
         <li>
-          <Link className="sidebar-link" href="/protected/dashboard/account">
+          <Link className="sidebar-link" href="/protected/settings">
             <IoSettingsSharp className="dashboard-icon" />
             Impostazioni
           </Link>

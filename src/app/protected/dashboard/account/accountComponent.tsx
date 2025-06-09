@@ -70,21 +70,7 @@ export default function AccountComponent() {
           </Link>
         </>
       )}
-      {(!userData.name || !userData.lastname) && (
-        <div className="flex flex-col gap-1 items-center">
-          <div className="flex items-center justify-center w-full">
-            <Alert
-              description="Clicca su 'Aggiorna profilo' per completare il tuo account e avere accesso a maggiori funzionalità. "
-              title="Profilo incompleto"
-              color="danger"
-            />
-          </div>
 
-          <Link href="/protected/dashboard/account/completeAccount">
-            Aggiorna profilo
-          </Link>
-        </div>
-      )}
       {userData.pending_church_confirmation && (
         <Alert
           className="my-5"
