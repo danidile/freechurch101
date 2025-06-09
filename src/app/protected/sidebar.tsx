@@ -22,7 +22,7 @@ export default function Sidebar() {
   useEffect(() => {
     if (userData?.id) {
       setAvatarUrl(
-        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
+        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`
       );
     }
   }, [userData?.id]);
@@ -44,14 +44,12 @@ export default function Sidebar() {
             setAvatarUrl("/images/userAvatarDefault.jpg"); // your default image path
           }}
         />
-        {userData.name && (
-          <>
-            <h6 className="font-bold">
-              {userData.name + " " + userData.lastname}
-            </h6>
-            <p>{userData.email}</p>
-          </>
-        )}
+        <>
+          <h6 className="font-bold">
+            {userData.name + " " + userData.lastname}
+          </h6>
+          <p>{userData.email}</p>
+        </>
       </div>
       <ul className="sidebar-ul">
         <li>

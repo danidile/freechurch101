@@ -16,7 +16,6 @@ export default function ImageUploader() {
     (acceptedFiles: File[]) => {
       const selectedFile = acceptedFiles[0];
       if (!selectedFile) return;
-
       setFile(selectedFile);
 
       // Revoke old URL to avoid memory leaks or confusion
@@ -28,7 +27,6 @@ export default function ImageUploader() {
     [previewUrl]
   );
 
-  
   const handleUpload = async () => {
     if (!file) {
       setError("No file selected");
@@ -67,7 +65,11 @@ export default function ImageUploader() {
       // Upload original converted JPEG
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(avatarPath, jpegBlob, { upsert: true, contentType: "image/jpeg", cacheControl: "no-cache" });
+        .upload(avatarPath, jpegBlob, {
+          upsert: true,
+          contentType: "image/jpeg",
+          cacheControl: "no-cache",
+        });
 
       if (uploadError)
         throw new Error(`Upload error (avatars): ${uploadError.message}`);
@@ -76,7 +78,11 @@ export default function ImageUploader() {
       // Upload thumbnail JPEG
       const { error: thumbUploadError } = await supabase.storage
         .from("avatars")
-        .upload(thumbPath, thumbnailBlob,  { upsert: true, contentType: "image/jpeg", cacheControl: "no-cache" });
+        .upload(thumbPath, thumbnailBlob, {
+          upsert: true,
+          contentType: "image/jpeg",
+          cacheControl: "no-cache",
+        });
       if (thumbUploadError)
         throw new Error(
           `Upload error (thumbnail): ${thumbUploadError.message}`
@@ -113,9 +119,13 @@ export default function ImageUploader() {
       >
         <input {...getInputProps()} />
         {isDragActive ? (
-          <p>Drop the image here…</p>
+          <p>Rilascia immagine qui</p>
         ) : (
-          <p>Drag & drop an image, or click to select</p>
+          <p>
+            Seleziona e trascina, oppure clicca e seleziona.
+            <br />
+            <small>Dimensione massima 2MB. Formati accettati JPG e PNG</small>
+          </p>
         )}
       </div>
 

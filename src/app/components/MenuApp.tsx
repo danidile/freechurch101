@@ -17,7 +17,6 @@ import { Badge } from "@heroui/badge";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { basicUserData } from "@/utils/types/userData";
 
 export default function MenuApp({
@@ -54,16 +53,14 @@ export default function MenuApp({
               {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
             </TransitionLink>
           )}
-          {userdata.loggedIn &&
-            hasPermission(userdata.role as Role, "read:churchmembers") && (
-              <TransitionLink href="/calendar" className="pwaiconsmenu">
-                {parameter === "people" ? (
-                  <FaRegCalendarAlt />
-                ) : (
-                  <FaRegCalendarAlt />
-                )}
-              </TransitionLink>
+
+          <TransitionLink href="/calendar" className="pwaiconsmenu">
+            {parameter === "calendar" ? (
+              <FaRegCalendarAlt />
+            ) : (
+              <FaRegCalendarAlt />
             )}
+          </TransitionLink>
           {userdata.loggedIn && (
             <TransitionLink href="/notifications" className="pwaiconsmenu">
               {parameter === "/notifications" ? (

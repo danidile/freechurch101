@@ -5,7 +5,6 @@ import { pendingRequestsT, profileT } from "@/utils/types/types";
 import PeopleToConfirm from "./peopleDrawerList";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
-import LoadingSongsPage from "@/app/songs/loading";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 
@@ -14,7 +13,6 @@ export default function PendiRequestsComponent() {
   const [pendingRequests, setPendingRequests] = useState<
     pendingRequestsT[] | null
   >(null);
-  const [loadingRequests, setLoadingRequests] = useState(true);
 
   // Step 1: Make sure user is fetched on first mount
   useEffect(() => {
@@ -30,15 +28,11 @@ export default function PendiRequestsComponent() {
         getPendingChurchMembershipRequests(userData.church_id).then(
           (fetchedRequests) => {
             setPendingRequests(fetchedRequests);
-            setLoadingRequests(false);
           }
         );
       }
     }
   }, [loading, userData]);
-
-  if (loading || loadingRequests || !userData.loggedIn)
-    return <LoadingSongsPage />;
 
   if (userData) {
     return (

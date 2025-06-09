@@ -2,7 +2,6 @@ import { getProfileById } from "@/hooks/GET/getProfileById";
 import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
 import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
 import fbasicUserData from "@/utils/supabase/getUserData";
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { profileSetlistsT, profileT, profileTeamsT } from "@/utils/types/types";
 import { basicUserData } from "@/utils/types/userData";
 import { Card, CardBody, CardHeader, Chip, Link } from "@heroui/react";
