@@ -30,7 +30,7 @@ export default function PWADashboard({
   useEffect(() => {
     if (userData?.id) {
       setAvatarUrl(
-        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
+        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`
       );
     }
   }, [userData?.id]);
@@ -118,11 +118,7 @@ export default function PWADashboard({
           </Link>
         </>
       )}
-      {/* <Link href="" className="dashboard-list text-black">
-        {" "}
-        <IoSettingsSharp className="dashboard-icon" />
-        Impostazioni
-      </Link> */}
+
       <Link className="dashboard-list text-black" href="/legal">
         <HiMiniDocumentText className="dashboard-icon" />
         Legal

@@ -83,7 +83,7 @@ export const forgotPasswordAction = async (data: TlostPasswordSchema) => {
   return encodedRedirect(
     "success",
     "/forgot-password",
-    "Controlla la tu Mail per il link per reimpostare la password."
+    "Controlla la tu Mail per il link per reimpostare la password. "
   );
 };
 

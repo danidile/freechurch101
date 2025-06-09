@@ -1,16 +1,12 @@
 "use client";
-import { Button, Input } from "@heroui/react";
+import { Avatar, Button, Input } from "@heroui/react";
 import { useForm } from "react-hook-form";
 
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { completeAccountAction } from "./completeAccountAction";
 import { basicUserData } from "@/utils/types/userData";
-import { Alert } from "@heroui/react";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa6";
-import LoadingSongsPage from "@/app/songs/loading";
-import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
-import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import { getChurches } from "@/hooks/GET/getChurches";
@@ -22,6 +18,14 @@ export default function CompleteAccount() {
   const [churchesList, setChurchesList] = useState<any[] | null>([]);
   const { userData, fetchUser, loading } = useUserStore();
 
+  const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
+  useEffect(() => {
+    if (userData?.id) {
+      setAvatarUrl(
+        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`
+      );
+    }
+  }, [userData?.id]);
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
     if (!loading && userData.loggedIn) {
@@ -45,34 +49,49 @@ export default function CompleteAccount() {
       );
       data.church_id = churchesList[index].id;
     }
+    data.id = userData.id;
+    console.log("DATA", data);
     completeAccountAction(data);
     await fetchUser(); // client refetch
     router.push("/protected/dashboard/account"); // redirect AFTER store is up-to-date
   };
-
   return (
     <>
       <form onSubmit={handleSubmit(convertData)}>
         <h1 className="text-2xl font-medium">Completa il tuo Profilo</h1>
-
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Link href="/protected/dashboard/account/updateImage">
-            Aggiorna immagine profilo.
-          </Link>
+          <div className="flex flex-row gap-4 items-center justify-center">
+            <Avatar
+              as={Link}
+              href={"/protected/dashboard/account/updateImage"}
+              size="lg"
+              className="transition-transform "
+              src={avatarUrl}
+              onError={() => {
+                setAvatarUrl("/images/userAvatarDefault.jpg"); // your default image path
+              }}
+            />
+            <Link href="/protected/dashboard/account/updateImage">
+              Aggiorna immagine profilo.
+            </Link>
+          </div>
+
           <div className="flex gap-4 items-center">
             <Input
               {...register("name")}
+              name="name"
               label="Nome"
               variant="bordered"
               size="sm"
-              defaultValue={userData.name || ""}
+              placeholder={userData.name}
             />
             <Input
               {...register("lastname")}
+              name="lastname"
               label="Cognome"
               variant="bordered"
               size="sm"
-              defaultValue={userData.lastname}
+              placeholder={userData.lastname}
             />
           </div>
           {userData.church_id && (

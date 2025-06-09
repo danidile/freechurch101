@@ -16,12 +16,16 @@ import {
 import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
 import { Alert } from "@heroui/alert";
+import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
   const [setlists, setSetlists] = useState<any[] | null>(null);
   const [teams, setTeams] = useState<any[] | null>(null);
   const [loadingSongs, setLoadingSongs] = useState(true);
+  const [pendingRequests, setPendingRequests] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +44,13 @@ export default function AccountComponent() {
         setSetlists(fetchedProfileSetLists);
         setTeams(fetchedTeams);
         setLoadingSongs(false);
+        const permission = hasPermission(userData.role as Role, "update:songs");
+        if (permission) {
+          const pendingChurchMembershipRequests =
+            await getPendingChurchMembershipRequests(userData.church_id);
+          if (pendingChurchMembershipRequests.length >= 1)
+            setPendingRequests(true);
+        }
       }
     };
 
@@ -78,6 +89,19 @@ export default function AccountComponent() {
           description="Attendi che i responsabili della tua chiesa confermino il tuo account."
           title="In attesa di conferma"
         />
+      )}
+      {pendingRequests && (
+        <Link
+          className="dashboard-list !p-0"
+          href="/protected/church/confirm-members"
+        >
+          <Alert
+            endContent={<FaExternalLinkAlt />}
+            color="warning"
+            description="Alcuni account sono in attesa della tua conferma."
+            title="In attesa di conferma"
+          />
+        </Link>
       )}
       {/* <ModalRoleUpdate
         peopleId={userData.id}

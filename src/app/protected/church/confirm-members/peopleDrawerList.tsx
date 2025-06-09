@@ -30,29 +30,9 @@ export default function PeopleToConfirm({
   profile: pendingRequestsT;
   userData: basicUserData;
 }) {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    control,
-    formState: { isSubmitting },
-  } = useForm();
-
-  const confirmBelonging = (profileId: string) => {
-    console.log("profileId");
-    console.log(profileId);
-    confirmBelongingAction(profileId);
+  const confirmBelonging = () => {
+    confirmBelongingAction(profile.profile.id);
   };
-  const confirmAndUpdateTempUser = () => {
-    console.log("profileId");
-    const watched = watch();
-    console.log("watched.profileId");
-    console.log(watched.profileId);
-    console.log("watched.tempProfileId");
-    console.log(watched.tempProfileId);
-    // confirmAndUpdateTempUserAction(watched.profileId, watched.tempProfileId);
-  };
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <div className="flex flex-row w-full gap-12" key={profile.id}>
@@ -73,18 +53,10 @@ export default function PeopleToConfirm({
                   color="primary"
                   key="confirm"
                   className="text-center"
-                  onPress={() => confirmBelonging(profile.profile.id)}
+                  onPress={confirmBelonging}
                 >
                   Conferma
                 </DropdownItem>
-                {/* <DropdownItem
-                  color="primary"
-                  key="confirm"
-                  onPress={onOpen}
-                  className="text-center"
-                >
-                  Collega a profilo temporaneo
-                </DropdownItem> */}
                 <DropdownItem
                   key="delete"
                   className="text-center text-danger"

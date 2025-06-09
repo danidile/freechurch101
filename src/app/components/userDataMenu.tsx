@@ -34,7 +34,7 @@ export default function UserDataMenu({
   useEffect(() => {
     if (userData?.id) {
       setAvatarUrl(
-        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
+        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`
       );
     }
   }, [userData?.id]);
