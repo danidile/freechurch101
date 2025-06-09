@@ -5,12 +5,12 @@ import { getSongs } from "@/hooks/GET/getSongs";
 import { useUserStore } from "@/store/useUserStore";
 import SongslistComponent from "../components/songslistComponent";
 import LoadingSongsPage from "./loading";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function SongsPageClient() {
   const { userData, loading } = useUserStore();
   const [songs, setSongs] = useState<any[] | null>(null);
   const [loadingSongs, setLoadingSongs] = useState(true);
-
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -34,7 +34,9 @@ export default function SongsPageClient() {
   return (
     <div className="container-sub">
       <h1>No songs found</h1>
-      {/* <a href="/songs/addSong">Add a New Song!</a> */}
+      {userData && hasPermission(userData.role as Role, "create:songs") && (
+        <a href="/songs/addSong">Aggiungi canzone!</a>
+      )}{" "}
     </div>
   );
 }

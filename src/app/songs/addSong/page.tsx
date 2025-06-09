@@ -17,12 +17,12 @@ export default function App() {
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = state.slice(start, end);
-    const hasTrailingNewline = selectedText.endsWith('\n');
+    const hasTrailingNewline = selectedText.endsWith("\n");
     const cleanText = hasTrailingNewline
       ? selectedText.slice(0, -1)
       : selectedText;
-    
-    const wrapped = `<strong>${cleanText}</strong>${hasTrailingNewline ? '\n' : ''}`;
+
+    const wrapped = `<strong>${cleanText}</strong>${hasTrailingNewline ? "\n" : ""}`;
     const newText = state.slice(0, start) + wrapped + state.slice(end);
     setState(newText);
 
@@ -121,7 +121,7 @@ export default function App() {
   return (
     <div className="container-sub">
       <form onSubmit={handleSubmit(convertData)}>
-        <h1 className="text-2xl font-medium">Add Song</h1>
+        <h1 className="text-2xl font-medium">Aggiungi Canzone</h1>
 
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <div className="flex gap-4 items-center">
@@ -149,13 +149,13 @@ export default function App() {
 
           <Button
             type="button"
-            onClick={convertIntoChordPro}
+            onPress={convertIntoChordPro}
             color="primary"
             variant="flat"
           >
             Convert into ChordPro
           </Button>
-          <button onClick={makeBold}>Bold</button>
+          <Button onPress={makeBold}>Bold</Button>
 
           <Textarea
             {...register("lyrics")}
@@ -167,7 +167,6 @@ export default function App() {
             variant="bordered"
             size="sm"
             ref={textareaRef}
-
           />
 
           <Button

@@ -33,9 +33,18 @@ export default function UserDataMenu({
   const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
   useEffect(() => {
     if (userData?.id) {
-      setAvatarUrl(
-        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`
-      );
+      const imageUrl = `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`;
+      const img = new Image();
+
+      img.onload = () => {
+        setAvatarUrl(imageUrl); // Image exists and loaded
+      };
+
+      img.onerror = () => {
+        setAvatarUrl("/images/userAvatarDefault.jpg"); // Fallback
+      };
+
+      img.src = imageUrl;
     }
   }, [userData?.id]);
   if (userData.loggedIn) {
@@ -50,7 +59,7 @@ export default function UserDataMenu({
                 className="transition-transform"
                 src={avatarUrl}
                 onError={() => {
-                  setAvatarUrl("/images/userAvatarDefault.jpg"); // your default image path
+                  setAvatarUrl("/images/userAvatarDefault.jpg");
                 }}
               />
             </DropdownTrigger>

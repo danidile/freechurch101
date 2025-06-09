@@ -2,12 +2,13 @@
 
 import { createClient } from "@/utils/supabase/server";
 
-export const getSongsCompact = async () => {
+export const getSongsCompact = async (churchId: string) => {
   const supabase = createClient();
   const { data: songs, error } = await supabase
     .from("songs")
     .select("id,song_title,author")
-    .order("song_title", { ascending: true });
+    .order("song_title", { ascending: true })
+    .eq("church", churchId);
 
   if (error) {
     console.error("Errore durante il fetch:", error);

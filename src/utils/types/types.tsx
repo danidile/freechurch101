@@ -71,6 +71,7 @@ export type church = {
   city?: string;
   provincia?: string;
 };
+export type Tchurch = church;
 
 export const churchMinimalData = z.object({
   posts: z.array(

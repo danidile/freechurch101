@@ -21,14 +21,16 @@ import {
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
+import { IoSettingsSharp } from "react-icons/io5";
 import { updateProfileRole } from "./updateProfileRoleAction";
 
 const roles = [
+  { key: 0, label: "Admin", slug: "admin" },
+  { key: 1, label: "Fondatore Chiesa", slug: "churchfounder" },
   { key: 2, label: "Admin Chiesa", slug: "churchadmin" },
   { key: 3, label: "Team Leader", slug: "teamleader" },
   { key: 4, label: "", slug: "" },
-  { key: 55, label: "", slug: "" },
+  { key: 5, label: "", slug: "" },
   { key: 6, label: "", slug: "" },
   { key: 7, label: "", slug: "" },
   { key: 8, label: "Membro Chiesa", slug: "churchmember" },
@@ -56,7 +58,6 @@ export default function ModalRoleUpdate({
   });
 
   const convertData = async (data: { role: string }) => {
-
     updateProfileRole(profile, data.role);
   };
 
@@ -79,7 +80,13 @@ export default function ModalRoleUpdate({
                   }
                 >
                   {roles.map((role) => {
-                    if (role.label.length < 1 || role.key === 9) return null;
+                    if (
+                      role.label.length < 1 ||
+                      role.key === 9 ||
+                      role.key <= 1 ||
+                      role.key <= roles.find((r) => r.slug === userData.role).key
+                    )
+                      return null;
                     return (
                       <SelectItem key={role.key.toString()}>
                         {role.label}
@@ -113,6 +120,7 @@ export default function ModalRoleUpdate({
           endContent={
             <>
               {userData &&
+                userData.id !== peopleId &&
                 hasPermission(userData.role as Role, "update:role") && (
                   <div className="ml-3" onClick={() => setShowSelect(true)}>
                     <IoSettingsSharp size={14} />
