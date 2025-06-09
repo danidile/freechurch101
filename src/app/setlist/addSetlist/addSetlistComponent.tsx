@@ -21,7 +21,7 @@ export default function AddSetlistComponent() {
         const fetchedTeams = await getChurchTeams(userData.church_id);
         setTeams(fetchedTeams);
 
-        const fetchedSongs: TsongNameAuthor[] = await getSongsCompact();
+        const fetchedSongs: TsongNameAuthor[] = await getSongsCompact(userData.church_id);
         setSongs(fetchedSongs);
         setIsLoading(false);
       }

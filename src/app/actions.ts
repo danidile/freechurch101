@@ -94,7 +94,7 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   const confirmPassword = data.confirmPassword;
 
   if (!password || !confirmPassword) {
-    encodedRedirect(
+    return encodedRedirect(
       "error",
       "/protected/reset-password",
       "Password and confirm password are required"
@@ -102,7 +102,7 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   }
 
   if (password !== confirmPassword) {
-    encodedRedirect(
+    return encodedRedirect(
       "success",
       "/protected/reset-password",
       "Passwords do not match"
@@ -114,14 +114,18 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   });
 
   if (error) {
-    encodedRedirect(
+    return encodedRedirect(
       "error",
       "/protected/reset-password",
       "Password update failed"
     );
   }
 
-  encodedRedirect("success", "/protected/reset-password", "Password updated");
+  return encodedRedirect(
+    "success",
+    "/protected/reset-password",
+    "Password updated"
+  );
 };
 
 export const signOutAction = async () => {

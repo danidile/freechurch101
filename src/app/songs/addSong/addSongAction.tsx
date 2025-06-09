@@ -7,8 +7,18 @@ import { basicUserData } from "@/utils/types/userData";
 
 export const addSong = async (data: songSchema) => {
   const supabase = createClient();
-  const userData: basicUserData = await fbasicUserData();
-  if (userData) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  // GET profile
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user?.id)
+    .single();
+  const church: string = profile.church;
+
+  if (profile) {
     const { error } = await supabase
       .from("songs")
       .insert({
@@ -16,7 +26,7 @@ export const addSong = async (data: songSchema) => {
         author: data.author,
         lyrics: data.lyrics,
         upload_key: data.upload_key,
-        church: userData.church_id,
+        church: church,
       })
       .select();
     if (error) {
