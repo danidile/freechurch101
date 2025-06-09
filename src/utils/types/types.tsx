@@ -61,14 +61,16 @@ export const alertMessage = z.object({
 });
 export type TalertMessage = z.infer<typeof alertMessage>;
 
-export const church = z.object({
-  churchName: z.string(),
-  pastor: z.string(),
-  address: z.string(),
-  website: z.string(),
-  igHandle: z.string(),
-});
-export type Tchurch = z.infer<typeof church>;
+export type church = {
+  id: string;
+  churchName?: string;
+  pastor?: string;
+  address?: string;
+  website?: string;
+  igHandle?: string;
+  city?: string;
+  provincia?: string;
+};
 
 export const churchMinimalData = z.object({
   posts: z.array(

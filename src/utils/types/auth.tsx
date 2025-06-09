@@ -6,6 +6,11 @@ export const authSchema = z.object({
   church: z.string(),
   email: z.string().email(),
   password: z.string().min(6, "Password must be at least 5 characters long"),
+  churchName: z.string(),
+  website: z.string(),
+  address: z.string(),
+  igHandle: z.string(),
+  pastor: z.string(),
 });
 export type TauthSchema = z.infer<typeof authSchema>;
 

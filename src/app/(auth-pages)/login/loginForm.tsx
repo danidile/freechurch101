@@ -27,10 +27,11 @@ import { GrFormNext } from "react-icons/gr";
 import { getChurches } from "@/hooks/GET/getChurches";
 import { createClient } from "@/utils/supabase/client";
 import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
+import { church } from "@/utils/types/types";
 
 export default function LoginForm() {
   const router = useRouter();
-  const [churchesList, setChurchesList] = useState<any[] | null>([]);
+  const [churchesList, setChurchesList] = useState<church[] | null>([]);
   const { userData, loading, fetchUser } = useUserStore();
   const supabase = createClient();
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function LoginForm() {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward (optional)
   const [sending, setSending] = useState(false);
-
+  const [isCreatingChurch, setIsCreatingChurch] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -90,6 +91,14 @@ export default function LoginForm() {
     church: "",
     email: "",
     password: "",
+    isCreatingChurch: false,
+    churchName: "",
+    pastor: "",
+    address: "",
+    website: "",
+    igHandle: "",
+    provincia: "",
+    city: "",
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -101,7 +110,7 @@ export default function LoginForm() {
     if (step === 1 && (!formData.firstName || !formData.lastName)) {
       return setError("Inserisci nome e cognome per procedere.");
     }
-    if (step === 2 && !formData.church) {
+    if (step === 2 && !isCreatingChurch && !formData.church) {
       return setError("Seleziona la tua chiesa");
     }
     setDirection(1);
@@ -117,7 +126,7 @@ export default function LoginForm() {
   const handleRegister = async () => {
     setError("");
     setSending(true);
-
+    console.log(formData);
     const { email, password, firstName, lastName, church } = formData;
     console.log(firstName);
     console.log(lastName);
@@ -152,14 +161,7 @@ export default function LoginForm() {
 
     // Confirm user exists before proceeding
     if (data?.user?.id) {
-      const { data: dataChurch, error: churchDataError } = await supabase
-        .from("church-membership-request")
-        .insert({
-          church,
-          profile: data.user.id,
-        })
-        .select();
-
+      // CREATE THE PROFILE
       const { data: profileData, error: profileDataError } = await supabase
         .from("profiles")
         .update({
@@ -169,6 +171,7 @@ export default function LoginForm() {
         .eq("id", data.user.id)
 
         .select();
+      // CHECKS
       if (profileDataError) {
         console.error(profileDataError);
       } else {
@@ -177,14 +180,64 @@ export default function LoginForm() {
           profileData
         );
       }
-
-      if (churchDataError) {
-        console.error(churchDataError);
+      //IF USER IS NOT CREATING A CHURCH THEN SEND THE MEMBERSHIP REQUEST
+      if (!isCreatingChurch && !profileDataError) {
+        const { data: dataChurch, error: churchDataError } = await supabase
+          .from("church-membership-request")
+          .insert({
+            church,
+            profile: data.user.id,
+          })
+          .select();
+        if (churchDataError) {
+          console.error(churchDataError);
+        } else {
+          console.log("Membership request sent:", dataChurch);
+        }
       } else {
-        console.log("Membership request sent:", dataChurch);
+        // IF HE IS CREATING A NEW CHURCH MAKE THE INSERT.
+        const { data: newChurch, error: newChurchError } = await supabase
+          .from("churches")
+          .insert([
+            {
+              church_name: formData.churchName,
+              pastor: formData.pastor,
+              address: formData.address,
+              website: formData.website,
+              ig_handle: formData.igHandle,
+              provincia: formData.provincia,
+              city: formData.city,
+              creator: data.user.id,
+            },
+          ])
+          .select();
+        if (newChurchError) {
+          console.error("Error in creating new church", newChurchError);
+        } else {
+          console.log("New church successfully created:", newChurch);
+        }
+        const newChurchId = newChurch?.[0]?.id;
+        const { data: profileData, error: profileDataError } = await supabase
+          .from("profiles")
+          .update({
+            church: newChurchId,
+            role: 1,
+          })
+          .eq("id", data.user.id)
+
+          .select();
+        // CHECKS
+        if (profileDataError) {
+          console.error(profileDataError);
+        } else {
+          console.log(
+            "Profile name and lastname update correctly.:",
+            profileData
+          );
+        }
       }
     } else {
-      console.warn("User needs to confirm email first.");
+      console.warn("USER NOT CREATED.");
     }
     await fetchUser();
     setSending(false);
@@ -344,40 +397,119 @@ export default function LoginForm() {
 
                           {step === 2 && (
                             <>
-                              <Autocomplete
-                                defaultSelectedKey={userData.church_id}
-                                variant="bordered"
-                                isRequired
-                                name="church"
-                                placeholder="La mia chiesa..."
-                                label="Seleziona la tua chiesa"
-                                selectedKey={formData.church}
-                                onSelectionChange={(key) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    church: String(key),
-                                  }))
-                                }
-                              >
-                                {churchesList.map((church) => (
-                                  <AutocompleteItem
-                                    key={church.id}
-                                    id={church.id}
+                              {!isCreatingChurch && (
+                                <>
+                                  <Autocomplete
+                                    defaultSelectedKey={userData.church_id}
+                                    variant="bordered"
+                                    isRequired={isCreatingChurch ? true : false}
+                                    name="church"
+                                    placeholder="La mia chiesa..."
+                                    label="Seleziona la tua chiesa"
+                                    selectedKey={formData.church}
+                                    onSelectionChange={(key) =>
+                                      setFormData((prev) => ({
+                                        ...prev,
+                                        church: String(key),
+                                      }))
+                                    }
                                   >
-                                    {church.churchName}
-                                  </AutocompleteItem>
-                                ))}
-                              </Autocomplete>
-
-                              <small>
-                                Se la tua chiesa non è nella lista{" "}
-                                <Link
-                                  href="/churches/addChurch"
-                                  className="text-blue-600 underline font-bold"
-                                >
-                                  Clicca qui
-                                </Link>
-                              </small>
+                                    {churchesList.map((church: church) => (
+                                      <AutocompleteItem
+                                        key={church.id}
+                                        id={church.id}
+                                        textValue={
+                                          church.churchName +
+                                          " " +
+                                          church.address +
+                                          " " +
+                                          church.city +
+                                          " " +
+                                          church.provincia
+                                        }
+                                      >
+                                        <p>{church.churchName}</p>
+                                        <small className="truncate">
+                                          {church.address && (
+                                            <>{church.address + ", "}</>
+                                          )}
+                                          {church.provincia && (
+                                            <>{church.provincia + ", "}</>
+                                          )}
+                                          {church.city && (
+                                            <>{church.city + " "}</>
+                                          )}
+                                        </small>
+                                      </AutocompleteItem>
+                                    ))}
+                                  </Autocomplete>
+                                  <div className="flex flex-row justify-center items-center">
+                                    <small>
+                                      Se la tua chiesa non è nella lista
+                                      <Button
+                                        variant="light"
+                                        color="primary"
+                                        className="ml-2"
+                                        onPress={() => {
+                                          setIsCreatingChurch(true);
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            isCreatingChurch: true,
+                                          }));
+                                        }}
+                                      >
+                                        Clicca qui
+                                      </Button>
+                                    </small>
+                                  </div>
+                                </>
+                              )}
+                              {isCreatingChurch && (
+                                <>
+                                  <Input
+                                    {...register("churchName")}
+                                    label="Church Name"
+                                    name="churchName"
+                                    placeholder="La mia chiesa "
+                                    required
+                                    value={formData.churchName}
+                                    onChange={handleChange}
+                                  />
+                                  <Input
+                                    {...register("pastor")}
+                                    label="Pastor"
+                                    name="pastor"
+                                    placeholder="Paolo "
+                                    required
+                                    value={formData.pastor}
+                                    onChange={handleChange}
+                                  />
+                                  <Input
+                                    {...register("address")}
+                                    label="Address"
+                                    name="address"
+                                    placeholder="Via XII Sett.."
+                                    value={formData.address}
+                                    onChange={handleChange}
+                                  />
+                                  <Input
+                                    {...register("website")}
+                                    label="Sito Web"
+                                    name="website"
+                                    placeholder="www.lamiachiesa.it"
+                                    value={formData.website}
+                                    onChange={handleChange}
+                                  />
+                                  <Input
+                                    {...register("igHandle")}
+                                    label="handle Instagram"
+                                    name="igHandle"
+                                    placeholder="@my_church"
+                                    value={formData.igHandle}
+                                    onChange={handleChange}
+                                  />
+                                </>
+                              )}
                             </>
                           )}
 
@@ -442,11 +574,11 @@ export default function LoginForm() {
                         )}
                         {step < 3 ? (
                           <Button color="primary" onPress={handleNext}>
-                            Next <GrFormNext />
+                            Avanti <GrFormNext />
                           </Button>
                         ) : (
                           <Button onPress={handleRegister} disabled={sending}>
-                            {sending ? "Registering..." : "Register"}
+                            {sending ? "..." : "Iscriviti"}
                           </Button>
                         )}
                       </div>

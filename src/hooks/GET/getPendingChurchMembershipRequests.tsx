@@ -12,13 +12,14 @@ export const getPendingChurchMembershipRequests = async (churchId: string) => {
   if (error) {
     console.log("error", error);
   }
-  const mappedData: pendingRequestsT[] = pendingRequests.map((item) => ({
-    id: item.id,
-    created_at: item.created_at,
-    profile: Array.isArray(item.profile) ? item.profile[0] : item.profile, // Assicura che sia un oggetto
-  }));
-
-  console.log("pendingRequests");
-  console.log(pendingRequests);
-  return mappedData;
+  if (pendingRequests && pendingRequests.length >= 1) {
+    const mappedData: pendingRequestsT[] = pendingRequests.map((item) => ({
+      id: item.id,
+      created_at: item.created_at,
+      profile: Array.isArray(item.profile) ? item.profile[0] : item.profile, // Assicura che sia un oggetto
+    }));
+    console.log("pendingRequests");
+    console.log(pendingRequests);
+    return mappedData;
+  }
 };
