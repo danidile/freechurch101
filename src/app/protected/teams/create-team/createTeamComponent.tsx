@@ -1,9 +1,6 @@
 "use client";
 import { useUserStore } from "@/store/useUserStore";
 import TeamsForm from "../teamsForm";
-
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import { redirect } from "next/navigation";
 import { useState, useEffect } from "react";
 import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import { churchMembersT } from "@/utils/types/types";

@@ -115,7 +115,6 @@ export default function TeamsForm({
   // END MANAGE TEAM-MEMBERS
 
   const convertData = async () => {
-    console.log("pre");
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
     const churchTeamUpdated: teamData = {
       id: churchTeamStart?.id || crypto.randomUUID(),
@@ -125,9 +124,7 @@ export default function TeamsForm({
     };
 
     if (page === "create") {
-      console.log("1");
       await createTeam(churchTeamUpdated);
-      console.log("2");
     } else if (page === "update") {
       await updateTeam(churchTeamUpdated, churchTeamStart);
     }
@@ -240,6 +237,7 @@ export default function TeamsForm({
               variant="shadow"
               type="submit"
               disabled={isSubmitting}
+              onPress={convertData}
             >
               {page === "create" && "Crea"}
               {page === "update" && "Aggiorna"} Team

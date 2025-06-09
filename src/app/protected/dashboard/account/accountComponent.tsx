@@ -57,13 +57,13 @@ export default function AccountComponent() {
   nextDate.setDate(currentDate.getDate() - 1);
 
   return (
-    <div>
+    <div className="container-sub">
       {userData.name && (
         <>
-          <h5>
+          <h6 className="font-bold">
             Benvenuto {userData?.name + " "}
             {userData.lastname && userData.lastname}
-          </h5>
+          </h6>
           <small>{userData?.email}</small>
           <Link href="/protected/dashboard/account/completeAccount">
             Aggiorna profilo

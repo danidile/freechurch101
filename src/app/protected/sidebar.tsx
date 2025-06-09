@@ -20,12 +20,12 @@ export default function Sidebar() {
 
   const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
   useEffect(() => {
-  if (userData?.id) {
-    setAvatarUrl(
-      `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
-    );
-  }
-}, [userData?.id]);
+    if (userData?.id) {
+      setAvatarUrl(
+        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar.jpg`
+      );
+    }
+  }, [userData?.id]);
   async function logouter() {
     await logoutAction();
     await fetchUser();
@@ -33,7 +33,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="hidden md:block sidebar-container">
+    <>
       <div className="text-center">
         <Avatar
           as="button"
@@ -103,6 +103,6 @@ export default function Sidebar() {
           </button>
         </li>
       </ul>
-    </div>
+    </>
   );
 }
