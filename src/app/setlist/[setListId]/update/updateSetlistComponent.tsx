@@ -33,7 +33,9 @@ export default function UpdateSetlistComponent({
         fetchedSetlist.setListSongs = fetchedSetlistsongs;
 
         setSetlistData(fetchedSetlist);
-        const fetchedSongs: TsongNameAuthor[] = await getSongsCompact();
+        const fetchedSongs: TsongNameAuthor[] = await getSongsCompact(
+          userData.church_id
+        );
         setSongs(fetchedSongs);
         console.log("fetchedSetlist", fetchedSetlist);
         setIsLoading(false);
