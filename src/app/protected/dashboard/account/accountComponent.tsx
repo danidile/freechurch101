@@ -48,7 +48,10 @@ export default function AccountComponent() {
         if (permission) {
           const pendingChurchMembershipRequests =
             await getPendingChurchMembershipRequests(userData.church_id);
-          if (pendingChurchMembershipRequests.length >= 1)
+          if (
+            pendingChurchMembershipRequests &&
+            pendingChurchMembershipRequests.length >= 1
+          )
             setPendingRequests(true);
         }
       }

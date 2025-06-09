@@ -6,7 +6,7 @@ export const getChurches = async () => {
   const supabase = createClient();
   const { data: churches } = await supabase
     .from("churches")
-    .select("id , church_name");
+    .select("id , church_name, pastor, address,provincia, city");
   const churchList = [];
   if (churches) {
     let church;
@@ -14,6 +14,10 @@ export const getChurches = async () => {
       church = {
         id: churches[i].id,
         churchName: churches[i].church_name,
+        pastor: churches[i].pastor,
+        address: churches[i].address,
+        provincia: churches[i].provincia,
+        city: churches[i].city,
       };
       churchList.unshift(church);
     }
