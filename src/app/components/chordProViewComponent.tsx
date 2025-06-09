@@ -1,7 +1,15 @@
 "use client";
-import { Button, Link } from "@heroui/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@heroui/react";
 import { FaPlus, FaMinus } from "react-icons/fa";
-import { MdModeEdit, MdMoreVert } from "react-icons/md";
+import { MdDelete, MdModeEdit, MdMoreVert } from "react-icons/md";
 import {
   Dropdown,
   DropdownTrigger,
@@ -19,6 +27,8 @@ import { basicUserData } from "@/utils/types/userData";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import isChordProFormat from "./isChordProFormat";
 import { useUserStore } from "@/store/useUserStore";
+import { deleteSong } from "../songs/[songId]/deleteSongAction";
+import Link from "next/link";
 
 export default function ChordProViewComponent({
   setListSong,
@@ -26,6 +36,7 @@ export default function ChordProViewComponent({
   setListSong: setListSongT;
 }) {
   const { userData } = useUserStore();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   // Check if uses chordpro format
   const [isChordPro, setIsChordPro] = useState(false);
@@ -153,30 +164,24 @@ export default function ChordProViewComponent({
               </Button>
             </DropdownTrigger>
             <DropdownMenu variant="flat" aria-label="Dropdown menu">
-              <DropdownItem startContent={<MdModeEdit />} key="edit">
-                <Link
-                  color="foreground"
-                  className="w-full text-center"
-                  size="sm"
-                  href={`/songs/${setListSong.id}/updateSong`}
-                >
-                  Aggiorna
-                </Link>
-              </DropdownItem>
               <DropdownItem
-                startContent={<FaRegTrashAlt color="red" />}
+                startContent={<MdModeEdit />}
+                as={Link}
+                href={`/songs/${setListSong.id}/updateSong`}
                 key="edit"
+              >
+                Aggiorna
+              </DropdownItem>
+
+              <DropdownItem
+                startContent={<MdDelete />}
                 variant="flat"
+                onPress={onOpen}
+                key="delete"
+                className="text-danger"
                 color="danger"
               >
-                <Link
-                  color="danger"
-                  className="w-full text-center"
-                  size="sm"
-                  href={`/songs/${setListSong.id}/updateSong`}
-                >
-                  Elimina canzone
-                </Link>
+                Elimina
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -234,6 +239,39 @@ export default function ChordProViewComponent({
           </>
         )}
       </div>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Elimina Evento
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  <span className="underline">
+                    Sei sicuro di voler eliminare questaa Canzone?
+                  </span>{" "}
+                  Eliminerai tutti i dati relativi a questa canzone. Se sì
+                  clicca su
+                  <strong>"Elimina"</strong> altrimenti clicca su cancella.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button fullWidth color="primary" onPress={onClose}>
+                  Cancella
+                </Button>
+                <Button
+                  fullWidth
+                  color="danger"
+                  onPress={() => deleteSong(setListSong.id)}
+                >
+                  Elimina
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

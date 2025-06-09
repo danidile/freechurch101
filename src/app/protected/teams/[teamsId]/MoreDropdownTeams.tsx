@@ -17,7 +17,6 @@ import { deleteTeamAction } from "./deleteTeamAction";
 
 export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
   const [copied, setCopied] = useState(false);
-
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -27,8 +26,9 @@ export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
       console.error("Failed to copy:", error);
     }
   };
-  const deleteTeam = (event: any) => {
-    deleteTeamAction(teamsId);
+  const deleteTeam = async (event: any) => {
+    await deleteTeamAction(teamsId);
+    
   };
   return (
     <Dropdown>

@@ -19,10 +19,10 @@ import {
   Button,
   DropdownSection,
   DropdownItem,
-  Link,
 } from "@heroui/react";
 import { useState } from "react";
 import { deleteSetList } from "./deleteSetlistAction";
+import Link from "next/link";
 
 export default function MoreDropdowSetlist({
   setlistId,
@@ -32,16 +32,6 @@ export default function MoreDropdowSetlist({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
-    } catch (error) {
-      console.error("Failed to copy:", error);
-    }
-  };
   const deleteSetlist = (event: any) => {
     deleteSetList(setlistId);
   };
@@ -58,15 +48,10 @@ export default function MoreDropdowSetlist({
             startContent={<MdModeEdit />}
             key="new"
             className="text-center"
+            as={Link}
+            href={`/setlist/${setlistId}/update`}
           >
-            <Link
-              color="foreground"
-              className="w-full text-center"
-              size="sm"
-              href={`/setlist/${setlistId}/update`}
-            >
-              Aggiorna
-            </Link>
+            Aggiorna
           </DropdownItem>
           <DropdownItem
             startContent={<MdDelete />}
@@ -91,7 +76,7 @@ export default function MoreDropdowSetlist({
                 <p>
                   <span className="underline">
                     Sei sicuro di voler eliminare questo evento?
-                  </span> {" "}
+                  </span>{" "}
                   Eliminerai tutti i dati relativi a questo evento. Se sì clicca
                   su
                   <strong>"Elimina"</strong> altrimenti clicca su cancella.

@@ -24,7 +24,7 @@ export const getSongById = async (songData: unknown) => {
     } else {
       console.log("Canzone trovata!");
 
-      return globalSong;
+      return globalSong[0];
     }
   } else {
     return song[0];

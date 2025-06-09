@@ -29,7 +29,6 @@ export default function ForgotPassword({
     await forgotPasswordAction(data);
     setEmailSent(true);
   };
-  console.log("Hello" + searchParams.message);
   if (!emailSent) {
     return (
       <div className="container-sub">
