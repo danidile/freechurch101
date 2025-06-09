@@ -186,9 +186,6 @@ export default function ChordProViewComponent({
       <div>
         <h5 className="song-title">{setListSong.song_title}</h5>
         <small>{setListSong.author}</small>
-        <p>Tonalità iniziale{setListSong.key}</p>
-        <p>Tonalità Finale{setListSong.upload_key}</p>
-        <p>{steps}</p>
         {!isChordPro && (
           <>
             {parsedLyrics.map((line, i) => {
