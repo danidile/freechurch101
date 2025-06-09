@@ -7,25 +7,15 @@ import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import TeamsForm from "../../teamsForm";
 import { getProfilesByChurch } from "@/hooks/GET/getProfilesByChurch";
+import UpdateTeamForm from "./updateTeamForm";
 export default async function songs({
   params,
 }: {
   params: { teamsId: string };
 }) {
-  const userData: basicUserData = await fbasicUserData();
-
-  const churchTeam: teamData = await getChurchTeam(params.teamsId);
-  const churchMembers: profileT[] = await getProfilesByChurch(
-    userData.church_id
-  );
-
   return (
     <div className="container-sub">
-      <TeamsForm
-        page="update"
-        churchTeam={churchTeam}
-        churchMembers={churchMembers}
-      />
+      <UpdateTeamForm params={params} />
     </div>
   );
 }
