@@ -8,14 +8,15 @@ import {
   Image,
 } from "@heroui/react";
 
-import { albumT, GroupedSongsByAlbum, songType } from "@/utils/types/types";
+import { GroupedSongsByAlbum, songType } from "@/utils/types/types";
 import Link from "next/link";
-import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 
 export default function AlbumsListComponent({
   songsByAlbum,
+  artist,
 }: {
   songsByAlbum: GroupedSongsByAlbum;
+  artist: string;
 }) {
   console.log("songsByAlbum", songsByAlbum);
   return (
@@ -31,7 +32,7 @@ export default function AlbumsListComponent({
                 alt="heroui logo"
                 height={40}
                 radius="sm"
-                src={`/images/soundsmusicitalia.webp`}
+                src={`/images/${artist}.webp`}
                 width={40}
               />
               <div className="flex flex-col">
@@ -43,7 +44,9 @@ export default function AlbumsListComponent({
               <ul>
                 {songs.map((song) => (
                   <li key={song.id}>
-                    <Link href={`/globalsongs/${song.id}`}>{song.song_title}</Link>
+                    <Link href={`/globalsongs/${song.id}`}>
+                      {song.song_title}
+                    </Link>
                   </li>
                 ))}
               </ul>

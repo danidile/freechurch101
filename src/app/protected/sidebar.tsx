@@ -34,7 +34,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="text-center">
+      <div className="text-center w-full max-w-[400px]">
         <Avatar
           as="button"
           size="lg"
@@ -52,49 +52,61 @@ export default function Sidebar() {
         </>
       </div>
       <ul className="sidebar-ul">
-        <li>
+        <li className="sidebar-li">
           <Link className="sidebar-link" href="/protected/dashboard/account">
-            <FaUserCircle className="dashboard-icon" />
-            Account
+            <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+              <FaUserCircle className="dashboard-icon" />
+              Account{" "}
+            </div>
           </Link>
         </li>
         {userData.church_id && (
           <>
-            <li>
+            <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/calendar">
-                <FaRegCalendarAlt />
-                Calendario
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                  <FaRegCalendarAlt />
+                  Calendario{" "}
+                </div>
               </Link>
             </li>
-            <li>
+            <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/notifications">
-                <IoNotificationsSharp />
-                Notifiche
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                  <IoNotificationsSharp />
+                  Notifiche{" "}
+                </div>
               </Link>
             </li>
-            <li>
+            <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/blockouts">
-                <FaCalendarTimes className="dashboard-icon" />
-                Blocca Date
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                  <FaCalendarTimes className="dashboard-icon" />
+                  Blocca Date{" "}
+                </div>
               </Link>
             </li>
-            <li>
+            <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/teams">
-                <HiUserGroup className="dashboard-icon" />
-                Team
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                  <HiUserGroup className="dashboard-icon" />
+                  Team{" "}
+                </div>
               </Link>
             </li>
           </>
         )}
 
-        <li>
+        <li className="sidebar-li">
           <Link className="sidebar-link" href="/protected/settings">
-            <IoSettingsSharp className="dashboard-icon" />
-            Impostazioni
+            <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+              <IoSettingsSharp className="dashboard-icon" />
+              Impostazioni
+            </div>
           </Link>
         </li>
 
-        <li>
+        <li className="sidebar-li">
           <button className="sidebar-link logoutcolors" onClick={logouter}>
             <MdOutlineLogout />
             Esci

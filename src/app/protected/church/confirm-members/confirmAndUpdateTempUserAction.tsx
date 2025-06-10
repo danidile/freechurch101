@@ -30,9 +30,7 @@ export const confirmAndUpdateTempUserAction = async (
     .from("team-members")
     .update({
       profile: profileId,
-      temp_profile: null,
     })
-    .eq("temp_profile", tempProfile)
     .select();
 
   return data;

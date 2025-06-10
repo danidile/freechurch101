@@ -39,8 +39,7 @@ export const addSetlist = async (formData: setListT) => {
     team.selected.map((member: any) => {
       expandedTeam.push({
         setlist: sectionId,
-        member: member.isTemp ? null : member.profile,
-        temp_profile: member.isTemp ? member.profile : null,
+        member: member.profile,
         team: team.id,
       });
     });

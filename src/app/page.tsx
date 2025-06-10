@@ -71,7 +71,7 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <img className="exp-c-image" src={"images/mirkoeGiorgia.webp"} />
+              <img className="exp-c-image" src={"images/mirkoegiorgia.webp"} />
             </div>
           </Link>
           <Link href="/artists/soundsmusicitalia">
@@ -86,7 +86,7 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <img className="exp-c-image" src={"images/Soundsmusicitalia.webp"} />
+              <img className="exp-c-image" src={"images/soundsmusicitalia.webp"} />
             </div>
           </Link>
           <Link href="/artists/truedevotion">

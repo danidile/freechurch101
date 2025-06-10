@@ -5,23 +5,55 @@ import { FaCheck } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa6";
 import ModalLyrics from "./modalLyrics";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
-import { GroupedMembers, setListT } from "@/utils/types/types";
+import {
+  ChipColor,
+  ChurchMemberByTeam,
+  churchMembersT,
+  GroupedMembers,
+  setListT,
+  TeamMember,
+} from "@/utils/types/types";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
 import Link from "next/link";
 import { Button } from "@heroui/button";
 import { useUserStore } from "@/store/useUserStore";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Spinner } from "@heroui/spinner";
-
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  getKeyValue,
+  Tooltip,
+  Chip,
+  User,
+} from "@heroui/react";
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, fetchUser, loading } = useUserStore();
   const [setlistSongs, setSetlistSongs] = useState<any[] | null>(null);
   const [setlistData, setSetlistData] = useState<setListT | null>(null);
   const [setlistTeams, setSetlistTeams] = useState<GroupedMembers | null>(null);
   const [loadingSetlist, setLoadingSetlist] = useState(true);
+  const columns = [
+    {
+      key: "name",
+      label: "Nome",
+    },
+    {
+      key: "roles",
+      label: "Ruoli",
+    },
 
+    {
+      key: "status",
+      label: "Stato",
+    },
+  ];
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
     if (!loading && userData.loggedIn) {
@@ -38,6 +70,53 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     }
   }, [loading, userData]);
 
+  const renderCell = useCallback(
+    (user: ChurchMemberByTeam, columnKey: React.Key) => {
+      const cellValue = user[columnKey.toString() as keyof ChurchMemberByTeam];
+
+      switch (columnKey) {
+        case "name":
+          return <p>{user.name + " " + user.lastname}</p>;
+        case "roles":
+          return <p>{user.selected_roles}</p>;
+
+        case "status":
+          const statusColorMap: Record<string, ChipColor> = {
+            pending: "warning",
+            confirmed: "success",
+            denied: "danger",
+          };
+
+          const colorChip: ChipColor = statusColorMap[user.status] ?? "default";
+          return (
+            <Chip
+              className="capitalize"
+              color={colorChip}
+              size="sm"
+              variant="flat"
+            >
+              {user.status === "pending" && <>In attesa</>}
+              {user.status === "confirmed" && <>Confermato</>}
+              {user.status === "denied" && <>Rifiutato</>}
+            </Chip>
+          );
+
+        default:
+          if (Array.isArray(cellValue)) {
+            // se è array di stringhe
+            if (typeof cellValue[0] === "string") {
+              return <p>{cellValue.join(", ")}</p>;
+            }
+            // altrimenti (array di oggetti) ritorna null o una stringa fallback
+            return null;
+          }
+          // per altri tipi (string, boolean, JSX.Element) ritorna direttamente
+          return cellValue as React.ReactNode;
+      }
+    },
+    []
+  );
+
   if (loadingSetlist) {
     return <Spinner />;
   }
@@ -48,7 +127,6 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     month: "long", // "November"
     day: "numeric", // "10"
   });
-
   return (
     <div className="container-sub">
       <div className="song-presentation-container">
@@ -90,31 +168,36 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           </div>
         )}
 
-        {Object.entries(setlistTeams).map((team) => {
-          return (
-            <>
-              <div className="team-show">
-                <h5>{team[0]}</h5>
-                {team[1].map((member) => {
-                  return (
-                    <div className="flex gap-2 items-center">
-                      {member.status === "pending" && (
-                        <FaCircle color="orange" size={10} />
+        {setlistTeams &&
+          Object.entries(setlistTeams).map((team) => {
+            return (
+              <>
+                <div className="team-show">
+                  <Table
+                    aria-label="Example table with dynamic content"
+                    topContent={<h6 className="font-bold">{team[0]}</h6>}
+                  >
+                    <TableHeader columns={columns}>
+                      {(column) => (
+                        <TableColumn key={column.key}>
+                          {column.label}
+                        </TableColumn>
                       )}
-                      {member.status === "confirmed" && (
-                        <FaCheck color="green" size={10} />
+                    </TableHeader>
+                    <TableBody items={team[1]}>
+                      {(item) => (
+                        <TableRow key={item.id}>
+                          {(columnKey) => (
+                            <TableCell>{renderCell(item, columnKey)}</TableCell>
+                          )}
+                        </TableRow>
                       )}
-                      {member.status === "denied" && (
-                        <FaCircle color="red" size={10} />
-                      )}
-                      {member.name + " " + member.lastname}
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          );
-        })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </>
+            );
+          })}
       </div>
     </div>
   );

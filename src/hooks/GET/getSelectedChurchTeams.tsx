@@ -23,9 +23,7 @@ export const getSelectedChurchTeams = async (
   const teamFinal: teamData[] = await getChurchTeams(churchId);
   const { data, error: errorEventTeam } = await supabase
     .from("event-team")
-    .select(
-      "id,member(id, name, lastname),team(team_name),temp_profile(id, name, lastname)"
-    )
+    .select("id,member(id, name, lastname),team(team_name),roles")
     .eq("setlist", setListId);
 
   if (errorEventTeam) {
@@ -37,18 +35,15 @@ export const getSelectedChurchTeams = async (
           team.selected.push({
             id: member.id,
             team_name: member.team.team_name,
-            profile: member.member ? member.member.id : member.temp_profile.id,
-            name: member.member ? member.member.name : member.temp_profile.name,
-            lastname: member.member
-              ? member.member.lastname
-              : member.temp_profile.lastname,
-            isTemp: member.member ? false : true,
+            profile: member.member.id,
+            name: member.member.name,
+            lastname: member.member.lastname,
+            selected_roles: member.roles || null,
           });
         }
       });
     });
   }
 
-  console.log("teamFinal -", teamFinal[0].selected);
   return teamFinal;
 };

@@ -18,7 +18,6 @@ export default function UpdateSetlistComponent({
   const [setlistData, setSetlistData] = useState<setListT | null>({});
   const [songs, setSongs] = useState<TsongNameAuthor[] | null>([]);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const fetchSongs = async () => {
       if (!loading && userData.fetched && userData.church_id) {

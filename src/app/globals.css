@@ -121,12 +121,19 @@ small {
   width: 100%;
   padding: 12px 0px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  margin-top: 15px;
   border-radius: 12px;
 }
 .pwaiconsmenu:active {
   background-color: rgb(238, 238, 238);
+}
+
+.pwaiconsmenu small {
+  margin-top: 3px;
+  color: #838383;
 }
 
 main {
@@ -651,7 +658,7 @@ tbody tr .tablecellnewteams {
   justify-content: center;
   align-items: center;
   gap: 30px;
-  width: 1200px;
+  width: 100%;
   max-width: 1200px;
 }
 .albumlist-link {
@@ -714,11 +721,9 @@ tbody tr .tablecellnewteams {
 }
 
 .dashboard-container {
-  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 30px 0px;
   position: relative;
-  margin-left: 20px;
   padding: 1rem;
-  height: 200vh;
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -880,11 +885,10 @@ tbody tr .tablecellnewteams {
 }
 
 .team-show {
-  border-radius: 1rem;
   position: relative;
   margin: 5px 0px;
-  padding: 1rem 0.5rem;
-  background-color: rgb(247, 247, 247, 0.7);
+  padding: 1rem 0rem;
+
 }
 
 .setlist-name {
@@ -947,7 +951,7 @@ tbody tr .tablecellnewteams {
 }
 
 .crea-setlist-container {
-  max-width: 90vw;
+  max-width: 95vw;
   width: 500px;
   margin: 0px auto;
 }
@@ -1446,7 +1450,7 @@ tbody tr .tablecellnewteams {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  padding: 0.3rem;
+  padding: 0rem;
 }
 .teammember-container {
   display: flex;
@@ -1581,31 +1585,36 @@ tbody tr .tablecellnewteams {
 
 .sidebar-ul {
   padding: 1rem;
+  width: 100%;
 }
 .sidebar-link {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 0.8rem;
   width: 100%;
-  margin: 1rem 0;
-  padding: 0.6rem 1rem;
-  transition: 0.5s;
-  background-color: white;
+  padding: 0.6rem 0px;
+}
+.sidebar-li {
+  background-color: rgb(250, 250, 250);
   border-radius: 0.4rem;
   border: 1px solid white;
+  margin: 1rem 0;
+    transition: 0.5s;
+
 }
 
-.sidebar-link:hover {
+.sidebar-li:hover {
   background-color: #f7f7f7;
   border: 1px solid #e3e3e3;
 }
-.logoutcolors{
+.logoutcolors {
   color: hsla(347, 90%, 51%, 0.754);
 }
 .logoutcolors:hover {
   background-color: hsla(347, 90%, 51%, 0.254);
-  color:hsla(347, 90%, 51%, 1);
+  color: hsla(347, 90%, 51%, 1);
   border: 1px solid hsla(347, 90%, 51%, 0.4);
 }
 .sidebar-container {

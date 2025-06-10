@@ -18,6 +18,8 @@ import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
 import { basicUserData } from "@/utils/types/userData";
+import { FaRegCompass } from "react-icons/fa";
+import { BiCompass, BiSolidCompass } from "react-icons/bi";
 
 export default function MenuApp({
   notifications,
@@ -47,43 +49,58 @@ export default function MenuApp({
             ) : (
               <MdOutlineLibraryMusic />
             )}
+            <small>Canzoni</small>
           </TransitionLink>
           {userdata.loggedIn && (
             <TransitionLink href="/setlist" className="pwaiconsmenu">
               {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
+              <small>Eventi</small>
             </TransitionLink>
           )}
 
-          <TransitionLink href="/calendar" className="pwaiconsmenu">
-            {parameter === "calendar" ? (
-              <FaRegCalendarAlt />
-            ) : (
-              <FaRegCalendarAlt />
-            )}
-          </TransitionLink>
           {userdata.loggedIn && (
-            <TransitionLink href="/notifications" className="pwaiconsmenu">
-              {parameter === "/notifications" ? (
-                <Badge size="sm" color="primary" content={notifications}>
-                  <IoNotificationsSharp />
-                </Badge>
-              ) : (
-                <div>
-                  <Badge
-                    isInvisible={notifications === 0 ? true : false}
-                    size="sm"
-                    color="danger"
-                    showOutline={false}
-                    content={notifications}
-                  >
-                    <IoNotificationsOutline />
+            <>
+              <TransitionLink href="/notifications" className="pwaiconsmenu">
+                {parameter === "/notifications" ? (
+                  <Badge size="sm" color="primary" content={notifications}>
+                    <IoNotificationsSharp />
                   </Badge>
-                </div>
-              )}
-            </TransitionLink>
+                ) : (
+                  <>
+                    <Badge
+                      isInvisible={notifications === 0 ? true : false}
+                      size="sm"
+                      color="danger"
+                      showOutline={false}
+                      content={notifications}
+                    >
+                      <IoNotificationsOutline />
+                    </Badge>
+                  </>
+                )}
+                <small>Notifiche</small>
+              </TransitionLink>
+              <TransitionLink href="/calendar" className="pwaiconsmenu">
+                {parameter === "calendar" ? (
+                  <FaRegCalendarAlt />
+                ) : (
+                  <FaRegCalendarAlt />
+                )}
+                <small>Calendario</small>
+              </TransitionLink>
+            </>
+          )}
+          {!userdata.loggedIn && (
+            <>
+              <TransitionLink href="/" className="pwaiconsmenu">
+                {parameter === "" ? <BiSolidCompass /> : <BiCompass />}
+                <small>Esplora</small>
+              </TransitionLink>
+            </>
           )}
           <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">
             {parameter === "protected" ? <IoSettings /> : <IoSettingsOutline />}
+            <small>Account</small>
           </TransitionLink>
         </div>
       </IconContext.Provider>
