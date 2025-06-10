@@ -6,9 +6,12 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Chip,
 } from "@heroui/react";
 
 import {
+  ChipColor,
+  ChurchMemberByTeam,
   churchMembersT,
   eventSchema,
   setListSongT,
@@ -16,6 +19,12 @@ import {
   teamData,
 } from "@/utils/types/types";
 import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
   Button,
   Checkbox,
   Input,
@@ -34,7 +43,7 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TwitterPicker, ColorResult } from "react-color";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
@@ -272,6 +281,70 @@ export default function UpdateSetlistForm({
 
     return teamMember?.roles;
   };
+
+  // MANAGE TABLES
+  const columns = [
+    {
+      key: "name",
+      label: "Nome",
+    },
+    {
+      key: "roles",
+      label: "Ruoli",
+    },
+
+    {
+      key: "status",
+      label: "Stato",
+    },
+  ];
+
+  const renderCell = useCallback(
+    (user: ChurchMemberByTeam, columnKey: React.Key) => {
+      const cellValue = user[columnKey.toString() as keyof ChurchMemberByTeam];
+
+      switch (columnKey) {
+        case "name":
+          return <p>{user.name + " " + user.lastname}</p>;
+        case "roles":
+          return <p>{user.selected_roles}</p>;
+
+        case "status":
+          const statusColorMap: Record<string, ChipColor> = {
+            pending: "warning",
+            confirmed: "success",
+            denied: "danger",
+          };
+
+          const colorChip: ChipColor = statusColorMap[user.status] ?? "default";
+          return (
+            <Chip
+              className="capitalize"
+              color={colorChip}
+              size="sm"
+              variant="flat"
+            >
+              {user.status === "pending" && <>In attesa</>}
+              {user.status === "confirmed" && <>Confermato</>}
+              {user.status === "denied" && <>Rifiutato</>}
+            </Chip>
+          );
+
+        default:
+          if (Array.isArray(cellValue)) {
+            // se è array di stringhe
+            if (typeof cellValue[0] === "string") {
+              return <p>{cellValue.join(", ")}</p>;
+            }
+            // altrimenti (array di oggetti) ritorna null o una stringa fallback
+            return null;
+          }
+          // per altri tipi (string, boolean, JSX.Element) ritorna direttamente
+          return cellValue as React.ReactNode;
+      }
+    },
+    []
+  );
   return (
     <div className="container-sub">
       <div className=" crea-setlist-container">
@@ -498,150 +571,244 @@ export default function UpdateSetlistForm({
             <AnimatePresence>
               {teamsState.map((section, index) => {
                 return (
-                  <motion.div
-                    initial={{
-                      opacity: 0,
-                      x: 85,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      x: 0,
-                    }}
-                    exit={{
-                      opacity: 0,
-                      x: 80,
-                    }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
-                    layout
-                    className="team-show"
-                  >
-                    <div className="team-title-container">
-                      <h5 className="mb-6">{section.team_name}</h5>
-                      <SelectWorshipTeamMemberDrawer
-                        state={section.selected}
-                        type="add"
-                        teamMembers={section.team_members}
-                        addMemberToTeam={addMemberToTeam} // Pass function correctly
-                        section={null}
-                        teamId={section.id}
-                        date={eventDate}
-                      />
-                    </div>
-                    <AnimatePresence>
-                      {section.selected &&
-                        section.selected.map((member, index) => {
-                          const isUnavailable =
-                            member.blockouts &&
-                            member.blockouts.some((b) => {
-                              const start = new Date(b.start);
-                              const end = new Date(b.end);
-                              const target = new Date(eventDate);
-                              return target >= start && target <= end;
-                            });
-                          return (
-                            <motion.div
-                              initial={{
-                                opacity: 0,
-                                x: 85,
-                              }}
-                              animate={{
-                                opacity: 1,
-                                x: 0,
-                              }}
-                              exit={{
-                                opacity: 0,
-                                x: 80,
-                              }}
-                              transition={{
-                                duration: 0.2,
-                                delay: index * 0.06,
-                              }} // Aggiunge un ritardo progressivo
-                              layout
-                              className={`teammember-container !py-1 ${isUnavailable ? " !bg-red-50" : ""}`}
-                              key={member.profile}
-                            >
-                              <div className="teammember-section !py-1">
-                                <Input
-                                  name={"type" + member.profile}
-                                  key={member.id}
-                                  value={member.profile}
-                                  className="hide-input"
-                                  {...register(`sections.${index}.id`)}
-                                />
+                  <>
+                    {/* <motion.div
+                      initial={{
+                        opacity: 0,
+                        x: 85,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        x: 0,
+                      }}
+                      exit={{
+                        opacity: 0,
+                        x: 80,
+                      }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
+                      layout
+                      className="team-show"
+                    >
+                      <div className="team-title-container">
+                        <h5 className="mb-6">{section.team_name}</h5>
+                        <SelectWorshipTeamMemberDrawer
+                          state={section.selected}
+                          type="add"
+                          teamMembers={section.team_members}
+                          addMemberToTeam={addMemberToTeam} // Pass function correctly
+                          section={null}
+                          teamId={section.id}
+                          date={eventDate}
+                        />
+                      </div>
+                      <AnimatePresence>
+                        {section.selected &&
+                          section.selected.map((member, index) => {
+                            const isUnavailable =
+                              member.blockouts &&
+                              member.blockouts.some((b) => {
+                                const start = new Date(b.start);
+                                const end = new Date(b.end);
+                                const target = new Date(eventDate);
+                                return target >= start && target <= end;
+                              });
+                            return (
+                              <motion.div
+                                initial={{
+                                  opacity: 0,
+                                  x: 85,
+                                }}
+                                animate={{
+                                  opacity: 1,
+                                  x: 0,
+                                }}
+                                exit={{
+                                  opacity: 0,
+                                  x: 80,
+                                }}
+                                transition={{
+                                  duration: 0.2,
+                                  delay: index * 0.06,
+                                }} // Aggiunge un ritardo progressivo
+                                layout
+                                className={`teammember-container !py-1 ${isUnavailable ? " !bg-red-50" : ""}`}
+                                key={member.profile}
+                              >
+                                <div className="teammember-section !py-1">
+                                  <Input
+                                    name={"type" + member.profile}
+                                    key={member.id}
+                                    value={member.profile}
+                                    className="hide-input"
+                                    {...register(`sections.${index}.id`)}
+                                  />
 
-                                <p className="max-w-[40%]">
-                                  {member.name + " " + member.lastname}
-                                  {isUnavailable && (
-                                    <span className="text-red-500 block text-sm mt-1">
-                                      Non è disponibile in questa data.
-                                    </span>
-                                  )}
-                                </p>
-                                {(() => {
-                                  const roles = getRolesFromTeamMembers(
-                                    section.id,
-                                    member.profile
-                                  );
-                                  if (!roles) return null;
-                                  const roleKey = roles.find(
-                                    (role) =>
-                                      role === member.selected_roles
-                                  );
+                                  <p className="max-w-[40%]">
+                                    {member.name + " " + member.lastname}
+                                    {isUnavailable && (
+                                      <span className="text-red-500 block text-sm mt-1">
+                                        Non è disponibile in questa data.
+                                      </span>
+                                    )}
+                                  </p>
+                                  {(() => {
+                                    const roles = getRolesFromTeamMembers(
+                                      section.id,
+                                      member.profile
+                                    );
+                                    if (!roles) return null;
+                                    const roleKey = roles.find(
+                                      (role) => role === member.selected_roles
+                                    );
 
-                                  return (
-                                    <>
-                                      <Select
-                                        className="max-w-[150px]"
-                                        label="Seleziona ruolo:"
-                                        size="sm"
-                                        placeholder="Seleziona Ruolo"
-                                        defaultSelectedKeys={
-                                          roleKey
-                                            ? new Set([roleKey])
-                                            : undefined
-                                        }
-                                        onSelectionChange={(e) =>
-                                          addRoleToMemberTeam(
-                                            member.profile,
-                                            section.id,
-                                            e.currentKey // assuming this is string
-                                          )
-                                        }
-                                      >
-                                        {roles.map((role) => (
-                                          <SelectItem key={role}>
-                                            {role}
-                                          </SelectItem>
-                                        ))}
-                                      </Select>
-                                    </>
-                                  );
-                                })()}
+                                    return (
+                                      <>
+                                        <Select
+                                          className="max-w-[150px]"
+                                          label="Seleziona ruolo:"
+                                          size="sm"
+                                          placeholder="Seleziona Ruolo"
+                                          defaultSelectedKeys={
+                                            roleKey
+                                              ? new Set([roleKey])
+                                              : undefined
+                                          }
+                                          onSelectionChange={(e) =>
+                                            addRoleToMemberTeam(
+                                              member.profile,
+                                              section.id,
+                                              e.currentKey // assuming this is string
+                                            )
+                                          }
+                                        >
+                                          {roles.map((role) => (
+                                            <SelectItem key={role}>
+                                              {role}
+                                            </SelectItem>
+                                          ))}
+                                        </Select>
+                                      </>
+                                    );
+                                  })()}
 
-                                <Button
-                                  size="sm"
-                                  className="mx-0"
-                                  isIconOnly
-                                  color="danger"
-                                  type="button"
-                                  variant="light"
-                                  id={member.profile}
-                                  onPress={() =>
-                                    removeMemberToTeam(
-                                      member.profile,
-                                      section.id
-                                    )
-                                  }
-                                  accessKey={String(index)}
-                                >
-                                  <RiDeleteBinLine size={20} />
-                                </Button>
-                              </div>
-                            </motion.div>
-                          );
-                        })}
-                    </AnimatePresence>
-                  </motion.div>
+                                  <Button
+                                    size="sm"
+                                    className="mx-0"
+                                    isIconOnly
+                                    color="danger"
+                                    type="button"
+                                    variant="light"
+                                    id={member.profile}
+                                    onPress={() =>
+                                      removeMemberToTeam(
+                                        member.profile,
+                                        section.id
+                                      )
+                                    }
+                                    accessKey={String(index)}
+                                  >
+                                    <RiDeleteBinLine size={20} />
+                                  </Button>
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                      </AnimatePresence>
+                    </motion.div> */}
+
+                    <Table
+                      aria-label="Team members table"
+                      topContent={
+                        <h6 className="font-bold">{section.team_name}</h6>
+                      }
+                      bottomContent={
+                        <div className="team-title-container">
+                          <SelectWorshipTeamMemberDrawer
+                            state={section.selected}
+                            type="add"
+                            teamMembers={section.team_members}
+                            addMemberToTeam={addMemberToTeam} // Pass function correctly
+                            section={null}
+                            teamId={section.id}
+                            date={eventDate}
+                          />
+                        </div>
+                      }
+                    >
+                      <TableHeader>
+                        <TableColumn>Nome</TableColumn>
+                        <TableColumn>Ruolo</TableColumn>
+                        <TableColumn>Azioni</TableColumn>
+                      </TableHeader>
+                      <TableBody
+                        items={teamsState.flatMap(
+                          (team) =>
+                            team.selected?.map((member) => ({
+                              ...member,
+                              teamId: team.id,
+                              teamName: team.team_name,
+                              roles:
+                                getRolesFromTeamMembers(
+                                  team.id,
+                                  member.profile
+                                ) || [],
+                              isUnavailable:
+                                member.blockouts?.some((b) => {
+                                  const start = new Date(b.start);
+                                  const end = new Date(b.end);
+                                  const target = new Date(eventDate);
+                                  return target >= start && target <= end;
+                                }) ?? false,
+                            })) || []
+                        )}
+                      >
+                        {(item) => (
+                          <TableRow key={item.profile}>
+                            <TableCell>
+                              {item.name} {item.lastname}
+                            </TableCell>
+                            <TableCell>
+                              <Select
+                                className="max-w-[150px]"
+                                size="sm"
+                                placeholder="Seleziona Ruolo"
+                                defaultSelectedKeys={
+                                  item.roles.includes(item.selected_roles)
+                                    ? new Set([item.selected_roles])
+                                    : undefined
+                                }
+                                onSelectionChange={(e) =>
+                                  addRoleToMemberTeam(
+                                    item.profile,
+                                    item.teamId,
+                                    e.currentKey as string
+                                  )
+                                }
+                              >
+                                {item.roles.map((role) => (
+                                  <SelectItem key={role}>{role}</SelectItem>
+                                ))}
+                              </Select>
+                            </TableCell>
+
+                            <TableCell>
+                              <Button
+                                size="sm"
+                                isIconOnly
+                                color="danger"
+                                variant="light"
+                                onPress={() =>
+                                  removeMemberToTeam(item.profile, item.teamId)
+                                }
+                              >
+                                <RiDeleteBinLine size={20} />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </>
                 );
               })}
             </AnimatePresence>
