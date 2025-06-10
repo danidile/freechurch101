@@ -52,8 +52,7 @@ const upsertTeam = async (
       if (teamMember.profile) {
         newTeam.push({
           id: teamMember?.id || crypto.randomUUID(),
-          profile: teamMember.isTemp ? null : teamMember.profile,
-          temp_profile: teamMember.isTemp ? teamMember.profile : null,
+          profile: teamMember.profile,
           roles: teamMember.roles,
           team_id: churchTeamStart.id,
         });

@@ -34,7 +34,7 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TwitterPicker, ColorResult } from "react-color";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
@@ -92,7 +92,10 @@ export default function UpdateSetlistForm({
   const [pendingDate, setPendingDate] = useState<string>(
     setlistData?.date?.split("T")[0] || todaysDate
   );
-
+  useEffect(() => {
+    setEventDetails(setlistData);
+    console.log(setlistData);
+  }, [setlistData]);
   const {
     handleSubmit,
     register,
@@ -145,6 +148,26 @@ export default function UpdateSetlistForm({
             }
           : team
       )
+    );
+  };
+  const addRoleToMemberTeam = (
+    profile: string,
+    teamId: string,
+    selectedRole: string
+  ) => {
+    setTeamsState((prevTeams) =>
+      prevTeams.map((team) => {
+        if (team.id !== teamId) return team;
+
+        return {
+          ...team,
+          selected: team.selected.map((member) =>
+            member.profile === profile
+              ? { ...member, selected_roles: selectedRole } // Or use 'selectedRole' key if you want to store it separately
+              : member
+          ),
+        };
+      })
     );
   };
 
@@ -201,6 +224,8 @@ export default function UpdateSetlistForm({
     team.map((member) => {
       newTeam.push({ profile: member.profile });
     });
+    console.log("team");
+    console.log(teamsState);
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
     const updatedSetlist: setListT = {
       id: setlistData?.id || crypto.randomUUID(),
@@ -211,7 +236,6 @@ export default function UpdateSetlistForm({
       teams: teamsState,
       color: eventColor,
     };
-
     console.log("data");
     console.log(data);
     if (page === "create") {
@@ -220,8 +244,6 @@ export default function UpdateSetlistForm({
       updateSetlist(updatedSetlist, setlistData);
     }
   };
-  // console.log("teams");
-  // console.log(teams);
 
   const handleColorChange = (color: ColorResult) => {
     setEventColor(color.hex);
@@ -233,21 +255,26 @@ export default function UpdateSetlistForm({
     []
   );
 
-  const handleDateChange = (newDate: string) => {
-    const unavailable = getUnavailableMembers(newDate, teamsState);
+  const getRolesFromTeamMembers = (
+    sectionId: string,
+    memberProfile: string | undefined
+  ): string[] | undefined => {
+    console.log("eventDetails:", eventDetails);
+    console.log("eventDetails?.teams:", eventDetails?.teams);
+    if (!teams) return undefined;
 
-    if (unavailable.length > 0) {
-      setConflictedMembers(unavailable);
-      setPendingDate(newDate);
-      setIsDateConflictModalOpen(true);
-    } else {
-      setEventDate(newDate);
-    }
+    const team = teams.find((t) => t.id === sectionId);
+    if (!team || !team.team_members) return undefined;
+
+    const teamMember = team.team_members.find(
+      (tm) => tm.profile === memberProfile
+    );
+
+    return teamMember?.roles;
   };
-
   return (
     <div className="container-sub">
-      <div className="form-div crea-setlist-container">
+      <div className=" crea-setlist-container">
         <form onSubmit={handleSubmit(convertData)}>
           <div className="flex items-center">
             <div className="flex items-center gap-2">
@@ -541,16 +568,56 @@ export default function UpdateSetlistForm({
                                   className="hide-input"
                                   {...register(`sections.${index}.id`)}
                                 />
-                                <p>
-                                  <b>
-                                    {member.name + " " + member.lastname}
-                                    {isUnavailable && (
-                                      <span className="text-red-500 block text-sm mt-1">
-                                        Non è disponibile in questa data.
-                                      </span>
-                                    )}
-                                  </b>
+
+                                <p className="max-w-[40%]">
+                                  {member.name + " " + member.lastname}
+                                  {isUnavailable && (
+                                    <span className="text-red-500 block text-sm mt-1">
+                                      Non è disponibile in questa data.
+                                    </span>
+                                  )}
                                 </p>
+                                {(() => {
+                                  const roles = getRolesFromTeamMembers(
+                                    section.id,
+                                    member.profile
+                                  );
+                                  if (!roles) return null;
+                                  const roleKey = roles.find(
+                                    (role) =>
+                                      role === member.selected_roles
+                                  );
+
+                                  return (
+                                    <>
+                                      <Select
+                                        className="max-w-[150px]"
+                                        label="Seleziona ruolo:"
+                                        size="sm"
+                                        placeholder="Seleziona Ruolo"
+                                        defaultSelectedKeys={
+                                          roleKey
+                                            ? new Set([roleKey])
+                                            : undefined
+                                        }
+                                        onSelectionChange={(e) =>
+                                          addRoleToMemberTeam(
+                                            member.profile,
+                                            section.id,
+                                            e.currentKey // assuming this is string
+                                          )
+                                        }
+                                      >
+                                        {roles.map((role) => (
+                                          <SelectItem key={role}>
+                                            {role}
+                                          </SelectItem>
+                                        ))}
+                                      </Select>
+                                    </>
+                                  );
+                                })()}
+
                                 <Button
                                   size="sm"
                                   className="mx-0"

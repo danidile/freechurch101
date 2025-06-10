@@ -119,9 +119,9 @@ export const updateSetlistTeam = async (
       updateTeam.push({
         id: memberId,
         setlist: setlistData.id!,
-        member: member.isTemp ? null : member.profile || null,
-        temp_profile: member.isTemp ? member.profile || null : null,
+        member: member.profile,
         team: team.id!,
+        roles: member.selected_roles,
       });
     });
   });

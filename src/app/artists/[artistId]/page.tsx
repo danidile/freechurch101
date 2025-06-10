@@ -13,7 +13,10 @@ export default async function Page({
   if (songsByAlbum) {
     return (
       <div className="container-sub">
-        <AlbumsListComponent songsByAlbum={songsByAlbum} />
+        <AlbumsListComponent
+          songsByAlbum={songsByAlbum}
+          artist={params.artistId}
+        />
       </div>
     );
   } else {

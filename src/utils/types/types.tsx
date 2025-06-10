@@ -251,16 +251,18 @@ export type teamData = {
 
 export type churchMembersT = {
   id?: string;
+  status?: string;
   email?: string;
   name?: string;
   lastname?: string;
   skills?: string[];
   team_id?: string;
   roles?: string[];
+  role?: string;
+  selected_roles?: string;
   profile?: string;
   team_name?: string;
   isTemp?: boolean;
-  temp_profile?: string;
   blockouts?: { start: string; end: string }[];
 };
 
@@ -275,6 +277,9 @@ export type ChurchMemberByTeam = {
   name: string;
   lastname: string;
   status?: string;
+  role?: string;
+  selected_roles?: string;
+  roles?: string;
 };
 
 export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;
@@ -318,7 +323,7 @@ export type expandedTeamT = {
   setlist?: string;
   member?: string;
   team?: string;
-  temp_profile?: string;
+  roles?: string;
 };
 
 export type pendingRequestsT = {
@@ -372,3 +377,11 @@ export type RangeValueString = {
   start: string;
   end: string;
 };
+
+export type ChipColor =
+  | "warning"
+  | "success"
+  | "danger"
+  | "default"
+  | "primary"
+  | "secondary";
