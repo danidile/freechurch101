@@ -15,7 +15,7 @@ import {
 } from "@heroui/react";
 import { FaPlus } from "react-icons/fa";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function SelectTeamMemberDrawer({
   state,
@@ -33,7 +33,11 @@ export function SelectTeamMemberDrawer({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [members, setmembers] = useState(churchMembers);
   const [searchText, setSearchText] = useState(""); // Local state for search input
-  
+
+  // just makes sure that when the state updates it updates also here.
+  useEffect(() => {
+    setmembers(churchMembers);
+  }, [churchMembers]);
   const aggiornaLista = () => {
     // const filteredSongs = songsList.filter(
     //   (song: songType) =>
@@ -47,9 +51,6 @@ export function SelectTeamMemberDrawer({
       aggiornaLista(); // Trigger search on Enter key
     }
   };
-
-  // END SEARCHBAR DATA
-
   return (
     <>
       <Button

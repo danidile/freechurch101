@@ -23,8 +23,8 @@ export default function UpdateTeamForm({
   useEffect(() => {
     const fetchChurchMembers = async () => {
       if (!loading && userData.loggedIn) {
-        const fetchedSongs = await getChurchMembersCompact(userData.church_id);
-        setChurchMembers(fetchedSongs);
+        const fetchedMembers = await getChurchMembersCompact(userData.church_id);
+        setChurchMembers(fetchedMembers);
         const fetchedTeam = await getChurchTeam(params.teamsId);
         setChurchTeam(fetchedTeam);
         setLoadingSongs(false);
