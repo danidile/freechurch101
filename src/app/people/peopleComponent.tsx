@@ -8,10 +8,30 @@ import { TiUser } from "react-icons/ti";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { RiEdit2Line } from "react-icons/ri";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/dropdown";
+import { PiTrash } from "react-icons/pi";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@heroui/table";
+import { Button } from "@heroui/button";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { Spinner } from "@heroui/spinner";
 
 export default function PeopleComponent() {
   const { userData, loading } = useUserStore();
-  const [profiles, setProfiles] = useState<any[] | null>(null);
+  const [profiles, setProfiles] = useState<any[] | null>([]);
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
@@ -27,33 +47,55 @@ export default function PeopleComponent() {
   return (
     <div className="container-sub ">
       <h3 className="pb-6">People</h3>
-      <div className="flex-col gap-3">
-        {profiles &&
-          profiles.map((profile: profileT) => {
-            return (
-              <div className="flex flex-row w-full gap-12" key={profile.id}>
-                <Link
-                  className="people-link border-1 rounded-xl border-slate-300 my-1"
-                  href={`/people/${profile.id}`}
-                  key={profile.id}
-                >
-                  <div className="people-list" key={profile.id}>
-                    <div className="flex flex-row gap-2 items-center">
-                      <TiUser color={profile.isTemp ? "#f5a524" : "black"} />
-                      <p key={profile.id}>
-                        {profile.name} {profile.lastname}
-                      </p>
-                    </div>
 
-                    <span className="material-symbols-outlined">
-                      <MoreVertIcon className="text-default-400" />
-                    </span>
+      <Table className="max-w-[600px]">
+        <TableHeader>
+          <TableColumn>Nome</TableColumn>
+          <TableColumn className="hidden sm:table-cell">Email</TableColumn>
+          <TableColumn className={`max-w-[70px]`}>Azioni</TableColumn>
+        </TableHeader>
+        <TableBody items={profiles}>
+          {(item) => (
+            <TableRow key={item.profile}>
+              <TableCell className="py-[2px]">
+                {" "}
+                {item.name} {item.lastname}
+              </TableCell>
+              <TableCell className="py-[2px] hidden sm:table-cell">
+                {item.email}{" "}
+              </TableCell>
+              <TableCell className="max-w-[50px] py-[2px]">
+                {hasPermission(userData.role as Role, "update:teams") && (
+                  <div className="relative flex flex-row justify-center items-center gap-1 mx-auto">
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button
+                          className="mx-auto"
+                          isIconOnly
+                          variant="light"
+                          size="sm"
+                        >
+                          <BsThreeDotsVertical />
+                        </Button>
+                      </DropdownTrigger>
+                      <DropdownMenu aria-label="Static Actions">
+                        <DropdownItem
+                          key="update"
+                          as={Link}
+                          startContent={<RiEdit2Line />}
+                          href={`/people/${item.id}`}
+                        >
+                          Aggiorna
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
                   </div>
-                </Link>
-              </div>
-            );
-          })}
-      </div>
+                )}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 }
