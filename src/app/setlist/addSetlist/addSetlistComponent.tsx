@@ -17,7 +17,7 @@ export default function AddSetlistComponent() {
 
   useEffect(() => {
     const fetchSongs = async () => {
-      if (!loading && userData.fetched && userData.church_id) {
+      if (!loading && userData && userData.church_id) {
         const fetchedTeams = await getChurchTeams(userData.church_id);
         setTeams(fetchedTeams);
 

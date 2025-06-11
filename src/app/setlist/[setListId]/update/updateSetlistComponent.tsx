@@ -20,7 +20,7 @@ export default function UpdateSetlistComponent({
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchSongs = async () => {
-      if (!loading && userData.fetched && userData.church_id) {
+      if (!loading && userData && userData.church_id) {
         const fetchedSetlist: setListT = await getSetList(setListId);
         const fetchedSetlistsongs = await getSetListSongsCompact(setListId);
 
@@ -36,7 +36,6 @@ export default function UpdateSetlistComponent({
           userData.church_id
         );
         setSongs(fetchedSongs);
-        console.log("fetchedSetlist", fetchedSetlist);
         setIsLoading(false);
       }
     };
@@ -45,7 +44,7 @@ export default function UpdateSetlistComponent({
 
   if (isLoading || !setlistData || !songs) {
     return (
-      <div className="container-sub">
+      <div className="container-sub min-h-[80vh] flex ">
         <Spinner size="lg" />
       </div>
     );
