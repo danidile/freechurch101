@@ -67,7 +67,7 @@ export default function Home() {
         <Card isFooterBlurred className="col-span-12 sm:col-span-4 h-[400px]">
           <img
             className="object-cover h-[400px]"
-            src={"images/mirkoegiorgia.webp"}
+            src={"images/mirkoeGiorgia.webp"}
           />
           <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
             <p className="text-tiny text-white/80">Mirko & Giorgia.</p>
