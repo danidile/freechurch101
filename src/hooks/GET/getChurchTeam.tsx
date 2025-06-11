@@ -24,7 +24,7 @@ export const getTeamByIdFunction = async (teamId: string) => {
       const { data: blockouts, error: blockoutError } = await supabase
         .from("blockouts")
         .select("start, end")
-        .eq("profile", profile.id);
+        .eq("profile", profile?.id);
 
       if (blockoutError) {
         console.error(
@@ -36,7 +36,7 @@ export const getTeamByIdFunction = async (teamId: string) => {
       return {
         id: member.id,
         profile: profile.id,
-        roles: member.roles,
+        roles: member.roles || [],
         name: profile.name,
         lastname: profile.lastname,
         email: profile.email,

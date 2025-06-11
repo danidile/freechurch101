@@ -33,7 +33,7 @@ export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
   return (
     <Dropdown>
       <DropdownTrigger>
-        <Button variant="bordered" isIconOnly>
+        <Button variant="bordered" className="mr-0" isIconOnly>
           <MdMoreVert className="text-2xl" />
         </Button>
       </DropdownTrigger>

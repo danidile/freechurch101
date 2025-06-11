@@ -18,6 +18,7 @@ const ROLES = {
     // TEAMS
     "create:team",
     "view:teams",
+    "update:teams",
 
     // CHURCHMEMBERSHIPS
     "confirm:churchMembership",
@@ -44,6 +45,8 @@ const ROLES = {
     "delete:setlists",
     "create:team",
     "view:teams",
+    "update:teams",
+
     "confirm:churchMembership",
     "read:churchmembers",
     "update:role",
