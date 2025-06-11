@@ -722,7 +722,7 @@ tbody tr .tablecellnewteams {
 
 .dashboard-container {
   position: relative;
-  padding: 1rem;
+  padding: 0.5rem;
   height: 100%;
   width: 100%;
   display: flex;
@@ -1241,9 +1241,6 @@ tbody tr .tablecellnewteams {
   margin-top: 16px;
 }
 
-.explore-section {
-  padding: 80px 10px;
-}
 .explore-container {
   padding-top: 30px;
   display: flex;

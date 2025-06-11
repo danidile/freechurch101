@@ -3,24 +3,25 @@ import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
 
 type UserStore = {
-  userData: basicUserData;
+  userData: basicUserData | null;
   loading: boolean;
+  error: string | null;
   fetchUser: () => Promise<void>;
 };
 
 export const useUserStore = create<UserStore>((set) => ({
-  userData: {
-    fetched: false,
-    loggedIn: false,
-    role: "user", // No array, safe access
-  },
+  userData: null,
   loading: false,
+  error: null,
   fetchUser: async () => {
-    set({ loading: true });
-    const data: basicUserData = await fbasicUserData();
-    set({
-      userData: { ...data, fetched: true },
-    });
-    set({ loading: false });
+    set({ loading: true, error: null });
+
+    try {
+      const data = await fbasicUserData();
+      set({ userData: data, loading: false });
+    } catch (err: any) {
+      console.error("Error in fetchUser:", err);
+      set({ error: err.message || "Unknown error", loading: false });
+    }
   },
 }));

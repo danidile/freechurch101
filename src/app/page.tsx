@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { Card, CardHeader, CardFooter, Image, Button } from "@heroui/react";
 
 export default function Home() {
   return (
@@ -39,8 +40,117 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* <AddToHomeScreen /> */}
-
+      <div className="pb-5 pt-10 text-center">
+        <h2>Artisti Italiani</h2>
+      </div>
+      <div className="max-w-[1300px] gap-5 grid grid-cols-12 grid-rows-2 px-8 mx-auto my-5">
+        <Card isFooterBlurred className="col-span-12 sm:col-span-4 h-[400px]">
+          <img
+            className="object-cover h-[400px]"
+            src={"images/sdvworship.webp"}
+          />
+          <CardFooter className="justify-around before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+            <p className="text-tiny text-white/80  ">SDV Worship.</p>
+            <Button
+              className="text-tiny text-white bg-black/20 mr-0"
+              color="default"
+              radius="md"
+              size="sm"
+              variant="light"
+              as={Link}
+              href="/artists/sdvworship"
+            >
+              Testi e Accordi
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card isFooterBlurred className="col-span-12 sm:col-span-4 h-[400px]">
+          <img
+            className="object-cover h-[400px]"
+            src={"images/mirkoegiorgia.webp"}
+          />
+          <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+            <p className="text-tiny text-white/80">Mirko & Giorgia.</p>
+            <Button
+              className="text-tiny text-white bg-black/20 mr-0"
+              color="default"
+              radius="md"
+              size="sm"
+              variant="light"
+              as={Link}
+              href="/artists/mirkoegiorgia"
+            >
+              Testi e Accordi
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card isFooterBlurred className="col-span-12 sm:col-span-4 h-[400px]">
+          <img
+            className="object-cover h-[400px]"
+            src={"images/soundsmusicitalia.webp"}
+          />
+          <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+            <p className="text-tiny text-white/80">Sounds Music Italia.</p>
+            <Button
+              className="text-tiny text-white bg-black/20 mr-0"
+              color="default"
+              radius="md"
+              size="sm"
+              variant="light"
+              as={Link}
+              href="/artists/soundsmusicitalia"
+            >
+              Testi e Accordi
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card
+          isFooterBlurred
+          className="w-full h-[400px] col-span-12 sm:col-span-5"
+        >
+          <img
+            className="object-cover h-[400px]"
+            src={"images/nicobattaglia.webp"}
+          />
+          <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+            <p className="text-tiny text-white/80">Nico Battaglia..</p>
+            <Button
+              className="text-tiny text-white bg-black/20 mr-0"
+              color="default"
+              radius="md"
+              size="sm"
+              variant="light"
+              as={Link}
+              href="/artists/nicobattaglia"
+            >
+              Testi e Accordi
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card
+          isFooterBlurred
+          className="w-full h-[400px] col-span-12 sm:col-span-7"
+        >
+          <img
+            className="object-cover h-[400px]"
+            src={"images/truedevotion.webp"}
+          />
+          <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+            <p className="text-tiny text-white/80">True Devotion.</p>
+            <Button
+              className="text-tiny text-white bg-black/20 mr-0"
+              color="default"
+              radius="md"
+              size="sm"
+              variant="light"
+              as={Link}
+              href="/artists/truedevotion"
+            >
+              Testi e Accordi
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
       <div className="explore-section">
         <h2>Artisti Italiani</h2>
         <div className="explore-container">
@@ -86,7 +196,10 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <img className="exp-c-image" src={"images/soundsmusicitalia.webp"} />
+              <img
+                className="exp-c-image"
+                src={"images/soundsmusicitalia.webp"}
+              />
             </div>
           </Link>
           <Link href="/artists/truedevotion">

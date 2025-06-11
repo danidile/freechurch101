@@ -32,6 +32,7 @@ export default function AlbumsListComponent({
                 alt="heroui logo"
                 height={40}
                 radius="sm"
+                className="object-cover"
                 src={`/images/${artist}.webp`}
                 width={40}
               />

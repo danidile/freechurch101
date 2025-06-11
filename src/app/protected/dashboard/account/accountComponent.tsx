@@ -22,30 +22,24 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
-  const [setlists, setSetlists] = useState<any[] | null>(null);
-  const [teams, setTeams] = useState<any[] | null>(null);
-  const [loadingSongs, setLoadingSongs] = useState(true);
+  const [setlists, setSetlists] = useState<any[] | null>([]);
+  const [teams, setTeams] = useState<any[] | null>([]);
   const [pendingRequests, setPendingRequests] = useState(false);
+  const [fetchedData, setFetchedData] = useState(false);
 
   useEffect(() => {
+    console.log(loading);
     const fetchData = async () => {
-      if (
-        !loading &&
-        userData.loggedIn &&
-        userData.fetched &&
-        !setlists &&
-        !teams
-      ) {
-        setLoadingSongs(true);
+      if (!loading && userData) {
         const [fetchedProfileSetLists, fetchedTeams] = await Promise.all([
           getProfileSetList(userData.id),
           getTeamsByProfile(userData.id),
         ]);
         setSetlists(fetchedProfileSetLists);
         setTeams(fetchedTeams);
-        setLoadingSongs(false);
-        const permission = hasPermission(userData.role as Role, "update:songs");
-        if (permission) {
+        setFetchedData(true);
+
+        if (hasPermission(userData.role as Role, "update:songs")) {
           const pendingChurchMembershipRequests =
             await getPendingChurchMembershipRequests(userData.church_id);
           if (
@@ -58,9 +52,9 @@ export default function AccountComponent() {
     };
 
     fetchData();
-  }, [userData.loggedIn, userData.fetched, userData.id, loading]);
+  }, [userData, loading]);
 
-  if (loading || loadingSongs)
+  if (loading || !userData)
     return (
       <div className="container-sub">
         <Spinner size="lg" />
