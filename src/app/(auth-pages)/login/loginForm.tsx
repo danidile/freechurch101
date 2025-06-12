@@ -61,8 +61,7 @@ export default function LoginForm() {
       email: email,
       password: password,
     };
-    console.log(email);
-    console.log(password);
+
     const response = await signInAction(loginData);
     if (response.message) {
       const errorMessage = translateSupabaseError(response.message);
@@ -126,11 +125,8 @@ export default function LoginForm() {
   const handleRegister = async () => {
     setError("");
     setSending(true);
-    console.log(formData);
     const { email, password, firstName, lastName, church } = formData;
-    console.log(firstName);
-    console.log(lastName);
-    console.log(church);
+
 
     if (password.length <= 7) {
       setError("Password troppo corta.");
@@ -232,7 +228,6 @@ export default function LoginForm() {
         } else {
           console.log(
             "Profile name and lastname update correctly.:",
-            profileData
           );
         }
       }
