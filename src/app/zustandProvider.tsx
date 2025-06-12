@@ -12,7 +12,7 @@ export function ZustandProviders({ children }: { children: React.ReactNode }) {
     }
   }, [userData, loading]);
 
-  if (loading || !userData) {
+  if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
         <img

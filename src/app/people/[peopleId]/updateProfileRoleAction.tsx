@@ -1,8 +1,6 @@
 "use server";
-import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { profileT, songSchema } from "@/utils/types/types";
-import fbasicUserData from "@/utils/supabase/getUserData";
+import { profileT } from "@/utils/types/types";
 import { basicUserData } from "@/utils/types/userData";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 type ProfileData = {
