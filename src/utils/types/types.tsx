@@ -191,7 +191,6 @@ export type profileT = {
   name?: string;
   lastname?: string;
   role?: number;
-  isTemp?: boolean;
   church?: string;
 };
 
@@ -262,8 +261,8 @@ export type churchMembersT = {
   selected_roles?: string;
   profile?: string;
   team_name?: string;
-  isTemp?: boolean;
   blockouts?: { start: string; end: string }[];
+  isLeader?: boolean;
 };
 
 export type searchBar = {
@@ -376,6 +375,12 @@ export type RangeValueString = {
   id?: string;
   start: string;
   end: string;
+};
+export type LeaderT = {
+  id?: string;
+  profile?: string;
+  team?: string;
+  created_at?: string;
 };
 
 export type ChipColor =

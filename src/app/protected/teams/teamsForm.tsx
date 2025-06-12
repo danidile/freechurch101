@@ -101,7 +101,6 @@ export default function TeamsForm({
         name: member.name,
         lastname: member.lastname,
         roles: [],
-        isTemp: member.isTemp || null,
       },
     ]);
   };

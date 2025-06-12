@@ -9,6 +9,49 @@ const ROLES = {
     "update:songs",
     "delete:songs",
     "create:team",
+    // GLOBALSONGS
+    "view:globalsongs",
+    "create:globalsongs",
+    "update:globalsongs",
+    "delete:globalsongs",
+    "create:team",
+    // SETLISTS
+    "view:setlists",
+    "create:setlists",
+    "update:setlists",
+    "delete:setlists",
+
+    // TEAMS
+    "create:team",
+    "view:teams",
+    "update:teams",
+    "delete:teams",
+    // CHURCHMEMBERSHIPS /Requests
+    "read:churchmembers",
+    "update:churchmembers",
+    "delete:churchmembers",
+    "update:churchMembership",
+
+    // CHURCHMEMBERS
+    "view:churchmembers",
+
+    // PROFILES
+    "read:profiles",
+    "update:profiles",
+    "delete:profiles",
+
+    // ALBUMS
+    "read:albums",
+    //ROLES
+    "update:role",
+  ],
+  churchfounder: [
+    // SONGS
+    "view:songs",
+    "create:songs",
+    "update:songs",
+    "delete:songs",
+    "create:team",
     // SETLISTS
     "view:setlists",
     "create:setlists",
@@ -34,32 +77,70 @@ const ROLES = {
     //ROLES
     "update:role",
   ],
-  churchfounder: [
+  churchadmin: [
+    // SONGS
     "view:songs",
     "create:songs",
     "update:songs",
     "delete:songs",
+    "create:team",
+    // SETLISTS
     "view:setlists",
     "create:setlists",
     "update:setlists",
     "delete:setlists",
+
+    // TEAMS
     "create:team",
     "view:teams",
     "update:teams",
 
+    // CHURCHMEMBERSHIPS
     "confirm:churchMembership",
+
+    // CHURCHMEMBERS
     "read:churchmembers",
+
+    // ARTISTS
+    "read:artists",
+
+    // ALBUMS
+    "read:albums",
+    //ROLES
     "update:role",
   ],
-  churchadmin: [
+  teamleader: [
+    // SONGS
     "view:songs",
     "create:songs",
     "update:songs",
     "delete:songs",
-    "update:role",
+    "create:team",
+
+    // SETLISTS
+    "view:setlists",
+    "create:setlists",
+    "update:setlists",
+    "delete:setlists",
+
+    // TEAMS
+    "create:team",
+    "view:teams",
+    "update:teams",
+    "delete:teams",
+
+    // CHURCHMEMBERSHIPS /Requests
+    "read:churchmembers",
+    "update:churchmembers",
+    "delete:churchmembers",
+
+    // ARTISTS
+    "read:artists",
+
+    // ALBUMS
+    "read:albums",
   ],
-  teamleader: ["view:songs", "create:songs", "update:songs", "delete:songs"],
-  churchmember: ["view:songs", "create:songs", "update:songs", "delete:songs"],
+  churchmember: ["view:songs"],
   user: ["view:songs", "view:songs", "view:songs"],
 } as const;
 

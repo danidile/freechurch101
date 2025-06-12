@@ -24,9 +24,10 @@ export default function PendiRequestsComponent() {
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
     if (!loading && userData.loggedIn) {
-      if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
+      if (hasPermission(userData.role as Role, "update:churchMembership")) {
         getPendingChurchMembershipRequests(userData.church_id).then(
           (fetchedRequests) => {
+            console.log(fetchedRequests);
             setPendingRequests(fetchedRequests);
           }
         );

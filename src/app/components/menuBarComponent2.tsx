@@ -13,6 +13,7 @@ import { useState } from "react";
 import UserDataMenu from "./userDataMenu";
 import MenuApp from "./MenuApp";
 import { useUserStore } from "@/store/useUserStore";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 export default function MenuBarComponentSecondary({
   notifications,
 }: {
@@ -65,7 +66,7 @@ export default function MenuBarComponentSecondary({
               </>
             ))}
 
-          {userData && userData.loggedIn && (
+          {userData && userData.loggedIn && userData.church_id && (
             <>
               <NavbarItem>
                 <Link color="foreground" href="/songs">
@@ -77,11 +78,13 @@ export default function MenuBarComponentSecondary({
                   Eventi
                 </Link>
               </NavbarItem>
-              <NavbarItem>
-                <Link color="foreground" href="/people">
-                  People
-                </Link>
-              </NavbarItem>
+              {hasPermission(userData.role as Role, "view:churchmembers") && (
+                <NavbarItem>
+                  <Link color="foreground" href="/people">
+                    People
+                  </Link>
+                </NavbarItem>
+              )}
               <NavbarItem>
                 <Link color="foreground" href="/calendar">
                   Calendario

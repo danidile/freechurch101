@@ -117,7 +117,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     []
   );
 
-  if (loadingSetlist) {
+  if (loadingSetlist || !setlistData) {
     return <Spinner />;
   }
   const date = new Date(setlistData.date);
@@ -144,28 +144,38 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           </div>
         </div>
 
-        {setlistSongs
-          .sort((a, b) => a.order - b.order)
-          .map((song: any, index) => {
-            return (
-              <>
-                <div key={"Song" + index} className="setlist-list-id">
-                  <p>
-                    <strong>{song.song_title}</strong> {" - "}
-                    {song.key}
-                  </p>
-                  <ModalLyrics songData={song} />
-                </div>
-              </>
-            );
-          })}
-
         {setlistSongs.length > 0 && (
-          <div className="center- gap-3 mt-5 mb-20">
-            <Link href={`/setlist/${setListId}/view`}>
-              <Button color="primary"> Visualizza set completo</Button>
-            </Link>
-          </div>
+          <>
+            <Table
+              key="Songs-table"
+              aria-label="Team members table"
+              topContent={<h6 className="font-bold">Canzoni</h6>}
+            >
+              <TableHeader>
+                <TableColumn>Titolo</TableColumn>
+                <TableColumn>Tonalità</TableColumn>
+                <TableColumn>Visualizza</TableColumn>
+              </TableHeader>
+              <TableBody items={setlistSongs.sort((a, b) => a.order - b.order)}>
+                {(song) => (
+                  <TableRow key={song.id}>
+                    <TableCell>
+                      <strong>{song.song_title}</strong>{" "}
+                    </TableCell>
+                    <TableCell>{song.key}</TableCell>
+                    <TableCell>
+                      <ModalLyrics songData={song} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+            <div className="center- gap-3 mt-5 mb-20">
+              <Link href={`/setlist/${setListId}/view`}>
+                <Button color="primary"> Visualizza set completo</Button>
+              </Link>
+            </div>
+          </>
         )}
 
         {setlistTeams &&
