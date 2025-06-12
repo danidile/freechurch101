@@ -1,5 +1,4 @@
 "use client";
-import { MdMoreVert } from "react-icons/md";
 import { CgArrowsExchange } from "react-icons/cg";
 import { setListSongT, songType } from "@/utils/types/types";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
@@ -17,8 +16,6 @@ import {
 } from "@heroui/react";
 
 import { useState } from "react";
-import { TsongNameAuthor, formValues } from "@/utils/types/types";
-import { PiMusicNotesPlusFill } from "react-icons/pi";
 
 export function SelectSongsDrawer({
   songsList,
@@ -105,20 +102,18 @@ export function SelectSongsDrawer({
                         <ManageSearchIcon />
                       </Button>
                     </div>
-                  </div>
-                  <div className="container-song-list">
-                    {songs.map((song, index) => {
-                      return (
-                        <div
-                          className="song-card-searchBar"
-                          style={{ cursor: "pointer" }}
-                          key={(song.id + index).toString()}
-                          onClick={() => {
-                            addOrUpdatefunction(song, section);
-                            onClose();
-                          }}
-                        >
-                          <div className="song-card-searchBar">
+
+                    <div className="container-song-list">
+                      {songs.map((song, index) => {
+                        return (
+                          <div
+                            style={{ cursor: "pointer" }}
+                            key={(song.id + index).toString()}
+                            onClick={() => {
+                              addOrUpdatefunction(song, section);
+                              onClose();
+                            }}
+                          >
                             <p className="song-card-searchBar">
                               {song.song_title}
                               <br />
@@ -129,9 +124,9 @@ export function SelectSongsDrawer({
                               )}
                             </p>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </>
               </DrawerBody>

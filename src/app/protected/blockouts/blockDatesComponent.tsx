@@ -12,6 +12,12 @@ import {
   RangeCalendar,
   Button,
   useDisclosure,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
 } from "@heroui/react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { useEffect, useState } from "react";
@@ -24,6 +30,7 @@ import { addBlockoutAction } from "./addBlockoutsAction";
 import { deleteBlockoutAction } from "./deleteBlockoutsAction";
 import LoadingBlockoutsPage from "./loading";
 import { getBlockoutsByUserId } from "@/hooks/GET/getBlockoutsByUserId";
+import { FaPlus } from "react-icons/fa6";
 
 export default function BlockDatesComponent({}: {}) {
   const { userData, loading } = useUserStore();
@@ -63,38 +70,35 @@ export default function BlockDatesComponent({}: {}) {
 
   const addBlock = async (onClose: () => void) => {
     if (value) {
-      const updated = [...blockedDates, value].sort((a, b) =>
+      const newBlock = {
+        ...value,
+        id: crypto.randomUUID(), // Add a unique id
+      };
+
+      const updated = [...blockedDates, newBlock].sort((a, b) =>
         a.start.compare(b.start)
       );
+      onClose();
+
       setBlockedDates(updated);
+
+      const sanitized: RangeValueString = {
+        start: newBlock.start.toString(),
+        end: newBlock.end.toString(),
+      };
+      await addBlockoutAction({ blockedDates: sanitized });
     }
-    console.log("value", value);
-    const sanitized: RangeValueString = {
-      start: value.start.toString(), // or start.toDate(getLocalTimeZone()).toLocaleDateString("sv-SE")
-      end: value.end.toString(),
-    };
-    await addBlockoutAction({ blockedDates: sanitized });
-    onClose();
   };
 
-  const deleteBlock = async (blockId: string, idx: number) => {
+  const deleteBlock = async (blockId: string) => {
     await deleteBlockoutAction({ blockId });
 
-    setBlockedDates((prev) => prev.filter((_, i) => i !== idx));
+    setBlockedDates((prev) => prev.filter((date) => date.id !== blockId));
   };
 
   return (
     <I18nProvider locale="it-IT-u-ca-gregory">
-      <Card className="max-w-[500px]" shadow="none">
-        <CardHeader className="flex-col border-b-1 px-5 py-5 ">
-          <h3>Blocca date</h3>
-          <p className="text-center">
-            Inserisci durante quali date non sarai disponibile per le
-            turnazioni.
-          </p>
-        </CardHeader>
-        <CardBody className="py-5">
-          <div className="mx-auto flex-col relative">
+      {/* <div className="mx-auto flex-col relative">
             <RangeCalendar
               color="danger"
               className="calendar-heroui"
@@ -112,98 +116,120 @@ export default function BlockDatesComponent({}: {}) {
               }
               firstDayOfWeek="mon"
             />
-          </div>
-          <div className="flex flex-col items-center justify-center">
-            {blockedDates.map((date, idx) => (
-              <div
-                key={idx}
-                className="flex flex-row my-2 gap-3 items-center mx-auto"
-              >
-                <p className="capitalize">
-                  {formatter.format(date.start.toDate(getLocalTimeZone()))} –{" "}
-                  {formatter.format(date.end.toDate(getLocalTimeZone()))}
-                </p>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="flat"
-                  color="danger"
-                  onPress={() => {
-                    deleteBlock(date.id, idx);
-                  }}
-                >
-                  <FaRegTrashAlt />
-                </Button>
-              </div>
-            ))}
+          </div> */}
+      <div className="flex flex-col items-center justify-center">
+        <Table
+          key="Songs-table"
+          aria-label="Team members table"
+          topContent={
+            <div className="gap-0">
+              <h3 className="loading-none">Blocca date</h3>
+              <p className="">
+                Inserisci durante quali date non sarai disponibile per le
+                turnazioni.
+              </p>
+            </div>
+          }
+          bottomContent={
             <Button
+              isIconOnly
               color="primary"
               size="lg"
-              className="mx-auto"
+              className="ml-auto mr-0"
               onPress={onOpen}
             >
-              Aggiungi blocco data
+              <FaPlus />
             </Button>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-              <ModalContent>
-                {(onClose) => (
-                  <>
-                    <ModalHeader className="flex flex-col gap-1 border-b-2 border-black">
-                      Blocco date
-                    </ModalHeader>
-                    <ModalBody className="flex flex-col justify-center items-center">
-                      <p>
-                        Seleziona il periodo di tempo in cui non sei
-                        disponibile.
-                      </p>
-                      <RangeCalendar
-                        color="danger"
-                        className="your-custom-calendar-class"
-                        aria-label="Date (Uncontrolled)"
-                        onChange={setValue}
-                        minValue={today(getLocalTimeZone()).add({ days: 1 })}
-                        allowsNonContiguousRanges
-                        isDateUnavailable={(date) =>
-                          blockedDates.some(
-                            (range) =>
-                              date.compare(range.start) >= 0 &&
-                              date.compare(range.end) <= 0
+          }
+        >
+          <TableHeader>
+            <TableColumn>Inizio</TableColumn>
+            <TableColumn>Fine</TableColumn>
+            <TableColumn>Azioni</TableColumn>
+          </TableHeader>
+          <TableBody items={blockedDates}>
+            {(date) => (
+              <TableRow key={date.id} className="capitalize">
+                <TableCell>
+                  {formatter.format(date.start.toDate(getLocalTimeZone()))}
+                </TableCell>
+                <TableCell>
+                  {formatter.format(date.end.toDate(getLocalTimeZone()))}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="flat"
+                    color="danger"
+                    onPress={() => {
+                      deleteBlock(date.id);
+                    }}
+                  >
+                    <FaRegTrashAlt />
+                  </Button>{" "}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 border-b-2 border-black">
+                  Blocco date
+                </ModalHeader>
+                <ModalBody className="flex flex-col justify-center items-center">
+                  <p>
+                    Seleziona il periodo di tempo in cui non sei disponibile.
+                  </p>
+                  <RangeCalendar
+                    color="danger"
+                    className="your-custom-calendar-class"
+                    aria-label="Date (Uncontrolled)"
+                    onChange={setValue}
+                    minValue={today(getLocalTimeZone()).add({ days: 1 })}
+                    allowsNonContiguousRanges
+                    isDateUnavailable={(date) =>
+                      blockedDates.some(
+                        (range) =>
+                          date.compare(range.start) >= 0 &&
+                          date.compare(range.end) <= 0
+                      )
+                    }
+                    firstDayOfWeek="mon"
+                  />
+                  <p className="text-default-500 text-sm">
+                    Data selezionata:{" "}
+                    <span className="capitalize">
+                      {value
+                        ? formatter.formatRange(
+                            value.start.toDate(getLocalTimeZone()),
+                            value.end.toDate(getLocalTimeZone())
                           )
-                        }
-                        firstDayOfWeek="mon"
-                      />
-                      <p className="text-default-500 text-sm">
-                        Data selezionata:{" "}
-                        <span className="capitalize">
-                          {" "}
-                          {value
-                            ? formatter.formatRange(
-                                value.start.toDate(getLocalTimeZone()),
-                                value.end.toDate(getLocalTimeZone())
-                              )
-                            : "--"}
-                        </span>
-                      </p>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button fullWidth color="danger" onPress={onClose}>
-                        Cancella
-                      </Button>
-                      <Button
-                        fullWidth
-                        color="primary"
-                        onPress={() => addBlock(onClose)}
-                      >
-                        Aggiungi
-                      </Button>
-                    </ModalFooter>
-                  </>
-                )}
-              </ModalContent>
-            </Modal>
-          </div>
-        </CardBody>
-      </Card>
+                        : "--"}
+                    </span>
+                  </p>
+                </ModalBody>
+                <ModalFooter>
+                  <Button fullWidth color="danger" onPress={onClose}>
+                    Cancella
+                  </Button>
+                  <Button
+                    fullWidth
+                    color="primary"
+                    onPress={() => addBlock(onClose)}
+                  >
+                    Aggiungi
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </div>
     </I18nProvider>
   );
 }

@@ -29,6 +29,7 @@ import isChordProFormat from "./isChordProFormat";
 import { useUserStore } from "@/store/useUserStore";
 import { deleteSong } from "../songs/[songId]/deleteSongAction";
 import Link from "next/link";
+import CopyLinkButton from "./CopyLinkButton";
 
 export default function ChordProViewComponent({
   setListSong,
@@ -155,6 +156,7 @@ export default function ChordProViewComponent({
             <FaPlus />
           </Button>
         </div>
+        <CopyLinkButton />
 
         {userData && hasPermission(userData.role as Role, "update:songs") && (
           <Dropdown>

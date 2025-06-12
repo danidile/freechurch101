@@ -9,7 +9,6 @@ export const confirmBelongingAction = async (profileId: string) => {
     data: { user },
   } = await supabase.auth.getUser();
   // GET profile
-  console.log("profileId", profileId);
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
@@ -18,7 +17,7 @@ export const confirmBelongingAction = async (profileId: string) => {
 
   const { data, error } = await supabase
     .from("profiles")
-    .update({ church: profile.church })
+    .update({ church: profile.church, role: 8 })
     .eq("id", profileId)
     .select();
   console.log("profileId", profileId);

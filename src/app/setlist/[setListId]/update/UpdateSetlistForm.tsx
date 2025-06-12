@@ -120,6 +120,7 @@ export default function UpdateSetlistForm({
       teams[teams.findIndex((section) => section.id === id)],
     ]);
   };
+
   const getUnavailableMembers = (newDate: string, teams: teamData[]) => {
     return teams.flatMap((team) =>
       team.selected.filter((member) =>
@@ -132,16 +133,21 @@ export default function UpdateSetlistForm({
 
   const addMemberToTeam = (member: churchMembersT, teamId: string) => {
     setTeamsState((prevTeams) =>
-      prevTeams.map((team) =>
-        team.id === teamId
-          ? {
-              ...team,
-              selected: team.selected?.some((m) => m.id === member.id)
-                ? team.selected
-                : [...(team.selected || []), member],
-            }
-          : team
-      )
+      prevTeams.map((team) => {
+        if (team.id === teamId) {
+          console.log(team.id, " ", teamId, " are matvhing!");
+          return {
+            ...team,
+            selected: team.selected?.some((m) => m.id === member.id)
+              ? team.selected
+              : [...(team.selected || []), member],
+          };
+        } else {
+          console.log(team.id, " ", teamId, " are NOT matvhing!");
+
+          return team;
+        }
+      })
     );
   };
 
@@ -159,6 +165,7 @@ export default function UpdateSetlistForm({
       )
     );
   };
+
   const addRoleToMemberTeam = (
     profile: string,
     teamId: string,
@@ -229,6 +236,8 @@ export default function UpdateSetlistForm({
   };
 
   const convertData = async (data: formValues) => {
+    console.log("teamsState", teamsState);
+    console.log("teams", teams);
     const newTeam: any = [];
     team.map((member) => {
       newTeam.push({ profile: member.profile });
@@ -446,7 +455,7 @@ export default function UpdateSetlistForm({
                           opacity: 0,
                           x: 80,
                         }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
+                        transition={{ duration: 0.2, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
                         layout
                         className="setlist-section"
                         key={section.id}
@@ -572,151 +581,8 @@ export default function UpdateSetlistForm({
               {teamsState.map((section, index) => {
                 return (
                   <>
-                    {/* <motion.div
-                      initial={{
-                        opacity: 0,
-                        x: 85,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        x: 0,
-                      }}
-                      exit={{
-                        opacity: 0,
-                        x: 80,
-                      }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
-                      layout
-                      className="team-show"
-                    >
-                      <div className="team-title-container">
-                        <h5 className="mb-6">{section.team_name}</h5>
-                        <SelectWorshipTeamMemberDrawer
-                          state={section.selected}
-                          type="add"
-                          teamMembers={section.team_members}
-                          addMemberToTeam={addMemberToTeam} // Pass function correctly
-                          section={null}
-                          teamId={section.id}
-                          date={eventDate}
-                        />
-                      </div>
-                      <AnimatePresence>
-                        {section.selected &&
-                          section.selected.map((member, index) => {
-                            const isUnavailable =
-                              member.blockouts &&
-                              member.blockouts.some((b) => {
-                                const start = new Date(b.start);
-                                const end = new Date(b.end);
-                                const target = new Date(eventDate);
-                                return target >= start && target <= end;
-                              });
-                            return (
-                              <motion.div
-                                initial={{
-                                  opacity: 0,
-                                  x: 85,
-                                }}
-                                animate={{
-                                  opacity: 1,
-                                  x: 0,
-                                }}
-                                exit={{
-                                  opacity: 0,
-                                  x: 80,
-                                }}
-                                transition={{
-                                  duration: 0.2,
-                                  delay: index * 0.06,
-                                }} // Aggiunge un ritardo progressivo
-                                layout
-                                className={`teammember-container !py-1 ${isUnavailable ? " !bg-red-50" : ""}`}
-                                key={member.profile}
-                              >
-                                <div className="teammember-section !py-1">
-                                  <Input
-                                    name={"type" + member.profile}
-                                    key={member.id}
-                                    value={member.profile}
-                                    className="hide-input"
-                                    {...register(`sections.${index}.id`)}
-                                  />
-
-                                  <p className="max-w-[40%]">
-                                    {member.name + " " + member.lastname}
-                                    {isUnavailable && (
-                                      <span className="text-red-500 block text-sm mt-1">
-                                        Non è disponibile in questa data.
-                                      </span>
-                                    )}
-                                  </p>
-                                  {(() => {
-                                    const roles = getRolesFromTeamMembers(
-                                      section.id,
-                                      member.profile
-                                    );
-                                    if (!roles) return null;
-                                    const roleKey = roles.find(
-                                      (role) => role === member.selected_roles
-                                    );
-
-                                    return (
-                                      <>
-                                        <Select
-                                          className="max-w-[150px]"
-                                          label="Seleziona ruolo:"
-                                          size="sm"
-                                          placeholder="Seleziona Ruolo"
-                                          defaultSelectedKeys={
-                                            roleKey
-                                              ? new Set([roleKey])
-                                              : undefined
-                                          }
-                                          onSelectionChange={(e) =>
-                                            addRoleToMemberTeam(
-                                              member.profile,
-                                              section.id,
-                                              e.currentKey // assuming this is string
-                                            )
-                                          }
-                                        >
-                                          {roles.map((role) => (
-                                            <SelectItem key={role}>
-                                              {role}
-                                            </SelectItem>
-                                          ))}
-                                        </Select>
-                                      </>
-                                    );
-                                  })()}
-
-                                  <Button
-                                    size="sm"
-                                    className="mx-0"
-                                    isIconOnly
-                                    color="danger"
-                                    type="button"
-                                    variant="light"
-                                    id={member.profile}
-                                    onPress={() =>
-                                      removeMemberToTeam(
-                                        member.profile,
-                                        section.id
-                                      )
-                                    }
-                                    accessKey={String(index)}
-                                  >
-                                    <RiDeleteBinLine size={20} />
-                                  </Button>
-                                </div>
-                              </motion.div>
-                            );
-                          })}
-                      </AnimatePresence>
-                    </motion.div> */}
-
                     <Table
+                      key={section.id}
                       aria-label="Team members table"
                       topContent={
                         <h6 className="font-bold">{section.team_name}</h6>
@@ -741,54 +607,56 @@ export default function UpdateSetlistForm({
                         <TableColumn>Azioni</TableColumn>
                       </TableHeader>
                       <TableBody
-                        items={teamsState.flatMap(
-                          (team) =>
-                            team.selected?.map((member) => ({
-                              ...member,
-                              teamId: team.id,
-                              teamName: team.team_name,
-                              roles:
-                                getRolesFromTeamMembers(
-                                  team.id,
-                                  member.profile
-                                ) || [],
-                              isUnavailable:
-                                member.blockouts?.some((b) => {
-                                  const start = new Date(b.start);
-                                  const end = new Date(b.end);
-                                  const target = new Date(eventDate);
-                                  return target >= start && target <= end;
-                                }) ?? false,
-                            })) || []
-                        )}
+                        items={
+                          section.selected?.map((member) => ({
+                            ...member,
+                            teamId: section.id,
+                            teamName: section.team_name,
+                            roles:
+                              getRolesFromTeamMembers(
+                                section.id,
+                                member.profile
+                              ) || [],
+                            isUnavailable:
+                              member.blockouts?.some((b) => {
+                                const start = new Date(b.start);
+                                const end = new Date(b.end);
+                                const target = new Date(eventDate);
+                                return target >= start && target <= end;
+                              }) ?? false,
+                          })) || []
+                        }
                       >
                         {(item) => (
-                          <TableRow key={item.profile}>
+                          <TableRow key={item.profile + section.id}>
                             <TableCell>
                               {item.name} {item.lastname}
                             </TableCell>
                             <TableCell>
-                              <Select
-                                className="max-w-[150px]"
-                                size="sm"
-                                placeholder="Seleziona Ruolo"
-                                defaultSelectedKeys={
-                                  item.roles.includes(item.selected_roles)
-                                    ? new Set([item.selected_roles])
-                                    : undefined
-                                }
-                                onSelectionChange={(e) =>
-                                  addRoleToMemberTeam(
-                                    item.profile,
-                                    item.teamId,
-                                    e.currentKey as string
-                                  )
-                                }
-                              >
-                                {item.roles.map((role) => (
-                                  <SelectItem key={role}>{role}</SelectItem>
-                                ))}
-                              </Select>
+                              {item.roles.length >= 1 && (
+                                <Select
+                                  aria-label="Select roles"
+                                  className="max-w-[150px]"
+                                  size="sm"
+                                  placeholder="Seleziona Ruolo"
+                                  defaultSelectedKeys={
+                                    item.roles.includes(item.selected_roles)
+                                      ? new Set([item.selected_roles])
+                                      : undefined
+                                  }
+                                  onSelectionChange={(e) =>
+                                    addRoleToMemberTeam(
+                                      item.profile,
+                                      item.teamId,
+                                      e.currentKey as string
+                                    )
+                                  }
+                                >
+                                  {item.roles.map((role) => (
+                                    <SelectItem key={role}>{role}</SelectItem>
+                                  ))}
+                                </Select>
+                              )}
                             </TableCell>
 
                             <TableCell>
@@ -798,7 +666,7 @@ export default function UpdateSetlistForm({
                                 color="danger"
                                 variant="light"
                                 onPress={() =>
-                                  removeMemberToTeam(item.profile, item.teamId)
+                                  removeMemberToTeam(item.profile, section.id)
                                 }
                               >
                                 <RiDeleteBinLine size={20} />

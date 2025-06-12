@@ -7,7 +7,6 @@ import {
   DrawerHeader,
   DrawerBody,
   useDisclosure,
-  
 } from "@heroui/react";
 import { TiUser } from "react-icons/ti";
 
@@ -31,7 +30,6 @@ export default function PeopleDrawerList({
       <Link className="people-link" onPress={onOpen} key={profile.id}>
         <div className="people-list" key={profile.id}>
           <div className="flex flex-row gap-2 items-center">
-            <TiUser color={profile.isTemp ? "#f5a524" : "black"} />
             <p key={profile.id}>
               {profile.name} {profile.lastname}
             </p>

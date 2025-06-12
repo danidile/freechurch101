@@ -28,6 +28,7 @@ import {
 import { Button } from "@heroui/button";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { Spinner } from "@heroui/spinner";
+import { FaRegEye } from "react-icons/fa6";
 
 export default function PeopleComponent() {
   const { userData, loading } = useUserStore();
@@ -35,7 +36,11 @@ export default function PeopleComponent() {
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
-    if (!loading && userData.loggedIn) {
+    if (
+      !loading &&
+      userData.loggedIn &&
+      hasPermission(userData.role as Role, "read:churchmembers")
+    ) {
       getProfilesByChurch(userData.church_id).then(
         (fetchedPeople: profileT[]) => {
           setProfiles(fetchedPeople);
@@ -44,11 +49,27 @@ export default function PeopleComponent() {
     }
   }, [loading, userData]);
 
+  if (!hasPermission(userData.role as Role, "read:churchmembers"))
+    return (
+      <div className="container-sub ">
+        <div className="max-w-[600px] h-[70vh] flex flex-col justify-center items-center text-center">
+          <h3> Accesso negato.</h3>
+          <p>
+            Per motivi di privacy solo gli amministratori della chiesa e i
+            responsabili di team possono visualizzare questa pagina.
+          </p>
+        </div>
+      </div>
+    );
+
   return (
     <div className="container-sub ">
-      <h3 className="pb-6">People</h3>
+      <h3 className="pb-6 text-center">Chiesa</h3>
 
-      <Table className="max-w-[600px]">
+      <Table
+        className="max-w-[600px]"
+        topContent={<h6 className="font-bold">Membri di chiesa</h6>}
+      >
         <TableHeader>
           <TableColumn>Nome</TableColumn>
           <TableColumn className="hidden sm:table-cell">Email</TableColumn>
@@ -82,10 +103,10 @@ export default function PeopleComponent() {
                         <DropdownItem
                           key="update"
                           as={Link}
-                          startContent={<RiEdit2Line />}
+                          startContent={<FaRegEye />}
                           href={`/people/${item.id}`}
                         >
-                          Aggiorna
+                          Visualizza dettagli utente
                         </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>

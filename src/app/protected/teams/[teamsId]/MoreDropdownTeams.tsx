@@ -12,10 +12,16 @@ import {
   DropdownItem,
   Link,
 } from "@heroui/react";
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import { deleteTeamAction } from "./deleteTeamAction";
 
-export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
+export default function MoreDropdownTeams({
+  teamsId,
+  setDefineLeaders,
+}: {
+  teamsId: string;
+  setDefineLeaders: Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [copied, setCopied] = useState(false);
   const handleCopy = async () => {
     try {
@@ -28,7 +34,6 @@ export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
   };
   const deleteTeam = async (event: any) => {
     await deleteTeamAction(teamsId);
-    
   };
   return (
     <Dropdown>
@@ -38,17 +43,20 @@ export default function MoreDropdownTeams({ teamsId }: { teamsId: string }) {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Dropdown menu with shortcut" variant="flat">
-        <DropdownItem startContent={<MdModeEdit />} key="new" className="text-center">
-          <Link
-          color="foreground"
-            className="w-full text-center"
-            size="sm"
-            href={`/protected/teams/${teamsId}/update`}
-          >
-            Aggiorna
-          </Link>
+        <DropdownItem
+          startContent={<MdModeEdit />}
+          key="new"
+          className="text-center"
+          onPress={() => setDefineLeaders(true)}
+        >
+          Aggiorna Leader
         </DropdownItem>
-        <DropdownItem startContent={<FaRegCopy />} key="copy" onPress={handleCopy} color="primary">
+        <DropdownItem
+          startContent={<FaRegCopy />}
+          key="copy"
+          onPress={handleCopy}
+          color="primary"
+        >
           Copia link
         </DropdownItem>
 

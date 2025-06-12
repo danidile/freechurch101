@@ -124,7 +124,7 @@ small {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 1px;
   border-radius: 12px;
 }
 .pwaiconsmenu:active {
@@ -150,7 +150,7 @@ main {
 }
 
 .app-menu {
-  height: 70px;
+  height: 84px;
   background-color: white;
   position: fixed;
   bottom: 0px;
@@ -517,7 +517,7 @@ tbody tr .tablecellnewteams {
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  max-width: 100%; /* Prevents overflowing */
+  max-width: 90%; /* Prevents overflowing */
   justify-content: center;
 }
 

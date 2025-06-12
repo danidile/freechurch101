@@ -188,7 +188,7 @@ export default function Home() {
               <div className="titolo-feed">
                 <img
                   className="profile-pic-feed-post"
-                  src={"images/Soundsmusicitalia.webp"}
+                  src={"images/soundsmusicitalia.webp"}
                 />
                 <div>
                   <p className="nome-utente-feed">Intimità</p>

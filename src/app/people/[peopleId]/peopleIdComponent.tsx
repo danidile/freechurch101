@@ -11,6 +11,7 @@ import { MdEvent } from "react-icons/md";
 import ModalRoleUpdate from "./modalRoleUpdate";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function PeopleIdComponent({
   params,
@@ -43,6 +44,19 @@ export default function PeopleIdComponent({
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
+
+  if (!hasPermission(userData.role as Role, "read:churchmembers"))
+    return (
+      <div className="container-sub ">
+        <div className="max-w-[600px] h-[70vh] flex flex-col justify-center items-center text-center">
+          <h3> Accesso negato.</h3>
+          <p>
+            Per motivi di privacy solo gli amministratori della chiesa e i
+            responsabili di team possono visualizzare questa pagina.
+          </p>
+        </div>
+      </div>
+    );
   return (
     <div className="container-sub">
       <h5>{profile.name + " " + profile.lastname}</h5>
@@ -56,9 +70,9 @@ export default function PeopleIdComponent({
       {profileTeams.length >= 1 && (
         <div className="">
           Team di {profile.name}
-          {profileTeams.map((team) => {
+          {profileTeams.map((team, index) => {
             return (
-              <div className="flex gap-1">
+              <div className="flex gap-1" key={index}>
                 <p className="font-bold">{team.team_name}</p>
                 {team.roles.length >= 1 && (
                   <p className="italic">{" (" + team.roles.join(", ") + ")"}</p>
