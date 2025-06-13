@@ -37,18 +37,16 @@ export default function SetListListComponent() {
     <div className="container-sub !max-w-96">
       <h5 className="text-center m-2">Prossimi eventi</h5>
       <div className="w-full flex justify-end">
-        {hasPermission(userData.role as Role, "create:setlists") ||
-          (TeamLeader && (
-            <>
-              <TransitionLink
-                href="/setlist/addSetlist"
-                className="button-style flex items-center gap-2"
-              >
-                Nuovo Evento
-                <FiPlus />
-              </TransitionLink>
-            </>
-          ))}
+        {(hasPermission(userData.role as Role, "create:setlists") ||
+          TeamLeader) && (
+          <TransitionLink
+            href="/setlist/addSetlist"
+            className="button-style flex items-center gap-2"
+          >
+            Nuovo Evento
+            <FiPlus />
+          </TransitionLink>
+        )}
       </div>
 
       <SetListTabs userData={userData} setlists={setlists} />

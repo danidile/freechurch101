@@ -1621,3 +1621,16 @@ tbody tr .tablecellnewteams {
   position: relative;
   z-index: 20;
 }
+
+.sidebar-container-app {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 75px);
+  background-color: rgb(255, 255, 255);
+  position: relative;
+  z-index: 20;
+  padding-bottom: 50px;
+}
