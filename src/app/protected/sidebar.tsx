@@ -41,7 +41,7 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="hidden md:block sidebar-container">
+    <>
       <div className="text-center w-full max-w-[400px]">
         <Avatar
           as="button"
@@ -114,7 +114,7 @@ export default function Sidebar() {
         </li>
       </ul>
       <div className="absolute  bottom-0 w-full flex flex-row justify-center border-t-1">
-        <Dropdown>
+        <Dropdown placement="top">
           <DropdownTrigger>
             <Button
               fullWidth
@@ -149,6 +149,6 @@ export default function Sidebar() {
           </DropdownMenu>
         </Dropdown>
       </div>
-    </div>
+    </>
   );
 }
