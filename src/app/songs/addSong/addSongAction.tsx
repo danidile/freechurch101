@@ -2,14 +2,13 @@
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { songSchema } from "@/utils/types/types";
-import fbasicUserData from "@/utils/supabase/getUserData";
-import { basicUserData } from "@/utils/types/userData";
 
 export const addSong = async (data: songSchema) => {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  
   // GET profile
   const { data: profile } = await supabase
     .from("profiles")

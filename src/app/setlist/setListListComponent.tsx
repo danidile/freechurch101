@@ -9,7 +9,7 @@ import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
 
 export default function SetListListComponent() {
-  const { userData, fetchUser, loading } = useUserStore();
+  const { userData, loading } = useUserStore();
   const [setlists, setSetlists] = useState<any[] | null>(null);
 
   useEffect(() => {

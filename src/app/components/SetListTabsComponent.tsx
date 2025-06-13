@@ -49,17 +49,17 @@ export default function SetListTabs({
                   </div>
                 )}
                 <TransitionLink
-                  className="setlist-list-link border-1 rounded-2xl border-slate-300 my-1  !max-w-full"
+                  className="setlist-list-link border-1  border-gray-100 over my-1  !max-w-full"
                   href={`/setlist/${setlist.id}`}
                 >
                   <div className="setlist-list" key={setlist.id}>
                     <div
                       style={{
                         left: "0px",
-                        height: "100%",
-                        width: "5px",
-                        backgroundColor:  setlist.color,
-                        position: "absolute"
+                        height: "77%",
+                        width: "2px",
+                        backgroundColor: setlist.color,
+                        position: "absolute",
                       }}
                     ></div>
 
