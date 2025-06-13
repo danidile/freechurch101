@@ -1,12 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { IoSettingsSharp } from "react-icons/io5";
-import { MdOutlineLogout } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 import { PiPasswordBold } from "react-icons/pi";
-
 export default function Sidebar({}: {}) {
   const router = useRouter();
   const { fetchUser, userData } = useUserStore();
@@ -32,6 +29,12 @@ export default function Sidebar({}: {}) {
           <Link className="sidebar-link" href="/protected/reset-password">
             <PiPasswordBold className="dashboard-icon" />
             Cambia password
+          </Link>
+          <Link
+            className="sidebar-link"
+            href="/protected/dashboard/account/completeAccount"
+          >
+            Aggiorna profilo
           </Link>
         </li>
       </ul>

@@ -65,137 +65,129 @@ export default function AccountComponent() {
   nextDate.setDate(currentDate.getDate() - 1);
 
   return (
-    <div className="container-sub">
-      {userData.name && (
-        <>
-          <h6 className="font-bold">
-            Benvenuto {userData?.name + " "}
-            {userData.lastname && userData.lastname}
-          </h6>
-          <small>{userData?.email}</small>
-          <Link href="/protected/dashboard/account/completeAccount">
-            Aggiorna profilo
-          </Link>
-        </>
-      )}
+    <div className=" w-full">
+      <div className="p-2 sm:p-12">
+        <h4>
+          Benvenuto {userData?.name + " "}
+          {userData.lastname && userData.lastname}
+        </h4>
+        <p>{userData?.email}</p>
 
-      {userData.pending_church_confirmation && (
-        <Alert
-          className="my-5"
-          color="primary"
-          description="Attendi che i responsabili della tua chiesa confermino il tuo account."
-          title="In attesa di conferma"
-        />
-      )}
-      {pendingRequests && (
-        <Link
-          className="dashboard-list !p-0"
-          href="/protected/church/confirm-members"
-        >
+        {userData.pending_church_confirmation && (
           <Alert
-            endContent={<FaExternalLinkAlt />}
-            color="warning"
-            description="Alcuni account sono in attesa della tua conferma."
+            className="my-5"
+            color="primary"
+            description="Attendi che i responsabili della tua chiesa confermino il tuo account."
             title="In attesa di conferma"
           />
-        </Link>
-      )}
-      {/* <ModalRoleUpdate
-        peopleId={userData.id}
-        profile={userData}
-        userData={userData}
-      /> */}
+        )}
+        {pendingRequests && (
+          <Link
+            className="dashboard-list !p-0"
+            href="/protected/church/confirm-members"
+          >
+            <Alert
+              endContent={<FaExternalLinkAlt />}
+              color="warning"
+              description="Alcuni account sono in attesa della tua conferma."
+              title="In attesa di conferma"
+            />
+          </Link>
+        )}
 
-      {teams && teams.length >= 1 && (
-        <div className="">
-          Team di {userData.name}
-          {teams.map((team) => {
-            return (
-              <div key={team.id} className="flex gap-1">
-                <p className="font-bold">{team.team_name}</p>
-                {team.roles.length >= 1 && (
-                  <p className="italic">{" (" + team.roles.join(", ") + ")"}</p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-      {setlists && setlists.length >= 1 && (
-        <div>
-          <Card shadow="none" className="max-w-full my-4 w-96 border-none">
-            <CardHeader className="flex gap-3 border-b-2 border-gray-800">
-              {" "}
-              <MdEvent size={25} />
-              <h6>Prossimi eventi </h6>
-            </CardHeader>
-            <CardBody>
-              {setlists.map((setlist: profileSetlistsT) => {
-                const date = new Date(setlist.date);
-                const readableDate = date.toLocaleString("it-IT", {
-                  weekday: "long", // "Sunday"
-                  year: "numeric", // "2024"
-                  month: "long", // "November"
-                  day: "numeric", // "10"
-                });
-                if (date > currentDate) {
-                  return (
-                    <div
-                      key={setlist.id}
-                      className="border-1 rounded-lg border-slate-300 my-1  !max-w-full p-3"
-                    >
-                      <div className="flex gap-3 relative">
-                        <div className="flex flex-col w-full max-w-full">
-                          <div
-                            className="flex  max-w-full
+        {teams && teams.length >= 1 && (
+          <div className="">
+            Team di {userData.name}
+            {teams.map((team) => {
+              return (
+                <div key={team.id} className="flex gap-1">
+                  <p className="font-bold">{team.team_name}</p>
+                  {team.roles && team.roles.length >= 1 && (
+                    <p className="italic">
+                      {" (" + team.roles.join(", ") + ")"}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {setlists && setlists.length >= 1 && (
+          <div>
+            <Card shadow="none" className="max-w-full my-4 w-96 border-none">
+              <CardHeader className="flex gap-3 border-b-2 border-gray-800">
+                {" "}
+                <MdEvent size={25} />
+                <h6>Prossimi eventi </h6>
+              </CardHeader>
+              <CardBody>
+                {setlists.map((setlist: profileSetlistsT) => {
+                  const date = new Date(setlist.date);
+                  const readableDate = date.toLocaleString("it-IT", {
+                    weekday: "long", // "Sunday"
+                    year: "numeric", // "2024"
+                    month: "long", // "November"
+                    day: "numeric", // "10"
+                  });
+                  if (date > currentDate) {
+                    return (
+                      <div
+                        key={setlist.id}
+                        className="border-1 rounded-lg border-slate-300 my-1  !max-w-full p-3"
+                      >
+                        <div className="flex gap-3 relative">
+                          <div className="flex flex-col w-full max-w-full">
+                            <div
+                              className="flex  max-w-full
                           justify-between"
-                          >
-                            <p className="text-md">{setlist.event_title}</p>
-                            <>
-                              {" "}
-                              {setlist.status === "pending" && (
-                                <Chip variant="flat" color="warning">
-                                  In Attesa
-                                </Chip>
-                              )}
-                              {setlist.status === "confirmed" && (
-                                <Chip variant="flat" color="success">
-                                  Confermato
-                                </Chip>
-                              )}
-                              {setlist.status === "denied" && (
-                                <Chip variant="flat" color="danger">
-                                  Rifiutato
-                                </Chip>
-                              )}
-                            </>
-                          </div>
+                            >
+                              <p className="text-md">{setlist.event_title}</p>
+                              <>
+                                {" "}
+                                {setlist.status === "pending" && (
+                                  <Chip variant="flat" color="warning">
+                                    In Attesa
+                                  </Chip>
+                                )}
+                                {setlist.status === "confirmed" && (
+                                  <Chip variant="flat" color="success">
+                                    Confermato
+                                  </Chip>
+                                )}
+                                {setlist.status === "denied" && (
+                                  <Chip variant="flat" color="danger">
+                                    Rifiutato
+                                  </Chip>
+                                )}
+                              </>
+                            </div>
 
-                          <p className="text-small text-default-500 capitalize">
-                            {readableDate}
-                          </p>
+                            <p className="text-small text-default-500 capitalize">
+                              {readableDate}
+                            </p>
+                          </div>
+                        </div>
+
+                        <p className="text-small text-default-800 capitalize">
+                          Team: {setlist.team_name}.
+                        </p>
+                        <div className="flex justify-end">
+                          <Link
+                            showAnchorIcon
+                            href={`/setlist/${setlist.setlist_id}`}
+                          >
+                            Pagina evento
+                          </Link>
                         </div>
                       </div>
-
-                      <p className="text-small text-default-800 capitalize">
-                        Team: {setlist.team_name}.
-                      </p>
-                      <div className="flex justify-end">
-                        <Link
-                          showAnchorIcon
-                          href={`/setlist/${setlist.setlist_id}`}
-                        >
-                          Pagina evento
-                        </Link>
-                      </div>
-                    </div>
-                  );
-                }
-              })}{" "}
-            </CardBody>
-          </Card>
-        </div>
-      )}
+                    );
+                  }
+                })}{" "}
+              </CardBody>
+            </Card>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

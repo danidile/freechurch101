@@ -26,7 +26,7 @@ export default function MenuBarComponentSecondary({
       <Navbar
         onMenuOpenChange={setIsMenuOpen}
         isMenuOpen={isMenuOpen}
-        className="standalone:!hidden"
+        className="standalone:!hidden  h-[75px]"
       >
         <NavbarContent>
           <NavbarMenuToggle

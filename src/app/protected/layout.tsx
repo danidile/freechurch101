@@ -16,10 +16,8 @@ export default function ProtectedLayout({
   if (!loading && !userData.loggedIn && userData.fetched) return <LoginForm />;
 
   return (
-    <div className="flex flex-row">
-      <div className="hidden md:block sidebar-container">
+    <div className="flex flex-row relative">
         <Sidebar />
-      </div>
       <div className="dashboard-container">{children}</div>
     </div>
   );

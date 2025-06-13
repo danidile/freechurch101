@@ -121,7 +121,6 @@ const ROLES = {
     "view:setlists",
     "create:setlists",
     "update:setlists",
-    "delete:setlists",
 
     // TEAMS
     "create:team",

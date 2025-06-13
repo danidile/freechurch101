@@ -1,6 +1,6 @@
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 
-export default async function isTeamLeader() {
+export default async function isTeamLeaderClient() {
   let isLeader = {
     isLeader: false,
     teams: [""],
