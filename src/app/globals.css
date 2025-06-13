@@ -19,9 +19,10 @@ body {
   background: var(--background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  min-height: 100vh;
 }
 main {
-  padding-bottom: 80px !important;
 }
 * {
   margin: 0;
@@ -887,7 +888,6 @@ tbody tr .tablecellnewteams {
   position: relative;
   margin: 5px 0px;
   padding: 1rem 0rem;
-
 }
 
 .setlist-name {
@@ -1593,12 +1593,11 @@ tbody tr .tablecellnewteams {
   padding: 0.6rem 0px;
 }
 .sidebar-li {
-  background-color: rgb(250, 250, 250);
+  background-color: rgb(255, 255, 255);
   border-radius: 0.4rem;
   border: 1px solid white;
   margin: 1rem 0;
-    transition: 0.5s;
-
+  transition: 0.5s;
 }
 
 .sidebar-li:hover {
@@ -1617,7 +1616,7 @@ tbody tr .tablecellnewteams {
   width: 100%;
   max-width: 300px;
   border-right: 1px solid #e3e3e3;
-  height: 87vh;
+  min-height: calc(100vh - 75px);
   background-color: white;
   position: relative;
   z-index: 20;

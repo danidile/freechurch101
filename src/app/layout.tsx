@@ -1,4 +1,3 @@
-
 import "./globals.css";
 import MenuBar from "./components/navbar";
 import { Viewport } from "next";
@@ -51,7 +50,7 @@ export default function RootLayout({
         <ZustandProviders>
           <PullToRefreshLayout>
             <MenuBar />
-            <main>{children}</main>
+            <main className="standalone:pb-[120px]">{children}</main>
           </PullToRefreshLayout>
         </ZustandProviders>
       </body>

@@ -33,6 +33,7 @@ import {
   Chip,
   User,
 } from "@heroui/react";
+import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, fetchUser, loading } = useUserStore();
   const [setlistSongs, setSetlistSongs] = useState<any[] | null>(null);
@@ -70,6 +71,16 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     }
   }, [loading, userData]);
 
+  const [TeamLeader, setTeamLeader] = useState<boolean>(false);
+  useEffect(() => {
+    const fetchLeaderStatus = async () => {
+      if (!loading && userData.loggedIn) {
+        const leaderStatus = await isTeamLeaderClient();
+        setTeamLeader(leaderStatus.isLeader);
+      }
+    };
+    fetchLeaderStatus();
+  }, [loading, userData]);
   const renderCell = useCallback(
     (user: ChurchMemberByTeam, columnKey: React.Key) => {
       const cellValue = user[columnKey.toString() as keyof ChurchMemberByTeam];
@@ -138,9 +149,8 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           <div className="top-settings-bar">
             <CopyLinkButton />
             {userData &&
-              hasPermission(userData.role as Role, "create:setlists") && (
-                <MoreDropdownSetlist setlistId={setListId} />
-              )}
+              (hasPermission(userData.role as Role, "create:setlists") ||
+                TeamLeader) && <MoreDropdownSetlist userData={userData} setlistId={setListId} />}
           </div>
         </div>
 

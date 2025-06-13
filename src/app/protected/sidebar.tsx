@@ -13,6 +13,14 @@ import { MdOutlineLogout } from "react-icons/md";
 import logoutAction from "../components/logOutAction";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
+import { PiPasswordBold } from "react-icons/pi";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@heroui/react";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -33,7 +41,7 @@ export default function Sidebar() {
   }
 
   return (
-    <>
+    <div className="hidden md:block sidebar-container">
       <div className="text-center w-full max-w-[400px]">
         <Avatar
           as="button"
@@ -97,15 +105,7 @@ export default function Sidebar() {
           </>
         )}
 
-        <li className="sidebar-li">
-          <Link className="sidebar-link" href="/protected/settings">
-            <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
-              <IoSettingsSharp className="dashboard-icon" />
-              Impostazioni
-            </div>
-          </Link>
-        </li>
-
+        <div className="w-full max-w-[75%] m-auto h-[1px]  bg-gray-300"></div>
         <li className="sidebar-li">
           <button className="sidebar-link logoutcolors" onClick={logouter}>
             <MdOutlineLogout />
@@ -113,6 +113,42 @@ export default function Sidebar() {
           </button>
         </li>
       </ul>
-    </>
+      <div className="absolute  bottom-0 w-full flex flex-row justify-center border-t-1">
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              fullWidth
+              variant="flat"
+              radius="none"
+              color="primary"
+              className="h-[55px]"
+            >
+              <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5 mx-auto">
+                <IoSettingsSharp className="dashboard-icon" />
+                {userData.name + " " + userData.lastname}
+              </div>
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Static Actions">
+            <DropdownItem
+              key="updateaccount"
+              as={Link}
+              href="/protected/dashboard/account/completeAccount"
+              startContent={<FaUserCircle className="dashboard-icon" />}
+            >
+              Aggiorna profilo
+            </DropdownItem>
+            <DropdownItem
+              key="resetpassword"
+              as={Link}
+              href="/protected/reset-password"
+              startContent={<PiPasswordBold className="dashboard-icon" />}
+            >
+              Cambia Password
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
+    </div>
   );
 }

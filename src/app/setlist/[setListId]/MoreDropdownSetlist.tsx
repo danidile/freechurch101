@@ -23,11 +23,15 @@ import {
 import { useState } from "react";
 import { deleteSetList } from "./deleteSetlistAction";
 import Link from "next/link";
+import { basicUserData } from "@/utils/types/userData";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function MoreDropdowSetlist({
   setlistId,
+  userData,
 }: {
   setlistId: string;
+  userData: basicUserData;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -53,16 +57,21 @@ export default function MoreDropdowSetlist({
           >
             Aggiorna
           </DropdownItem>
-          <DropdownItem
-            startContent={<MdDelete />}
-            variant="flat"
-            onPress={onOpen}
-            key="delete"
-            className="text-danger"
-            color="danger"
-          >
-            Elimina
-          </DropdownItem>
+          {userData &&
+            hasPermission(userData.role as Role, "delete:setlists") && (
+              <>
+                <DropdownItem
+                  startContent={<MdDelete />}
+                  variant="flat"
+                  onPress={onOpen}
+                  key="delete"
+                  className="text-danger"
+                  color="danger"
+                >
+                  Elimina
+                </DropdownItem>
+              </>
+            )}
         </DropdownMenu>
       </Dropdown>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
