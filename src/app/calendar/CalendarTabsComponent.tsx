@@ -5,12 +5,6 @@ import { calendarMonth } from "@/utils/types/userData";
 import {
   Tabs,
   Tab,
-  useDisclosure,
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  DrawerFooter,
   Button,
   Modal,
   ModalContent,
@@ -19,6 +13,7 @@ import {
   ModalFooter,
 } from "@heroui/react";
 import { useState } from "react";
+import SetlistPage from "../setlist/[setListId]/setlistPage";
 
 export default function CalendarTabs({
   months,
@@ -27,7 +22,6 @@ export default function CalendarTabs({
   months: calendarMonth[];
   eventsByDate: Map<string, setListT[]>;
 }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedEvent, setSelectedEvent] = useState<setListT | null>(null);
 
   return (
@@ -98,10 +92,11 @@ export default function CalendarTabs({
                 })}
                 {selectedEvent && (
                   <Modal
+                    size="4xl"
                     placement="center"
                     isOpen={!!selectedEvent}
                     onClose={() => setSelectedEvent(null)}
-                    backdrop="opaque"
+                    backdrop="blur"
                   >
                     <ModalContent>
                       {(onClose) => (
@@ -110,8 +105,7 @@ export default function CalendarTabs({
                             {selectedEvent.event_title}
                           </ModalHeader>
                           <ModalBody>
-                            <p>{selectedEvent.date}</p>
-                            <p>Event description goes here...</p>
+                            <SetlistPage setListId={selectedEvent.id} />
                           </ModalBody>
                           <ModalFooter>
                             <Button

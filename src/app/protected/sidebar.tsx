@@ -21,10 +21,13 @@ import {
   DropdownItem,
   Button,
 } from "@heroui/react";
+import { BiChurch } from "react-icons/bi";
+import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 export default function Sidebar() {
   const router = useRouter();
-  const { fetchUser, userData } = useUserStore();
+  const { fetchUser, userData, loading } = useUserStore();
 
   const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
   useEffect(() => {
@@ -40,6 +43,16 @@ export default function Sidebar() {
     router.push("/protected/dashboard/account");
   }
 
+  const [TeamLeader, setTeamLeader] = useState<boolean>(false);
+  useEffect(() => {
+    const fetchLeaderStatus = async () => {
+      if (!loading && userData.loggedIn) {
+        const leaderStatus = await isTeamLeaderClient();
+        setTeamLeader(leaderStatus.isLeader);
+      }
+    };
+    fetchLeaderStatus();
+  }, [loading, userData]);
   return (
     <>
       <div className="text-center w-full max-w-[400px]">
@@ -70,6 +83,17 @@ export default function Sidebar() {
         </li>
         {userData.church_id && (
           <>
+            {(hasPermission(userData.role as Role, "create:setlists") ||
+              TeamLeader) && (
+              <li className="sidebar-li">
+                <Link className="sidebar-link" href="/protected/church">
+                  <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                    <BiChurch />
+                    Chiesa
+                  </div>
+                </Link>
+              </li>
+            )}
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/calendar">
                 <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
