@@ -304,19 +304,30 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                 </Button>
                 <Button
                   color="primary"
-                  onPress={() => {
-                    eventReminderEmail(
+                  onPress={async () => {
+                    const response = await eventReminderEmail(
                       emailPerson,
                       emailTeam,
                       readableDate,
                       setListId
                     );
+                    console.log(response);
+                    if (response.error) {
+                      addToast({
+                        title: `Errore nell'invio della mail a ${emailPerson.name}`,
+                        description: response.error,
+                        icon: <IoIosSend />,
+                        color: "danger",
+                      });
+                    } else {
+                      addToast({
+                        title: `Email Inviata con successo a ${emailPerson.name}`,
+                        description: response.message,
+                        icon: <IoIosSend />,
+                        color: "success",
+                      });
+                    }
 
-                    addToast({
-                      title: `Email Inviata con successo a ${emailPerson.name}`,
-                      icon: <IoIosSend />,
-                      color: "success",
-                    });
                     setEmailPerson(null);
 
                     onClose();
