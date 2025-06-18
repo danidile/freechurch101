@@ -174,7 +174,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
               showEmail && team[1].some((person) => person.phone);
             return (
               <>
-                <div className="team-show">
+                <div className="team-show" key={team[0]}>
                   <Table
                     aria-label="Example table with dynamic content"
                     topContent={<h6 className="font-bold">{team[0]}</h6>}
