@@ -1,4 +1,5 @@
-import nodemailer from 'nodemailer';
+const nodemailer = require("nodemailer");
+
 import type { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
