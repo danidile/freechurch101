@@ -3,6 +3,7 @@ import MenuBar from "./components/navbar";
 import { Viewport } from "next";
 import PullToRefreshLayout from "./components/PullToRefreshLayout";
 import { ZustandProviders } from "./zustandProvider";
+import { ToastProvider } from "@heroui/toast";
 
 export const viewport: Viewport = {
   maximumScale: 1,
@@ -50,7 +51,10 @@ export default function RootLayout({
         <ZustandProviders>
           <PullToRefreshLayout>
             <MenuBar />
-            <main className="standalone:pb-[120px]">{children}</main>
+            <main className="standalone:pb-[120px]">
+              <ToastProvider />
+              {children}
+            </main>
           </PullToRefreshLayout>
         </ZustandProviders>
       </body>

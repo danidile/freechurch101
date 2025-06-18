@@ -383,6 +383,22 @@ export type LeaderT = {
   created_at?: string;
 };
 
+export type registrationData = {
+  firstName: string;
+  lastName: string;
+  church: string;
+  email: string;
+  password: string;
+  isCreatingChurch: boolean;
+  churchName: string;
+  pastor: string;
+  address: string;
+  website: string;
+  igHandle: string;
+  provincia: string;
+  city: string;
+};
+
 export type ChipColor =
   | "warning"
   | "success"

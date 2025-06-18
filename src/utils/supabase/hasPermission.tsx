@@ -9,6 +9,7 @@ const ROLES = {
     "update:songs",
     "delete:songs",
     "create:team",
+    "send:emails",
     // GLOBALSONGS
     "view:globalsongs",
     "create:globalsongs",
@@ -57,6 +58,7 @@ const ROLES = {
     "create:setlists",
     "update:setlists",
     "delete:setlists",
+    "send:emails",
 
     // TEAMS
     "create:team",
@@ -94,6 +96,7 @@ const ROLES = {
     "create:team",
     "view:teams",
     "update:teams",
+    "send:emails",
 
     // CHURCHMEMBERSHIPS
     "confirm:churchMembership",
@@ -121,6 +124,7 @@ const ROLES = {
     "view:setlists",
     "create:setlists",
     "update:setlists",
+    "send:emails",
 
     // TEAMS
     "create:team",

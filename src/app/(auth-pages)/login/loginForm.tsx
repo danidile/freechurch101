@@ -20,20 +20,23 @@ import { FaEyeSlash } from "react-icons/fa6";
 import SignInWithGoogleButton from "../SignInWithGoogleButton";
 import { Tabs, Tab, Card, CardBody } from "@heroui/react";
 import { useUserStore } from "@/store/useUserStore";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { GrFormNext } from "react-icons/gr";
 import { getChurches } from "@/hooks/GET/getChurches";
-import { createClient } from "@/utils/supabase/client";
-import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
-import { church } from "@/utils/types/types";
+import { church, registrationData } from "@/utils/types/types";
+import { regristrationAction } from "./regristrationAction";
+import registrationEmail from "./registrationEmail";
+import { loginAction } from "./loginAction";
 
 export default function LoginForm() {
   const router = useRouter();
+  const pathname = usePathname();
+
   const [churchesList, setChurchesList] = useState<church[] | null>([]);
   const { userData, loading, fetchUser } = useUserStore();
-  const supabase = createClient();
+
   useEffect(() => {
     if (!loading && userData.loggedIn && userData.fetched) {
       router.push("/protected/dashboard/account");
@@ -56,19 +59,15 @@ export default function LoginForm() {
   const [selected, setSelected] = useState<string>("accedi");
 
   const loginFunction = async () => {
-    const { email, password } = formData;
-    const loginData = {
-      email: email,
-      password: password,
-    };
-
-    const response = await signInAction(loginData);
-    if (response.message) {
-      const errorMessage = translateSupabaseError(response.message);
-      setError(errorMessage);
+    const response = await loginAction(formData);
+    if (response) {
+      setError(response);
     } else {
-      fetchUser();
-      router.push("/protected/dashboard/account");
+      if (pathname === "/login") {
+        router.push("/protected/dashboard/account");
+      }
+      setSending(false);
+      await fetchUser();
     }
   };
 
@@ -84,7 +83,7 @@ export default function LoginForm() {
   const [isCreatingChurch, setIsCreatingChurch] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<registrationData>({
     firstName: "",
     lastName: "",
     church: "",
@@ -125,118 +124,13 @@ export default function LoginForm() {
   const handleRegister = async () => {
     setError("");
     setSending(true);
-    const { email, password, firstName, lastName, church } = formData;
-
-
-    if (password.length <= 7) {
-      setError("Password troppo corta.");
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          firstName,
-          lastName,
-          church,
-        },
-      },
-    });
-
-    if (error) {
-      // handle signup error
-      console.error(error);
-      const errorMessage = translateSupabaseError(error.message);
-      setError(errorMessage);
+    const response = await regristrationAction(formData, isCreatingChurch);
+    if (response!.success) {
+      registrationEmail(formData);
+      router.push("/protected/dashboard/account");
       setSending(false);
-
-      return;
-    }
-
-    // Confirm user exists before proceeding
-    if (data?.user?.id) {
-      // CREATE THE PROFILE
-      const { data: profileData, error: profileDataError } = await supabase
-        .from("profiles")
-        .update({
-          name: firstName,
-          lastname: lastName,
-        })
-        .eq("id", data.user.id)
-
-        .select();
-      // CHECKS
-      if (profileDataError) {
-        console.error(profileDataError);
-      } else {
-        console.log(
-          "Profile name and lastname update correctly.:",
-          profileData
-        );
-      }
-      //IF USER IS NOT CREATING A CHURCH THEN SEND THE MEMBERSHIP REQUEST
-      if (!isCreatingChurch && !profileDataError) {
-        const { data: dataChurch, error: churchDataError } = await supabase
-          .from("church-membership-request")
-          .insert({
-            church,
-            profile: data.user.id,
-          })
-          .select();
-        if (churchDataError) {
-          console.error(churchDataError);
-        } else {
-          console.log("Membership request sent:", dataChurch);
-        }
-      } else {
-        // IF HE IS CREATING A NEW CHURCH MAKE THE INSERT.
-        const { data: newChurch, error: newChurchError } = await supabase
-          .from("churches")
-          .insert([
-            {
-              church_name: formData.churchName,
-              pastor: formData.pastor,
-              address: formData.address,
-              website: formData.website,
-              ig_handle: formData.igHandle,
-              provincia: formData.provincia,
-              city: formData.city,
-              creator: data.user.id,
-            },
-          ])
-          .select();
-        if (newChurchError) {
-          console.error("Error in creating new church", newChurchError);
-        } else {
-          console.log("New church successfully created:", newChurch);
-        }
-        const newChurchId = newChurch?.[0]?.id;
-        const { data: profileData, error: profileDataError } = await supabase
-          .from("profiles")
-          .update({
-            church: newChurchId,
-            role: 1,
-          })
-          .eq("id", data.user.id)
-
-          .select();
-        // CHECKS
-        if (profileDataError) {
-          console.error(profileDataError);
-        } else {
-          console.log(
-            "Profile name and lastname update correctly.:",
-          );
-        }
-      }
-    } else {
-      console.warn("USER NOT CREATED.");
-    }
-    await fetchUser();
-    setSending(false);
-    if (error) return setError(error.message);
+      await fetchUser();
+    } else if (response!.error) return setError(response.error);
     setSuccess(true);
   };
 
