@@ -8,9 +8,7 @@ export function ZustandProviders({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!userData && !loading) {
-      console.log("loaded started");
       fetchUser();
-      console.log("loaded ended");
     }
   }, [userData, loading]);
 

@@ -1,18 +1,20 @@
 "use client";
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
-import { FaCheck } from "react-icons/fa";
-import { FaCircle } from "react-icons/fa6";
+import { FaWhatsapp } from "react-icons/fa";
 import ModalLyrics from "./modalLyrics";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
+import { addToast } from "@heroui/react";
+
+import { ChipColor, GroupedMembers, setListT } from "@/utils/types/types";
 import {
-  ChipColor,
-  ChurchMemberByTeam,
-  churchMembersT,
-  GroupedMembers,
-  setListT,
-  TeamMember,
-} from "@/utils/types/types";
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@heroui/modal";
 import MoreDropdownSetlist from "./MoreDropdownSetlist";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
@@ -20,7 +22,6 @@ import Link from "next/link";
 import { Button } from "@heroui/button";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect, useCallback } from "react";
-import { Spinner } from "@heroui/spinner";
 import {
   Table,
   TableHeader,
@@ -28,33 +29,29 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  getKeyValue,
-  Tooltip,
   Chip,
-  User,
+  Alert,
 } from "@heroui/react";
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
+import { RiSettings4Fill } from "react-icons/ri";
+import { MdModeEdit } from "react-icons/md";
+import { IoIosSend } from "react-icons/io";
+import ContactTeamModal from "./contactTeamModal";
+import ChurchLabLoader from "@/app/components/churchLabSpinner";
+import { IoMailOutline } from "react-icons/io5";
+import eventReminderEmail from "./eventReminderEmail";
+import LoginForm from "@/app/(auth-pages)/login/loginForm";
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, fetchUser, loading } = useUserStore();
   const [setlistSongs, setSetlistSongs] = useState<any[] | null>(null);
   const [setlistData, setSetlistData] = useState<setListT | null>(null);
   const [setlistTeams, setSetlistTeams] = useState<GroupedMembers | null>(null);
   const [loadingSetlist, setLoadingSetlist] = useState(true);
-  const columns = [
-    {
-      key: "name",
-      label: "Nome",
-    },
-    {
-      key: "roles",
-      label: "Ruoli",
-    },
+  const [contactMode, setContactMode] = useState(false);
+  const [emailPerson, setEmailPerson] = useState(null);
+  const [emailTeam, setEmailTeam] = useState(null);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    {
-      key: "status",
-      label: "Stato",
-    },
-  ];
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
     if (!loading && userData.loggedIn) {
@@ -81,55 +78,28 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     };
     fetchLeaderStatus();
   }, [loading, userData]);
-  const renderCell = useCallback(
-    (user: ChurchMemberByTeam, columnKey: React.Key) => {
-      const cellValue = user[columnKey.toString() as keyof ChurchMemberByTeam];
 
-      switch (columnKey) {
-        case "name":
-          return <p>{user.name + " " + user.lastname}</p>;
-        case "roles":
-          return <p>{user.selected_roles}</p>;
+  const statusColorMap: Record<string, ChipColor> = {
+    pending: "warning",
+    confirmed: "success",
+    denied: "danger",
+  };
+  if (!userData.loggedIn && !loading) {
+    return (
+      <div className="container-sub ">
+        <Alert
+          color="danger"
+          className="max-w-[340px] mx-auto"
+          description="Questa pagina è riservata ai membri della chiesa."
+          title="Accesso bloccato"
+        />
 
-        case "status":
-          const statusColorMap: Record<string, ChipColor> = {
-            pending: "warning",
-            confirmed: "success",
-            denied: "danger",
-          };
-
-          const colorChip: ChipColor = statusColorMap[user.status] ?? "default";
-          return (
-            <Chip
-              className="capitalize"
-              color={colorChip}
-              size="sm"
-              variant="flat"
-            >
-              {user.status === "pending" && <>In attesa</>}
-              {user.status === "confirmed" && <>Confermato</>}
-              {user.status === "denied" && <>Rifiutato</>}
-            </Chip>
-          );
-
-        default:
-          if (Array.isArray(cellValue)) {
-            // se è array di stringhe
-            if (typeof cellValue[0] === "string") {
-              return <p>{cellValue.join(", ")}</p>;
-            }
-            // altrimenti (array di oggetti) ritorna null o una stringa fallback
-            return null;
-          }
-          // per altri tipi (string, boolean, JSX.Element) ritorna direttamente
-          return cellValue as React.ReactNode;
-      }
-    },
-    []
-  );
-
+        <LoginForm />
+      </div>
+    );
+  }
   if (loadingSetlist || !setlistData) {
-    return <Spinner />;
+    return <ChurchLabLoader />;
   }
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
@@ -138,6 +108,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     month: "long", // "November"
     day: "numeric", // "10"
   });
+
   return (
     <div className="container-sub">
       <div className="song-presentation-container">
@@ -150,7 +121,12 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
             <CopyLinkButton />
             {userData &&
               (hasPermission(userData.role as Role, "create:setlists") ||
-                TeamLeader) && <MoreDropdownSetlist userData={userData} setlistId={setListId} />}
+                TeamLeader) && (
+                <MoreDropdownSetlist
+                  userData={userData}
+                  setlistId={setListId}
+                />
+              )}
           </div>
         </div>
 
@@ -197,21 +173,99 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
                     aria-label="Example table with dynamic content"
                     topContent={<h6 className="font-bold">{team[0]}</h6>}
                   >
-                    <TableHeader columns={columns}>
-                      {(column) => (
-                        <TableColumn key={column.key}>
-                          {column.label}
-                        </TableColumn>
+                    <TableHeader>
+                      <TableColumn>Nome</TableColumn>
+                      <TableColumn>Ruolo</TableColumn>
+                      <TableColumn>Stato</TableColumn>
+                      {hasPermission(userData.role as Role, "send:emails") && (
+                        <>
+                          <TableColumn>Email</TableColumn>
+                          <TableColumn>Messaggio</TableColumn>
+                        </>
                       )}
                     </TableHeader>
                     <TableBody items={team[1]}>
-                      {(item) => (
-                        <TableRow key={item.id}>
-                          {(columnKey) => (
-                            <TableCell>{renderCell(item, columnKey)}</TableCell>
-                          )}
-                        </TableRow>
-                      )}
+                      {(item) => {
+                        const colorChip: ChipColor =
+                          statusColorMap[item.status] ?? "default";
+
+                        const message = `Ciao ${item.name}! 
+Volevo ricordarti che sei di turno con il *${team[0]} ${readableDate}* 
+Se non hai ancora confermato la tua presenza su ChurchLab, ti chiedo gentilmente di farlo ora.
+Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
+
+                        const encodedMessage = encodeURIComponent(message);
+                        const whatsappURL = `https://wa.me/3498366324?text=${encodedMessage}`;
+
+                        return (
+                          <TableRow key={item.profile}>
+                            <TableCell>
+                              <div className="flex flex-row gap-2 items-center ">
+                                {item.name} {item.lastname}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <p>{item.selected_roles}</p>
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                className="capitalize text-center"
+                                color={colorChip}
+                                size="sm"
+                                variant="flat"
+                              >
+                                {item.status === "pending" && <>In attesa</>}
+                                {item.status === "confirmed" && <>Confermato</>}
+                                {item.status === "denied" && <>Rifiutato</>}
+                              </Chip>
+                            </TableCell>
+                            {hasPermission(
+                              userData.role as Role,
+                              "create:setlists"
+                            ) && (
+                              <>
+                                <TableCell
+                                  className={`text-center ${contactMode ? "hidden" : "table-cell"}`}
+                                >
+                                  <Button
+                                    variant="light"
+                                    isIconOnly
+                                    onPress={() => {
+                                      setEmailPerson(item);
+                                      setEmailTeam(team[0]);
+                                      onOpen();
+                                    }}
+                                  >
+                                    <IoMailOutline size={24} />
+                                  </Button>
+                                </TableCell>
+                              </>
+                            )}
+                            {hasPermission(
+                              userData.role as Role,
+                              "create:setlists"
+                            ) && (
+                              <>
+                                <TableCell
+                                  className={`text-center ${contactMode ? "hidden" : "table-cell"}`}
+                                >
+                                  <Button
+                                    as={Link}
+                                    href={whatsappURL}
+                                    variant="light"
+                                    isIconOnly
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="whatsapp-button"
+                                  >
+                                    <FaWhatsapp size={24} />
+                                  </Button>
+                                </TableCell>
+                              </>
+                            )}
+                          </TableRow>
+                        );
+                      }}
                     </TableBody>
                   </Table>
                 </div>
@@ -219,6 +273,59 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
             );
           })}
       </div>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Invia Email
+              </ModalHeader>
+              <ModalBody>
+                <b>
+                  Destinatario: {emailPerson.name + " " + emailPerson.lastname}
+                </b>
+                <b>Email: {emailPerson.email}</b>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={() => {
+                    setEmailPerson(null);
+                    onClose();
+                  }}
+                >
+                  Chiudi
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    eventReminderEmail(
+                      emailPerson,
+                      emailTeam,
+                      readableDate,
+                      setListId
+                    );
+
+                    addToast({
+                      title: "Email Inviata con successo",
+                      description: `Email inviata a ${emailPerson.name}`,
+                      icon: <IoIosSend />,
+                      color: "success",
+                      
+                    });
+                    setEmailPerson(null);
+
+                    onClose();
+                  }}
+                >
+                  Invia
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
