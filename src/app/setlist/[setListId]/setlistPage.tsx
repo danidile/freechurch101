@@ -308,11 +308,9 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                     );
 
                     addToast({
-                      title: "Email Inviata con successo",
-                      description: `Email inviata a ${emailPerson.name}`,
+                      title: `Email Inviata con successo a ${emailPerson.name}`,
                       icon: <IoIosSend />,
                       color: "success",
-                      
                     });
                     setEmailPerson(null);
 

@@ -92,6 +92,7 @@ export default function CalendarTabs({
                 })}
                 {selectedEvent && (
                   <Modal
+                    scrollBehavior="inside"
                     size="4xl"
                     placement="center"
                     isOpen={!!selectedEvent}
