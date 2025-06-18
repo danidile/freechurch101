@@ -14,7 +14,7 @@ export default async function eventReminderEmail(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       to: item.email,
-      subject: `👋 Promemoria per il tuo turno con il team ${team[0]} – ${readableDate}`,
+      subject: `👋 Promemoria per il tuo turno con il team ${team[0]} – ${readableDate} - (${Date.now()})`,
       text: "Benvenuto su ChurchLab, la piattaforma per organizzare il tuo team di lode.",
       html: `
       <table cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 10px;">
@@ -26,7 +26,7 @@ export default async function eventReminderEmail(
             <p style="margin: 0 0 20px;">Ciao <strong>${item.name}</strong> 👋,</p>
 
             <p style="margin: 0 0 20px;">
-              Questo è un promemoria che sei di turno con il  <strong>${team}${readableDate}</strong> 🙌.
+              Questo è un promemoria che sei di turno con il  <strong>${team} ${readableDate}</strong> 🙌.
             </p>
 
             <p style="margin: 0 0 20px;">

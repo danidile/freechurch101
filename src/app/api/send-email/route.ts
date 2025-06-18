@@ -5,11 +5,11 @@ import type { NextRequest } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const { to, subject, text, html } = await req.json();
-    // console.log("SMTP_USER:", process.env.SMTP_USER);
-    // console.log(
-    //   "SMTP_PASS:",
-    //   process.env.SMTP_PASS ? "✅ loaded" : "❌ missing"
-    // );
+    console.log("SMTP_USER:", process.env.SMTP_USER);
+    console.log(
+      "SMTP_PASS:",
+      process.env.SMTP_PASS ? "✅ loaded" : "❌ missing"
+    );
 
     const transporter = nodemailer.createTransport({
       host: "smtp.hostinger.com",
@@ -17,12 +17,12 @@ export async function POST(req: NextRequest) {
       secure: false,
       auth: {
         user: "info@churchlab.it",
-        pass: "TendChryi54[]",
+        pass: process.env.SMTP_PASS!,
       },
     });
 
     await transporter.sendMail({
-      from: `"ChurchLab" <"info@churchlab.it">`,
+      from: `"ChurchLab" <info@churchlab.it>`,
       to,
       subject,
       text, // fallback per email di testo
