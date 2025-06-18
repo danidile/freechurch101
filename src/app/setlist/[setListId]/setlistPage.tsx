@@ -166,6 +166,12 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
 
         {setlistTeams &&
           Object.entries(setlistTeams).map((team) => {
+            const showEmail = hasPermission(
+              userData.role as Role,
+              "send:emails"
+            );
+            const showWhatsapp =
+              showEmail && team[1].some((person) => person.phone);
             return (
               <>
                 <div className="team-show">
@@ -179,8 +185,12 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
                       <TableColumn>Stato</TableColumn>
                       {hasPermission(userData.role as Role, "send:emails") && (
                         <>
+                          <TableColumn
+                            className={`${showWhatsapp ? "table-cell" : "hidden"}`}
+                          >
+                            Messaggio
+                          </TableColumn>
                           <TableColumn>Email</TableColumn>
-                          <TableColumn>Messaggio</TableColumn>
                         </>
                       )}
                     </TableHeader>
@@ -196,7 +206,7 @@ Se non hai ancora confermato la tua presenza su ChurchLab, ti chiedo gentilmente
 Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
 
                           const encodedMessage = encodeURIComponent(message);
-                          whatsappURL = `https://wa.me/${item.phone}?text=${encodedMessage}`;
+                          whatsappURL = `https://wa.me/${item.phone.replace(/\s+/g, "")}?text=${encodedMessage}`;
                         }
                         return (
                           <TableRow key={item.profile}>
