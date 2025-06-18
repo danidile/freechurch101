@@ -279,6 +279,7 @@ export type ChurchMemberByTeam = {
   role?: string;
   selected_roles?: string;
   roles?: string;
+  phone?: string;
 };
 
 export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;

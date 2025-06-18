@@ -188,15 +188,16 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
                       {(item) => {
                         const colorChip: ChipColor =
                           statusColorMap[item.status] ?? "default";
-
-                        const message = `Ciao ${item.name}! 
+                        let whatsappURL = "";
+                        if (item.phone) {
+                          const message = `Ciao ${item.name}! 
 Volevo ricordarti che sei di turno con il *${team[0]} ${readableDate}* 
 Se non hai ancora confermato la tua presenza su ChurchLab, ti chiedo gentilmente di farlo ora.
 Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
 
-                        const encodedMessage = encodeURIComponent(message);
-                        const whatsappURL = `https://wa.me/3498366324?text=${encodedMessage}`;
-
+                          const encodedMessage = encodeURIComponent(message);
+                          whatsappURL = `https://wa.me/${item.phone}?text=${encodedMessage}`;
+                        }
                         return (
                           <TableRow key={item.profile}>
                             <TableCell>
@@ -249,17 +250,21 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                                 <TableCell
                                   className={`text-center ${contactMode ? "hidden" : "table-cell"}`}
                                 >
-                                  <Button
-                                    as={Link}
-                                    href={whatsappURL}
-                                    variant="light"
-                                    isIconOnly
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="whatsapp-button"
-                                  >
-                                    <FaWhatsapp size={24} />
-                                  </Button>
+                                  {item.phone && (
+                                    <>
+                                      <Button
+                                        as={Link}
+                                        href={whatsappURL}
+                                        variant="light"
+                                        isIconOnly
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="whatsapp-button"
+                                      >
+                                        <FaWhatsapp size={24} />
+                                      </Button>
+                                    </>
+                                  )}
                                 </TableCell>
                               </>
                             )}
