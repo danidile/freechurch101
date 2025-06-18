@@ -84,7 +84,7 @@ export default function Page() {
                 base: "max-h-[820px] overflow-scroll",
                 table: "min-h-[400px]",
               }}
-              topContent={<h6 className="font-bold">Membri di chiesa</h6>}
+              topContent={<h6 className="font-bold">Membri di chiesa:</h6>}
             >
               <TableHeader>
                 <TableColumn>Nome</TableColumn>
