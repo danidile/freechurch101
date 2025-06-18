@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     const transporter = nodemailer.createTransport({
       host: "smtp.hostinger.com",
-      port: 465,
+      port: 587,
       secure: true,
       auth: {
         user: process.env.SMTP_USER!,
