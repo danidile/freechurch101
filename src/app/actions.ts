@@ -64,7 +64,7 @@ export const forgotPasswordAction = async (data: TlostPasswordSchema) => {
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `https://churchlab.it/auth/callback?redirect_to=/protected/reset-password`,
+    redirectTo: `https://churchlab.it/protected/reset-password`,
   });
 
   if (error) {
