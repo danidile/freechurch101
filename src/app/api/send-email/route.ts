@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     });
 
     await transporter.sendMail({
-      from: `"ChurchLab" <info@churchlab.it>`,
+      from: "info@churchlab.it",
       to,
       subject,
       text, // fallback per email di testo
