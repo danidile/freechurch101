@@ -20,7 +20,6 @@ export default function AuthCallbackPage() {
           router.replace(redirectTo);
         } else {
           console.error("Session exchange error:", error.message);
-          router.replace("/auth/auth-code-error");
         }
       }
     };
