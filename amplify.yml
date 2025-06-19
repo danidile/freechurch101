@@ -8,8 +8,11 @@ frontend:
         - npm ci
     build:
       commands:
+        - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
+        - echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY" >> .env
+        - echo "SMTP_USER=$SMTP_USER" >> .env
+        - echo "SMTP_PASS=$SMTP_PASS" >> .env
         - NODE_OPTIONS="--max-old-space-size=4096" npm run build
-
         - "npm run build"
   artifacts:
     baseDirectory: .next
