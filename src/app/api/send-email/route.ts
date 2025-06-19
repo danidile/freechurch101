@@ -12,12 +12,12 @@ export async function POST(req: NextRequest) {
     );
 
     const transporter = nodemailer.createTransport({
-      host: "smtp.hostinger.com",
+      host: "mail.smtp2go.com",
       port: 587,
-      secure: false,
+      secure: false, // true for port 465
       auth: {
-        user: "info@churchlab.it",
-        pass: process.env.SMTP_PASS!,
+        user: process.env.SMTP_USER, // your SMTP2GO username
+        pass: process.env.SMTP_PASS, // your SMTP2GO password
       },
     });
 
