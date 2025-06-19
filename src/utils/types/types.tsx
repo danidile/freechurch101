@@ -271,6 +271,7 @@ export type searchBar = {
 
 export type ChurchMemberByTeam = {
   id: number;
+
   team_name: string;
   profile: string;
   name: string;
@@ -280,6 +281,7 @@ export type ChurchMemberByTeam = {
   selected_roles?: string;
   roles?: string;
   phone?: string;
+  last_email?: Date;
 };
 
 export type GroupedMembers = Record<string, ChurchMemberByTeam[]>;
