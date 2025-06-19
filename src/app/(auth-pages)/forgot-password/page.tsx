@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import Link from "next/link";
+import { Alert } from "@heroui/alert";
 
 export default function ForgotPassword({
   searchParams,
@@ -77,8 +78,14 @@ export default function ForgotPassword({
   } else {
     return (
       <div className="container-sub">
+        <h1 className="text-2xl font-medium">Reset Password</h1>
         <div className="auth-form max-w-[400px]">
-          <p>Email di recupero inviata</p>
+          <div className="flex items-center justify-center w-full">
+            <Alert
+              description="Tra poco riceverai una mail con le istruzioni per recuperare la tua password. Se non dovessi trovarla nella casella principale controlla la spam."
+              title="Email di recupero inviata."
+            />
+          </div>
         </div>
       </div>
     );
