@@ -43,13 +43,14 @@ import { IoMailOutline } from "react-icons/io5";
 import eventReminderEmail from "./eventReminderEmail";
 import LoginForm from "@/app/(auth-pages)/login/loginForm";
 import updateLastReminderSupabase from "./updateLastReminderSupabase";
+import { FiSend } from "react-icons/fi";
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, fetchUser, loading } = useUserStore();
   const [setlistSongs, setSetlistSongs] = useState<any[] | null>(null);
   const [setlistData, setSetlistData] = useState<setListT | null>(null);
   const [setlistTeams, setSetlistTeams] = useState<GroupedMembers | null>(null);
   const [loadingSetlist, setLoadingSetlist] = useState(true);
-  const [contactMode, setContactMode] = useState(false);
+  const [contactMode, setContactMode] = useState<boolean>(false);
   const [emailPerson, setEmailPerson] = useState(null);
   const [emailTeam, setEmailTeam] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -178,180 +179,259 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
             );
             const showWhatsapp =
               showEmail && team[1].some((person) => person.phone);
+            if (contactMode) {
+              return (
+                <>
+                  <div className="team-show" key={team[0]}>
+                    <Table
+                      aria-label="Example table with dynamic content"
+                      topContent={
+                        <div className="flex flex-row justify-between">
+                          <h6 className="font-bold">{team[0]}</h6>
+                          {hasPermission(
+                            userData.role as Role,
+                            "send:emails"
+                          ) && (
+                            <Button
+                              className="mr-0"
+                              isIconOnly
+                              onPress={() =>
+                                setContactMode((prevState) => {
+                                  return !prevState;
+                                })
+                              }
+                            >
+                              <FiSend />
+                            </Button>
+                          )}
+                        </div>
+                      }
+                      classNames={{
+                        td: "p-[2px] truncate text-center ",
+                        th: "text-center",
+                      }}
+                    >
+                      <TableHeader>
+                        <TableColumn className="!text-left">Nome</TableColumn>
+                        <TableColumn>Ruolo</TableColumn>
+                        <TableColumn>Stato</TableColumn>
+                        <TableColumn>
+                          <IoMailOutline size={20} />
+                        </TableColumn>
+                        <TableColumn>
+                          <FaWhatsapp size={20} />
+                        </TableColumn>
+                      </TableHeader>
+                      <TableBody items={team[1]}>
+                        {(item) => {
+                          const status = statusMap[item.status] ?? {
+                            label: "Sconosciuto",
+                            color: "text-gray-500",
+                          };
+                          const lastEmailDate = new Date(item.last_email); // assuming ISO string like "2025-06-17T10:00:00Z"
+                          const formattedDate =
+                            lastEmailDate.toLocaleDateString("it-IT", {
+                              day: "numeric",
+                              month: "long",
+                            });
+                          const now = new Date();
 
-            return (
-              <>
-                <div className="team-show" key={team[0]}>
-                  <Table
-                    aria-label="Example table with dynamic content"
-                    topContent={<h6 className="font-bold">{team[0]}</h6>}
-                    classNames={{
-                      td: "p-[2px] truncate text-center ",
-                      th: " text-center",
-                    }}
-                  >
-                    <TableHeader>
-                      <TableColumn>Nome</TableColumn>
-                      <TableColumn>Ruolo</TableColumn>
-                      <TableColumn>Stato</TableColumn>
-                      {hasPermission(userData.role as Role, "send:emails") && (
-                        <>
-                          <TableColumn
-                            className={`${showWhatsapp ? "table-cell" : "hidden"}`}
-                          >
-                            <IoMailOutline size={20} />
-                          </TableColumn>
-                          <TableColumn>
-                            <FaWhatsapp size={20} />
-                          </TableColumn>
-                        </>
-                      )}
-                    </TableHeader>
-                    <TableBody items={team[1]}>
-                      {(item) => {
-                        const status = statusMap[item.status] ?? {
-                          label: "Sconosciuto",
-                          color: "text-gray-500",
-                        };
-                        const lastEmailDate = new Date(item.last_email); // assuming ISO string like "2025-06-17T10:00:00Z"
-                        const formattedDate = lastEmailDate.toLocaleDateString(
-                          "it-IT",
-                          {
-                            day: "numeric",
-                            month: "long",
-                          }
-                        );
-                        const now = new Date();
+                          const timeDiff =
+                            now.getTime() - lastEmailDate.getTime();
+                          const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
 
-                        const timeDiff =
-                          now.getTime() - lastEmailDate.getTime();
-                        const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-
-                        const recentlyEmailed = daysDiff < 2;
-                        const colorChip: ChipColor =
-                          statusColorMap[item.status] ?? "default";
-                        let whatsappURL = "";
-                        if (item.phone) {
-                          const message = `Ciao ${item.name}! 
+                          const recentlyEmailed = daysDiff < 2;
+                          const colorChip: ChipColor =
+                            statusColorMap[item.status] ?? "default";
+                          let whatsappURL = "";
+                          if (item.phone) {
+                            const message = `Ciao ${item.name}! 
 Volevo ricordarti che sei di turno con il *${team[0]} ${readableDate}* 
 Se non hai ancora confermato la tua presenza su ChurchLab, ti chiedo gentilmente di farlo ora.
 Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
 
-                          const encodedMessage = encodeURIComponent(message);
-                          whatsappURL = `https://wa.me/${item.phone.replace(/\s+/g, "")}?text=${encodedMessage}`;
-                        }
+                            const encodedMessage = encodeURIComponent(message);
+                            whatsappURL = `https://wa.me/${item.phone.replace(/\s+/g, "")}?text=${encodedMessage}`;
+                          }
 
-                        return (
-                          <TableRow key={item.profile}>
-                            <TableCell>
-                              <div className="flex flex-row gap-2 items-center truncate">
-                                {item.name} {item.lastname}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <p>{item.selected_roles}</p>
-                            </TableCell>
-                            <TableCell>
-                              <div className="sm:block hidden">
-                                <Chip
-                                  className="capitalize text-center"
-                                  color={colorChip}
-                                  size="sm"
-                                  variant="flat"
-                                >
-                                  <span className={status.color}>
-                                    {status.label}
-                                  </span>
-                                </Chip>
-                              </div>
-                              <div className="sm:hidden  w-full flex flex-row items-center justify-center">
-                                <FaCircle color={status.color} />
-                              </div>
-                            </TableCell>
-                            {hasPermission(
-                              userData.role as Role,
-                              "create:setlists"
-                            ) && (
-                              <>
-                                <TableCell
-                                  className={`text-center ${contactMode ? "hidden" : "table-cell"}`}
-                                >
-                                  {recentlyEmailed && (
-                                    <Popover placement="right">
-                                      <PopoverTrigger>
-                                        <Button
-                                          isIconOnly
-                                          size="sm"
-                                          variant="light"
-                                          color="danger"
-                                        >
-                                          <FaExclamation />
-                                        </Button>
-                                      </PopoverTrigger>
-                                      <PopoverContent>
-                                        <div className="px-1 py-2">
-                                          <div className="text-small font-bold">
-                                            Email inviata di recente
-                                          </div>
-                                          <div className="text-tiny">
-                                            Puoi inviare un nuovo promemoria
-                                            solo dopo 2 giorni dall'ultima
-                                            email.<br/> <span className="capitalize underline">Ultima Email {formattedDate}</span>
-                                          </div>
-                                        </div>
-                                      </PopoverContent>
-                                    </Popover>
-                                  )}
-                                  {!recentlyEmailed && (
-                                    <Button
-                                      variant="light"
-                                      isIconOnly
-                                      onPress={() => {
-                                        setEmailPerson(item);
-                                        setEmailTeam(team[0]);
-                                        onOpen();
-                                      }}
-                                    >
-                                      <IoMailOutline size={24} />
-                                    </Button>
-                                  )}
-                                </TableCell>
-                              </>
-                            )}
-                            {hasPermission(
-                              userData.role as Role,
-                              "create:setlists"
-                            ) && (
-                              <>
-                                <TableCell
-                                  className={`text-center ${contactMode ? "hidden" : "table-cell"}`}
-                                >
-                                  {item.phone && (
-                                    <>
+                          return (
+                            <TableRow key={item.profile}>
+                              <TableCell>
+                                <div className="flex flex-row gap-2 items-center truncate">
+                                  {item.name} {item.lastname}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <p>{item.selected_roles}</p>
+                              </TableCell>
+                              <TableCell>
+                                <div className="sm:block hidden">
+                                  <Chip
+                                    className="capitalize text-center"
+                                    color={colorChip}
+                                    size="sm"
+                                    variant="flat"
+                                  >
+                                    <span className={status.color}>
+                                      {status.label}
+                                    </span>
+                                  </Chip>
+                                </div>
+                                <div className="sm:hidden  w-full flex flex-row items-center justify-center">
+                                  <FaCircle color={status.color} />
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                {recentlyEmailed ? (
+                                  <Popover placement="right">
+                                    <PopoverTrigger>
                                       <Button
-                                        as={Link}
-                                        href={whatsappURL}
-                                        variant="light"
                                         isIconOnly
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="whatsapp-button"
+                                        size="sm"
+                                        variant="light"
+                                        color="danger"
                                       >
-                                        <FaWhatsapp size={24} />
+                                        <FaExclamation />
                                       </Button>
-                                    </>
-                                  )}
-                                </TableCell>
-                              </>
-                            )}
-                          </TableRow>
-                        );
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                      <div className="px-1 py-2">
+                                        <div className="text-small font-bold">
+                                          Email inviata di recente
+                                        </div>
+                                        <div className="text-tiny">
+                                          Puoi inviare un nuovo promemoria solo
+                                          dopo 2 giorni.
+                                          <br />
+                                          <span className="capitalize underline">
+                                            Ultima Email {formattedDate}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
+                                ) : (
+                                  <Button
+                                    variant="light"
+                                    isIconOnly
+                                    onPress={() => {
+                                      setEmailPerson(item);
+                                      setEmailTeam(team[0]);
+                                      onOpen();
+                                    }}
+                                  >
+                                    <IoMailOutline size={24} />
+                                  </Button>
+                                )}
+                              </TableCell>
+
+                              <TableCell>
+                                {item.phone && (
+                                  <Button
+                                    as={Link}
+                                    href={whatsappURL}
+                                    variant="light"
+                                    isIconOnly
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="whatsapp-button"
+                                  >
+                                    <FaWhatsapp size={24} />
+                                  </Button>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
+              );
+            } else {
+              return (
+                <>
+                  <div className="team-show" key={team[0]}>
+                    <Table
+                      aria-label="Example table with dynamic content"
+                      topContent={
+                        <div className="flex flex-row justify-between">
+                          <h6 className="font-bold">{team[0]}</h6>
+                          {hasPermission(
+                            userData.role as Role,
+                            "send:emails"
+                          ) && (
+                            <Button
+                              className="mr-0"
+                              isIconOnly
+                              onPress={() =>
+                                setContactMode((prevState) => {
+                                  return !prevState;
+                                })
+                              }
+                            >
+                              <FiSend />
+                            </Button>
+                          )}
+                        </div>
+                      }
+                      classNames={{
+                        td: "p-[2px] truncate text-center ",
+                        th: " text-center",
                       }}
-                    </TableBody>
-                  </Table>
-                </div>
-              </>
-            );
+                    >
+                      <TableHeader>
+                        <TableColumn className="!text-left">Nome</TableColumn>
+                        <TableColumn>Ruolo</TableColumn>
+                        <TableColumn>Stato</TableColumn>
+                      </TableHeader>
+                      <TableBody items={team[1]}>
+                        {(item) => {
+                          const status = statusMap[item.status] ?? {
+                            label: "Sconosciuto",
+                            color: "text-gray-500",
+                          };
+
+                          const colorChip: ChipColor =
+                            statusColorMap[item.status] ?? "default";
+                          let whatsappURL = "";
+
+                          return (
+                            <TableRow key={item.profile}>
+                              <TableCell>
+                                <div className="flex flex-row gap-2 items-center truncate">
+                                  {item.name} {item.lastname}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <p>{item.selected_roles}</p>
+                              </TableCell>
+                              <TableCell>
+                                <div className="sm:block hidden">
+                                  <Chip
+                                    className="capitalize text-center"
+                                    color={colorChip}
+                                    size="sm"
+                                    variant="flat"
+                                  >
+                                    <span className={status.color}>
+                                      {status.label}
+                                    </span>
+                                  </Chip>
+                                </div>
+                                <div className="sm:hidden  w-full flex flex-row items-center justify-center">
+                                  <FaCircle color={status.color} />
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
+              );
+            }
           })}
       </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
