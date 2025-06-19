@@ -12,6 +12,7 @@ import ModalRoleUpdate from "./modalRoleUpdate";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import ChurchLabLoader from "@/app/components/churchLabSpinner";
 
 export default function PeopleIdComponent({
   params,
@@ -39,7 +40,7 @@ export default function PeopleIdComponent({
     fetchSongs();
   }, [userData?.loggedIn]);
 
-  if (loading || loadingSongs) return <Spinner />;
+  if (loading || loadingSongs) return <ChurchLabLoader />;
 
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
