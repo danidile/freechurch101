@@ -58,17 +58,13 @@ export const signInAction = async (formData: TauthSchema) => {
 export const forgotPasswordAction = async (data: TlostPasswordSchema) => {
   const email = data.email;
   const supabase = createClient();
-  const origin =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : "https://churchlab.it";
 
   if (!email) {
     return encodedRedirect("error", "/forgot-password", "Email is required");
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?redirect_to=/protected/reset-password`,
+    redirectTo: `https://churchlab.it/auth/callback?redirect_to=/protected/reset-password`,
   });
 
   if (error) {
