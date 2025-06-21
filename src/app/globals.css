@@ -226,10 +226,8 @@ Image {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-
+  width: 100%;
   gap: 10px;
-  padding: 0.5rem;
-  border-radius: 1rem;
 }
 .setlist-section p {
   white-space: nowrap;
@@ -514,9 +512,9 @@ tbody tr .tablecellnewteams {
   display: none;
 }
 .container-song-list {
-  margin-top: 20px;
+  margin-top: 0px;
   display: grid;
-  gap: 10px;
+  gap: 3px;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   max-width: 90%; /* Prevents overflowing */
   justify-content: center;
@@ -548,7 +546,7 @@ tbody tr .tablecellnewteams {
   max-width: 500px;
 }
 .song-searchbar {
-  width: 300px;
+  width: 100%;
   max-width: 70vw;
 }
 @media only screen and (max-width: 850px) {
@@ -1633,4 +1631,27 @@ tbody tr .tablecellnewteams {
   position: relative;
   z-index: 20;
   padding-bottom: 50px;
+}
+
+.schedule-view-container {
+  width: 100%;
+}
+.schedule-title {
+  color: #373737;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.schedule-song {
+  color: #373737;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+}
+.schedule-note {
+  padding: 0.5rem;
+  background-color: #f7f7f7;
+  color: #373737;
+  font-size: 15px;
 }

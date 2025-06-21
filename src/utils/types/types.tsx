@@ -24,6 +24,10 @@ export type songType = {
   upload_key?: string;
   album?: string;
   artist?: string;
+  setlist_id?: string;
+  song?: string;
+  key?: string;
+  order?: number;
 };
 
 export type songsListType = songType[];
@@ -221,6 +225,10 @@ export type setListSongT = {
   isTitle?: boolean;
   duration?: string;
   tonalita?: string;
+  note?: string;
+  setlist_id?: string;
+  title?: string;
+  originalIndex?: number;
 };
 
 export type setListT = {
@@ -237,6 +245,7 @@ export type setListT = {
   teams?: teamData[];
   setlistTeams?: GroupedMembers;
   color?: string;
+  schedule?: setListSongT[];
 };
 
 export type teamData = {
@@ -326,6 +335,8 @@ export type expandedTeamT = {
   member?: string;
   team?: string;
   roles?: string;
+  pending?: string;
+  status?: string;
 };
 
 export type pendingRequestsT = {

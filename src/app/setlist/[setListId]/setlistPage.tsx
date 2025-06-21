@@ -44,9 +44,11 @@ import eventReminderEmail from "./eventReminderEmail";
 import LoginForm from "@/app/(auth-pages)/login/loginForm";
 import updateLastReminderSupabase from "./updateLastReminderSupabase";
 import { FiSend } from "react-icons/fi";
+import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
+import { ScheduleViewComponents } from "./ScheduleViewComponents";
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, fetchUser, loading } = useUserStore();
-  const [setlistSongs, setSetlistSongs] = useState<any[] | null>(null);
+  const [setlistSchedule, setSetlistSchedule] = useState<any[] | null>(null);
   const [setlistData, setSetlistData] = useState<setListT | null>(null);
   const [setlistTeams, setSetlistTeams] = useState<GroupedMembers | null>(null);
   const [loadingSetlist, setLoadingSetlist] = useState(true);
@@ -61,9 +63,11 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
       getSetList(setListId).then((fetchedSetList: setListT) => {
         setSetlistData(fetchedSetList);
       });
-      getSetListSongs(setListId).then((fetchedSetListSongs: setListT[]) => {
-        setSetlistSongs(fetchedSetListSongs);
-      });
+      getSetlistSchedule(setListId).then(
+        (fetchedSetListSchedule: setListT[]) => {
+          setSetlistSchedule(fetchedSetListSchedule);
+        }
+      );
       getSetListTeams(setListId).then((fetchedSetLists) => {
         setSetlistTeams(fetchedSetLists);
         setLoadingSetlist(false);
@@ -137,19 +141,21 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           </div>
         </div>
 
-        {setlistSongs.length > 0 && (
+        {/* {setlistSchedule && setlistSchedule.length > 0 && (
           <>
             <Table
               key="Songs-table"
               aria-label="Team members table"
-              topContent={<h6 className="font-bold">Canzoni</h6>}
+              topContent={<h6 className="font-bold">Scaletta</h6>}
             >
               <TableHeader>
                 <TableColumn>Titolo</TableColumn>
                 <TableColumn>Tonalità</TableColumn>
                 <TableColumn>Visualizza</TableColumn>
               </TableHeader>
-              <TableBody items={setlistSongs.sort((a, b) => a.order - b.order)}>
+              <TableBody
+                items={setlistSchedule.sort((a, b) => a.order - b.order)}
+              >
                 {(song) => (
                   <TableRow key={song.id}>
                     <TableCell>
@@ -169,6 +175,15 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
               </Link>
             </div>
           </>
+        )} */}
+
+        {setlistSchedule && setlistSchedule.length > 0 && (
+          <div className="mb-5">
+            <h5 className="font-bold">Scaletta</h5>
+            {setlistSchedule.map((element) => {
+              return <ScheduleViewComponents element={element} />;
+            })}
+          </div>
         )}
 
         {setlistTeams &&

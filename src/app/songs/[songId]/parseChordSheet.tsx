@@ -140,7 +140,7 @@ export function parseChordSheet(
   input: string,
   transpose: number = 0
 ): ParsedLine[] {
-  const lines = input.split("\n");
+  const lines = input?.split("\n");
   const parsed: ParsedLine[] = [];
 
   let emptyLineCount = 0;

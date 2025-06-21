@@ -15,13 +15,13 @@ export const getSetListSongs = async (setlistId: string) => {
     const result: setListSongT[] = data.map((song: any) => {
       return {
         id: song.id,
-        song: song.song.id,
-        song_title: song.song.song_title,
-        author: song.song.author,
+        song: song.song?.id,
+        song_title: song.song?.song_title,
+        author: song.song?.author,
         key: song.key,
         order: song.order,
-        lyrics: song.song.lyrics,
-        upload_key: song.song.upload_key,
+        lyrics: song.song?.lyrics,
+        upload_key: song.song?.upload_key,
       };
     });
 
