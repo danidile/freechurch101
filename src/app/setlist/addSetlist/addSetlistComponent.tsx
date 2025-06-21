@@ -1,6 +1,6 @@
 "use client";
 import { getSongsCompact } from "@/hooks/GET/getSongsCompact";
-import UpdateSetlistForm from "../[setListId]/update/UpdateSetlistForm";
+import UpdateSetlistForm from "../[setListId]/update/UpdateSetlistFormDragAndDrop";
 
 import { teamData, TsongNameAuthor } from "@/utils/types/types";
 import { getChurchTeams } from "@/hooks/GET/getChurchTeams";
