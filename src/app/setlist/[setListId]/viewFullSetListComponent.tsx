@@ -37,7 +37,7 @@ export default function ViewFullSetListComponent({
       <h6>
         <strong>{setlistData.event_title}</strong>
       </h6>
-      <p>{readableDate}</p>
+      <p className="capitalize">{readableDate}</p>
       <div className="song-presentation-container">
         {setlistsongs
           .sort((a, b) => a.order - b.order)

@@ -23,13 +23,13 @@ import { useEffect, useMemo, useState } from "react";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 import { parseChordSheet } from "../songs/[songId]/parseChordSheet";
 import { setListSongT } from "@/utils/types/types";
-import { basicUserData } from "@/utils/types/userData";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import isChordProFormat from "./isChordProFormat";
 import { useUserStore } from "@/store/useUserStore";
 import { deleteSong } from "../songs/[songId]/deleteSongAction";
 import Link from "next/link";
 import CopyLinkButton from "./CopyLinkButton";
+import CopyLinkButtonWithText from "./CopyLinkButtonWithText";
 
 export default function ChordProViewComponent({
   setListSong,
@@ -156,7 +156,6 @@ export default function ChordProViewComponent({
             <FaPlus />
           </Button>
         </div>
-        <CopyLinkButton />
 
         {userData && hasPermission(userData.role as Role, "update:songs") && (
           <Dropdown>

@@ -1,10 +1,5 @@
 "use client";
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@heroui/react";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
 
 import { useState } from "react";
 import { RiLinkM } from "react-icons/ri";
@@ -22,13 +17,20 @@ export default function CopyLinkButtonWithText() {
     }
   };
 
-
   return (
     <>
       <Popover placement="top">
         <PopoverTrigger>
-          <Button  size='md' onPress={handleCopy} color="primary"  variant={copied ? "light" : "ghost"}>
-            <RiLinkM />Condividi
+          <Button
+            size="md"
+            onPress={handleCopy}
+            color="primary"
+            fullWidth
+            className="text-left"
+            variant={copied ? "bordered" : "light"}
+          >
+              <RiLinkM  />
+              Copia Link
           </Button>
         </PopoverTrigger>
         <PopoverContent>
