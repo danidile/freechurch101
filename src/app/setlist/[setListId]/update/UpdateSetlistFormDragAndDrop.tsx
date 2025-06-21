@@ -43,19 +43,20 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TwitterPicker, ColorResult } from "react-color";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { BiColorFill } from "react-icons/bi";
 import colors from "@/utils/eventsColors";
 import { FaPlus } from "react-icons/fa";
-import { TitleFormComponent } from "./TitleFormComponent";
-import { SongFormComponent } from "./SongFormComponent";
-import { NoteFormComponent } from "./NoteFormComponent";
+import { TitleFormComponent } from "./TitleFormComponentDragAndDrop";
+import { SongFormComponent } from "./SongFormComponentDragAndDrop";
+import { NoteFormComponent } from "./NoteFormComponentDragAndDrop";
+import { ScheduleComponents } from "./ScheduleComponents";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -92,6 +93,7 @@ export default function UpdateSetlistForm({
   const [pendingDate, setPendingDate] = useState<string>(
     setlistData?.date?.split("T")[0] || todaysDate
   );
+  const container = useRef(null);
   useEffect(() => {
     setEventDetails(setlistData);
     console.log(setlistData);
@@ -459,39 +461,33 @@ export default function UpdateSetlistForm({
           <h5 className="mt-6">Scaletta</h5>
           {schedule.length > 0 && (
             <div className="team-show">
-              <AnimatePresence>
+              <Reorder.Group
+                values={schedule.map((s) => s.id)}
+                onReorder={(newOrderIds) => {
+                  const reordered = newOrderIds.map((id) =>
+                    schedule.find((s) => s.id === id)
+                  );
+                  setSchedule(reordered as setListSongT[]);
+                }}
+                ref={container}
+              >
                 {schedule.map((section, index) => {
-                  if (section.type === "title")
-                    return (
-                      <TitleFormComponent
-                        removeItemFromSchedule={removeItemFromSchedule}
-                        section={section}
-                        index={index}
-                        updateTitleSection={updateTitleSection}
-                      />
-                    );
-                  if (section.type === "song")
-                    return (
-                      <SongFormComponent
-                        updateSongtoSetlist={updateSongtoSetlist}
-                        removeItemFromSchedule={removeItemFromSchedule}
-                        section={section}
-                        index={index}
-                        songsList={songsList}
-                        updateKey={updateKey}
-                      />
-                    );
-                  if (section.type === "note")
-                    return (
-                      <NoteFormComponent
-                        removeItemFromSchedule={removeItemFromSchedule}
-                        section={section}
-                        index={index}
-                        updateNotesSection={updateNotesSection}
-                      />
-                    );
+                  return (
+                    <ScheduleComponents
+                      key={section.id} // <-- Add this!
+                      updateSongtoSetlist={updateSongtoSetlist}
+                      removeItemFromSchedule={removeItemFromSchedule}
+                      section={section}
+                      index={index}
+                      songsList={songsList}
+                      updateKey={updateKey}
+                      container={container}
+                      updateTitleSection={updateTitleSection}
+                      updateNotesSection={updateNotesSection}
+                    />
+                  );
                 })}
-              </AnimatePresence>
+              </Reorder.Group>
             </div>
           )}
 

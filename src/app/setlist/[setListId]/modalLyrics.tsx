@@ -27,10 +27,7 @@ export default function ModalLyrics({ songData }: { songData: any }) {
         scrollBehavior="inside"
         isDismissable={true}
         size="3xl"
-        classNames={{
-          backdrop:
-            "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
-        }}
+        
         motionProps={{
           variants: {
             enter: {

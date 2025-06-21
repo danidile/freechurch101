@@ -23,7 +23,7 @@ export const getSelectedChurchTeams = async (
   const teamFinal: teamData[] = await getChurchTeams(churchId);
   const { data, error: errorEventTeam } = await supabase
     .from("event-team")
-    .select("id,member(id, name, lastname),team(team_name),roles")
+    .select("id,member(id, name, lastname),team(team_name),roles,status")
     .eq("setlist", setListId);
 
   if (errorEventTeam) {
@@ -39,6 +39,7 @@ export const getSelectedChurchTeams = async (
             name: member.member.name,
             lastname: member.member.lastname,
             selected_roles: member.roles || null,
+            status: member.status,
           });
         }
       });

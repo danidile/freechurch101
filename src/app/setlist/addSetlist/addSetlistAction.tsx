@@ -1,7 +1,13 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { expandedTeamT, setListT, teamData } from "@/utils/types/types";
+import {
+  expandedTeamT,
+  setListSongT,
+  setListT,
+  songType,
+  teamData,
+} from "@/utils/types/types";
 
 export const addSetlist = async (formData: setListT) => {
   const supabase = createClient();
@@ -56,24 +62,83 @@ export const addSetlist = async (formData: setListT) => {
     .from("event-team")
     .insert(expandedTeam)
     .select();
-  console.log("errorTeam");
-  console.log(errorTeam);
+  if (errorTeam) {
+    console.error("errorTeam", errorTeam);
+  }
 
-  //Insert Songs
+  // Separate by type
+  const songs = formData.schedule
+    .map((item, index) => ({ ...item, originalIndex: index }))
+    .filter((item) => item.type === "song");
 
-  formData.setListSongs.map(async (section, index) => {
+  const notes = formData.schedule
+    .map((item, index) => ({ ...item, originalIndex: index }))
+    .filter((item) => item.type === "note");
+
+  const titles = formData.schedule
+    .map((item, index) => ({ ...item, originalIndex: index }))
+    .filter((item) => item.type === "title");
+
+  if (songs.length >= 1) {
+    let songsDb: setListSongT[] = songs.map((section, index) => ({
+      setlist_id: sectionId,
+      song: section.song,
+      key: section.key,
+      order: section.originalIndex,
+    }));
+
+    console.log("⚙️ Songs to add", songsDb);
+
     const { error } = await supabase
       .from("setlist-songs")
-      .insert({
-        setlist_id: sectionId,
-        song: section.song,
-        key: section.key,
-        order: index,
-      })
+      .insert(songsDb)
       .select();
+    if (error) {
+      console.error(error);
+    } else {
+      console.log("✅ Songs updated Successfully");
+    }
+  }
 
-    console.log(error);
-  });
+  if (notes.length >= 1) {
+    const notesDb: setListSongT[] = notes.map((section, index) => ({
+      setlist_id: sectionId,
+      note: section.note,
+      order: section.originalIndex,
+    }));
+    console.log("⚙️ Notes to add", notesDb);
+
+    const { error } = await supabase
+      .from("setlist-notes")
+      .insert(notesDb)
+      .select();
+    if (error) {
+      console.error(error);
+    } else {
+      console.log("✅ Notes updated Successfully");
+    }
+  }
+  console.log("⚙️ titles PRE", titles);
+
+  if (titles.length >= 1) {
+    let titlesDb: setListSongT[] = titles.map((section) => ({
+      setlist_id: sectionId,
+      title: section.title,
+      order: section.originalIndex,
+    }));
+
+    console.log("⚙️ Titles to add", titlesDb);
+
+    const { error } = await supabase
+      .from("setlist-titles")
+      .insert(titlesDb)
+      .select();
+    if (error) {
+      console.error(error);
+    } else {
+      console.log("✅ Titles updated Successfully");
+    }
+  }
 
   if (error) {
     console.error(error.code + " " + error.message);
