@@ -67,8 +67,8 @@ export default function LoginForm() {
         router.push("/protected/dashboard/account");
       }
       setSending(false);
-      await fetchUser();
     }
+    await fetchUser();
   };
 
   const [isVisible, setIsVisible] = useState(false);
@@ -111,6 +111,10 @@ export default function LoginForm() {
     if (step === 2 && !isCreatingChurch && !formData.church) {
       return setError("Seleziona la tua chiesa");
     }
+    if (step === 2 && isCreatingChurch && !formData.churchName) {
+      return setError("Dai un nome alla tua chiesa");
+    }
+
     setDirection(1);
     setStep(step + 1);
   };

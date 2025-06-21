@@ -498,7 +498,7 @@ tbody tr .tablecellnewteams {
 .view-selector-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 5px;
   max-width: 1000px;
   margin: 0px auto;
   justify-content: flex-start;
@@ -1643,7 +1643,7 @@ tbody tr .tablecellnewteams {
 }
 .schedule-song {
   color: #373737;
-  padding: 0.5rem;
+  padding: 0.3rem;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1653,5 +1653,5 @@ tbody tr .tablecellnewteams {
   padding: 0.5rem;
   background-color: #f7f7f7;
   color: #373737;
-  font-size: 15px;
+  font-size: 14px;
 }

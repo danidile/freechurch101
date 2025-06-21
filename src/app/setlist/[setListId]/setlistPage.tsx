@@ -1,10 +1,16 @@
 "use client";
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
-import { FaCircle, FaExclamation, FaWhatsapp } from "react-icons/fa";
+import {
+  FaCircle,
+  FaExclamation,
+  FaRegCheckCircle,
+  FaRegClock,
+  FaWhatsapp,
+} from "react-icons/fa";
 import ModalLyrics from "./modalLyrics";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
-import { addToast, Tooltip } from "@heroui/react";
+import { addToast, Card, Tooltip } from "@heroui/react";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 
 import { ChipColor, GroupedMembers, setListT } from "@/utils/types/types";
@@ -39,13 +45,14 @@ import { MdModeEdit } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
 import ContactTeamModal from "./contactTeamModal";
 import ChurchLabLoader from "@/app/components/churchLabSpinner";
-import { IoMailOutline } from "react-icons/io5";
+import { IoCloseCircleSharp, IoMailOutline } from "react-icons/io5";
 import eventReminderEmail from "./eventReminderEmail";
 import LoginForm from "@/app/(auth-pages)/login/loginForm";
 import updateLastReminderSupabase from "./updateLastReminderSupabase";
 import { FiSend } from "react-icons/fi";
 import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
 import { ScheduleViewComponents } from "./ScheduleViewComponents";
+import { FaRegCircleXmark } from "react-icons/fa6";
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, fetchUser, loading } = useUserStore();
   const [setlistSchedule, setSetlistSchedule] = useState<any[] | null>(null);
@@ -116,9 +123,9 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     day: "numeric", // "10"
   });
   const statusMap: Record<string, { label: string; color: string }> = {
-    pending: { label: "In attesa", color: "#ca881e" },
-    confirmed: { label: "Confermato", color: "#13a653" },
-    denied: { label: "Rifiutato", color: "#c80f4f" },
+    pending: { label: "In attesa", color: "#edb85e" },
+    confirmed: { label: "Confermato", color: "#6ecf87" },
+    denied: { label: "Rifiutato", color: "#e24c7c" },
   };
   return (
     <div className="container-sub">
@@ -141,49 +148,19 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           </div>
         </div>
 
-        {/* {setlistSchedule && setlistSchedule.length > 0 && (
+        {setlistSchedule && setlistSchedule.length > 0 && (
           <>
-            <Table
-              key="Songs-table"
-              aria-label="Team members table"
-              topContent={<h6 className="font-bold">Scaletta</h6>}
-            >
-              <TableHeader>
-                <TableColumn>Titolo</TableColumn>
-                <TableColumn>Tonalità</TableColumn>
-                <TableColumn>Visualizza</TableColumn>
-              </TableHeader>
-              <TableBody
-                items={setlistSchedule.sort((a, b) => a.order - b.order)}
-              >
-                {(song) => (
-                  <TableRow key={song.id}>
-                    <TableCell>
-                      <strong>{song.song_title}</strong>{" "}
-                    </TableCell>
-                    <TableCell>{song.key}</TableCell>
-                    <TableCell>
-                      <ModalLyrics songData={song} />
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+            <Card className="mb-5 px-2 py-4">
+              {setlistSchedule.map((element) => {
+                return <ScheduleViewComponents element={element} />;
+              })}
+            </Card>
             <div className="center- gap-3 mt-5 mb-20">
               <Link href={`/setlist/${setListId}/view`}>
                 <Button color="primary"> Visualizza set completo</Button>
               </Link>
             </div>
           </>
-        )} */}
-
-        {setlistSchedule && setlistSchedule.length > 0 && (
-          <div className="mb-5">
-            <h5 className="font-bold">Scaletta</h5>
-            {setlistSchedule.map((element) => {
-              return <ScheduleViewComponents element={element} />;
-            })}
-          </div>
         )}
 
         {setlistTeams &&
@@ -434,8 +411,17 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                                     </span>
                                   </Chip>
                                 </div>
+
                                 <div className="sm:hidden  w-full flex flex-row items-center justify-center">
-                                  <FaCircle color={status.color} />
+                                  {item.status === "confirmed" && (
+                                    <FaRegCheckCircle color={status.color} />
+                                  )}
+                                  {item.status === "pending" && (
+                                    <FaRegClock color={status.color} />
+                                  )}
+                                  {item.status === "denied" && (
+                                    <FaRegCircleXmark color={status.color} />
+                                  )}
                                 </div>
                               </TableCell>
                             </TableRow>
