@@ -153,7 +153,7 @@ export default function Home() {
       </div>
 
       <div className="visita-feed-section">
-        <h1>Album e Singoli</h1>
+        <h4>Album e Singoli</h4>
         <h5>Le ultime uscite</h5>
         <div className="visita-feed-container">
           <div className="image-feed-div-home card-v1">
