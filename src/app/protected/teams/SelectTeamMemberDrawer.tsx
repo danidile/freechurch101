@@ -12,6 +12,11 @@ import {
   DrawerBody,
   DrawerFooter,
   useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "@heroui/react";
 import { FaPlus } from "react-icons/fa";
 
@@ -65,12 +70,11 @@ export function SelectTeamMemberDrawer({
         <FaPlus />
       </Button>
 
-      <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
-        <DrawerContent>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside" >
+        <ModalContent>
           {(onClose) => (
             <>
-              <DrawerHeader className="flex flex-col gap-1"></DrawerHeader>
-              <DrawerBody>
+              <ModalBody>
                 <>
                   <div className="songs-header">
                     <h4>Lista Membri</h4>
@@ -122,19 +126,19 @@ export function SelectTeamMemberDrawer({
                       })}
                   </div>
                 </>
-              </DrawerBody>
-              <DrawerFooter>
+              </ModalBody>
+              <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
                 <Button color="primary" onPress={onClose}>
                   Action
                 </Button>
-              </DrawerFooter>
+              </ModalFooter>
             </>
           )}
-        </DrawerContent>
-      </Drawer>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

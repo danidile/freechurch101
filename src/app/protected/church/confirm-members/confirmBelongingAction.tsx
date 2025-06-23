@@ -36,7 +36,7 @@ export const confirmBelongingAction = async (profileId: string) => {
 
   return encodedRedirect(
     "success",
-    "/protected/dashboard",
+    "/protected/dashboard/account",
     "Profilo aggiunto con successo"
   );
 };

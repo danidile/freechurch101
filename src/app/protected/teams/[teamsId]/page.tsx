@@ -47,12 +47,14 @@ import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import { addMemberToTeamAction } from "./addMemberToTeamAction";
 import { saveUpdatedSkillsAction } from "./saveUpdatedSkillsAction";
 import { saveNewLeadersAction } from "./saveNewLeadersAction";
+import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 
 export default function Page({ params }: { params: { teamsId: string } }) {
   const { userData, loading: isloading } = useUserStore();
   const [selectedNewLeaders, setSelectedNewLeaders] = useState<Selection>();
 
   const [churchTeam, setChurchTeam] = useState<teamData>();
+  const [isLeader, setIsLeader] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [leaderIds, setLeaderIds] = useState<string[]>([]);
   const [selectedMember, setSelectedMember] = useState<churchMembersT | null>(
@@ -95,6 +97,9 @@ export default function Page({ params }: { params: { teamsId: string } }) {
       const leaderIds = team.team_members
         .filter((member) => member.isLeader)
         .map((member) => member.profile);
+      if (leaderIds.includes(userData?.id)) {
+        setIsLeader(true);
+      }
       setLeaderIds(leaderIds);
       console.log(leaderIds);
       setLoading(false);
@@ -109,7 +114,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
         userData &&
         userData.role &&
         userData.church_id &&
-        hasPermission(userData.role as Role, "update:teams")
+        (hasPermission(userData.role as Role, "update:teams") || isLeader)
       ) {
         const fetchedMembers = await getChurchMembersCompact(
           userData.church_id
@@ -120,7 +125,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
     };
 
     fetchMembers();
-  }, [userData, isloading]);
+  }, [userData, isloading,isLeader]);
 
   if (loading || isloading) return <Spinner />;
 
@@ -189,7 +194,6 @@ export default function Page({ params }: { params: { teamsId: string } }) {
       Array.from(selectedNewLeaders).map(String);
     saveNewLeadersAction(arrayNewLeaders, params.teamsId);
   };
-
   if (churchTeam) {
     return (
       <div className="container-sub">
@@ -251,21 +255,10 @@ export default function Page({ params }: { params: { teamsId: string } }) {
             </div>
           }
           bottomContent={
-            hasPermission(userData.role as Role, "update:teams") && (
-              <div className="transpose-button-container">
-                {defineLeaders && (
-                  <>
-                    <Button
-                      onPress={() => {
-                        setSaveLeadersModal(true);
-                        onLeaderOpen();
-                      }}
-                    >
-                      Salva Team Leader
-                    </Button>
-                  </>
-                )}
-                {!defineLeaders && (
+            <>
+              {(isLeader ||
+                hasPermission(userData.role as Role, "update:teams")) && (
+                <>
                   <SelectTeamMemberDrawer
                     state={churchTeam.team_members}
                     type="add"
@@ -273,9 +266,23 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                     addMemberToTeam={addMemberToTeam} // Pass function correctly
                     section={null}
                   />
-                )}
-              </div>
-            )
+                  <div className="transpose-button-container">
+                    {defineLeaders && (
+                      <>
+                        <Button
+                          onPress={() => {
+                            setSaveLeadersModal(true);
+                            onLeaderOpen();
+                          }}
+                        >
+                          Salva Team Leader
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
+            </>
           }
           selectionMode={defineLeaders ? "multiple" : "none"}
         >
@@ -310,7 +317,8 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                 <TableCell
                   className={`max-w-[50px]  ${defineLeaders ? "hidden" : "table-cell"}`}
                 >
-                  {hasPermission(userData.role as Role, "update:teams") && (
+                  {(isLeader ||
+                hasPermission(userData.role as Role, "update:teams")) && (
                     <div className="relative flex flex-row justify-center items-center gap-1 mx-auto">
                       <Dropdown>
                         <DropdownTrigger>
