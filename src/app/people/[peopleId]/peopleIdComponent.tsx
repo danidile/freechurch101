@@ -75,7 +75,7 @@ export default function PeopleIdComponent({
             return (
               <div className="flex gap-1" key={index}>
                 <p className="font-bold">{team.team_name}</p>
-                {team.roles.length >= 1 && (
+                {team.roles?.length >= 1 && (
                   <p className="italic">{" (" + team.roles.join(", ") + ")"}</p>
                 )}
               </div>
