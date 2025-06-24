@@ -75,7 +75,7 @@ export default function Sidebar() {
       <ul className="sidebar-ul">
         <li className="sidebar-li">
           <Link className="sidebar-link" href="/protected/dashboard/account">
-            <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+            <div className="flex flex-row justify-start items-center w-full max-w-[140px] text-gray-600  gap-5">
               <FaUserCircle className="dashboard-icon" />
               Account{" "}
             </div>
@@ -87,7 +87,7 @@ export default function Sidebar() {
               TeamLeader) && (
               <li className="sidebar-li">
                 <Link className="sidebar-link" href="/protected/church">
-                  <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                  <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
                     <BiChurch />
                     Chiesa
                   </div>
@@ -96,7 +96,7 @@ export default function Sidebar() {
             )}
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/calendar">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
                   <FaRegCalendarAlt />
                   Calendario{" "}
                 </div>
@@ -104,7 +104,7 @@ export default function Sidebar() {
             </li>
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/notifications">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
                   <IoNotificationsSharp />
                   Notifiche{" "}
                 </div>
@@ -112,7 +112,7 @@ export default function Sidebar() {
             </li>
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/blockouts">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
                   <FaCalendarTimes className="dashboard-icon" />
                   Blocca Date{" "}
                 </div>
@@ -120,7 +120,7 @@ export default function Sidebar() {
             </li>
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/teams">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5">
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
                   <HiUserGroup className="dashboard-icon" />
                   Team{" "}
                 </div>
