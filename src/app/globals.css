@@ -1588,19 +1588,18 @@ tbody tr .tablecellnewteams {
   justify-content: center;
   gap: 0.8rem;
   width: 100%;
+  font-weight: 500 !important;
   padding: 0.6rem 0px;
 }
 .sidebar-li {
-  background-color: rgb(255, 255, 255);
+  background: #f8f8f7;
   border-radius: 0.4rem;
-  border: 1px solid white;
   margin: 1rem 0;
   transition: 0.5s;
 }
 
 .sidebar-li:hover {
-  background-color: #f7f7f7;
-  border: 1px solid #e3e3e3;
+  background: #f0f0ef;
 }
 .logoutcolors {
   color: hsla(347, 90%, 51%, 0.754);
@@ -1612,12 +1611,12 @@ tbody tr .tablecellnewteams {
 }
 .sidebar-container {
   width: 100%;
-  max-width: 300px;
-  border-right: 1px solid #e3e3e3;
+  max-width: 240px;
   min-height: calc(100vh - 75px);
-  background-color: white;
   position: relative;
   z-index: 20;
+  background: rgb(248, 248, 247);
+  box-shadow: rgb(238, 238, 236) -1px 0px 0px 0px inset;
 }
 
 .sidebar-container-app {
@@ -1627,7 +1626,6 @@ tbody tr .tablecellnewteams {
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 75px);
-  background-color: rgb(255, 255, 255);
   position: relative;
   z-index: 20;
   padding-bottom: 50px;
