@@ -2,8 +2,8 @@
 
 import { Button, Link } from "@heroui/react";
 import { Accordion, AccordionItem } from "@heroui/react";
-import PrivacyPolicy from "./privacy-policy/page";
-import Terms from "./terms/page";
+import PrivacyPolicy from "../privacy-policy/page";
+import Terms from "../terms/page";
 
 export default function Home() {
   return (

@@ -1,16 +1,15 @@
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
-import GlobalSongslistComponent from "@/app/components/globalsongslistComponent";
-import { getGlobalSongs } from "@/hooks/GET/getGlobalSongs";
-import { getArtistsGlobal } from "@/hooks/GET/getArtistsGlobal";
+import ItaliansongslistComponent from "@/app/components/italiansongslistComponent";
+import { getItalianSongs } from "@/hooks/GET/getGlobalSongs";
 
 export default async function Page() {
-  const globalSongs = await getGlobalSongs();
+  const italianSongs = await getItalianSongs();
   const userData: basicUserData = await fbasicUserData();
-  if (globalSongs) {
+  if (italianSongs) {
     return (
       <div className="container-sub">
-        <GlobalSongslistComponent songs={globalSongs} userData={userData} />
+        <ItaliansongslistComponent songs={italianSongs} userData={userData} />
       </div>
     );
   } else {

@@ -10,7 +10,7 @@ import { basicUserData } from "@/utils/types/userData";
 import { searchBar, songsListType, songType } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
-export default function GlobalSongslistComponent({
+export default function ItaliansongslistComponent({
   songs,
   userData,
 }: {
@@ -63,7 +63,7 @@ export default function GlobalSongslistComponent({
           </Button>
         </form>
         {hasPermission(userData.role as Role, "create:songs") && (
-          <Link href="/globalsongs/addGlobalSong">
+          <Link href="/italiansongs/addGlobalSong">
             Aggiungi una Canzone Globale!
           </Link>
         )}
@@ -71,7 +71,7 @@ export default function GlobalSongslistComponent({
       <div className="container-song-list">
         {songList.map((song) => {
           return (
-            <Link key={song.id} className="songlist-link" href={`/globalsongs/${song.id}`}>
+            <Link key={song.id} className="songlist-link" href={`/italiansongs/${song.id}`}>
               <div className="song-list" key={song.id}>
                 <p key={song.id}>
                   {song.song_title}

@@ -75,7 +75,7 @@ export default function SongslistComponent({
               href={
                 userData.loggedIn
                   ? `/songs/${song.id}`
-                  : `/globalsongs/${song.id}`
+                  : `/italiansongs/${song.id}`
               }
             >
               <div className="song-list" key={song.id}>

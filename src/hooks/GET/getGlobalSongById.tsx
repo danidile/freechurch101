@@ -2,17 +2,17 @@
 
 import { createClient } from "@/utils/supabase/server";
 
-export const getGlobalSongById = async (songData: unknown) => {
+export const getItalianSongById = async (songData: unknown) => {
   const supabase = createClient();
 
   // Cerca nella tabella 'songs'
   const { data: song, error: songError } = await supabase
-    .from("global-songs")
+    .from("italian-songs")
     .select("*")
     .eq("id", songData);
 
   if (songError) {
-    console.error("La canzone non è nella tabella songs:", songError);
+    console.error("La canzone non è nella tabella italian-songs:", songError);
     return null;
   } else {
     return song[0];

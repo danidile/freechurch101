@@ -1,10 +1,10 @@
 export default function Terms() {
   return (
     <div className="max-w-5xl mx-auto my-9 p-6">
-      <h1>Termini e condizioni</h1>
+      <h3>Termini e condizioni</h3>
       <p>Aggiornato il 2025-03-05</p>
 
-      <h1>Termini generali</h1>
+      <h5>Termini generali</h5>
       <p>
         Accedendo ed effettuando un ordine con Church Lab, confermi di essere
         d'accordo e vincolato dai termini di servizio contenuti nei Termini e
@@ -34,11 +34,12 @@ export default function Terms() {
         .
       </p>
 
-      <h1>Licenza</h1>
+      <h5>Licenza</h5>
       <p>
         Church Lab ti concede una licenza revocabile, non esclusiva, non
         trasferibile e limitata per scaricare, installare e utilizzare il sito
-        Web rigorosamente in conformità con i termini del presente Contratto.{" "}
+        Web rigorosamente in conformità con i termini del presente
+        Contratto.{" "}
       </p>
       <p>
         Questi Termini e Condizioni sono un contratto tra te e Church Lab
@@ -57,7 +58,7 @@ export default function Terms() {
         preavviso.{" "}
       </p>
 
-      <h1>Definizioni e termini chiave</h1>
+      <h5>Definizioni e termini chiave</h5>
       <p>
         Per aiutare a spiegare le cose il più chiaramente possibile in questi
         Termini e Condizioni, ogni volta che si fa riferimento a uno di questi
@@ -105,7 +106,7 @@ export default function Terms() {
         </li>
       </ul>
 
-      <h1>Restrizioni</h1>
+      <h5>Restrizioni</h5>
       <p>Accetti di non fare e non permetterai ad altri di:</p>
       <ul>
         <li>
@@ -125,7 +126,7 @@ export default function Terms() {
           suoi affiliati, partner, fornitori o licenziatari del sito web.
         </li>
       </ul>
-      <h1>Politica di reso e rimborso</h1>
+      <h5>Politica di reso e rimborso</h5>
       <p>
         Grazie per aver fatto acquisti su Church Lab. Apprezziamo il fatto che
         ti piaccia acquistare le cose che realizziamo. Vogliamo anche
@@ -146,7 +147,7 @@ export default function Terms() {
         qualsiasi problema tu stia riscontrando con il nostro prodotto.
       </p>
 
-      <h1>I tuoi suggerimenti</h1>
+      <h5>I tuoi suggerimenti</h5>
       <p>
         Qualsiasi feedback, commento, idea, miglioramento o suggerimento
         (collettivamente, "Suggerimenti") fornito da te a Church Lab in merito
@@ -158,7 +159,7 @@ export default function Terms() {
         senza alcun credito o compenso per te.
       </p>
 
-      <h1>Il tuo consenso</h1>
+      <h5>Il tuo consenso</h5>
       <p>
         Abbiamo aggiornato i nostri Termini e condizioni per fornirti una
         trasparenza completa su ciò che viene impostato quando visiti il
@@ -167,7 +168,7 @@ export default function Terms() {
         nostri Termini e condizioni.
       </p>
 
-      <h1>Link ad altri siti Web</h1>
+      <h5>Link ad altri siti Web</h5>
       <p>
         Questi Termini e condizioni si applicano solo ai Servizi. I Servizi
         possono contenere link ad altri siti Web non gestiti o controllati da
@@ -183,7 +184,7 @@ export default function Terms() {
         raccogliere informazioni su di te.
       </p>
 
-      <h1>Cookie</h1>
+      <h5>Cookie</h5>
       <p>
         Church Lab utilizza i "Cookie" per identificare le aree del nostro sito
         Web che hai visitato. Un cookie è un piccolo pezzo di dati memorizzato
@@ -201,7 +202,7 @@ export default function Terms() {
         cookie.
       </p>
 
-      <h1>Modifiche ai nostri termini e condizioni</h1>
+      <h5>Modifiche ai nostri termini e condizioni</h5>
       <p>
         Riconosci e accetti che Church Lab può interrompere (in modo permanente
         o temporaneo) la fornitura del Servizio (o di qualsiasi funzionalità
@@ -219,7 +220,7 @@ export default function Terms() {
         Termini e Condizioni di seguito.
       </p>
 
-      <h1>Modifiche al nostro sito Web</h1>
+      <h5>Modifiche al nostro sito Web</h5>
       <p>
         Church Lab si riserva il diritto di modificare, sospendere o
         interrompere, temporaneamente o permanentemente, il sito Web o qualsiasi
@@ -227,7 +228,7 @@ export default function Terms() {
         nei tuoi confronti.
       </p>
 
-      <h1>Aggiornamenti al nostro sito Web</h1>
+      <h5>Aggiornamenti al nostro sito Web</h5>
       <p>
         Church Lab può di tanto in tanto apportare miglioramenti o migliorie
         alle funzionalità/ funzionalità del sito Web, che può includere patch,
@@ -247,7 +248,7 @@ export default function Terms() {
         condizioni del presente Contratto.
       </p>
 
-      <h1>Servizi di terze parti</h1>
+      <h5>Servizi di terze parti</h5>
       <p>
         Potremmo visualizzare, includere o rendere disponibili contenuti di
         terze parti (inclusi dati, informazioni, applicazioni e altri prodotti e
@@ -268,7 +269,7 @@ export default function Terms() {
         rischio e soggetto ai termini e alle condizioni di tali terze parti.
       </p>
 
-      <h1>Termine e risoluzione</h1>
+      <h5>Termine e risoluzione</h5>
       <p>
         Il presente Contratto rimarrà in vigore fino alla risoluzione da parte
         tua o di Church Lab.
@@ -297,7 +298,7 @@ export default function Terms() {
         qualsiasi dei propri obblighi ai sensi del presente Contratto.{" "}
       </p>
 
-      <h1>Avviso di violazione del copyright</h1>
+      <h5>Avviso di violazione del copyright</h5>
       <p>
         Se sei un titolare del copyright o un agente di tale titolare e ritieni
         che qualsiasi materiale sul nostro sito web costituisca una violazione
@@ -313,7 +314,7 @@ export default function Terms() {
         del titolare.{" "}
       </p>
 
-      <h1>Indennizzo</h1>
+      <h5>Indennizzo</h5>
       <p>
         Accetti di indennizzare e tenere indenni Church Lab e le sue società
         madri, sussidiarie, affiliate, funzionari, dipendenti, agenti, partner e
@@ -323,7 +324,7 @@ export default function Terms() {
         regolamento; o (c) violazione di qualsiasi diritto di terzi.
       </p>
 
-      <h1>Nessuna garanzia</h1>
+      <h5>Nessuna garanzia</h5>
       <p>
         Il sito web ti viene fornito "COSÌ COM'È" e "COME DISPONIBILE" e con
         tutti i difetti e i guasti senza garanzia di alcun tipo. Nella misura
@@ -362,7 +363,7 @@ export default function Terms() {
         sopra potrebbero non essere applicabili a te.
       </p>
 
-      <h1>Limitazione di responsabilità</h1>
+      <h5>Limitazione di responsabilità</h5>
       <p>
         Nonostante eventuali danni che potresti subire, l'intera responsabilità
         di Church Lab e di uno qualsiasi dei suoi fornitori ai sensi di
@@ -390,7 +391,7 @@ export default function Terms() {
         l'esclusione di cui sopra potrebbe non essere applicabile.{" "}
       </p>
 
-      <h1>Divisibilità</h1>
+      <h5>Divisibilità</h5>
       <p>
         Se una qualsiasi disposizione del presente Contratto è ritenuta
         inapplicabile o non valida, tale disposizione verrà modificata e
@@ -417,7 +418,7 @@ export default function Terms() {
         PERMANENTEMENTE ESCLUSA.
       </p>
 
-      <h1>Rinuncia</h1>
+      <h5>Rinuncia</h5>
       <p>
         Salvo quanto previsto nel presente documento, il mancato esercizio di un
         diritto o la mancata richiesta di esecuzione di un obbligo ai sensi del
@@ -437,7 +438,7 @@ export default function Terms() {
         altri termini, i termini del presente Contratto prevarranno.
       </p>
 
-      <h1>Modifiche al presente Contratto</h1>
+      <h5>Modifiche al presente Contratto</h5>
       <p>
         Church Lab si riserva il diritto, a sua esclusiva discrezione, di
         modificare o sostituire il presente Contratto in qualsiasi momento. Se
@@ -452,7 +453,7 @@ export default function Terms() {
         autorizzato a utilizzare Church Lab.
       </p>
 
-      <h1>Intero contratto</h1>
+      <h5>Intero contratto</h5>
       <p>
         Il Contratto costituisce l'intero accordo tra te e Church Lab in merito
         al tuo utilizzo del sito Web e sostituisce tutti i precedenti e
@@ -464,7 +465,7 @@ export default function Terms() {
         Church Lab ti fornirà al momento di tale utilizzo o acquisto.
       </p>
 
-      <h1>Aggiornamenti ai nostri Termini</h1>
+      <h5>Aggiornamenti ai nostri Termini</h5>
       <p>
         Potremmo modificare il nostro Servizio e le nostre politiche e potremmo
         dover apportare modifiche a questi Termini in modo che riflettano
@@ -477,7 +478,7 @@ export default function Terms() {
         aggiornato, puoi eliminare il tuo account.{" "}
       </p>
 
-      <h1>Proprietà intellettuale</h1>
+      <h5>Proprietà intellettuale</h5>
       <p>
         Il sito Web e tutti i suoi contenuti, caratteristiche e funzionalità
         (inclusi ma non limitati a tutte le informazioni, software, testo,
@@ -493,7 +494,7 @@ export default function Terms() {
         qualsiasi uso non autorizzato del materiale.{" "}
       </p>
 
-      <h1>Accordo di arbitrato</h1>
+      <h5>Accordo di arbitrato</h5>
       <p>
         Questa sezione si applica a qualsiasi controversia, AD ECCEZIONE DI NON
         INCLUDERE UNA CONTROVERSIA RELATIVA A RICHIESTE DI PROVVEDIMENTI
@@ -507,7 +508,7 @@ export default function Terms() {
         dalla legge.{" "}
       </p>
 
-      <h1>Notifica di controversia</h1>
+      <h5>Notifica di controversia</h5>
       <p>
         In caso di controversia, tu o Church Lab dovete fornire all'altro un
         Notifica di controversia, che è una dichiarazione scritta che stabilisce
@@ -530,7 +531,7 @@ export default function Terms() {
         potrete avviare l'arbitrato.
       </p>
 
-      <h1>Arbitrato vincolante</h1>
+      <h5>Arbitrato vincolante</h5>
       <p>
         Se tu e Church Lab non risolvete alcuna controversia tramite
         negoziazione informale, qualsiasi altro tentativo di risolvere la
@@ -549,7 +550,7 @@ export default function Terms() {
         saranno a carico della parte non prevalente.
       </p>
 
-      <h1>Invii e privacy</h1>
+      <h5>Invii e privacy</h5>
       <p>
         Nel caso in cui invii o pubblichi idee, suggerimenti creativi, progetti,
         fotografie, informazioni, pubblicità, dati o proposte, comprese idee per
@@ -565,7 +566,7 @@ export default function Terms() {
         tali idee.
       </p>
 
-      <h1>Promozioni</h1>
+      <h5>Promozioni</h5>
       <p>
         Church Lab può, di tanto in tanto, includere concorsi, promozioni,
         lotterie o altre attività ("Promozioni") che richiedono di inviare
@@ -584,7 +585,7 @@ export default function Terms() {
         sono resi parte del presente Contratto tramite questo riferimento.
       </p>
 
-      <h1>Errori tipografici</h1>
+      <h5>Errori tipografici</h5>
       <p>
         Nel caso in cui un prodotto e/o un servizio sia elencato a un prezzo
         errato o con informazioni errate a causa di un errore tipografico,
@@ -598,7 +599,7 @@ export default function Terms() {
         altro conto di pagamento per l'importo dell'addebito.{" "}
       </p>
 
-      <h1>Varie</h1>
+      <h5>Varie</h5>
       <p>
         Se per qualsiasi motivo un tribunale di giurisdizione competente ritiene
         che una qualsiasi disposizione o parte di questi Termini e Condizioni
@@ -625,7 +626,7 @@ export default function Terms() {
         legale.
       </p>
 
-      <h1>Esclusione di responsabilità</h1>
+      <h5>Esclusione di responsabilità</h5>
       <p>
         Church Lab non è responsabile per alcun contenuto, codice o qualsiasi
         altra imprecisione.
@@ -664,7 +665,7 @@ export default function Terms() {
         tempestivo o privo di errori.{" "}
       </p>
 
-      <h1>Contattaci</h1>
+      <h5>Contattaci</h5>
       <p>Non esitare a contattarci per qualsiasi domanda.</p>
       <ul>
         <li>
@@ -674,7 +675,7 @@ export default function Terms() {
             className="__cf_email__"
             data-cfemail="9bfffaf5f2fff2f7fea2afdbfcf6faf2f7b5f8f4f6"
           >
-            [email&#160;protected]
+            danidile94@gmail.com
           </a>
         </li>
       </ul>
