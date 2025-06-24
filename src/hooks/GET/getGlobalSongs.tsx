@@ -2,11 +2,11 @@
 
 import { createClient } from "@/utils/supabase/server";
 
-export const getGlobalSongs = async () => {
+export const getItalianSongs = async () => {
   const supabase = createClient();
 
-  const { data: globalSongs, error } = await supabase
-    .from("global-songs")
+  const { data: italianSongs, error } = await supabase
+    .from("italian-songs")
     .select("*")
     .order("song_title", { ascending: true });
 
@@ -14,7 +14,7 @@ export const getGlobalSongs = async () => {
     console.error("Errore durante il fetch:", error);
   }
 
-  const sortedSongs = globalSongs.sort((a, b) =>
+  const sortedSongs = italianSongs.sort((a, b) =>
     a.author.localeCompare(b.author)
   );
 

@@ -24,11 +24,11 @@ export const addGlobalSong = async (data: songSchema) => {
   // }
   if (error) {
     console.error(error.code + " " + error.message);
-    return encodedRedirect("success", "/globalsongs", error.message);
+    return encodedRedirect("success", "/italiansongs", error.message);
   } else {
     return encodedRedirect(
       "success",
-      "/globalsongs",
+      "/italiansongs",
       "Canzone aggiunta con successo!"
     );
   }

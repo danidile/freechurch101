@@ -8,6 +8,8 @@ export default async function Page({ params }: { params: { songId: string } }) {
   return (
     <>
       <div className="container-sub">
+        <h1 className="text-2xl font-medium">Aggiorna Canzone</h1>
+
         <UpdateSongForm {...songData} />
       </div>
     </>

@@ -98,9 +98,9 @@ export default function PWADashboard({
             <HiUserGroup className="dashboard-icon" />
             Teams
           </Link>
-          <Link className="dashboard-list text-black" href="/globalsongs">
+          <Link className="dashboard-list text-black" href="/italiansongs">
             <MdLibraryMusic className="dashboard-icon" />
-            Global Songs
+            Italian Songs
           </Link>
           <Link
             className="dashboard-list text-black"

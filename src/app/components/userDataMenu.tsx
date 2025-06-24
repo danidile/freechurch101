@@ -91,8 +91,8 @@ export default function UserDataMenu({
                   <DropdownItem as={Link} key="teams" href="/protected/teams">
                     Teams
                   </DropdownItem>
-                  <DropdownItem as={Link} key="songs" href="/globalsongs">
-                    Global Songs
+                  <DropdownItem as={Link} key="songs" href="/italiansongs">
+                    Italian Songs
                   </DropdownItem>
                   <DropdownItem
                     as={Link}

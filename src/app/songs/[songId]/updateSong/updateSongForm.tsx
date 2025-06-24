@@ -61,7 +61,6 @@ export default function UpdateSongForm(songData: songSchema) {
   return (
     <>
       <form onSubmit={handleSubmit(convertData)}>
-        <h1 className="text-2xl font-medium">Add Song</h1>
 
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <div className="flex gap-4 items-center">

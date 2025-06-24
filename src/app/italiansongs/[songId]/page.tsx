@@ -2,10 +2,10 @@ import { getSongById } from "@/hooks/GET/getSongById";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
-import { getGlobalSongById } from "@/hooks/GET/getGlobalSongById";
+import { getItalianSongById } from "@/hooks/GET/getGlobalSongById";
 
 export default async function Page({ params }: { params: { songId: string } }) {
-  const songData = await getGlobalSongById(params.songId);
+  const songData = await getItalianSongById(params.songId);
     const userData: basicUserData = await fbasicUserData();
   
   console.log(songData);

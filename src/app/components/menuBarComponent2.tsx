@@ -54,12 +54,17 @@ export default function MenuBarComponentSecondary({
                   </Link>
                 </NavbarItem>
                 <NavbarItem>
+                  <Link color="foreground" href="/app">
+                    App
+                  </Link>
+                </NavbarItem>
+                <NavbarItem>
                   <Link color="foreground" href="/esplora">
                     Esplora
                   </Link>
                 </NavbarItem>
                 <NavbarItem>
-                  <Link color="foreground" href="/globalsongs">
+                  <Link color="foreground" href="/italiansongs">
                     Canzoni
                   </Link>
                 </NavbarItem>
