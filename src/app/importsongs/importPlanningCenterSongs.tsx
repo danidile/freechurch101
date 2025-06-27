@@ -76,12 +76,12 @@ export default function importPlanningCenterSongs() {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: (result) => {
+      complete: (result: { data: any[]; }) => {
         const data = result.data as any[];
         setSongs(data);
         setHeaders(Object.keys(data[0] || {}));
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error("CSV parsing error:", error);
       },
     });
