@@ -20,7 +20,7 @@ export const getSongs = async (userData: basicUserData) => {
     return songs;
   } else {
     const { data: songs, error } = await supabase
-      .from("global-songs")
+      .from("italian-songs")
       .select("*")
       .order("song_title", { ascending: true });
     if (error) {

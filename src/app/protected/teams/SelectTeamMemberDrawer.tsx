@@ -70,33 +70,39 @@ export function SelectTeamMemberDrawer({
         <FaPlus />
       </Button>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside" >
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        scrollBehavior="inside"
+      >
         <ModalContent>
           {(onClose) => (
             <>
+              <ModalHeader>
+                <div className="songs-header">
+                  <h4>Lista Membri</h4>
+                  <div className="songs-searchbar-form">
+                    <Input
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)} // Update local state
+                      color="primary"
+                      type="text"
+                      placeholder="Cerca membri"
+                      className="song-searchbar"
+                      onKeyDown={handleKeyDown} // Listen for Enter key
+                    />
+                    <Button
+                      color="primary"
+                      variant="ghost"
+                      onPress={() => aggiornaLista()} // Handle search
+                    >
+                      <ManageSearchIcon />
+                    </Button>
+                  </div>
+                </div>
+              </ModalHeader>
               <ModalBody>
                 <>
-                  <div className="songs-header">
-                    <h4>Lista Membri</h4>
-                    <div className="songs-searchbar-form">
-                      <Input
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)} // Update local state
-                        color="primary"
-                        type="text"
-                        placeholder="Cerca membri"
-                        className="song-searchbar"
-                        onKeyDown={handleKeyDown} // Listen for Enter key
-                      />
-                      <Button
-                        color="primary"
-                        variant="ghost"
-                        onPress={() => aggiornaLista()} // Handle search
-                      >
-                        <ManageSearchIcon />
-                      </Button>
-                    </div>
-                  </div>
                   <div className="container-song-list">
                     {members
                       .filter(

@@ -9,8 +9,18 @@ import { useForm } from "react-hook-form";
 import { basicUserData } from "@/utils/types/userData";
 import { searchBar, songsListType, songType } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { TbExternalLink } from "react-icons/tb";
 
-export default function SongslistComponent({
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+} from "@heroui/table";
+
+export default function ChurchSongTableComponent({
   songs,
   userData,
 }: {
@@ -46,9 +56,9 @@ export default function SongslistComponent({
   };
 
   return (
-    <>
+    <div className="max-w-[1324px]">
       <div className="songs-header">
-        <h1>Lista canzoni</h1>
+        <h3>Lista canzoni</h3>
         <form
           action=""
           className="songs-searchbar-form"
@@ -67,39 +77,55 @@ export default function SongslistComponent({
             type="submit"
             disabled={isSubmitting}
           >
-            {" "}
             <ManageSearchIcon />
           </Button>
         </form>
         {hasPermission(userData.role as Role, "create:songs") && (
-          <Link href="/songs/addSong">Aggiungi una canzone!</Link>
+          <Button
+            color="primary"
+            variant="ghost"
+            className="my-3"
+            as={Link}
+            href="/songs/addSong"
+            disabled={isSubmitting}
+          >
+            Aggiungi una canzone!
+          </Button>
         )}
       </div>
-      <div className="container-song-list">
-        {songList.map((song) => {
-          return (
-            <Link
-              key={song.id}
-              href={
-                userData.loggedIn
-                  ? `/songs/${song.id}`
-                  : `/italiansongs/${song.id}`
-              }
-            >
-              <div className="song-list" key={song.id}>
-                <div>
-                  <p className="font-medium">{song.song_title}</p>
-                  {song.author && <small>{song.author}</small>}
-                  {!song.author && <small>Unknown</small>}
-                </div>
-                <span className="material-symbols-outlined">
-                  <QueueMusicIcon />
-                </span>
-              </div>
-            </Link>
-          );
-        })}
+      <div className="container-song-list w-full min-w-[300px] mx-auto">
+        <Table
+          aria-label="Song list"
+          className="w-full table-fixed border-collapse"
+        >
+          <TableHeader>
+            <TableColumn className="w-1/3">Title</TableColumn>
+            <TableColumn className="w-1/12">Author</TableColumn>
+            <TableColumn className="w-1/3">Tonalità</TableColumn>
+            <TableColumn className="w-1/12">Apri</TableColumn>
+          </TableHeader>
+          <TableBody>
+            {songList.map((song) => (
+              <TableRow key={song.id}>
+                <TableCell className="truncate">
+                  <span className="font-medium">{song.song_title}</span>
+                </TableCell>
+                <TableCell>
+                  <span className="font-medium">{song.upload_key}</span>
+                </TableCell>
+                <TableCell>
+                  <small>{song.author || "Unknown"}</small>
+                </TableCell>
+                <TableCell>
+                  <Button size="sm" color="primary" isIconOnly as={Link} href={`/songs/${song.id}`} >
+                    <TbExternalLink size={20} />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
-    </>
+    </div>
   );
 }

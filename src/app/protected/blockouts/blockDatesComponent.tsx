@@ -98,6 +98,12 @@ export default function BlockDatesComponent({}: {}) {
 
   return (
     <I18nProvider locale="it-IT-u-ca-gregory">
+      <div className="gap-0">
+        <h3 className="loading-none">Blocca date</h3>
+        <p className="">
+          Inserisci durante quali date non sarai disponibile per le turnazioni.
+        </p>
+      </div>
       {/* <div className="mx-auto flex-col relative">
             <RangeCalendar
               color="danger"
@@ -120,16 +126,8 @@ export default function BlockDatesComponent({}: {}) {
       <div className="flex flex-col items-center justify-center">
         <Table
           key="Songs-table"
+          className="w-full min-w-[300px] max-w-[600px] my-4"
           aria-label="Team members table"
-          topContent={
-            <div className="gap-0">
-              <h3 className="loading-none">Blocca date</h3>
-              <p className="">
-                Inserisci durante quali date non sarai disponibile per le
-                turnazioni.
-              </p>
-            </div>
-          }
           bottomContent={
             <Button
               isIconOnly

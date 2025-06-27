@@ -50,8 +50,8 @@ export default function RootLayout({
       <body>
         <ZustandProviders>
           <PullToRefreshLayout>
-            <MenuBar />
             <main className="standalone:pb-[120px]">
+              <MenuBar />
               <ToastProvider />
               {children}
             </main>

@@ -31,7 +31,7 @@ import { FaRegEye } from "react-icons/fa";
 import NextEventsComponent from "./nextEventsComponent";
 import CalendarPage from "@/app/calendar/page";
 import { Card } from "@heroui/card";
-export default function Page() {
+export default function ChurchComponent() {
   const { userData, loading } = useUserStore();
   const [setlists, setSetlists] = useState<any[] | null>([]);
   useEffect(() => {

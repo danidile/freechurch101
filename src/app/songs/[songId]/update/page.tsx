@@ -10,7 +10,7 @@ export default async function Page({ params }: { params: { songId: string } }) {
       <div className="container-sub">
         <h1 className="text-2xl font-medium">Aggiorna Canzone</h1>
 
-        <UpdateSongForm {...songData} />
+        <UpdateSongForm songData={songData} type="update" />
       </div>
     </>
   );

@@ -1,12 +1,16 @@
 "use client";
 import { Avatar } from "@heroui/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import {
   FaUserCircle,
   FaCalendarTimes,
   FaRegCalendarAlt,
+  FaChevronDown,
 } from "react-icons/fa";
+import { BsMusicNoteList } from "react-icons/bs";
+import { MdOutlineEventNote } from "react-icons/md";
+
 import { HiUserGroup } from "react-icons/hi2";
 import { IoNotificationsSharp, IoSettingsSharp } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
@@ -55,103 +59,17 @@ export default function Sidebar() {
   }, [loading, userData]);
   return (
     <>
-      <div className="text-center w-full max-w-[400px]">
-        <Avatar
-          as="button"
-          size="lg"
-          className="transition-transform mt-10 mb-5"
-          src={avatarUrl}
-          onError={() => {
-            setAvatarUrl("/images/userAvatarDefault.jpg"); // your default image path
-          }}
-        />
-        <>
-          <h6 className="font-bold">
-            {userData.name + " " + userData.lastname}
-          </h6>
-          <p>{userData.email}</p>
-        </>
-      </div>
       <ul className="sidebar-ul">
-        <li className="sidebar-li">
-          <Link className="sidebar-link" href="/protected/dashboard/account">
-            <div className="flex flex-row justify-start items-center w-full max-w-[140px] text-gray-600  gap-5">
-              <FaUserCircle className="dashboard-icon" />
-              Account{" "}
-            </div>
-          </Link>
-        </li>
-        {userData.church_id && (
-          <>
-            {(hasPermission(userData.role as Role, "create:setlists") ||
-              TeamLeader) && (
-              <li className="sidebar-li">
-                <Link className="sidebar-link" href="/protected/church">
-                  <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
-                    <BiChurch />
-                    Chiesa
-                  </div>
-                </Link>
-              </li>
-            )}
-            <li className="sidebar-li">
-              <Link className="sidebar-link" href="/protected/calendar">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
-                  <FaRegCalendarAlt />
-                  Calendario{" "}
-                </div>
-              </Link>
-            </li>
-            <li className="sidebar-li">
-              <Link className="sidebar-link" href="/protected/notifications">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
-                  <IoNotificationsSharp />
-                  Notifiche{" "}
-                </div>
-              </Link>
-            </li>
-            <li className="sidebar-li">
-              <Link className="sidebar-link" href="/protected/blockouts">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
-                  <FaCalendarTimes className="dashboard-icon" />
-                  Blocca Date{" "}
-                </div>
-              </Link>
-            </li>
-            <li className="sidebar-li">
-              <Link className="sidebar-link" href="/protected/teams">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
-                  <HiUserGroup className="dashboard-icon" />
-                  Team{" "}
-                </div>
-              </Link>
-            </li>
-          </>
-        )}
-
-        <div className="w-full max-w-[75%] m-auto h-[1px]  bg-gray-300"></div>
-        <li className="sidebar-li">
-          <button className="sidebar-link logoutcolors" onClick={logouter}>
-            <MdOutlineLogout />
-            Esci
-          </button>
-        </li>
-      </ul>
-      <div className="absolute  bottom-0 w-full flex flex-row justify-center border-t-1">
-        <Dropdown placement="top">
+        <Dropdown placement="bottom">
           <DropdownTrigger>
-            <Button
-              fullWidth
-              variant="flat"
-              radius="none"
-              color="primary"
-              className="h-[55px]"
-            >
-              <div className="flex flex-row justify-start items-center w-full max-w-[140px] gap-5 mx-auto">
-                <IoSettingsSharp className="dashboard-icon" />
-                {userData.name + " " + userData.lastname}
+            <li className="sidebar-li">
+              <div className="sidebar-link">
+                <div className="flex flex-row justify-start items-center w-full max-w-[180px] truncate text-gray-600  gap-5">
+                  {userData.name + " " + userData.lastname}
+                  <FaChevronDown className="dashboard-icon" />
+                </div>
               </div>
-            </Button>
+            </li>
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
             <DropdownItem
@@ -172,7 +90,111 @@ export default function Sidebar() {
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-      </div>
+        <li className="sidebar-li">
+          <span className="sidebar-link">
+            <div className="flex px-3 flex-row justify-start items-left w-full text-[12px]  text-gray-500  gap-5">
+              Area personale
+            </div>
+          </span>
+        </li>
+
+        <li className="sidebar-li">
+          <Link className="sidebar-link" href="/protected/dashboard/account">
+            <div className="flex flex-row justify-start items-center w-full max-w-[140px] text-gray-600  gap-5">
+              <FaUserCircle className="dashboard-icon" />
+              Account
+            </div>
+          </Link>
+        </li>
+        {userData.church_id && (
+          <li className="sidebar-li">
+            <Link className="sidebar-link" href="/protected/blockouts">
+              <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                <FaCalendarTimes className="dashboard-icon" />
+                Blocca Date{" "}
+              </div>
+            </Link>
+          </li>
+        )}
+        <li className="sidebar-li">
+          <Link className="sidebar-link" href="/protected/notifications">
+            {" "}
+            <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+              <IoNotificationsSharp />
+              Notifiche{" "}
+            </div>
+          </Link>
+        </li>
+        {userData.church_id && (
+          <li className="sidebar-li">
+            <span className="sidebar-link">
+              <div className="flex  px-3 flex-row justify-start items-left w-full text-[12px]   text-gray-500  gap-5">
+                La mia Chiesa
+              </div>
+            </span>
+          </li>
+        )}
+        {userData.church_id && (
+          <>
+            {(hasPermission(userData.role as Role, "create:setlists") ||
+              TeamLeader) && (
+              <li className="sidebar-li">
+                <Link className="sidebar-link" href="/protected/church">
+                  <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                    <BiChurch />
+                    Chiesa
+                  </div>
+                </Link>
+              </li>
+            )}
+            <li className="sidebar-li">
+              <Link className="sidebar-link" href="/protected/events">
+                {" "}
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                  <MdOutlineEventNote />
+                  Eventi
+                </div>
+              </Link>
+            </li>
+            <li className="sidebar-li">
+              <Link className="sidebar-link" href="/protected/churchsongs">
+                {" "}
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                  <BsMusicNoteList />
+                  Canzoni
+                </div>
+              </Link>
+            </li>
+
+            <li className="sidebar-li">
+              <Link className="sidebar-link" href="/protected/calendar">
+                {" "}
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                  <FaRegCalendarAlt />
+                  Calendario
+                </div>
+              </Link>
+            </li>
+
+            <li className="sidebar-li">
+              <Link className="sidebar-link" href="/protected/teams">
+                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                  <HiUserGroup className="dashboard-icon" />
+                  Team{" "}
+                </div>
+              </Link>
+            </li>
+          </>
+        )}
+
+        <div className="w-full max-w-[75%] m-auto h-[1px]  bg-gray-300"></div>
+        <li className="sidebar-li">
+          <button className="sidebar-link logoutcolors" onClick={logouter}>
+            <MdOutlineLogout />
+            Esci
+          </button>
+        </li>
+      </ul>
     </>
   );
 }
