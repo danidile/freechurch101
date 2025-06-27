@@ -125,9 +125,20 @@ export default function ChurchComponent() {
               }}
               topContent={<h6 className="font-bold">Membri di chiesa:</h6>}
               bottomContent={
-                <Button color="primary" onPress={onOpen}>
-                  Aggiungi membro
-                </Button>
+                <>
+                  {" "}
+                  {hasPermission(
+                    userData.role as Role,
+                    "insert:churchmembers"
+                  ) && (
+                    <>
+                      {" "}
+                      <Button color="primary" onPress={onOpen}>
+                        Aggiungi membro
+                      </Button>
+                    </>
+                  )}
+                </>
               }
             >
               <TableHeader>
@@ -241,7 +252,12 @@ export default function ChurchComponent() {
                     </p>
                   )}
                   <div className="flex flex-row">
-                    <Button color="danger" variant="light" fullWidth onPress={onClose}>
+                    <Button
+                      color="danger"
+                      variant="light"
+                      fullWidth
+                      onPress={onClose}
+                    >
                       Close
                     </Button>
                     <Button

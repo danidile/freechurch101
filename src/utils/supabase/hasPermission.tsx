@@ -29,7 +29,7 @@ const ROLES = {
     "delete:teams",
     // CHURCHMEMBERSHIPS /Requests
     "read:churchmembers",
-    "update:churchmembers",
+    "insert:churchmembers",
     "delete:churchmembers",
     "update:churchMembership",
 
@@ -70,6 +70,7 @@ const ROLES = {
 
     // CHURCHMEMBERS
     "read:churchmembers",
+    "insert:churchmembers",
 
     // ARTISTS
     "read:artists",
@@ -103,6 +104,7 @@ const ROLES = {
 
     // CHURCHMEMBERS
     "read:churchmembers",
+    "insert:churchmembers",
 
     // ARTISTS
     "read:artists",
