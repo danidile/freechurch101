@@ -8,6 +8,8 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@heroui/react";
+import { useParams, usePathname } from "next/navigation";
+
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { MdDelete, MdModeEdit, MdMoreVert } from "react-icons/md";
 import {
@@ -36,6 +38,8 @@ export default function ChordProViewComponent({
 }: {
   setListSong: setListSongT;
 }) {
+  const pathname = usePathname(); // e.g. "/italiansongs/7784d9a0-2d3d..."
+
   const { userData } = useUserStore();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -84,7 +88,7 @@ export default function ChordProViewComponent({
   let song = parser.parse(chordSheet);
   const steps = stepsBetweenKeys(setListSong.upload_key, setListSong.key);
   song = song.transpose(steps);
-  const formatter = new ChordSheetJS.HtmlDivFormatter();
+  const formatter = new ChordSheetJS.HtmlTableFormatter();
   const disp = formatter.format(song);
 
   const [state, setState] = useState(disp);
@@ -168,7 +172,7 @@ export default function ChordProViewComponent({
               <DropdownItem
                 startContent={<MdModeEdit />}
                 as={Link}
-                href={`/songs/${setListSong.id}/updateSong`}
+                href={`/${pathname.split("/")[1]}/${setListSong.id}/update`}
                 key="edit"
               >
                 Aggiorna

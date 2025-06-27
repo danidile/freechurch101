@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 export const getAlbum = async (artist: string) => {
   const supabase = createClient();
   const { data: albums, error } = await supabase
-    .from("global-songs")
+    .from("italian-songs")
     .select("*,album(album_name)")
     .eq("artist", artist);
 

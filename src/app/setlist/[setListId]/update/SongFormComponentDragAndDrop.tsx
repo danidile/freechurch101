@@ -47,11 +47,17 @@ export function SongFormComponent({
   const [songs, setSongs] = useState(songsList);
   const [searchText, setSearchText] = useState(""); // Local state for search input
 
+    const normalize = (str: string) =>
+    str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
   const aggiornaLista = () => {
     const filteredSongs = songsList.filter(
       (song: setListSongT) =>
-        song.song_title.toLowerCase().includes(searchText.toLowerCase()) ||
-        song.author.toLowerCase().includes(searchText.toLowerCase())
+        song.song_title?.toLowerCase().includes(searchText.toLowerCase()) ||
+        song.author?.toLowerCase().includes(searchText.toLowerCase())
     );
     setSongs(filteredSongs);
   };

@@ -18,6 +18,5 @@ export default function MenuBar() {
     };
     fetchNotifications();
   }, []);
-
   return <MenuBarComponentSecondary notifications={notifications} />;
 }

@@ -14,7 +14,7 @@ export default function ProtectedLayout({
   const { userData, loading } = useUserStore();
 
   if (!loading && !userData.loggedIn && userData.fetched) return <LoginForm />;
-
+  
   return (
     <div className="flex flex-row relative">
       <div className="hidden md:block sidebar-container">

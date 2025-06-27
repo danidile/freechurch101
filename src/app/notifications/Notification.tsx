@@ -72,7 +72,7 @@ export default function NotificationElement({
         }}
         transition={{ duration: 0.3, delay: 0.1 }} // Aggiunge un ritardo progressivo
         layout
-        className="setlist-list-link"
+        className="setlist-list-link my-2 nborder"
         onClick={onOpen}
       >
         <div

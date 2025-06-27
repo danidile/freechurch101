@@ -81,7 +81,7 @@ export default function Song({
             </div>
             {["1", "2"].includes(userData.role.toString()) && (
               <Button variant="flat">
-                <Link href={`/songs/${songData.id}/updateSong`}>
+                <Link href={`/songs/${songData.id}/update`}>
                   Aggiorna Canzone
                 </Link>
               </Button>

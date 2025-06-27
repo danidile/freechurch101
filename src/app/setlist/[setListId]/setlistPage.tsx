@@ -128,12 +128,10 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     denied: { label: "Rifiutato", color: "#e24c7c" },
   };
   return (
-    <div className="container-sub">
+    <div className="container-sub ">
       <div className="song-presentation-container">
         <div className="team-show">
-          <h6>
-            <strong className="capitalize">{setlistData.event_title}</strong>
-          </h6>
+          <h5>{setlistData.event_title}</h5>
           <p className="capitalize">{readableDate}</p>
           <div className="top-settings-bar">
             <CopyLinkButton />
@@ -169,8 +167,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
               userData.role as Role,
               "send:emails"
             );
-            const showWhatsapp =
-              showEmail && team[1].some((person) => person.phone);
+
             if (contactMode) {
               return (
                 <>
@@ -179,7 +176,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
                       aria-label="Example table with dynamic content"
                       topContent={
                         <div className="flex flex-row justify-between">
-                          <h6 className="font-bold">{team[0]}</h6>
+                          <h5 className="font-medium">{team[0]}</h5>
                           {hasPermission(
                             userData.role as Role,
                             "send:emails"
@@ -249,9 +246,9 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                           return (
                             <TableRow key={item.profile}>
                               <TableCell>
-                                <div className="flex flex-row gap-2 items-center truncate">
+                                <p className="flex flex-row gap-2 items-center truncate">
                                   {item.name} {item.lastname}
-                                </div>
+                                </p>
                               </TableCell>
                               <TableCell>
                                 <p>{item.selected_roles}</p>
@@ -348,7 +345,7 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                       aria-label="Example table with dynamic content"
                       topContent={
                         <div className="flex flex-row justify-between">
-                          <h6 className="font-bold">{team[0]}</h6>
+                          <h5 className="font-medium">{team[0]}</h5>
                           {hasPermission(
                             userData.role as Role,
                             "send:emails"
@@ -391,9 +388,9 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                           return (
                             <TableRow key={item.profile}>
                               <TableCell>
-                                <div className="flex flex-row gap-2 items-center truncate">
+                                <p className="flex flex-row gap-2 items-center truncate">
                                   {item.name} {item.lastname}
-                                </div>
+                                </p>
                               </TableCell>
                               <TableCell>
                                 <p>{item.selected_roles}</p>

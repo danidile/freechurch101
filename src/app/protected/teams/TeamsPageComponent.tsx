@@ -30,7 +30,7 @@ export default function TeamsPageComponent() {
           return (
             <Link
               key={team.id}
-              className="team-list"
+              className="team-list nborder"
               href={`/protected/teams/${team.id}`}
             >
               <div className="setlist-date-avatar">
@@ -50,7 +50,7 @@ export default function TeamsPageComponent() {
           );
         })}
       {hasPermission(userData.role as Role, "create:team") && (
-        <Button className="button-transpose my-10">
+        <Button color="primary" className="m-5">
           <Link href="/protected/teams/create-team">Crea nuovo team</Link>
         </Button>
       )}

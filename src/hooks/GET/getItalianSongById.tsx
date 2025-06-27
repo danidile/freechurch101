@@ -2,11 +2,11 @@
 
 import { createClient } from "@/utils/supabase/server";
 
-export const getSongById = async (songData: unknown) => {
+export const getItalianSongById = async (songData: unknown) => {
   const supabase = createClient();
   // Cerca nella tabella 'songs'
   const { data: song, error: songError } = await supabase
-    .from("songs")
+    .from("italian-songs")
     .select("*")
     .eq("id", songData)
     .single();

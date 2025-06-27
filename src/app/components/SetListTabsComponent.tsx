@@ -42,14 +42,14 @@ export default function SetListTabs({
             return (
               <>
                 {newMonth && (
-                  <div className="setlist-list-link mt-3">
+                  <div className=" mt-3">
                     <h6 className="capitalize !font-semibold ml-0">
                       {setlistmonth}
                     </h6>
                   </div>
                 )}
                 <TransitionLink
-                  className="setlist-list-link border-1  border-gray-100 over my-1  !max-w-full"
+                  className="setlist-list-link border-1  border-gray-100 over my-1 bg-white   !max-w-full"
                   href={`/setlist/${setlist.id}`}
                 >
                   <div className="setlist-list" key={setlist.id}>

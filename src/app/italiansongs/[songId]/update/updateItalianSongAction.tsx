@@ -3,12 +3,12 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { songSchema } from "@/utils/types/types";
 
-export const addGlobalSong = async (data: songSchema) => {
-  console.log(data.id);
+export const updateItalianSongAction = async (data: songSchema) => {
   const supabase = createClient();
+
   const { error } = await supabase
-    .from("global-songs")
-    .insert({
+    .from("italian-songs")
+    .update({
       song_title: data.song_title,
       author: data.author,
       artist: data.artist,
@@ -17,19 +17,13 @@ export const addGlobalSong = async (data: songSchema) => {
       upload_key: data.upload_key,
       bpm: data.bpm,
     })
+    .eq("id", data.id)
     .select();
-
-  // if (!songName || !author) {
-  //   return { error: "Email and password are required" };
-  // }
   if (error) {
     console.error(error.code + " " + error.message);
-    return encodedRedirect("success", "/italiansongs", error.message);
+    return encodedRedirect("error", "/", error.message);
   } else {
-    return encodedRedirect(
-      "success",
-      "/italiansongs",
-      "Canzone aggiunta con successo!"
-    );
+    console.log("UPDATE SECCESSFULL");
+    return encodedRedirect("success", `/italiansongs/${data.id}`, ".");
   }
 };
