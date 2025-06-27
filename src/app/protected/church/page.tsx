@@ -24,16 +24,47 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@heroui/dropdown";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Input,
+} from "@heroui/react";
+
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { Button } from "@heroui/button";
 import Link from "next/link";
 import { FaRegEye } from "react-icons/fa";
 import NextEventsComponent from "./nextEventsComponent";
 import CalendarPage from "@/app/calendar/page";
 import { Card } from "@heroui/card";
+import { useForm } from "react-hook-form";
+
+type FormData = {
+  name: string;
+  lastname: string;
+  email: string;
+};
+
 export default function ChurchComponent() {
   const { userData, loading } = useUserStore();
   const [setlists, setSetlists] = useState<any[] | null>([]);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+    reset,
+  } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+      lastname: "",
+      email: "",
+    },
+  });
   useEffect(() => {
     if (!loading && userData.loggedIn) {
       getSetListsByChurch(userData.church_id).then(
@@ -70,6 +101,13 @@ export default function ChurchComponent() {
       );
     }
   }, [loading, userData]);
+
+  const addMember = async (data: FormData) => {
+    // Replace this with your actual backend call
+
+    console.log("User added:", data);
+  };
+
   return (
     <div className="p-0 sm:p-5">
       <div className="w-full">
@@ -79,12 +117,18 @@ export default function ChurchComponent() {
         <div className="grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-6">
           <Card>
             <Table
+              aria-label="Church members table"
               isHeaderSticky
               classNames={{
                 base: "max-h-[820px] overflow-scroll",
                 table: "min-h-[400px]",
               }}
               topContent={<h6 className="font-bold">Membri di chiesa:</h6>}
+              bottomContent={
+                <Button color="primary" onPress={onOpen}>
+                  Aggiungi membro
+                </Button>
+              }
             >
               <TableHeader>
                 <TableColumn>Nome</TableColumn>
@@ -136,13 +180,85 @@ export default function ChurchComponent() {
               </TableBody>
             </Table>
           </Card>
-
-          <Card className="p-3">
-            <h6 className="font-bold pt-3 pb-2">Calendario di Chiesa</h6>
-            <CalendarPage />
-          </Card>
         </div>
       </div>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        aria-labelledby="add-user-modal-title"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader
+                className="flex flex-col gap-1"
+                id="add-user-modal-title"
+              >
+                Aggiungi membro Chiesa
+              </ModalHeader>
+              <ModalBody>
+                <form
+                  onSubmit={handleSubmit(addMember)}
+                  className="flex flex-col gap-4"
+                >
+                  <div className="flex flex-row gap-2">
+                    <Input
+                      label="Nome"
+                      size="sm"
+                      id="name"
+                      {...register("name", { required: "Name is required" })}
+                    />
+                    <Input
+                      label="Cognome"
+                      size="sm"
+                      id="lastname"
+                      {...register("lastname", {
+                        required: "Name is required",
+                      })}
+                    />
+                  </div>
+
+                  <div>
+                    <Input
+                      label="Email"
+                      size="sm"
+                      id="email"
+                      type="email"
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value:
+                            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                          message: "Invalid email address",
+                        },
+                      })}
+                    />
+                  </div>
+
+                  {isSubmitSuccessful && (
+                    <p className="text-green-600 mt-2">
+                      User added successfully!
+                    </p>
+                  )}
+                  <div className="flex flex-row">
+                    <Button color="danger" variant="light" fullWidth onPress={onClose}>
+                      Close
+                    </Button>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      disabled={isSubmitting}
+                      color="primary"
+                    >
+                      {isSubmitting ? "Adding..." : "Add User"}
+                    </Button>
+                  </div>
+                </form>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
