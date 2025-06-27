@@ -13,13 +13,14 @@ export default withSentryConfig(nextConfig, {
   silent: !process.env.CI,
   experimental: {
     workerThreads: false,
+    cpus: 1,
   },
+  prerenderConcurrency: 2,
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
-  prerenderConcurrency: 2,
   staticPageGenerationTimeout: 300,
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
