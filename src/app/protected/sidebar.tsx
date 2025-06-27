@@ -92,7 +92,7 @@ export default function Sidebar() {
         </Dropdown>
         <li className="sidebar-li">
           <span className="sidebar-link">
-            <div className="flex px-3 flex-row justify-start items-left w-full text-[12px]  text-gray-500  gap-5">
+            <div className="flex px-3 flex-row browser:justify-start standalone:justify-center  w-full text-[12px]  text-gray-500  gap-5">
               Area personale
             </div>
           </span>
@@ -128,7 +128,7 @@ export default function Sidebar() {
         {userData.church_id && (
           <li className="sidebar-li">
             <span className="sidebar-link">
-              <div className="flex  px-3 flex-row justify-start items-left w-full text-[12px]   text-gray-500  gap-5">
+              <div className="flex  px-3 flex-row browser:justify-start standalone:justify-center w-full text-[12px]   text-gray-500  gap-5">
                 La mia Chiesa
               </div>
             </span>
