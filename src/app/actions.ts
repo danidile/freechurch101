@@ -39,21 +39,6 @@ export const signUpAction = async (data: TauthSchema) => {
   }
 };
 
-export const signInAction = async (formData: TauthSchema) => {
-  const email = formData.email;
-  const password = formData.password;
-  const supabase = createClient();
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    return { message: error.message };
-  }
-  return { data };
-};
 
 export const forgotPasswordAction = async (data: TlostPasswordSchema) => {
   const email = data.email;

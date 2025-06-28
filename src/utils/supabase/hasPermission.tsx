@@ -45,6 +45,10 @@ const ROLES = {
     "read:albums",
     //ROLES
     "update:role",
+    //
+    "create:italiansongs",
+    "update:italiansongs",
+    "delete:italiansongs",
   ],
   churchfounder: [
     // SONGS

@@ -7,6 +7,7 @@ import {
   FaCalendarTimes,
   FaRegCalendarAlt,
   FaChevronDown,
+  FaRegCompass,
 } from "react-icons/fa";
 import { BsMusicNoteList } from "react-icons/bs";
 import { MdOutlineEventNote } from "react-icons/md";
@@ -28,6 +29,7 @@ import {
 import { BiChurch } from "react-icons/bi";
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { FaCompass } from "react-icons/fa6";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -63,11 +65,9 @@ export default function Sidebar() {
         <Dropdown placement="bottom">
           <DropdownTrigger>
             <li className="sidebar-li">
-              <div className="sidebar-link">
-                <div className="flex flex-row justify-start items-center w-full max-w-[180px] truncate text-gray-600  gap-5">
-                  {userData.name + " " + userData.lastname}
-                  <FaChevronDown className="dashboard-icon" />
-                </div>
+              <div className="sidebar-link !justify-between">
+                {userData.name + " " + userData.lastname}
+                <FaChevronDown className="dashboard-icon !mr-0" />
               </div>
             </li>
           </DropdownTrigger>
@@ -90,17 +90,15 @@ export default function Sidebar() {
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-        <li className="sidebar-li">
+        <li className="sidebar-li !mt-6 border-b-1 ">
           <span className="sidebar-link">
-            <div className="flex px-3 flex-row browser:justify-start standalone:justify-center  w-full text-[12px]  text-gray-500  gap-5">
-              Area personale
-            </div>
+            <div className="sidebar-element sidebar-title">Area personale</div>
           </span>
         </li>
 
         <li className="sidebar-li">
           <Link className="sidebar-link" href="/protected/dashboard/account">
-            <div className="flex flex-row justify-start items-center w-full max-w-[140px] text-gray-600  gap-5">
+            <div className="sidebar-element">
               <FaUserCircle className="dashboard-icon" />
               Account
             </div>
@@ -109,7 +107,7 @@ export default function Sidebar() {
         {userData.church_id && (
           <li className="sidebar-li">
             <Link className="sidebar-link" href="/protected/blockouts">
-              <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+              <div className="sidebar-element">
                 <FaCalendarTimes className="dashboard-icon" />
                 Blocca Date{" "}
               </div>
@@ -119,18 +117,24 @@ export default function Sidebar() {
         <li className="sidebar-li">
           <Link className="sidebar-link" href="/protected/notifications">
             {" "}
-            <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+            <div className="sidebar-element">
               <IoNotificationsSharp />
               Notifiche{" "}
             </div>
           </Link>
         </li>
+        <li className="sidebar-li">
+          <Link className="sidebar-link" href="/">
+            <div className="sidebar-element">
+              <FaCompass />
+              Esplora
+            </div>
+          </Link>
+        </li>
         {userData.church_id && (
-          <li className="sidebar-li">
+          <li className="sidebar-li !mt-6 border-b-1 ">
             <span className="sidebar-link">
-              <div className="flex  px-3 flex-row browser:justify-start standalone:justify-center w-full text-[12px]   text-gray-500  gap-5">
-                La mia Chiesa
-              </div>
+              <div className="sidebar-element sidebar-title">La mia Chiesa</div>
             </span>
           </li>
         )}
@@ -140,7 +144,7 @@ export default function Sidebar() {
               TeamLeader) && (
               <li className="sidebar-li">
                 <Link className="sidebar-link" href="/protected/church">
-                  <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                  <div className="sidebar-element">
                     <BiChurch />
                     Chiesa
                   </div>
@@ -150,7 +154,7 @@ export default function Sidebar() {
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/events">
                 {" "}
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                <div className="sidebar-element">
                   <MdOutlineEventNote />
                   Eventi
                 </div>
@@ -159,7 +163,7 @@ export default function Sidebar() {
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/churchsongs">
                 {" "}
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                <div className="sidebar-element">
                   <BsMusicNoteList />
                   Canzoni
                 </div>
@@ -169,7 +173,7 @@ export default function Sidebar() {
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/calendar">
                 {" "}
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                <div className="sidebar-element">
                   <FaRegCalendarAlt />
                   Calendario
                 </div>
@@ -178,7 +182,7 @@ export default function Sidebar() {
 
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/teams">
-                <div className="flex flex-row justify-start items-center w-full max-w-[140px]  text-gray-600  gap-5">
+                <div className="sidebar-element">
                   <HiUserGroup className="dashboard-icon" />
                   Team{" "}
                 </div>
@@ -187,9 +191,12 @@ export default function Sidebar() {
           </>
         )}
 
-        <div className="w-full max-w-[75%] m-auto h-[1px]  bg-gray-300"></div>
+        <li className="sidebar-li !mt-6 border-b-1 "></li>
         <li className="sidebar-li">
-          <button className="sidebar-link logoutcolors" onClick={logouter}>
+          <button
+            className="sidebar-link !justify-center logoutcolors"
+            onClick={logouter}
+          >
             <MdOutlineLogout />
             Esci
           </button>

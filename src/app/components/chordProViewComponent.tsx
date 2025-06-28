@@ -35,9 +35,12 @@ import CopyLinkButtonWithText from "./CopyLinkButtonWithText";
 
 export default function ChordProViewComponent({
   setListSong,
+  mode,
 }: {
   setListSong: setListSongT;
+  mode?: string;
 }) {
+  const viewMode = mode || "other";
   const pathname = usePathname(); // e.g. "/italiansongs/7784d9a0-2d3d..."
 
   const { userData } = useUserStore();
@@ -128,95 +131,185 @@ export default function ChordProViewComponent({
 
   return (
     <div className="relative">
-      <div className="view-selector-container">
-        <Button size="md" variant="ghost" onPress={toggleView}>
-          {viewChords ? "Testo" : "Accordi"}
-        </Button>
+      {mode !== "preview" && (
+        <>
+          {" "}
+          <div className="view-selector-container">
+            <Button size="md" variant="ghost" onPress={toggleView}>
+              {viewChords ? "Testo" : "Accordi"}
+            </Button>
 
-        <div
-          className={`${viewChords ? "opacity-100" : "opacity-0"} transopose-section`}
-        >
-          <p>Tonalità:</p>
-          <Button
-            isIconOnly
-            variant="light"
-            onPress={() => {
-              changeTranspose(-1);
-              transposeDown();
-            }}
-            size="md"
-          >
-            <FaMinus />
-          </Button>
-          <Button
-            isIconOnly
-            variant="light"
-            onPress={() => {
-              changeTranspose(1);
-              transposeUp();
-            }}
-            size="md"
-          >
-            <FaPlus />
-          </Button>
-        </div>
-
-        {userData && hasPermission(userData.role as Role, "update:songs") && (
-          <Dropdown>
-            <DropdownTrigger>
-              <Button variant="bordered" isIconOnly>
-                <MdMoreVert className="text-2xl" />
+            <div
+              className={`${viewChords ? "opacity-100" : "opacity-0"} transopose-section`}
+            >
+              <p>Tonalità:</p>
+              <Button
+                isIconOnly
+                variant="light"
+                onPress={() => {
+                  changeTranspose(-1);
+                  transposeDown();
+                }}
+                size="md"
+              >
+                <FaMinus />
               </Button>
-            </DropdownTrigger>
-            <DropdownMenu variant="flat" aria-label="Dropdown menu">
-              <DropdownItem
-                startContent={<MdModeEdit />}
-                as={Link}
-                href={`/${pathname.split("/")[1]}/${setListSong.id}/update`}
-                key="edit"
+              <Button
+                isIconOnly
+                variant="light"
+                onPress={() => {
+                  changeTranspose(1);
+                  transposeUp();
+                }}
+                size="md"
               >
-                Aggiorna
-              </DropdownItem>
+                <FaPlus />
+              </Button>
+            </div>
 
-              <DropdownItem
-                startContent={<MdDelete />}
-                variant="flat"
-                onPress={onOpen}
-                key="delete"
-                className="text-danger"
-                color="danger"
-              >
-                Elimina
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        )}
-      </div>
+            {userData &&
+              hasPermission(userData.role as Role, "update:songs") && (
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button variant="bordered" isIconOnly>
+                      <MdMoreVert className="text-2xl" />
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu variant="flat" aria-label="Dropdown menu">
+                    <DropdownItem
+                      startContent={<MdModeEdit />}
+                      as={Link}
+                      href={`/${pathname.split("/")[1]}/${setListSong.id}/update`}
+                      key="edit"
+                    >
+                      Aggiorna
+                    </DropdownItem>
+
+                    <DropdownItem
+                      startContent={<MdDelete />}
+                      variant="flat"
+                      onPress={onOpen}
+                      key="delete"
+                      className="text-danger"
+                      color="danger"
+                    >
+                      Elimina
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              )}
+          </div>
+        </>
+      )}
 
       <div>
         <h5 className="song-title">{setListSong.song_title}</h5>
         <small>{setListSong.author}</small>
         {!isChordPro && (
           <>
-            {parsedLyrics.map((line, i) => {
-              if (line.type === "section")
-                return (
-                  <p key={i} className="comment">
+            {parsedLyrics.flatMap((line, i) => {
+              const lines: JSX.Element[] = [];
+              // CONVERT SECTIONS IF THEY ARE ON THE SAME LINE
+              if (
+                line.text.includes("<section>") &&
+                line.text.includes("</section>")
+              ) {
+                const match = line.text.match(/<section>(.*?)<\/section>(.*)/);
+                if (match) {
+                  const commentText = match[1].trim();
+                  const restText = match[2].trim();
+
+                  // 1. Render the comment line
+                  lines.push(
+                    <p key={`comment-${i}`} className="comment">
+                      <b>{commentText}</b>
+                    </p>
+                  );
+
+                  // 2. Render rest as chord line
+                  if (restText) {
+                    lines.push(
+                      <p key={`chords-after-${i}`} className="chord">
+                        {restText}
+                      </p>
+                    );
+                  }
+
+                  return lines;
+                }
+              }
+              // CONVERT SECTIONS IF THEY ARE ON DIFFERENT LINES!!!
+              // IF The section open put it inside the
+              if (
+                line.text.includes("<section>") ||
+                line.text.includes("</section>")
+              ) {
+                if (line.text.includes("<section>")) {
+                  const match = line.text.match(/<section>(.*)/);
+                  if (match) {
+                    const commentText = match[1].trim();
+
+                    // 1. Render the comment line
+                    lines.push(
+                      <p key={`comment-${i}`} className="comment">
+                        <b>{commentText}</b>
+                      </p>
+                    );
+
+                    return lines;
+                  }
+                } else if (line.text.includes("</section>")) {
+                  const match = line.text.match(/(.*)<\/section>(.*)/);
+                  if (match) {
+                    const commentText = match[1].trim();
+                    const restText = match[2].trim();
+
+                    // 1. Render the comment line
+                    lines.push(
+                      <p key={`comment-${i}`} className="comment">
+                        <b>{commentText}</b>
+                      </p>
+                    );
+
+                    // 2. Render rest as chord line
+                    if (restText) {
+                      lines.push(
+                        <p key={`chords-after-${i}`} className="chord">
+                          {restText}
+                        </p>
+                      );
+                    }
+
+                    return lines;
+                  }
+                }
+              }
+
+              if (line.type === "section") {
+                lines.push(
+                  <p key={`section-${i}`} className="comment">
                     <b>{line.text}</b>
                   </p>
                 );
-              if (line.type === "chords" && viewChords)
-                return (
-                  <p key={i} className="chord">
+              }
+
+              if (line.type === "chords" && viewChords) {
+                lines.push(
+                  <p key={`chords-${i}`} className="chord">
                     {line.text}
                   </p>
                 );
-              if (line.type === "lyrics")
-                return (
-                  <p key={i} className="lyrics">
+              }
+
+              if (line.type === "lyrics") {
+                lines.push(
+                  <p key={`lyrics-${i}`} className="lyrics">
                     {line.text}
                   </p>
                 );
+              }
+
+              return lines;
             })}
           </>
         )}

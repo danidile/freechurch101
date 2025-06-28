@@ -62,8 +62,8 @@ export default function ItaliansongslistComponent({
             <ManageSearchIcon />
           </Button>
         </form>
-        {hasPermission(userData.role as Role, "create:songs") && (
-          <Link href="/italiansongs/addGlobalSong">
+        {hasPermission(userData.role as Role, "create:italiansongs") && (
+          <Link href="/italiansongs/additaliansong">
             Aggiungi una Canzone Globale!
           </Link>
         )}

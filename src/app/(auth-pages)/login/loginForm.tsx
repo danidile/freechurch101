@@ -1,7 +1,5 @@
 "use client";
 import { Spinner } from "@heroui/spinner";
-import { signUpAction } from "@/app/actions";
-import { signInAction } from "@/app/actions";
 import {
   Input,
   Button,
@@ -10,6 +8,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   Alert,
+  addToast,
 } from "@heroui/react";
 import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
@@ -60,13 +59,18 @@ export default function LoginForm() {
 
   const loginFunction = async () => {
     const response = await loginAction(formData);
-    if (response) {
-      setError(response);
-    } else {
+    if (response.success) {
       if (pathname === "/login") {
         router.push("/protected/dashboard/account");
       }
       setSending(false);
+    } else {
+      addToast({
+        title: `Errore durante il login:`,
+        description: response.error,
+        color: "danger",
+      });
+      setError(response.error);
     }
     await fetchUser();
   };

@@ -413,6 +413,11 @@ export type registrationData = {
   city: string;
 };
 
+export type ServerActionResponse<T> = {
+  success: boolean;
+  data?: T;
+  error?: string;
+};
 export type ChipColor =
   | "warning"
   | "success"

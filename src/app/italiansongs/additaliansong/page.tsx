@@ -4,7 +4,7 @@ import AddItalianSong from "./addItalianSongComponent";
 import { getAlbumsGlobal } from "@/hooks/GET/getAlbumsGlobal";
 import UpdateSongForm from "@/app/songs/[songId]/update/updateSongForm";
 
-export default async function App() {
+export default async function Page() {
   const Artists: artistsT[] = await getArtistsGlobal();
   const albums: albumsT[] = await getAlbumsGlobal();
 
