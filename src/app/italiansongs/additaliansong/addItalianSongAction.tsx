@@ -6,7 +6,7 @@ import { songSchema } from "@/utils/types/types";
 export const addItalianSong = async (data: songSchema) => {
   console.log(data.id);
   const supabase = createClient();
-  const { error } = await supabase
+  const {data:response, error } = await supabase
     .from("italian-songs")
     .insert({
       song_title: data.song_title,
@@ -28,7 +28,7 @@ export const addItalianSong = async (data: songSchema) => {
   } else {
     return encodedRedirect(
       "success",
-      "/italiansongs",
+      `/italiansongs/${response && response[0]?.id}`,
       "Canzone aggiunta con successo!"
     );
   }

@@ -7,18 +7,28 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@heroui/react";
+
 import { Input, Textarea } from "@heroui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, SetStateAction } from "react";
+import { useState, useRef, SetStateAction } from "react";
 import { toChordPro } from "@/utils/chordProFunctions/chordProFuncs";
 import { updateSong } from "./updateSongAction";
 import { FaUndoAlt, FaRedoAlt } from "react-icons/fa";
 import { addSong } from "../../addSong/addSongAction";
 import { usePathname } from "next/navigation";
 import { updateItalianSongAction } from "@/app/italiansongs/[songId]/update/updateItalianSongAction";
-import { addItalianSong } from "@/app/italiansongs/addSong/addItalianSongAction";
+import { addItalianSong } from "@/app/italiansongs/additaliansong/addItalianSongAction";
 import { keys } from "@/constants";
+import ChordProViewComponent from "@/app/components/chordProViewComponent";
 
 export default function UpdateSongForm({
   songData,
@@ -31,9 +41,15 @@ export default function UpdateSongForm({
   artists?: artistsT[];
   albums?: albumsT[];
 }) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const pathname = usePathname(); // e.g. "/italiansongs/7784d9a0-2d3d..."
   const category = pathname.split("/")[1]; // "italiansongs"
   const [artistChosen, setArtistChosen] = useState("");
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [state, setState] = useState(songData.lyrics);
+  const [history, setHistory] = useState<string[]>([]);
+  const [future, setFuture] = useState<string[]>([]);
 
   const {
     register,
@@ -42,10 +58,36 @@ export default function UpdateSongForm({
     formState: { errors, isSubmitting },
   } = useForm<songSchema>({
     defaultValues: {
-      ...songData, // or explicitly: song_title: songData.song_title, etc.
+      ...songData,
     },
   });
+  const insertBold = () => {
+    const el = textAreaRef.current;
+    if (!el) return;
+    console.log("ve");
 
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+
+    const selected = state.substring(start, end);
+    const before = state.substring(0, start);
+    const after = state.substring(end);
+
+    const wrapped = selected
+      ? `<section>${selected}</section>`
+      : `<section></section>`;
+    const newCursorPos = selected ? start + wrapped.length : start + 3;
+
+    const newValue = before + wrapped + after;
+
+    setState(newValue);
+    console.log(newValue);
+
+    setTimeout(() => {
+      el.selectionStart = el.selectionEnd = newCursorPos;
+      el.focus();
+    }, 0);
+  };
   const convertData = async (data: songSchema) => {
     data.lyrics = state;
     if (category === "songs") {
@@ -79,10 +121,6 @@ export default function UpdateSongForm({
       }
     }
   };
-
-  const [state, setState] = useState(songData.lyrics);
-  const [history, setHistory] = useState<string[]>([]);
-  const [future, setFuture] = useState<string[]>([]);
 
   const convertIntoChordPro = () => {
     setState(toChordPro(state));
@@ -262,10 +300,23 @@ export default function UpdateSongForm({
               type="button"
               onPress={convertIntoChordPro}
               color="primary"
-              variant="flat"
+              variant="light"
             >
               Converti in ChordPro
             </Button>
+            <Button
+              type="button"
+              color="primary"
+              variant="light"
+              onPress={() => {
+                console.log("Button clicked");
+
+                insertBold();
+              }}
+            >
+              Sezione
+            </Button>
+
             <div className="p-1 border-amber-400">
               <Button
                 type="button"
@@ -290,7 +341,8 @@ export default function UpdateSongForm({
             </div>
           </div>
           <Textarea
-            {...register("lyrics")}
+            ref={textAreaRef} // 👈 Add this line
+            // {...register("lyrics")}
             variant="bordered"
             className="song-text-area"
             size="sm"
