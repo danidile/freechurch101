@@ -11,8 +11,8 @@ import { useState, useEffect } from "react";
 export default function PendiRequestsComponent() {
   const { userData, loading, fetchUser } = useUserStore();
   const [pendingRequests, setPendingRequests] = useState<
-    pendingRequestsT[] | null
-  >(null);
+    pendingRequestsT[] | []
+  >([]);
 
   // Step 1: Make sure user is fetched on first mount
   useEffect(() => {
@@ -23,15 +23,16 @@ export default function PendiRequestsComponent() {
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
-    if (!loading && userData.loggedIn) {
-      if (hasPermission(userData.role as Role, "update:churchMembership")) {
+    if (!loading && userData) {
+      if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
         getPendingChurchMembershipRequests(userData.church_id).then(
           (fetchedRequests) => {
-            console.log(fetchedRequests);
+            console.log("fetchedRequests", fetchedRequests);
             setPendingRequests(fetchedRequests);
           }
         );
       }
+      console.log(pendingRequests);
     }
   }, [loading, userData]);
 

@@ -57,11 +57,12 @@ export default function RootLayout({
                 toastProps={{
                   radius: "sm",
                   variant: "flat",
-                  timeout: 4000,
+                  timeout: 10000,
                   hideIcon: true,
                   classNames: {
+                    description: "text-gray-500 max-w-[280px]",
                     closeButton:
-                      "opacity-100 absolute right-4 top-1/2 -translate-y-1/2",
+                      "opacity-100 absolute right-4 top-1/2 -translate-y-1/2 ml-5",
                   },
                   closeIcon: (
                     <svg

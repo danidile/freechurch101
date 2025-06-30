@@ -51,7 +51,6 @@ type FormData = {
 
 export default function ChurchComponent() {
   const { userData, loading } = useUserStore();
-  const [setlists, setSetlists] = useState<any[] | null>([]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     register,
@@ -65,26 +64,7 @@ export default function ChurchComponent() {
       email: "",
     },
   });
-  useEffect(() => {
-    if (!loading && userData.loggedIn) {
-      getSetListsByChurch(userData.church_id).then(
-        (fetchedSetLists: setListT[]) => {
-          setSetlists(fetchedSetLists);
-        }
-      );
-    }
-  }, [loading, userData]);
 
-  const [TeamLeader, setTeamLeader] = useState<boolean>(false);
-  useEffect(() => {
-    const fetchLeaderStatus = async () => {
-      if (!loading && userData.loggedIn) {
-        const leaderStatus = await isTeamLeaderClient();
-        setTeamLeader(leaderStatus.isLeader);
-      }
-    };
-    fetchLeaderStatus();
-  }, [loading, userData]);
   const [profiles, setProfiles] = useState<any[] | null>([]);
 
   // Step 2: Once user is available, fetch songs
@@ -124,22 +104,20 @@ export default function ChurchComponent() {
                 table: "min-h-[400px]",
               }}
               topContent={<h6 className="font-bold">Membri di chiesa:</h6>}
-              bottomContent={
-                <>
-                  {" "}
-                  {hasPermission(
-                    userData.role as Role,
-                    "insert:churchmembers"
-                  ) && (
-                    <>
-                      {" "}
-                      <Button color="primary" onPress={onOpen}>
-                        Aggiungi membro
-                      </Button>
-                    </>
-                  )}
-                </>
-              }
+              // bottomContent={
+              //   <>
+              //     {hasPermission(
+              //       userData.role as Role,
+              //       "insert:churchmembers"
+              //     ) && (
+              //       <>
+              //         <Button color="primary" onPress={onOpen}>
+              //           Aggiungi membro
+              //         </Button>
+              //       </>
+              //     )}
+              //   </>
+              // }
             >
               <TableHeader>
                 <TableColumn>Nome</TableColumn>
@@ -251,14 +229,14 @@ export default function ChurchComponent() {
                       User added successfully!
                     </p>
                   )}
-                  <div className="flex flex-row">
+                  <div className="flex flex-row gap-4">
                     <Button
                       color="danger"
                       variant="light"
                       fullWidth
                       onPress={onClose}
                     >
-                      Close
+                      Chiudi
                     </Button>
                     <Button
                       type="submit"
@@ -266,7 +244,7 @@ export default function ChurchComponent() {
                       disabled={isSubmitting}
                       color="primary"
                     >
-                      {isSubmitting ? "Adding..." : "Add User"}
+                      {isSubmitting ? "Aggiungendo..." : "Aggiungi"}
                     </Button>
                   </div>
                 </form>

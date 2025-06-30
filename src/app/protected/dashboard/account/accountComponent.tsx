@@ -39,9 +39,13 @@ export default function AccountComponent() {
         setTeams(fetchedTeams);
         setFetchedData(true);
 
-        if (hasPermission(userData.role as Role, "update:songs")) {
+        if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
           const pendingChurchMembershipRequests =
             await getPendingChurchMembershipRequests(userData.church_id);
+          console.log(
+            "pendingChurchMembershipRequests",
+            pendingChurchMembershipRequests
+          );
           if (
             pendingChurchMembershipRequests &&
             pendingChurchMembershipRequests.length >= 1

@@ -40,33 +40,6 @@ export const signUpAction = async (data: TauthSchema) => {
 };
 
 
-export const forgotPasswordAction = async (data: TlostPasswordSchema) => {
-  const email = data.email;
-  const supabase = createClient();
-
-  if (!email) {
-    return encodedRedirect("error", "/forgot-password", "Email is required");
-  }
-
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `https://churchlab.it/protected/reset-password`,
-  });
-
-  if (error) {
-    console.error(error.message);
-    return encodedRedirect(
-      "error",
-      "/forgot-password",
-      "Could not reset password"
-    );
-  }
-
-  return encodedRedirect(
-    "success",
-    "/forgot-password",
-    "Controlla la tu Mail per il link per reimpostare la password. "
-  );
-};
 
 export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   const supabase = createClient();

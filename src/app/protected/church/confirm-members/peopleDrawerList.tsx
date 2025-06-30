@@ -22,6 +22,7 @@ import { RadioGroup, Radio } from "@heroui/react";
 import { confirmBelongingAction } from "./confirmBelongingAction";
 import { confirmAndUpdateTempUserAction } from "./confirmAndUpdateTempUserAction";
 import { useForm, Controller } from "react-hook-form";
+import { denyBelongingAction } from "./denyBelongingAction";
 
 export default function PeopleToConfirm({
   profile,
@@ -33,7 +34,9 @@ export default function PeopleToConfirm({
   const confirmBelonging = () => {
     confirmBelongingAction(profile.profile.id);
   };
-
+  const denyBelonging = () => {
+    denyBelongingAction(profile.profile.id);
+  };
   return (
     <div className="flex flex-row w-full gap-12" key={profile.id}>
       <Link className="people-link" key={profile.id}>
@@ -61,6 +64,7 @@ export default function PeopleToConfirm({
                   key="delete"
                   className="text-center text-danger"
                   color="danger"
+                  onPress={denyBelonging}
                 >
                   Nega
                 </DropdownItem>

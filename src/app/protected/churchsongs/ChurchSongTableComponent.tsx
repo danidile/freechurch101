@@ -95,29 +95,38 @@ export default function ChurchSongTableComponent({
       </div>
       <div className="container-song-list w-full min-w-[300px] mx-auto">
         <Table
+          removeWrapper
           aria-label="Song list"
           className="w-full table-fixed border-collapse"
         >
           <TableHeader>
-            <TableColumn className="w-1/3">Title</TableColumn>
-            <TableColumn className="w-1/12">Author</TableColumn>
-            <TableColumn className="w-1/3">Tonalità</TableColumn>
+            <TableColumn className="w-9/12 min-w-[200px]">Title</TableColumn>
+            <TableColumn className="w-1/12">Autore</TableColumn>
             <TableColumn className="w-1/12">Apri</TableColumn>
           </TableHeader>
           <TableBody>
             {songList.map((song) => (
               <TableRow key={song.id}>
-                <TableCell className="truncate">
-                  <span className="font-medium">{song.song_title}</span>
-                </TableCell>
                 <TableCell>
-                  <span className="font-medium">{song.upload_key}</span>
+                  <span className="font-medium line-clamp-1">
+                    {song.song_title}
+                  </span>
                 </TableCell>
+
                 <TableCell>
-                  <small>{song.author || "Unknown"}</small>
+                  <small className="line-clamp-1">
+                    {song.author || "Unknown"}
+                  </small>
                 </TableCell>
-                <TableCell>
-                  <Button size="sm" color="primary" isIconOnly as={Link} href={`/songs/${song.id}`} >
+
+                <TableCell className="text-center">
+                  <Button
+                    size="sm"
+                    color="primary"
+                    isIconOnly
+                    as={Link}
+                    href={`/songs/${song.id}`}
+                  >
                     <TbExternalLink size={20} />
                   </Button>
                 </TableCell>
