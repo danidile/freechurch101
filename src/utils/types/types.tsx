@@ -16,7 +16,7 @@ export type songSchema = {
 };
 
 export type songType = {
-  id: string;
+  id?: string;
   created_at?: string;
   song_title?: string;
   lyrics?: string;
@@ -28,6 +28,9 @@ export type songType = {
   song?: string;
   key?: string;
   order?: number;
+  church?: string;
+  tags?: string;
+  bpm?: string;
 };
 
 export type songsListType = songType[];
@@ -366,13 +369,15 @@ export type AlbumReference = {
 
 // Song from 'global-songs' with a joined album
 export type SongWithAlbum = {
-  id: string;
-  song_title: string;
-  lyrics: string;
-  author: string;
-  Upload_key: string;
-  artist: string;
-  album: AlbumReference | null; // joined album
+  id?: string;
+  song_title?: string;
+  lyrics?: string;
+  author?: string;
+  upload_key?: string;
+  artist?: string;
+  album?: AlbumReference | null; // joined album
+  tags?: string;
+  bpm?: string;
 };
 
 // Grouped object by album name
@@ -417,6 +422,7 @@ export type ServerActionResponse<T> = {
   success: boolean;
   data?: T;
   error?: string;
+  message?: string;
 };
 export type ChipColor =
   | "warning"

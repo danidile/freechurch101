@@ -64,7 +64,6 @@ export default function UpdateSongForm({
   const insertBold = () => {
     const el = textAreaRef.current;
     if (!el) return;
-    console.log("ve");
 
     const start = el.selectionStart;
     const end = el.selectionEnd;
@@ -176,6 +175,7 @@ export default function UpdateSongForm({
                 <div className="flex gap-4 items-center">
                   <Autocomplete
                     size="sm"
+                    defaultSelectedKey={1}
                     variant="bordered"
                     label="Seleziona l'artista"
                     {...register("artist", {
