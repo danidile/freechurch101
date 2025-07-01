@@ -401,7 +401,7 @@ export default function UpdateSetlistForm({
               <Select
                 {...register("event_type")}
                 fullWidth
-                defaultSelectedKeys={new Set([setlistData.event_type])}
+                defaultSelectedKeys={new Set([setlistData?.event_type]) || null}
                 items={eventTypes}
                 label="Tipo di evento"
                 variant="underlined"
