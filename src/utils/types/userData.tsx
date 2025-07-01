@@ -19,6 +19,7 @@ export type basicUserData = {
   church_name?: string;
   pending_church_confirmation?: boolean;
   fetched?: boolean;
+  church_logo?: string;
 };
 
 export type calendarMonth = {

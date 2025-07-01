@@ -1,4 +1,5 @@
 "use client";
+import { useChurchStore } from "@/store/useChurchStore";
 import { TransitionLink } from "./TransitionLink";
 import { setListT } from "@/utils/types/types";
 import { basicUserData } from "@/utils/types/userData";
@@ -10,6 +11,8 @@ export default function SetListTabs({
   setlists: setListT[];
   userData: basicUserData;
 }) {
+  const { eventTypes } = useChurchStore();
+  console.log(eventTypes);
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
@@ -39,6 +42,9 @@ export default function SetListTabs({
               month = setlistmonth;
               newMonth = true;
             }
+            const matched = eventTypes?.find(
+              (event) => event.key === setlist.event_type
+            );
             return (
               <>
                 {newMonth && (
@@ -75,7 +81,9 @@ export default function SetListTabs({
                     </div>
 
                     <div className="setlist-name-exp" key={setlist.id}>
-                      <p>{setlist.event_title}</p>
+                      <p>
+                        {matched?.alt || matched?.label || "Evento sconosciuto"}
+                      </p>
                       <div className="flex gap-1 flex-wrap leading-3 text-slate-600">
                         {Object.values(setlist.setlistTeams).flat().length >=
                           1 && <small className="font-semibold">Team: </small>}

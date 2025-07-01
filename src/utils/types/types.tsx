@@ -36,10 +36,9 @@ export type songType = {
 export type songsListType = songType[];
 
 export const eventSchema = z.object({
-  eventType: z.string().optional().default("1"),
-  eventTitle: z.string().optional().default(""),
+  event_type: z.string().optional().default("1"),
+  event_title: z.string().optional().default(""),
   date: z.string().date().optional().default("2025-01-01"),
-  private: z.boolean(),
   start: z.string().optional().default("todo"),
   sections: z
     .object({
@@ -123,7 +122,7 @@ export interface TsongNameAuthor {
 }
 
 export type formValues = {
-  eventType?: string;
+  event_type?: string;
   church?: string;
   event_title?: string;
   date?: string;
@@ -138,6 +137,14 @@ export type formValues = {
     song?: string;
     key?: string;
   }[];
+};
+
+export type eventType = {
+  id?: string;
+  key?: string;
+  label?: string;
+  alt?: string; //Alternative label (the personalized label)
+  placeholder?: string;
 };
 
 export type teamFormValues = {
@@ -158,11 +165,34 @@ export type teamFormValues = {
   }[];
 };
 export type TeamMember = {
-  id: number;
-  name: string;
+  id?: number;
+  name?: string;
+  lastname?: string;
   roles?: string;
   email: string;
   hasbeenmodified?: boolean;
+};
+export type newMember = {
+  id?: number;
+  name?: string;
+  lastname?: string;
+  roles?: string;
+  email?: string;
+  church?: string;
+  token?: string;
+  status?: string;
+  created_at?: string;
+  email_status?: string;
+};
+
+export type invitedByTokentype = {
+  id?: any;
+  email?: any;
+  name?: any;
+  lastname?: any;
+  church_id?: any;
+  church_name?: any;
+  church_logo?: any;
 };
 
 export type Team = {
@@ -237,6 +267,7 @@ export type setListSongT = {
 export type setListT = {
   id?: string;
   event_title?: string;
+  event_type?: string;
   date?: string;
   setListSongs?: setListSongT[];
   type?: string;

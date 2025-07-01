@@ -71,6 +71,9 @@ const ROLES = {
 
     // CHURCHMEMBERSHIPS
     "confirm:churchMembership",
+    // CHURCH DETAILS
+
+    "update:churchdetails",
 
     // CHURCHMEMBERS
     "read:churchmembers",
@@ -102,7 +105,9 @@ const ROLES = {
     "view:teams",
     "update:teams",
     "send:emails",
+    // CHURCH DETAILS
 
+    "update:churchdetails",
     // CHURCHMEMBERSHIPS
     "confirm:churchMembership",
 

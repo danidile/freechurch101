@@ -1,5 +1,4 @@
 "use client";
-import { MdMoreVert } from "react-icons/md";
 import {
   Modal,
   ModalContent,
@@ -26,7 +25,6 @@ import {
   TableRow,
   TableCell,
   Button,
-  Checkbox,
   Input,
   Popover,
   PopoverContent,
@@ -53,10 +51,8 @@ import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { BiColorFill } from "react-icons/bi";
 import colors from "@/utils/eventsColors";
 import { FaPlus } from "react-icons/fa";
-import { TitleFormComponent } from "./TitleFormComponentDragAndDrop";
-import { SongFormComponent } from "./SongFormComponentDragAndDrop";
-import { NoteFormComponent } from "./NoteFormComponentDragAndDrop";
 import { ScheduleComponents } from "./ScheduleComponents";
+import { useChurchStore } from "@/store/useChurchStore";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -68,6 +64,8 @@ export default function UpdateSetlistForm({
   songsList: TsongNameAuthor[];
   setlistData: setListT;
 }) {
+  const { eventTypes } = useChurchStore();
+
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
   const [eventDate, setEventDate] = useState<string>(
@@ -96,7 +94,6 @@ export default function UpdateSetlistForm({
   const container = useRef(null);
   useEffect(() => {
     setEventDetails(setlistData);
-    console.log(setlistData);
   }, [setlistData]);
   const {
     handleSubmit,
@@ -401,7 +398,22 @@ export default function UpdateSetlistForm({
 
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
             <div className="gap-1.5">
-              <Input
+              <Select
+                {...register("event_type")}
+                fullWidth
+                defaultSelectedKeys={new Set([setlistData.event_type])}
+                items={eventTypes}
+                label="Tipo di evento"
+                variant="underlined"
+                placeholder="Seleziona il tipo di evento"
+              >
+                {(type) => (
+                  <SelectItem key={type.key}>
+                    {type.alt ? type.alt : type.label}
+                  </SelectItem>
+                )}
+              </Select>
+              {/* <Input
                 {...register("event_title")}
                 label="Tipo di evento"
                 variant="underlined"
@@ -410,9 +422,9 @@ export default function UpdateSetlistForm({
                 required
                 defaultValue={eventDetails?.event_title || ""}
                 placeholder="Serata di Preghiera..."
-              />
+              /> */}
             </div>
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
               <Checkbox
                 {...register("private")}
                 defaultSelected={eventDetails?.private || false}
@@ -430,7 +442,7 @@ export default function UpdateSetlistForm({
                   <IoMdInformationCircleOutline size={"22"} />
                 </Button>
               </Tooltip>
-            </div>
+            </div> */}
 
             <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
               <Input

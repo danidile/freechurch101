@@ -67,6 +67,9 @@ export default function AccountComponent() {
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
+  const upcomingSetlists = setlists?.filter(
+    (setlist: profileSetlistsT) => new Date(setlist.date) > currentDate
+  );
 
   return (
     <div className=" w-full">
@@ -115,77 +118,71 @@ export default function AccountComponent() {
               })}
             </div>
           )}
-          {setlists && setlists.length >= 1 && (
+          {upcomingSetlists && upcomingSetlists.length > 0 && (
             <div>
               <Card shadow="none" className="max-w-full my-4 w-96 border-none">
                 <CardHeader className="flex gap-3 border-b-2 border-gray-800">
-                  {" "}
                   <MdEvent size={25} />
-                  <h6>Prossimi eventi </h6>
+                  <h6>Prossimi eventi</h6>
                 </CardHeader>
                 <CardBody>
-                  {setlists.map((setlist: profileSetlistsT) => {
+                  {upcomingSetlists.map((setlist: profileSetlistsT) => {
                     const date = new Date(setlist.date);
                     const readableDate = date.toLocaleString("it-IT", {
-                      weekday: "long", // "Sunday"
-                      year: "numeric", // "2024"
-                      month: "long", // "November"
-                      day: "numeric", // "10"
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
                     });
-                    if (date > currentDate) {
-                      return (
-                        <div
-                          key={setlist.id}
-                          className="border-1 rounded-lg border-slate-300 my-1  !max-w-full p-3"
-                        >
-                          <div className="flex gap-3 relative">
-                            <div className="flex flex-col w-full max-w-full">
-                              <div
-                                className="flex  max-w-full
-                          justify-between"
-                              >
-                                <p className="text-md">{setlist.event_title}</p>
-                                <>
-                                  {" "}
-                                  {setlist.status === "pending" && (
-                                    <Chip variant="flat" color="warning">
-                                      In Attesa
-                                    </Chip>
-                                  )}
-                                  {setlist.status === "confirmed" && (
-                                    <Chip variant="flat" color="success">
-                                      Confermato
-                                    </Chip>
-                                  )}
-                                  {setlist.status === "denied" && (
-                                    <Chip variant="flat" color="danger">
-                                      Rifiutato
-                                    </Chip>
-                                  )}
-                                </>
-                              </div>
 
-                              <p className="text-small text-default-500 capitalize">
-                                {readableDate}
-                              </p>
+                    return (
+                      <div
+                        key={setlist.id}
+                        className="border-1 rounded-lg border-slate-300 my-1 !max-w-full p-3"
+                      >
+                        <div className="flex gap-3 relative">
+                          <div className="flex flex-col w-full max-w-full">
+                            <div className="flex justify-between max-w-full">
+                              <p className="text-md">{setlist.event_title}</p>
+                              <>
+                                {setlist.status === "pending" && (
+                                  <Chip variant="flat" color="warning">
+                                    In Attesa
+                                  </Chip>
+                                )}
+                                {setlist.status === "confirmed" && (
+                                  <Chip variant="flat" color="success">
+                                    Confermato
+                                  </Chip>
+                                )}
+                                {setlist.status === "denied" && (
+                                  <Chip variant="flat" color="danger">
+                                    Rifiutato
+                                  </Chip>
+                                )}
+                              </>
                             </div>
-                          </div>
 
-                          <p className="text-small text-default-800 capitalize">
-                            Team: {setlist.team_name}.
-                          </p>
-                          <div className="flex justify-end">
-                            <Link
-                              showAnchorIcon
-                              href={`/setlist/${setlist.setlist_id}`}
-                            >
-                              Pagina evento
-                            </Link>
+                            <p className="text-small text-default-500 capitalize">
+                              {readableDate}
+                            </p>
                           </div>
                         </div>
-                      );
-                    }
-                  })}{" "}
+
+                        <p className="text-small text-default-800 capitalize">
+                          Team: {setlist.team_name}.
+                        </p>
+                        <div className="flex justify-end">
+                          <Link
+                            showAnchorIcon
+                            href={`/setlist/${setlist.setlist_id}`}
+                          >
+                            Pagina evento
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </CardBody>
               </Card>
             </div>

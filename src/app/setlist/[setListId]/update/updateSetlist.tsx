@@ -65,6 +65,7 @@ function prepareScheduleDiff(
     titles: titlesDiff,
   };
 }
+
 export const updateSetlistData = async (
   updatedSetlist: setListT,
   setlistData: setListT,
@@ -241,74 +242,105 @@ export const updateSetlistSchedule = async (
   }
 };
 
+type FlattenedMember = {
+  id?: string;
+  member: string; // profile id
+  setlist: string;
+  team: string;
+  roles: string;
+  status: string;
+};
+function flattenTeams(setlist: setListT): FlattenedMember[] {
+  return (
+    setlist.teams?.flatMap(
+      (team) =>
+        team.selected?.map((member) => ({
+          id: member.id,
+          member: member.profile,
+          setlist: setlist.id!,
+          team: team.id!,
+          roles: member.selected_roles!,
+          status: member.status || "pending",
+        })) ?? []
+    ) ?? []
+  );
+}
+
+function compareTeamMembers(a: FlattenedMember, b: FlattenedMember) {
+  return (
+    a.team !== b.team ||
+    a.status !== b.status ||
+    JSON.stringify(a.roles) !== JSON.stringify(b.roles)
+  );
+}
+
 export const updateSetlistTeam = async (
   updatedSetlist: setListT,
   setlistData: setListT,
   supabase: SupabaseClient
 ) => {
-  if (!setlistData.id) return;
+  const newMembers = flattenTeams(updatedSetlist);
+  const oldMembers = flattenTeams(setlistData);
 
-  console.log("⚙️ setlistData.teams", setlistData.teams);
-  console.log("⚙️ updatedSetlist.teams", updatedSetlist.teams);
+  const { inserted, deleted, updated } = diffById(
+    newMembers,
+    oldMembers,
+    compareTeamMembers
+  );
 
-  const updateTeam: expandedTeamT[] = [];
-  const updatedIds = new Set<string>();
+  // if (!setlistData.id) return;
 
-  updatedSetlist.teams?.forEach((team) => {
-    team.selected?.forEach((member) => {
-      const memberId = member.id || crypto.randomUUID();
-      updatedIds.add(memberId);
+  console.log("⚙️ Team Members inserted", inserted);
+  console.log("⚙️ Team Members deleted", deleted);
+  console.log("⚙️ Team Members updated", updated);
+  const teamMemberstoDelete = deleted.map((item) => item.id).filter(Boolean);
 
-      updateTeam.push({
-        id: memberId,
-        setlist: setlistData.id!,
-        member: member.profile,
-        team: team.id!,
-        roles: member.selected_roles,
-        status: member.status || "pending",
-      });
-    });
-  });
-
-  console.log("✅ updatedIds", Array.from(updatedIds));
-  console.log("🆕 updateTeam", updateTeam);
-
-  const previousIds: string[] = [];
-  setlistData.teams?.forEach((team) => {
-    team.selected?.forEach((member) => {
-      if (member.id) {
-        previousIds.push(member.id);
-      }
-    });
-  });
-
-  console.log("📦 previousIds", previousIds);
-
-  const toDeleteIds = previousIds.filter((id) => !updatedIds.has(id));
-
-  console.log("❌ toDeleteIds", toDeleteIds);
-
-  if (toDeleteIds.length > 0) {
+  console.log("🗑️ Ids teamMembers to delete:", teamMemberstoDelete);
+  if (teamMemberstoDelete.length > 0) {
     const { error: deleteError } = await supabase
       .from("event-team")
       .delete()
-      .in("id", toDeleteIds);
+      .in("id", teamMemberstoDelete);
 
     if (deleteError) {
-      console.error("🔥 Error deleting removed team members", deleteError);
+      console.error("🔥 Error deleting removed setlist-titles", deleteError);
     } else {
-      console.log("🗑️ Deleted members successfully", toDeleteIds);
+      console.log("🗑️ Deleted titles successfully", teamMemberstoDelete);
     }
   }
+  if (inserted.length > 0) {
+    const insertedWithoutIds = inserted.map(({ id, ...rest }) => rest);
 
-  const { error: upsertError } = await supabase
-    .from("event-team")
-    .upsert(updateTeam, { onConflict: "id" });
+    const { error: insertError } = await supabase
+      .from("event-team")
+      .insert(insertedWithoutIds)
+      .select();
 
-  if (upsertError) {
-    console.error("🔥 Error upserting team members", upsertError);
-  } else {
-    console.log("✅ Upserted team members");
+    if (insertError) {
+      console.error("🔥 Error Inserting new TeamMembers", insertError);
+    } else {
+      console.log("🗑️ TeamMembers Inserted successfully", inserted);
+    }
+  }
+  if (updated.length > 0) {
+    const updateResults = await Promise.all(
+      updated.map(({ id, ...data }) => {
+        if (!id) return Promise.resolve({ error: "Missing id" });
+        return supabase
+          .from("event-team")
+          .update(data)
+          .eq("id", id)
+          .select()
+          .then(({ error }) => ({ error }));
+      })
+    );
+
+    const errors = updateResults.filter((r) => r.error);
+    if (errors.length > 0) {
+      console.error("🔥 Errors updating members:", errors);
+    } else {
+      console.log("✅ Team members updated successfully");
+    }
   }
 };
 
