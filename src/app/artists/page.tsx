@@ -18,10 +18,9 @@ export default async function Page() {
     );
   } else {
     return (
-      <>
-        <h1>No song found</h1>
-        <a href="/songs/addSong">Add a New Song!</a>
-      </>
+      <div className="container-sub">
+        <h5>Nessun artista trovato</h5>
+      </div>
     );
   }
 }

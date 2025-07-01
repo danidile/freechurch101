@@ -3,6 +3,7 @@ import { Time } from "@internationalized/date";
 
 export const eventSchema = z.object({
   event_title: z.string().min(1),
+   event_type: z.string().min(1),
   date: z.string(), // formato ISO yyyy-mm-dd
   repetition: z.enum(["settimanale", "alterne"]),
   weekday: z.string(),

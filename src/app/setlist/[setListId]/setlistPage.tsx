@@ -53,6 +53,8 @@ import { FiSend } from "react-icons/fi";
 import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
 import { ScheduleViewComponents } from "./ScheduleViewComponents";
 import { FaRegCircleXmark } from "react-icons/fa6";
+import { useChurchStore } from "@/store/useChurchStore";
+import { statusColorMap, statusMap } from "@/constants";
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, fetchUser, loading } = useUserStore();
   const [setlistSchedule, setSetlistSchedule] = useState<any[] | null>(null);
@@ -63,6 +65,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
   const [emailPerson, setEmailPerson] = useState(null);
   const [emailTeam, setEmailTeam] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { eventTypes } = useChurchStore();
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
@@ -93,11 +96,6 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     fetchLeaderStatus();
   }, [loading, userData]);
 
-  const statusColorMap: Record<string, ChipColor> = {
-    pending: "warning",
-    confirmed: "success",
-    denied: "danger",
-  };
   if (!userData.loggedIn && !loading) {
     return (
       <div className="container-sub ">
@@ -122,16 +120,15 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     month: "long", // "November"
     day: "numeric", // "10"
   });
-  const statusMap: Record<string, { label: string; color: string }> = {
-    pending: { label: "In attesa", color: "#edb85e" },
-    confirmed: { label: "Confermato", color: "#6ecf87" },
-    denied: { label: "Rifiutato", color: "#e24c7c" },
-  };
+
+  const matched = eventTypes?.find(
+    (event) => event.key === setlistData.event_type
+  );
   return (
     <div className="container-sub ">
       <div className="song-presentation-container">
         <div className="team-show">
-          <h5>{setlistData.event_title}</h5>
+          <h5> {matched?.alt || matched?.label || "Evento sconosciuto"}</h5>
           <p className="capitalize">{readableDate}</p>
           <div className="top-settings-bar">
             <CopyLinkButton />

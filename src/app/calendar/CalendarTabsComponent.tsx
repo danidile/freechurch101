@@ -14,6 +14,7 @@ import {
 } from "@heroui/react";
 import { useState } from "react";
 import SetlistPage from "../setlist/[setListId]/setlistPage";
+import { useChurchStore } from "@/store/useChurchStore";
 
 export default function CalendarTabs({
   months,
@@ -22,6 +23,8 @@ export default function CalendarTabs({
   months: calendarMonth[];
   eventsByDate: Map<string, setListT[]>;
 }) {
+  const { eventTypes } = useChurchStore();
+
   const [selectedEvent, setSelectedEvent] = useState<setListT | null>(null);
 
   return (
@@ -59,32 +62,39 @@ export default function CalendarTabs({
                       <small className="calendar-number">{day}</small>
                       {events.length > 0 && (
                         <>
-                          {events.map((event, index) => (
-                            <div
-                              className="calendar-event"
-                              style={{
-                                backgroundColor:
-                                  event.color + "35" || "#efbebe",
-                              }}
-                              onClick={() => setSelectedEvent(event)}
-                            >
+                          {events.map((event, index) => {
+                            const matched = eventTypes?.find(
+                              (element) => element.key === event.event_type
+                            );
+                            return (
                               <div
+                                className="calendar-event"
                                 style={{
-                                  left: "0px",
-                                  height: "100%",
-                                  width: "2px",
-                                  backgroundColor: event.color,
-                                  position: "absolute",
+                                  backgroundColor:
+                                    event.color + "35" || "#efbebe",
                                 }}
-                              ></div>
-                              <small
-                                key={index}
-                                className="calendar-event-title"
+                                onClick={() => setSelectedEvent(event)}
                               >
-                                {event.event_title || "Untitled Event"}
-                              </small>
-                            </div>
-                          ))}
+                                <div
+                                  style={{
+                                    left: "0px",
+                                    height: "100%",
+                                    width: "2px",
+                                    backgroundColor: event.color,
+                                    position: "absolute",
+                                  }}
+                                ></div>
+                                <small
+                                  key={index}
+                                  className="calendar-event-title"
+                                >
+                                  {matched?.alt ||
+                                    matched?.label ||
+                                    "Evento sconosciuto"}
+                                </small>
+                              </div>
+                            );
+                          })}
                         </>
                       )}
                     </div>

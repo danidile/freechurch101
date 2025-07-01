@@ -1,18 +1,9 @@
 "use client";
 
-import { Divider, Tooltip } from "@heroui/react";
+import { Divider } from "@heroui/react";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import { setListSongT, setListT } from "@/utils/types/types";
-import { IoCloseSharp } from "react-icons/io5";
 
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  Button,
-  useDisclosure,
-} from "@heroui/react";
 import CustomizeWidget from "@/app/components/CustomizeWidget";
 export default function ViewFullSetListComponent({
   setlistData,
@@ -21,8 +12,6 @@ export default function ViewFullSetListComponent({
   setlistData: setListT;
   setlistsongs: setListSongT[];
 }) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"
@@ -44,12 +33,13 @@ export default function ViewFullSetListComponent({
           .map((song: setListSongT, index) => {
             console.log("song");
             console.log(song);
-            return (
-              <div>
-                <ChordProViewComponent setListSong={song} />
-                <Divider className="my-14" />
-              </div>
-            );
+            if (song.lyrics)
+              return (
+                <div>
+                  <ChordProViewComponent setListSong={song} />
+                  <Divider className="my-14" />
+                </div>
+              );
           })}
       </div>
     </>

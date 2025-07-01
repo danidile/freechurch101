@@ -100,8 +100,8 @@ export default function ChurchComponent() {
               aria-label="Church members table"
               isHeaderSticky
               classNames={{
-                base: "max-h-[820px] overflow-scroll",
-                table: "min-h-[400px]",
+                base: "max-h-[600px] overflow-scroll",
+                table: "max-h-[600px]",
               }}
               topContent={<h6 className="font-bold">Membri di chiesa:</h6>}
               // bottomContent={

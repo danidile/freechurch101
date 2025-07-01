@@ -18,7 +18,12 @@ import { MdOutlineLogout } from "react-icons/md";
 import logoutAction from "../components/logOutAction";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
-import { PiPasswordBold } from "react-icons/pi";
+import {
+  PiChurch,
+  PiChurchDuotone,
+  PiChurchFill,
+  PiPasswordBold,
+} from "react-icons/pi";
 import {
   Dropdown,
   DropdownTrigger,
@@ -90,6 +95,15 @@ export default function Sidebar() {
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
+        {userData.church_logo && (
+          <>
+            <img
+              className="max-w-[125px] mx-auto mt-4"
+              src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo}`}
+              alt=""
+            />
+          </>
+        )}
         <li className="sidebar-li !mt-6 border-b-1 ">
           <span className="sidebar-link">
             <div className="sidebar-element sidebar-title">Area personale</div>
@@ -140,13 +154,27 @@ export default function Sidebar() {
         )}
         {userData.church_id && (
           <>
-            {(hasPermission(userData.role as Role, "create:setlists") ||
+            {(hasPermission(userData.role as Role, "read:churchmembers") ||
               TeamLeader) && (
               <li className="sidebar-li">
                 <Link className="sidebar-link" href="/protected/church">
                   <div className="sidebar-element">
-                    <BiChurch />
+                    <PiChurch />
                     Chiesa
+                  </div>
+                </Link>
+              </li>
+            )}
+            {(hasPermission(userData.role as Role, "update:churchdetails") ||
+              TeamLeader) && (
+              <li className="sidebar-li">
+                <Link
+                  className="sidebar-link"
+                  href="/protected/church/personalize"
+                >
+                  <div className="sidebar-element">
+                    <PiChurchFill />
+                    Personalizza Chiesa
                   </div>
                 </Link>
               </li>

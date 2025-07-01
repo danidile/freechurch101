@@ -194,7 +194,7 @@ h6 {
 p {
   color: rgba(0, 0, 0, 0.8);
   font-size: 16px;
-  line-height: 150%;
+  line-height: 100%;
   font-family:
     "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue",
     Arial, sans-serif;
@@ -1040,8 +1040,8 @@ tbody tr .tablecellnewteams {
 }
 
 .crea-setlist-container {
-  max-width: 95vw;
-  width: 500px;
+  max-width: 600px;
+  width: 100%;
   margin: 0px auto;
 }
 .accordian-setlist {
@@ -1694,7 +1694,7 @@ tbody tr .tablecellnewteams {
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  max-width: 140px;
+  max-width: 200px;
   color: #4b5563; /* Tailwind's gray-600 */
   gap: 1.25rem; /* gap-5 = 20px = 1.25rem */
 }
@@ -1790,4 +1790,41 @@ tbody tr .tablecellnewteams {
 
 .custom-table tr:hover {
   background-color: #f0f0f0;
+}
+
+.table-container {
+  max-width: 1350px;
+  margin: 0 auto;
+  padding: 0 16px; /* optional side padding */
+}
+.settings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.settings-table th,
+.settings-table td {
+  max-width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.settings-table th {
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.settings-action {
+  background: none;
+  border: none;
+  color: #0077cc;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.settings-action:hover {
+  color: #005999;
 }

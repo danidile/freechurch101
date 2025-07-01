@@ -11,6 +11,7 @@ import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 
 export default function SetListListComponent() {
   const { userData, loading } = useUserStore();
+
   const [setlists, setSetlists] = useState<any[] | null>(null);
   useEffect(() => {
     if (!loading && userData.loggedIn) {

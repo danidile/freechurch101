@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { eventSchema, formValues } from "./types";
+import { useChurchStore } from "@/store/useChurchStore";
 
 export const weekDays = [
   { key: "monday", label: "Lunedì" },
@@ -31,6 +32,7 @@ export const weekDays = [
 
 export default function CreateMultipleEventsForm() {
   const [type, setType] = useState<string>("settimanale");
+  const { eventTypes } = useChurchStore();
 
   const {
     handleSubmit,
@@ -59,14 +61,20 @@ export default function CreateMultipleEventsForm() {
           <h4>Crea Eventi</h4>
 
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-            <Input
-              {...register("event_title")}
-              label="Titolo evento"
-              variant="bordered"
-              size="sm"
-              required
-              placeholder="Serata di Preghiera..."
-            />
+            <Select
+              {...register("event_type")}
+              fullWidth
+              items={eventTypes}
+              label="Tipo di evento"
+              variant="underlined"
+              placeholder="Seleziona il tipo di evento"
+            >
+              {(type) => (
+                <SelectItem key={type.key}>
+                  {type.alt ? type.alt : type.label}
+                </SelectItem>
+              )}
+            </Select>
 
             <Input
               type="date"
