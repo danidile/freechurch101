@@ -285,6 +285,7 @@ export default function UpdateSetlistForm({
     const updatedSetlist: setListT = {
       id: setlistData?.id || crypto.randomUUID(),
       event_title: watchAllFields.event_title,
+      event_type: data.event_type,
       date: watchAllFields.date,
       private: data.private,
       setListSongs: state,
@@ -292,8 +293,8 @@ export default function UpdateSetlistForm({
       color: eventColor,
       schedule: schedule,
     };
-    console.log("data");
-    console.log(data);
+    console.log("updatedSetlist");
+    console.log(updatedSetlist);
     if (page === "create") {
       addSetlist(updatedSetlist);
     } else if (page === "update") {

@@ -77,7 +77,8 @@ export const updateSetlistData = async (
     updatedSetlist.date !== setlistData.date.split("T")[0] ||
     updatedSetlist.event_title !== setlistData.event_title ||
     updatedSetlist.private !== setlistData.private ||
-    updatedSetlist.color !== setlistData.color
+    updatedSetlist.color !== setlistData.color ||
+    updatedSetlist.event_type !== setlistData.event_type
   ) {
     hasChanged = true;
   }
@@ -88,7 +89,7 @@ export const updateSetlistData = async (
       .from("setlist")
       .update({
         date: updatedSetlist.date,
-        event_title: updatedSetlist.event_title,
+        event_type: updatedSetlist.event_type,
         private: updatedSetlist.private,
         color: updatedSetlist.color,
       })
@@ -96,10 +97,10 @@ export const updateSetlistData = async (
       .select();
 
     if (setlistError) {
-      console.log("\x1b[41m Error in setlist Data insert \x1b[0m");
+      console.log("\x1b[41m Error in setlist Data Update \x1b[0m");
       console.log(setlistError);
     } else {
-      console.log("\x1b[42m Success in setlist Data insert \x1b[0m");
+      console.log("\x1b[42m Success in setlist Data Update \x1b[0m");
     }
   } else {
     console.log("\x1b[42m Setlist Data was not changed \x1b[0m");
