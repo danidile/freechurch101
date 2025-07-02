@@ -3,11 +3,9 @@ import { artistT } from "@/utils/types/types";
 import { Input, Button } from "@heroui/react";
 import Link from "next/link";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
-import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { basicUserData } from "@/utils/types/userData";
-import { songType } from "@/utils/types/types";
 
 type searchBar = {
   text: string;

@@ -52,6 +52,7 @@ import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 export default function Page({ params }: { params: { teamsId: string } }) {
   const { userData, loading: isloading } = useUserStore();
   const [selectedNewLeaders, setSelectedNewLeaders] = useState<Selection>();
+  const [refetchTrigger, setRefetchTrigger] = useState(false);
 
   const [churchTeam, setChurchTeam] = useState<teamData>();
   const [isLeader, setIsLeader] = useState<boolean>(false);
@@ -106,7 +107,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
     };
 
     fetchTeam();
-  }, [params.teamsId]);
+  }, [params.teamsId, refetchTrigger]);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -125,7 +126,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
     };
 
     fetchMembers();
-  }, [userData, isloading,isLeader]);
+  }, [userData, isloading, isLeader]);
 
   if (loading || isloading) return <Spinner />;
 
@@ -193,6 +194,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
     const arrayNewLeaders: string[] =
       Array.from(selectedNewLeaders).map(String);
     saveNewLeadersAction(arrayNewLeaders, params.teamsId);
+    setRefetchTrigger((prev) => !prev);
   };
   if (churchTeam) {
     return (
@@ -318,7 +320,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                   className={`max-w-[50px]  ${defineLeaders ? "hidden" : "table-cell"}`}
                 >
                   {(isLeader ||
-                hasPermission(userData.role as Role, "update:teams")) && (
+                    hasPermission(userData.role as Role, "update:teams")) && (
                     <div className="relative flex flex-row justify-center items-center gap-1 mx-auto">
                       <Dropdown>
                         <DropdownTrigger>

@@ -226,6 +226,8 @@ export type profileT = {
   profile?: string;
 };
 
+export type isLeaderT = { isLeader: boolean; teams: string[] };
+
 export type profileTeamsT = {
   team_name?: string;
   roles?: string[];
