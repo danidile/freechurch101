@@ -67,16 +67,16 @@ export default function InviteUsersModalComponent() {
 
   const sendInvites = async () => {
     const filteredMembers = checkedMembers.filter((member) => !member.error);
-    console.log(filteredMembers);
     if (filteredMembers.length >= 1) {
       const invitesAdded: newMember[] =
         await sendInvitesAction(filteredMembers);
-      invitesAdded.map(async (newMember) => {
-        const response = await sendInviteEmail(newMember);
-        console.log("Email inviata a", newMember.email, response);
-      });
 
-      setRefetchTrigger(!refetchTrigger);
+      await Promise.all(
+        invitesAdded.map((newMember) => sendInviteEmail(newMember))
+      );
+
+      setRefetchTrigger((prev) => !prev);
+      setMembers([ { name: "", lastname: "", email: "" }]);
     }
   };
 

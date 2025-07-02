@@ -132,7 +132,7 @@ export default function TeamsForm({
   return (
     <div className="container-sub">
       <div className="form-div crea-setlist-container">
-        <form onSubmit={handleSubmit(convertData)}>
+        <form>
           <h4>
             {page === "create" && "Crea"}
             {page === "update" && "Aggiorna"} Team
