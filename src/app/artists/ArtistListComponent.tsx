@@ -40,7 +40,7 @@ export default function ArtistListComponent({
   return (
     <>
       <div className="songs-header">
-        <h4>Lista canzoni</h4>
+        <h4>Lista Artisti</h4>
         <form
           action=""
           className="songs-searchbar-form"
@@ -67,16 +67,18 @@ export default function ArtistListComponent({
         {artistsList.map((artist) => {
           return (
             <Link
-              className="songlist-link"
+              className="songlist-link "
               href={`/artists/${artist.username}`}
             >
-              <div className="song-list" key={artist.username}>
+              <div className="artist-list" key={artist.username}>
                 <img
                   className="cover-artist-list"
                   src={`images/${artist.username}.webp`}
                 />
 
-                <p key={artist.username}>{artist.artist_name}</p>
+                <p className="font-medium" key={artist.username}>
+                  {artist.artist_name}
+                </p>
               </div>
             </Link>
           );
