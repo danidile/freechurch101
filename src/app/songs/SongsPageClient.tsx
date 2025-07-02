@@ -7,6 +7,8 @@ import SongslistComponent from "../components/songslistComponent";
 import LoadingSongsPage from "./loading";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { songType } from "@/utils/types/types";
+import { Button } from "@heroui/button";
+import Link from "next/link";
 
 export default function SongsPageClient() {
   const { userData, loading } = useUserStore();
@@ -33,11 +35,24 @@ export default function SongsPageClient() {
   }
   console.log(userData);
   return (
-    <div className="container-sub">
-      <h4>No songs found</h4>
+    <div className="container-sub gap-5">
+      <h4>Nessuna canzone trovata</h4>
       {userData && hasPermission(userData.role as Role, "create:songs") && (
-        <a href="/songs/addSong">Aggiungi canzone!</a>
-      )}{" "}
+        <>
+          <Button
+            color="primary"
+            variant="flat"
+            as={Link}
+            href="/songs/addSong"
+          >
+            Aggiungi canzone!
+          </Button>
+          <p>oppure importa canzoni dalla lista di artisti Italiani!</p>
+          <Button color="primary" variant="flat" as={Link} href="/artists">
+            Importa
+          </Button>
+        </>
+      )}
     </div>
   );
 }

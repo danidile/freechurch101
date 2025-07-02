@@ -14,6 +14,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   Chip,
+  ModalFooter,
 } from "@heroui/react";
 
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
@@ -24,27 +25,18 @@ import { FaCircle, FaExclamation } from "react-icons/fa";
 import { IoMailOutline } from "react-icons/io5";
 import { ChipColor, newMember } from "@/utils/types/types";
 import { statusColorMap, statusMap } from "@/constants";
-type Member = {
-  last_email?: string;
-  name: string;
-  lastname: string;
-  email: string;
-  status?: string;
-};
+import checkInvitesAction from "./checkInvitesAction";
+
 export default function InviteUsersModalComponent() {
   const { userData, loading } = useUserStore();
-  const [members, setMembers] = useState<Member[]>([
+  const [members, setMembers] = useState<newMember[]>([
     { name: "", lastname: "", email: "" },
   ]);
-  const [invitesSent, setInvitesSent] = useState<Member[]>([]);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [checkedMembers, setCheckedMembers] = useState<newMember[]>([]);
+  const [invitesSent, setInvitesSent] = useState<newMember[]>([]);
   const [emailPerson, setEmailPerson] = useState(null);
   const [refetchTrigger, setRefetchTrigger] = useState(false);
-
-  const {
-    isOpen: isOpenInviteModal,
-    onOpen: onOpenInviteModal,
-    onOpenChange: onOpenChangeInviteModal,
-  } = useDisclosure();
 
   useEffect(() => {
     if (!loading && userData.loggedIn) {
@@ -60,44 +52,22 @@ export default function InviteUsersModalComponent() {
 
   const handleMembersInputChange = (
     index: number,
-    field: keyof Member,
+    field: keyof newMember,
     value: string
   ) => {
-    const updated = [...members];
-    updated[index][field] = value;
+    const updated: newMember[] = [...members];
+    updated[index] = {
+      ...updated[index],
+      [field]: value,
+    };
     setMembers(updated);
   };
   const isValidEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const sendInvites = async () => {
-    console.log("members", members);
-    const today = new Date().toISOString().split("T")[0];
-
-    const formattedNewMembers = await Promise.all(
-      members.map(async (newMember) => {
-        const isValid = isValidEmail(newMember.email);
-        if (
-          isValid &&
-          newMember.name.length >= 2 &&
-          newMember.lastname.length >= 2
-        ) {
-          console.log(newMember);
-          const token = crypto.randomUUID();
-
-          return {
-            email: newMember.email,
-            church: userData.church_id,
-            token: token,
-            status: "pending",
-            name: newMember.name,
-            lastname: newMember.lastname,
-            last_email: today,
-          };
-        }
-      })
-    );
-    const filteredMembers = formattedNewMembers.filter(Boolean); // removes undefined
+    const filteredMembers = checkedMembers.filter((member) => !member.error);
+    console.log(filteredMembers);
     if (filteredMembers.length >= 1) {
       const invitesAdded: newMember[] =
         await sendInvitesAction(filteredMembers);
@@ -107,6 +77,55 @@ export default function InviteUsersModalComponent() {
       });
 
       setRefetchTrigger(!refetchTrigger);
+    }
+  };
+
+  const checkInvites = async () => {
+    const today = new Date().toISOString().split("T")[0];
+    const seenEmails = new Set<string>();
+
+    const formattedNewMembers = await Promise.all(
+      members.map(async (newMember) => {
+        const isValid = isValidEmail(newMember.email);
+        const alreadySeen = seenEmails.has(newMember.email);
+
+        if (
+          isValid &&
+          newMember.name.length >= 2 &&
+          newMember.lastname.length >= 2
+        ) {
+          const token = crypto.randomUUID();
+          const result = {
+            email: newMember.email,
+            church: userData.church_id,
+            token,
+            status: "pending",
+            name: newMember.name,
+            lastname: newMember.lastname,
+            last_email: today,
+            ...(alreadySeen ? { error: "Duplicate email" } : {}),
+          };
+
+          seenEmails.add(newMember.email);
+          return result;
+        }
+
+        return {
+          email: newMember.email,
+          name: newMember.name,
+          lastname: newMember.lastname,
+          error: !isValid ? "Email non valida" : "Nome o cognome troppo corti",
+        };
+      })
+    );
+
+    const filteredMembers = formattedNewMembers.filter(Boolean); // removes undefined
+    if (filteredMembers.length >= 1) {
+      const invitesChecked: newMember[] = await checkInvitesAction(
+        filteredMembers,
+        userData.church_id
+      );
+      setCheckedMembers(invitesChecked);
     }
   };
 
@@ -297,12 +316,76 @@ export default function InviteUsersModalComponent() {
         <Button
           type="submit"
           fullWidth
+          className="mt-6"
           color="primary"
-          onPress={() => sendInvites()}
+          onPress={() => {
+            onOpen();
+            checkInvites();
+          }}
         >
           Aggiungi
         </Button>
       </div>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="center"
+        scrollBehavior="inside"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Invia inviti
+              </ModalHeader>
+              <ModalBody>
+                <small>
+                  Le email il box rosso non verranno invitate in o già
+                  possiedono un account o hanno già ricevuto un invito dalla tua
+                  chiesa.
+                </small>
+                {checkedMembers.length >= 1 && (
+                  <div className="flex flex-col  gap-2">
+                    {checkedMembers.map((member) => {
+                      return (
+                        <div
+                          className={`p-4 nborder w-full ${member?.error ? "!bg-red-100" : ""}`}
+                        >
+                          <p
+                            className={`${member?.error ? "!text-red-700" : ""}`}
+                          >
+                            {member.name + " " + member.lastname}
+                          </p>
+                          <small
+                            className={`${member?.error ? "!text-red-500" : ""}`}
+                          >
+                            {member?.error && member?.error}
+                            {!member?.error && member?.email}
+                          </small>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Annulla
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    onClose();
+                    sendInvites();
+                  }}
+                >
+                  Invia inviti
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

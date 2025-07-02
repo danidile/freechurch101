@@ -13,7 +13,11 @@ import { BsMusicNoteList } from "react-icons/bs";
 import { MdOutlineEventNote } from "react-icons/md";
 
 import { HiUserGroup } from "react-icons/hi2";
-import { IoNotificationsSharp, IoSettingsSharp } from "react-icons/io5";
+import {
+  IoNotificationsSharp,
+  IoSettingsOutline,
+  IoSettingsSharp,
+} from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import logoutAction from "../components/logOutAction";
 import { useRouter } from "next/navigation";
@@ -67,34 +71,12 @@ export default function Sidebar() {
   return (
     <>
       <ul className="sidebar-ul">
-        <Dropdown placement="bottom">
-          <DropdownTrigger>
-            <li className="sidebar-li">
-              <div className="sidebar-link !justify-between">
-                {userData.name + " " + userData.lastname}
-                <FaChevronDown className="dashboard-icon !mr-0" />
-              </div>
-            </li>
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Static Actions">
-            <DropdownItem
-              key="updateaccount"
-              as={Link}
-              href="/protected/dashboard/account/completeAccount"
-              startContent={<FaUserCircle className="dashboard-icon" />}
-            >
-              Aggiorna profilo
-            </DropdownItem>
-            <DropdownItem
-              key="resetpassword"
-              as={Link}
-              href="/protected/reset-password"
-              startContent={<PiPasswordBold className="dashboard-icon" />}
-            >
-              Cambia Password
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        <li className="sidebar-li">
+          <div className="sidebar-link ">
+            <h5> {userData.name + " " + userData.lastname}</h5>
+          </div>
+        </li>
+
         {userData.church_logo && (
           <>
             <img
@@ -105,9 +87,34 @@ export default function Sidebar() {
           </>
         )}
         <li className="sidebar-li !mt-6 border-b-1 ">
-          <span className="sidebar-link">
-            <div className="sidebar-element sidebar-title">Area personale</div>
-          </span>
+          <Dropdown placement="bottom">
+            <DropdownTrigger>
+              <span className="sidebar-link">
+                <div className="sidebar-element sidebar-title !justify-between">
+                  Area personale
+                  <IoSettingsOutline className="mr-0" />
+                </div>
+              </span>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Static Actions">
+              <DropdownItem
+                key="updateaccount"
+                as={Link}
+                href="/protected/dashboard/account/completeAccount"
+                startContent={<FaUserCircle className="dashboard-icon" />}
+              >
+                Aggiorna profilo
+              </DropdownItem>
+              <DropdownItem
+                key="resetpassword"
+                as={Link}
+                href="/protected/reset-password"
+                startContent={<PiPasswordBold className="dashboard-icon" />}
+              >
+                Cambia Password
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </li>
 
         <li className="sidebar-li">

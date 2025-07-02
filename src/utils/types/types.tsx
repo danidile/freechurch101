@@ -183,16 +183,10 @@ export type newMember = {
   status?: string;
   created_at?: string;
   email_status?: string;
-};
-
-export type invitedByTokentype = {
-  id?: any;
-  email?: any;
-  name?: any;
-  lastname?: any;
-  church_id?: any;
-  church_name?: any;
-  church_logo?: any;
+  last_email?: string;
+  error?: string;
+  church_logo?: string;
+  church_name?: string;
 };
 
 export type Team = {
@@ -229,6 +223,7 @@ export type profileT = {
   lastname?: string;
   role?: number;
   church?: string;
+  profile?: string;
 };
 
 export type profileTeamsT = {
@@ -439,14 +434,15 @@ export type registrationData = {
   church: string;
   email: string;
   password: string;
-  isCreatingChurch: boolean;
-  churchName: string;
-  pastor: string;
-  address: string;
-  website: string;
-  igHandle: string;
-  provincia: string;
-  city: string;
+  isCreatingChurch?: boolean;
+  churchName?: string;
+  pastor?: string;
+  address?: string;
+  website?: string;
+  igHandle?: string;
+  provincia?: string;
+  city?: string;
+  token?: string;
 };
 
 export type ServerActionResponse<T> = {

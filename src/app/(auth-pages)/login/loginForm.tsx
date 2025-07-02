@@ -80,7 +80,15 @@ export default function LoginForm() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   // REGISTER DATA
-
+  const [churchSearchQuery, setChurchSearchQuery] = useState("");
+  const filteredChurches =
+    churchSearchQuery.length < 2
+      ? []
+      : churchesList.filter((church) =>
+          (church.churchName + church.address + church.city + church.provincia)
+            .toLowerCase()
+            .includes(churchSearchQuery.toLowerCase())
+        );
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward (optional)
   const [sending, setSending] = useState(false);
@@ -117,6 +125,9 @@ export default function LoginForm() {
     }
     if (step === 2 && isCreatingChurch && !formData.churchName) {
       return setError("Dai un nome alla tua chiesa");
+    }
+    if (step === 2 && isCreatingChurch && !formData.pastor) {
+      return setError("Inserisci il nome del tuo pastore.");
     }
 
     setDirection(1);
@@ -297,12 +308,16 @@ export default function LoginForm() {
                               {!isCreatingChurch && (
                                 <>
                                   <Autocomplete
+                                    inputValue={churchSearchQuery}
+                                    onInputChange={(value) =>
+                                      setChurchSearchQuery(value)
+                                    }
                                     defaultSelectedKey={userData.church_id}
                                     variant="bordered"
-                                    isRequired={isCreatingChurch ? true : false}
+                                    isRequired={isCreatingChurch}
                                     name="church"
                                     placeholder="La mia chiesa..."
-                                    label="Seleziona la tua chiesa"
+                                    label="Seleziona la tua chiesa."
                                     selectedKey={formData.church}
                                     onSelectionChange={(key) =>
                                       setFormData((prev) => ({
@@ -311,7 +326,7 @@ export default function LoginForm() {
                                       }))
                                     }
                                   >
-                                    {churchesList.map((church: church) => (
+                                    {filteredChurches.map((church) => (
                                       <AutocompleteItem
                                         key={church.id}
                                         id={church.id}
@@ -333,13 +348,16 @@ export default function LoginForm() {
                                           {church.provincia && (
                                             <>{church.provincia + ", "}</>
                                           )}
-                                          {church.city && (
-                                            <>{church.city + " "}</>
-                                          )}
+                                          {church.city && <>{church.city}</>}
                                         </small>
                                       </AutocompleteItem>
                                     ))}
                                   </Autocomplete>
+                                  <small>
+                                    Digita almeno 3 caratteri per trovare la tua
+                                    chiesa
+                                  </small>
+
                                   <div className="flex flex-row justify-center items-center">
                                     <small>
                                       Se la tua chiesa non è nella lista
@@ -455,15 +473,17 @@ export default function LoginForm() {
 
                       {error && (
                         <>
-                          <Alert color="danger">{error}</Alert>
+                          <Alert color="danger" description={error}></Alert>
                         </>
                       )}
 
-                      <div className="flex justify-between items-center mt-4">
+                      <div className="flex justify-between items-center mt-4 gap-4">
                         {step > 1 && (
                           <Button
-                            variant="light"
+                            variant="flat"
                             color="danger"
+                            fullWidth
+                            className="mb-4"
                             onPress={handleBack}
                           >
                             Indietro
@@ -474,7 +494,14 @@ export default function LoginForm() {
                             Avanti <GrFormNext />
                           </Button>
                         ) : (
-                          <Button onPress={handleRegister} disabled={sending}>
+                          <Button
+                            onPress={handleRegister}
+                            disabled={sending}
+                            fullWidth
+                            color="primary"
+                            variant="solid"
+                            className="mb-4"
+                          >
                             {sending ? "..." : "Iscriviti"}
                           </Button>
                         )}

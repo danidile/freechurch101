@@ -1,6 +1,6 @@
 "use client";
 import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
-import { profileT, setListT } from "@/utils/types/types";
+import { churchMembersT, profileT, setListT } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 
 import { FiPlus } from "react-icons/fi";
@@ -65,7 +65,7 @@ export default function ChurchComponent() {
     },
   });
 
-  const [profiles, setProfiles] = useState<any[] | null>([]);
+  const [profiles, setProfiles] = useState<profileT[] | null>([]);
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {

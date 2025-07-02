@@ -145,11 +145,11 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
 
         {setlistSchedule && setlistSchedule.length > 0 && (
           <>
-            <Card className="mb-5 px-2 py-4">
+            <div className="ncard nborder mb-5 px-3 py-4">
               {setlistSchedule.map((element) => {
                 return <ScheduleViewComponents element={element} />;
               })}
-            </Card>
+            </div>
             <div className="center- gap-3 mt-5 mb-20">
               <Link href={`/setlist/${setListId}/view`}>
                 <Button color="primary"> Visualizza set completo</Button>

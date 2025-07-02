@@ -46,12 +46,13 @@ export default function PendiRequestsComponent() {
         </small>
         <div className="flex-col gap-3">
           {pendingRequests &&
-            pendingRequests.map((profile: profileT) => {
+            pendingRequests.map((request: pendingRequestsT) => {
+              // request.profile is the actual profile object
               return (
                 <PeopleToConfirm
                   userData={userData}
-                  profile={profile}
-                  key={profile.id}
+                  profile={request.profile}
+                  key={request.id}
                 />
               );
             })}

@@ -17,7 +17,6 @@ export const getInviteByToken = async (token: string) => {
     };
   } else {
     const response = {
-      loggedIn: true,
       id: data?.id || null,
       email: data?.email || null,
       name: data?.name || null,
@@ -25,6 +24,7 @@ export const getInviteByToken = async (token: string) => {
       church_id: data?.church?.id || null,
       church_name: data?.church?.church_name || null,
       church_logo: data?.church?.logo || null,
+      status: data?.status || null,
     };
     return {
       success: true,

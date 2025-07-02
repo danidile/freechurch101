@@ -16,7 +16,7 @@ export function ZustandProviders({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (userData && userData.church_id) {
-      fetchChurchData(userData.church_id);
+      fetchChurchData(userData.church_id, userData.role);
     }
   }, [userData]);
   if (loading || !userData) {

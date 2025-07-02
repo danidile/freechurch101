@@ -21,7 +21,9 @@ export function ScheduleViewComponents({ element }: { element: setListSongT }) {
       {element.type === "note" && (
         <div className="schedule-note">
           {element.note.split("\n").map((line, index) => (
-            <p key={index}>{line}</p>
+            <p key={index} className="leading-5">
+              {line}
+            </p>
           ))}
         </div>
       )}

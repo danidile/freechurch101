@@ -22,7 +22,7 @@ export function NoteFormComponent({
     <div className="flex flex-row my-2px items-center w-full">
       <Textarea
         className="max-w-[91%]"
-        placeholder="Dettagli aggiuntivi...."
+        placeholder="Dettagli aggiuntivi.... "
         radius="none"
         type="text"
         variant="flat"
