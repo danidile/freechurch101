@@ -5,8 +5,12 @@ import { sendErrorToSentry } from "../sentry/SentryErrorDealer";
 type ProfileData = {
   name: string;
   lastname: string;
-  role?: string; // role is an object, not an array
-  church?: string;
+  role?: { role_name: string }; // role is an object, not an array
+  church: {
+    logo?: string | null;
+    id?: string | null;
+    church_name?: string | null;
+  };
 };
 
 type SupabaseResponse = {
@@ -42,7 +46,7 @@ export default async function userDataServer() {
   if (user) {
     const { data, error } = (await supabase
       .from("profiles")
-      .select("name, lastname, role, church")
+      .select("name, lastname, role(role_name), church(id,church_name)")
       .eq("id", user.id)
       .single()) as unknown as SupabaseResponse;
     userData = {
@@ -51,8 +55,8 @@ export default async function userDataServer() {
       email: user?.email || null,
       name: data?.name || null,
       lastname: data?.lastname || null,
-      role: roles.find((r) => r.slug === data?.role)?.slug || "user",
-      church_id: data?.church || null,
+      role: data?.role?.role_name || "user",
+      church_id: data?.church?.id || null,
     };
     if (error) {
       console.error("Error fetching profile:", error.message);
