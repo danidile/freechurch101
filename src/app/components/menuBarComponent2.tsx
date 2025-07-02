@@ -59,6 +59,11 @@ export default function MenuBarComponentSecondary({
                   </Link>
                 </NavbarItem>
                 <NavbarItem>
+                  <Link color="foreground" href="/artists">
+                    Artisti
+                  </Link>
+                </NavbarItem>
+                <NavbarItem>
                   <Link color="foreground" href="/esplora">
                     Esplora
                   </Link>

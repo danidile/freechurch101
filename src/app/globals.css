@@ -362,6 +362,21 @@ Image {
   transform: scale(1.02);
 }
 
+.artist-list {
+  padding:  0.5rem;
+  width: 100%;
+  max-width: 500px;
+  transition: 0.3s;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin: 0px auto;
+  gap: 1rem;
+}
+.artist-list:hover {
+  transform: scale(1.02);
+}
+
 .song-list p {
   white-space: nowrap;
   overflow: hidden;
