@@ -47,7 +47,7 @@ export function SongFormComponent({
   const [songs, setSongs] = useState(songsList);
   const [searchText, setSearchText] = useState(""); // Local state for search input
 
-    const normalize = (str: string) =>
+  const normalize = (str: string) =>
     str
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -72,7 +72,7 @@ export function SongFormComponent({
       className="setlist-section"
       // dragConstraints={container}
     >
-      <p>
+      <p onClick={onOpen} className="cursor-pointer">
         {section.song_title}
         {!section.song_title && <>Seleziona Canzone</>}
       </p>

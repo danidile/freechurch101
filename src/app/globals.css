@@ -616,7 +616,7 @@ tbody tr .tablecellnewteams {
   gap: 15px;
   justify-content: center;
   align-items: center;
-  margin: 0px auto;
+  margin: 0px auto 40px auto;
   max-width: 500px;
 }
 
@@ -1739,6 +1739,7 @@ tbody tr .tablecellnewteams {
 
 .schedule-view-container {
   width: 100%;
+  margin-top: 0.5rem;
 }
 .schedule-title {
   color: #373737;
@@ -1758,6 +1759,7 @@ tbody tr .tablecellnewteams {
   background-color: #f7f7f7;
   color: #373737;
   font-size: 14px;
+  border-radius: 0.5rem;
 }
 .custom-table-wrapper {
   overflow-x: auto;

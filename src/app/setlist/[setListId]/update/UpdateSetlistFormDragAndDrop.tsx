@@ -53,6 +53,8 @@ import colors from "@/utils/eventsColors";
 import { FaPlus } from "react-icons/fa";
 import { ScheduleComponents } from "./ScheduleComponents";
 import { useChurchStore } from "@/store/useChurchStore";
+import { MdEditNote, MdOutlineTitle } from "react-icons/md";
+import { TbMusicPlus } from "react-icons/tb";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -470,87 +472,88 @@ export default function UpdateSetlistForm({
               />
             </div>
           </div>
-          <h5 className="mt-6">Scaletta</h5>
-          {schedule.length > 0 && (
-            <div className="team-show">
-              <Reorder.Group
-                values={schedule.map((s) => s.id)}
-                onReorder={(newOrderIds) => {
-                  const reordered = newOrderIds.map((id) =>
-                    schedule.find((s) => s.id === id)
-                  );
-                  setSchedule(reordered as setListSongT[]);
-                }}
-                ref={container}
-              >
-                {schedule.map((section, index) => {
-                  return (
-                    <ScheduleComponents
-                      key={section.id} // <-- Add this!
-                      updateSongtoSetlist={updateSongtoSetlist}
-                      removeItemFromSchedule={removeItemFromSchedule}
-                      section={section}
-                      index={index}
-                      songsList={songsList}
-                      updateKey={updateKey}
-                      container={container}
-                      updateTitleSection={updateTitleSection}
-                      updateNotesSection={updateNotesSection}
-                    />
-                  );
-                })}
-              </Reorder.Group>
-            </div>
-          )}
+          <div className="">
+            <h5 className="p-4">Scaletta</h5>
+            {schedule.length > 0 && (
+              <div className="ncard nborder !p-3">
+                <Reorder.Group
+                  values={schedule.map((s) => s.id)}
+                  onReorder={(newOrderIds) => {
+                    const reordered = newOrderIds.map((id) =>
+                      schedule.find((s) => s.id === id)
+                    );
+                    setSchedule(reordered as setListSongT[]);
+                  }}
+                  ref={container}
+                >
+                  {schedule.map((section, index) => {
+                    return (
+                      <ScheduleComponents
+                        key={section.id} // <-- Add this!
+                        updateSongtoSetlist={updateSongtoSetlist}
+                        removeItemFromSchedule={removeItemFromSchedule}
+                        section={section}
+                        index={index}
+                        songsList={songsList}
+                        updateKey={updateKey}
+                        container={container}
+                        updateTitleSection={updateTitleSection}
+                        updateNotesSection={updateNotesSection}
+                      />
+                    );
+                  })}
+                </Reorder.Group>
+              </div>
+            )}
 
-          <div className="transpose-button-container mr-8">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button variant="bordered">
-                  <FaPlus />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Static Actions">
-                <DropdownItem
-                  key="title"
-                  as={Button}
-                  color="primary"
-                  variant="light"
-                  onPress={() => addItemToSetlist("title")}
-                >
-                  Titolo
-                </DropdownItem>
-                <DropdownItem
-                  key="song"
-                  as={Button}
-                  color="primary"
-                  variant="light"
-                  onPress={() => addItemToSetlist("song")}
-                >
-                  Canzone
-                </DropdownItem>
-                <DropdownItem
-                  key="note"
-                  variant="light"
-                  color="primary"
-                  as={Button}
-                  onPress={() => addItemToSetlist("note")}
-                >
-                  Nota
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-            {/* <SelectSongsDrawer
+            <div className="transpose-button-container mr-8">
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button variant="bordered">
+                    <FaPlus />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem
+                    key="title"
+                    as={Button}
+                    color="primary"
+                    variant="light"
+                    onPress={() => addItemToSetlist("title")}
+                    startContent={<MdOutlineTitle />}
+                  >
+                    Titolo
+                  </DropdownItem>
+                  <DropdownItem
+                    key="song"
+                    as={Button}
+                    color="primary"
+                    variant="light"
+                    onPress={() => addItemToSetlist("song")}
+                    startContent={<TbMusicPlus />}
+                  >
+                    Canzone
+                  </DropdownItem>
+                  <DropdownItem
+                    key="note"
+                    variant="light"
+                    color="primary"
+                    as={Button}
+                    onPress={() => addItemToSetlist("note")}
+                    startContent={<MdEditNote />}
+                  >
+                    Nota
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+              {/* <SelectSongsDrawer
               type="add"
               songsList={songsList}
               addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
               section={null}
             /> */}
+            </div>
           </div>
-          <div>{/* <pre>{JSON.stringify(state, null, 2)}</pre> */}</div>
-
-          <br />
-
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
             <div className="form-div crea-setlist-container">
               <h5>Turnazioni</h5>

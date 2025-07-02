@@ -66,7 +66,7 @@ export default function UserDataMenu({
 
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem key="profile" className="h-10 gap-2">
-                <p className="font-semibold">{userData.email}</p>
+                <small>{userData.email}</small>
               </DropdownItem>
 
               <DropdownItem

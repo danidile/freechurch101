@@ -1,6 +1,13 @@
 "use client";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@heroui/react";
 
-import { Input, Button } from "@heroui/react";
+import { Input } from "@heroui/react";
 import Link from "next/link";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
@@ -9,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { basicUserData } from "@/utils/types/userData";
 import { searchBar, songsListType, songType } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { FaPlus } from "react-icons/fa6";
 
 export default function SongslistComponent({
   songs,
@@ -48,7 +56,26 @@ export default function SongslistComponent({
   return (
     <>
       <div className="songs-header">
-        <h1>Lista canzoni</h1>
+        <div className="flex-row flex justify-center items-center gap-5">
+          <h2>Lista canzoni</h2>
+          {hasPermission(userData.role as Role, "create:songs") && (
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly variant="bordered">
+                  <FaPlus />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem as={Link} href="/songs/addSong" key="add">
+                  Aggiungi canzone
+                </DropdownItem>
+                <DropdownItem as={Link} href="/artists" key="import">
+                  Importa da ChurchLab
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          )}
+        </div>
         <form
           action=""
           className="songs-searchbar-form"
@@ -67,13 +94,9 @@ export default function SongslistComponent({
             type="submit"
             disabled={isSubmitting}
           >
-            {" "}
             <ManageSearchIcon />
           </Button>
         </form>
-        {hasPermission(userData.role as Role, "create:songs") && (
-          <Link href="/songs/addSong">Aggiungi una canzone!</Link>
-        )}
       </div>
       <div className="container-song-list">
         {songList.map((song) => {

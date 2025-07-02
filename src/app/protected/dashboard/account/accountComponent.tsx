@@ -19,9 +19,11 @@ import { Alert } from "@heroui/alert";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { useChurchStore } from "@/store/useChurchStore";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
+  const { churchMembers, loadingChurchData } = useChurchStore();
   const [setlists, setSetlists] = useState<any[] | null>([]);
   const [teams, setTeams] = useState<any[] | null>([]);
   const [pendingRequests, setPendingRequests] = useState(false);
@@ -100,6 +102,19 @@ export default function AccountComponent() {
                 title="In attesa di conferma"
               />
             </Link>
+          )}
+          {hasPermission(userData.role as Role, "read:churchmembers") && (
+            <>
+              {churchMembers?.length <= 5 && (
+                <div className="inline-flex flex-row gap-5 items-center n-card nborder p-4 !bg-[#d6e2fa]">
+                  <p>Invita nuovi membri nella tua chiesa!</p>
+                  <Button color="primary"  as={Link} href="/protected/church/invitemembers">
+                    {" "}
+                    Invita nuovi membri!
+                  </Button>
+                </div>
+              )}
+            </>
           )}
           {teams && teams.length >= 1 && (
             <div className="">
