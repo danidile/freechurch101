@@ -12,6 +12,7 @@ export function ZustandProviders({ children }: { children: React.ReactNode }) {
     if (!userData && !loading) {
       fetchUser();
     }
+    console.log("refetched")
   }, [userData, loading]);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export function ZustandProviders({ children }: { children: React.ReactNode }) {
       fetchChurchData(userData.church_id, userData.role);
     }
   }, [userData]);
+
   if (loading || !userData) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
