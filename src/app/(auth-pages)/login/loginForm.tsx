@@ -4,7 +4,6 @@ import {
   Input,
   Button,
   CardHeader,
-  CardFooter,
   Autocomplete,
   AutocompleteItem,
   Alert,
@@ -483,7 +482,6 @@ export default function LoginForm() {
                             variant="flat"
                             color="danger"
                             fullWidth
-                            className="mb-4"
                             onPress={handleBack}
                           >
                             Indietro
@@ -500,7 +498,6 @@ export default function LoginForm() {
                             fullWidth
                             color="primary"
                             variant="solid"
-                            className="mb-4"
                           >
                             {sending ? "..." : "Iscriviti"}
                           </Button>

@@ -10,7 +10,6 @@ import {
   CardBody,
   CardHeader,
   Chip,
-  Link,
   Spinner,
 } from "@heroui/react";
 import { useEffect, useState } from "react";
@@ -20,6 +19,9 @@ import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurch
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useChurchStore } from "@/store/useChurchStore";
+import { FaLink } from "react-icons/fa6";
+import { FiPlus } from "react-icons/fi";
+import Link from "next/link";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
@@ -28,6 +30,7 @@ export default function AccountComponent() {
   const [teams, setTeams] = useState<any[] | null>([]);
   const [pendingRequests, setPendingRequests] = useState(false);
   const [fetchedData, setFetchedData] = useState(false);
+  const { eventTypes } = useChurchStore();
 
   useEffect(() => {
     console.log(loading);
@@ -81,43 +84,9 @@ export default function AccountComponent() {
           {userData.lastname && userData.lastname}
         </h4>
         <p>{userData?.email}</p>
-        <div className="nborder ncard ">
-          {userData.pending_church_confirmation && (
-            <Alert
-              className="my-5"
-              color="primary"
-              description="Attendi che i responsabili della tua chiesa confermino il tuo account."
-              title="In attesa di conferma"
-            />
-          )}
-          {pendingRequests && (
-            <Link
-              className="dashboard-list !p-0"
-              href="/protected/church/confirm-members"
-            >
-              <Alert
-                endContent={<FaExternalLinkAlt />}
-                color="warning"
-                description="Alcuni account sono in attesa della tua conferma."
-                title="In attesa di conferma"
-              />
-            </Link>
-          )}
-          {hasPermission(userData.role as Role, "read:churchmembers") && (
-            <>
-              {churchMembers?.length <= 5 && (
-                <div className="inline-flex flex-row gap-5 items-center n-card nborder p-4 !bg-[#d6e2fa]">
-                  <p>Invita nuovi membri nella tua chiesa!</p>
-                  <Button color="primary"  as={Link} href="/protected/church/invitemembers">
-                    {" "}
-                    Invita nuovi membri!
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
+        <div className="nborder ncard flex flex-row flex-wrap gap-4 justify-between">
           {teams && teams.length >= 1 && (
-            <div className="">
+            <div className=" w-full max-w-[750px]">
               Team di {userData.name}
               {teams.map((team) => {
                 return (
@@ -133,75 +102,155 @@ export default function AccountComponent() {
               })}
             </div>
           )}
-          {upcomingSetlists && upcomingSetlists.length > 0 && (
-            <div>
-              <Card shadow="none" className="max-w-full my-4 w-96 border-none">
-                <CardHeader className="flex gap-3 border-b-2 border-gray-800">
-                  <MdEvent size={25} />
-                  <h6>Prossimi eventi</h6>
-                </CardHeader>
-                <CardBody>
-                  {upcomingSetlists.map((setlist: profileSetlistsT) => {
-                    const date = new Date(setlist.date);
-                    const readableDate = date.toLocaleString("it-IT", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    });
+          <div className="nborder ncard flex flex-col flex-wrap gap-4 w-full max-w-[750px]">
+            <div className="flex flex-row justify-start items-center gap-3">
+              <FaLink size={25} />
+              <h5>Link veloci</h5>
+            </div>{" "}
+            {userData.pending_church_confirmation && (
+              <Alert
+                className="my-5"
+                color="primary"
+                description="Attendi che i responsabili della tua chiesa confermino il tuo account."
+                title="In attesa di conferma"
+              />
+            )}
+            {pendingRequests && (
+              <Link
+                className="dashboard-list !p-0"
+                href="/protected/church/confirm-members"
+              >
+                <Alert
+                  endContent={<FaExternalLinkAlt />}
+                  color="warning"
+                  description="Alcuni account sono in attesa della tua conferma."
+                  title="In attesa di conferma"
+                />
+              </Link>
+            )}
+            {hasPermission(userData.role as Role, "read:churchmembers") && (
+              <>
+                {churchMembers?.length <= 5 && (
+                  <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between n-card nborder p-4 !border-blue-300 border-1">
+                    <p>Invita nuovi membri nella tua chiesa!</p>
+                    <Button
+                      color="primary"
+                      as={Link}
+                      href="/protected/church/invitemembers"
+                    >
+                      {" "}
+                      Invita nuovi membri!
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+            <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between n-card nborder p-4 !border-red-200 border-1">
+              <p>Blocca le date in cui non sei disponibile.</p>
+              <Button
+                className="bg-[#ea685c] text-white"
+                as={Link}
+                href="/protected/blockouts"
+              >
+                Blocca Date
+              </Button>
+            </div>
+          </div>
+          <div className="nborder ncard flex flex-col flex-wrap gap-4 w-full max-w-[750px] !border-slate-300 border-1">
+            <div className="flex flex-row justify-start items-center gap-3">
+              <MdEvent size={25} />
+              <h5>Prossimi eventi</h5>
+            </div>
 
-                    return (
-                      <div
-                        key={setlist.id}
-                        className="border-1 rounded-lg border-slate-300 my-1 !max-w-full p-3"
-                      >
-                        <div className="flex gap-3 relative">
-                          <div className="flex flex-col w-full max-w-full">
-                            <div className="flex justify-between max-w-full">
-                              <p className="text-md">{setlist.event_title}</p>
-                              <>
-                                {setlist.status === "pending" && (
-                                  <Chip variant="flat" color="warning">
-                                    In Attesa
-                                  </Chip>
-                                )}
-                                {setlist.status === "confirmed" && (
-                                  <Chip variant="flat" color="success">
-                                    Confermato
-                                  </Chip>
-                                )}
-                                {setlist.status === "denied" && (
-                                  <Chip variant="flat" color="danger">
-                                    Rifiutato
-                                  </Chip>
-                                )}
-                              </>
-                            </div>
-
-                            <p className="text-small text-default-500 capitalize">
-                              {readableDate}
+            {upcomingSetlists && upcomingSetlists.length > 0 && (
+              <>
+                {upcomingSetlists.map((setlist: profileSetlistsT) => {
+                  const date = new Date(setlist.date);
+                  const readableDate = date.toLocaleString("it-IT", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  });
+                  const matched = eventTypes?.find(
+                    (event) => event.key === setlist.event_type
+                  );
+                  return (
+                    <div
+                      key={setlist.id}
+                      className="border-1 rounded-lg border-slate-300 my-1 !max-w-full p-3"
+                    >
+                      <div className="flex gap-3 relative">
+                        <div className="flex flex-col w-full max-w-full">
+                          <div className="flex justify-between max-w-full">
+                            <p className="text-md">
+                              {matched?.alt ||
+                                matched?.label ||
+                                "Evento sconosciuto"}
                             </p>
+                            <>
+                              {setlist.status === "pending" && (
+                                <Chip variant="flat" color="warning">
+                                  In Attesa
+                                </Chip>
+                              )}
+                              {setlist.status === "confirmed" && (
+                                <Chip variant="flat" color="success">
+                                  Confermato
+                                </Chip>
+                              )}
+                              {setlist.status === "denied" && (
+                                <Chip variant="flat" color="danger">
+                                  Rifiutato
+                                </Chip>
+                              )}
+                            </>
                           </div>
-                        </div>
 
-                        <p className="text-small text-default-800 capitalize">
-                          Team: {setlist.team_name}.
-                        </p>
-                        <div className="flex justify-end">
-                          <Link
-                            showAnchorIcon
-                            href={`/setlist/${setlist.setlist_id}`}
-                          >
-                            Pagina evento
-                          </Link>
+                          <p className="text-small text-default-500 capitalize">
+                            {readableDate}
+                          </p>
                         </div>
                       </div>
-                    );
-                  })}
-                </CardBody>
-              </Card>
-            </div>
-          )}
+
+                      <p className="text-small text-default-800 capitalize">
+                        Team: {setlist.team_name}.
+                      </p>
+                      <div className="flex justify-end">
+                        <Link href={`/setlist/${setlist.setlist_id}`}>
+                          Pagina evento
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}{" "}
+              </>
+            )}
+            {upcomingSetlists && upcomingSetlists.length == 0 && (
+              <>
+                <small>Nessun evento in programma.</small>
+                <div className="w-full flex flex-row justify-start">
+                  {hasPermission(userData.role as Role, "create:setlists") && (
+                    <Link
+                      href="/setlist/addSetlist"
+                      className="button-style flex items-center gap-2 ml-0"
+                    >
+                      Nuovo Evento
+                      <FiPlus />
+                    </Link>
+                  )}
+                  {!hasPermission(userData.role as Role, "create:setlists") && (
+                    <>
+                      <small>
+                        Attenti che i leader della tua chiesa creino i prossimi
+                        eventi
+                      </small>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

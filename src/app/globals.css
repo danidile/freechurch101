@@ -280,7 +280,7 @@ Image {
   overflow: visible;
 }
 .header-homepage {
-  padding: 2rem;
+  padding: 1rem;
   height: calc(100vh - 70px);
   display: flex;
   flex-direction: row;

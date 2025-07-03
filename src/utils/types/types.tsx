@@ -386,6 +386,7 @@ export type profileSetlistsT = {
   setlist_id: string;
   team_name: string;
   event_title: string;
+  event_type: string;
   date: string;
   status: string;
 };

@@ -21,6 +21,7 @@ import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
 import { Chip } from "@heroui/react";
 import { AddRole } from "./AddRole";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { redirect, useRouter } from "next/navigation";
 
 export default function TeamsForm({
   churchMembers,
@@ -31,6 +32,8 @@ export default function TeamsForm({
   churchTeam: teamData;
   churchMembers: churchMembersT[];
 }) {
+  const router = useRouter();
+
   const churchTeamStart = churchTeam;
   const [state, setState] = useState<churchMembersT[]>(
     churchTeam?.team_members || []
@@ -123,16 +126,20 @@ export default function TeamsForm({
     };
 
     if (page === "create") {
-      await createTeam(churchTeamUpdated);
-    } else if (page === "update") {
-      await updateTeam(churchTeamUpdated, churchTeamStart);
+      const response = await createTeam(churchTeamUpdated);
+      if (response.success) {
+        router.push(`/protected/teams/${response.data}`);
+      }
     }
+    //  else if (page === "update") {
+    //   await updateTeam(churchTeamUpdated, churchTeamStart);
+    // }
   };
 
   return (
     <div className="container-sub">
       <div className="form-div crea-setlist-container">
-        <form>
+        <form onSubmit={handleSubmit(convertData)}>
           <h4>
             {page === "create" && "Crea"}
             {page === "update" && "Aggiorna"} Team
@@ -236,7 +243,6 @@ export default function TeamsForm({
               variant="shadow"
               type="submit"
               disabled={isSubmitting}
-              onPress={convertData}
             >
               {page === "create" && "Crea"}
               {page === "update" && "Aggiorna"} Team

@@ -29,6 +29,10 @@ export const createTeam = async (formData: teamData) => {
 
   if (error) {
     console.log("Error in insert to church-teams", error);
+    return {
+      success: false,
+      message: error.message,
+    };
   }
   const teamId = data.id;
 
@@ -47,15 +51,17 @@ export const createTeam = async (formData: teamData) => {
   if (errorTeamMembers) {
     console.log(errorTeamMembers);
   }
-
+  console.log(teamId);
   if (error) {
     console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
+    return {
+      success: false,
+      message: error.message,
+    };
   } else {
-    return encodedRedirect(
-      "success",
-      `/protected/teams/${teamId}`,
-      "Team creato con successo!"
-    );
+    return {
+      success: true,
+      data: teamId,
+    };
   }
 };

@@ -71,22 +71,22 @@ export default function Sidebar() {
   return (
     <>
       <ul className="sidebar-ul">
+        {userData.church_logo && (
+          <>
+            <img
+              className="max-w-[125px] mx-auto mb-8"
+              src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo}`}
+              alt=""
+            />
+          </>
+        )}
         <li className="sidebar-li">
           <div className="sidebar-link ">
             <h5> {userData.name + " " + userData.lastname}</h5>
           </div>
         </li>
 
-        {userData.church_logo && (
-          <>
-            <img
-              className="max-w-[125px] mx-auto mt-4"
-              src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo}`}
-              alt=""
-            />
-          </>
-        )}
-        <li className="sidebar-li !mt-6 border-b-1 ">
+        <li className="sidebar-li  border-b-1 ">
           <Dropdown placement="bottom">
             <DropdownTrigger>
               <span className="sidebar-link">

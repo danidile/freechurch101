@@ -117,7 +117,6 @@ export function SelectTeamMemberDrawer({
                             key={member.profile}
                             onClick={() => {
                               addMemberToTeam(member, section);
-                              onClose();
                             }}
                           >
                             <div className="song-card-searchBar">
@@ -135,10 +134,7 @@ export function SelectTeamMemberDrawer({
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
+                  Chiudi
                 </Button>
               </ModalFooter>
             </>
