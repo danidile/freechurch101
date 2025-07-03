@@ -45,7 +45,7 @@ export default function AddSetlistComponent() {
   }
   const setlistData: null = null;
   if (
-    isLeader.isLeader ||
+    isLeader?.isLeader ||
     hasPermission(userData.role as Role, "create:setlists")
   ) {
     return (

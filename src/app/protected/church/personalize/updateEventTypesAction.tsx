@@ -25,7 +25,7 @@ const updateEventTypesAction = async (
       .from("custom-event-types")
       .upsert(toUpsert, { onConflict: "id" })
       .select();
-    if (error) throw new Error(error.message);
+    if (error) console.log(error.message);
   }
 
   if (toDelete.length > 0) {
@@ -36,7 +36,7 @@ const updateEventTypesAction = async (
       .delete()
       .in("id", idsToDelete);
 
-    if (error) throw new Error(error.message);
+    if (error) console.log(error.message);
   }
 
   if (toInsert.length > 0) {
@@ -44,7 +44,7 @@ const updateEventTypesAction = async (
       .from("custom-event-types")
       .insert(toInsert)
       .select();
-    if (error) throw new Error(error.message);
+    if (error) console.log(error.message);
   }
 };
 

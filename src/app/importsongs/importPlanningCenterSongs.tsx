@@ -4,7 +4,7 @@ import Papa from "papaparse";
 import { getSongs } from "@/hooks/GET/getSongs";
 import { useUserStore } from "@/store/useUserStore";
 import { Button } from "@heroui/button";
-import { ScrollShadow } from "@heroui/react";
+import { addToast, ScrollShadow } from "@heroui/react";
 
 import {
   Modal,
@@ -16,10 +16,11 @@ import {
 } from "@heroui/react";
 import { songType } from "@/utils/types/types";
 import { importPlanningCenterSongsAction } from "./importPlanningCenterSongsAction";
+import { useRouter } from "next/navigation";
 export default function importPlanningCenterSongs() {
   const { userData, loading } = useUserStore();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const router = useRouter();
   const [ChurchSongs, setChurchSongs] = useState<any[] | null>(null);
   const [loadingSongs, setLoadingSongs] = useState(true);
 
@@ -76,7 +77,7 @@ export default function importPlanningCenterSongs() {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: (result: { data: any[]; }) => {
+      complete: (result: { data: any[] }) => {
         const data = result.data as any[];
         setSongs(data);
         setHeaders(Object.keys(data[0] || {}));
@@ -134,7 +135,15 @@ export default function importPlanningCenterSongs() {
     // For now, we will just log them
     console.log("Importing songs:", newSongs);
     const response = await importPlanningCenterSongsAction(newSongs);
-    
+    if (response.success) {
+      router.push("/songs");
+    } else {
+      addToast({
+        title: "Errore nell'importazione",
+        description: response.message,
+        color: "danger",
+      });
+    }
   };
 
   return (
@@ -267,18 +276,18 @@ export default function importPlanningCenterSongs() {
                         offset={100}
                         orientation="horizontal"
                       >
-                        <ul className="list-disc  mt-2 ">
+                        <ul className="list-disc mt-2  ">
                           {duplicates.map((title, i) => (
                             <li
                               key={i}
-                              className="flex justify-between items-center"
+                              className="flex justify-between items-center "
                             >
                               <span>{title}</span>
                               <Button
                                 color="danger"
                                 size="sm"
                                 className="mr-0"
-                                variant="ghost"
+                                variant="light"
                                 onPress={() => removeFromSelection(title)}
                               >
                                 Rimuovi
