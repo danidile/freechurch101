@@ -1,5 +1,4 @@
 "use client";
-import { redirect } from "next/navigation";
 
 import { pendingRequestsT, profileT } from "@/utils/types/types";
 import PeopleToConfirm from "./peopleDrawerList";
@@ -48,6 +47,7 @@ export default function PendiRequestsComponent() {
           {pendingRequests &&
             pendingRequests.map((request: pendingRequestsT) => {
               // request.profile is the actual profile object
+              console.log("request",request);
               return (
                 <PeopleToConfirm
                   userData={userData}
@@ -59,7 +59,5 @@ export default function PendiRequestsComponent() {
         </div>
       </div>
     );
-  } else {
-    redirect("/login");
   }
 }

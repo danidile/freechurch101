@@ -11,19 +11,29 @@ import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import { getChurches } from "@/hooks/GET/getChurches";
 import { useRouter } from "next/navigation";
+import ImageUploader from "../updateImage/ImageUploader";
 
 export default function CompleteAccount() {
   const router = useRouter();
 
+  const [uploadPicture, setUploadPicture] = useState<boolean>(false);
   const [churchesList, setChurchesList] = useState<any[] | null>([]);
   const { userData, fetchUser, loading } = useUserStore();
-
   const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
   useEffect(() => {
     if (userData?.id) {
-      setAvatarUrl(
-        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`
-      );
+      const imageUrl = `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`;
+      const img = new Image();
+
+      img.onload = () => {
+        setAvatarUrl(imageUrl); // Image exists and loaded
+      };
+
+      img.onerror = () => {
+        setAvatarUrl("/images/userAvatarDefault.jpg"); // Fallback
+      };
+
+      img.src = imageUrl;
     }
   }, [userData?.id]);
   // Step 2: Once user is available, fetch songs
@@ -60,22 +70,31 @@ export default function CompleteAccount() {
       <form onSubmit={handleSubmit(convertData)}>
         <h1 className="text-2xl font-medium">Completa il tuo Profilo</h1>
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <div className="flex flex-row gap-4 items-center justify-center">
-            <Avatar
-              as={Link}
-              href={"/protected/dashboard/account/updateImage"}
-              size="lg"
-              className="transition-transform "
-              src={avatarUrl}
-              onError={() => {
-                setAvatarUrl("/images/userAvatarDefault.jpg"); // your default image path
-              }}
-            />
-            <Link href="/protected/dashboard/account/updateImage">
-              Aggiorna immagine profilo.
-            </Link>
-          </div>
-
+          {!uploadPicture && (
+            <>
+              <div
+                onClick={() => setUploadPicture(true)}
+                className="flex flex-row gap-4 items-center justify-center !cursor-pointer"
+              >
+                <Avatar
+                  as={Link}
+                  href={"/protected/dashboard/account/updateImage"}
+                  size="lg"
+                  className="transition-transform "
+                  src={avatarUrl}
+                  onError={() => {
+                    setAvatarUrl("/images/userAvatarDefault.jpg"); // your default image path
+                  }}
+                />
+                <p>Aggiorna immagine profilo.</p>
+              </div>
+            </>
+          )}
+          {uploadPicture && (
+            <>
+              <ImageUploader type="profilepicture" />
+            </>
+          )}
           <div className="flex gap-4 items-center">
             <Input
               {...register("name")}
