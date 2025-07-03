@@ -32,19 +32,19 @@ export default function PeopleToConfirm({
   userData: basicUserData;
 }) {
   const confirmBelonging = () => {
-    confirmBelongingAction(profile.profile.id);
+    confirmBelongingAction(profile.id);
   };
   const denyBelonging = () => {
-    denyBelongingAction(profile.profile.id);
+    denyBelongingAction(profile.id);
   };
   return (
     <div className="flex flex-row w-full gap-12" key={profile.id}>
       <Link className="people-link" key={profile.id}>
         <div className="people-list" key={profile.id}>
-          <p key={profile.profile.id}>
-            {profile.profile.name}
+          <p key={profile?.id}>
+            {profile?.name + " " + profile.lastname}
             <br />
-            <small>{profile.profile.email}</small>
+            <small>{profile?.email}</small>
           </p>
           <span className="material-symbols-outlined">
             <Dropdown>

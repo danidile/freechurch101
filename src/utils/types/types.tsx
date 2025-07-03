@@ -373,6 +373,10 @@ export type expandedTeamT = {
 export type pendingRequestsT = {
   id?: string;
   created_at?: string;
+  name?: string;
+  lastname?: string;
+  email?: string;
+
   profile?: {
     id?: string;
     name?: string;

@@ -7,7 +7,7 @@ export const getPendingChurchMembershipRequests = async (churchId: string) => {
   const supabase = createClient();
   const { data: pendingRequests, error } = await supabase
     .from("church-membership-request")
-    .select("id, created_at, profile:profile!inner(id,name,lastname,email)")
+    .select("id, created_at, profile(id,name,lastname,email)")
     .eq("church", churchId);
   if (error) {
     console.log("error", error);
