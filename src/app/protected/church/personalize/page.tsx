@@ -22,16 +22,14 @@ import updateEventTypesAction from "./updateEventTypesAction";
 import { defaultEventTypes } from "@/constants";
 import { eventType } from "@/utils/types/types";
 import { getpersonalizedEventTypesByChurch } from "@/hooks/GET/getpersonalizedEventTypesByChurch";
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import sendInvitesAction from "./sendInvitesAction";
-import sendInviteEmail from "./sendInviteEmail";
-import InviteUsersModalComponent from "../invitemembers/page";
+import { useChurchStore } from "@/store/useChurchStore";
 type Member = {
   name: string;
   lastname: string;
   email: string;
 };
 export default function PersonalizeChurchComponent() {
+  const { fetchChurchData } = useChurchStore();
   const [personalizedEventTypes, setPersonalizedEventTypes] = useState<
     eventType[]
   >([]);
@@ -97,10 +95,14 @@ export default function PersonalizeChurchComponent() {
     });
   };
 
-  const saveEventTypes = () => {
+  const saveEventTypes = async () => {
     console.log(personalizedEventTypes);
-    updateEventTypesAction(personalizedEventTypes, userData.church_id);
+    const response = await updateEventTypesAction(
+      personalizedEventTypes,
+      userData.church_id
+    );
     setRefetchTrigger(!refetchTrigger);
+    fetchChurchData(userData.church_id, userData.role);
   };
   return (
     <div className="p-0 sm:p-5">
