@@ -24,6 +24,7 @@ export default async function getChurchEventTypes(churchId: string) {
       return {
         ...event,
         alt: match?.alt ?? null, // or omit this field entirely if preferred
+        id: match?.id ?? null, // or omit this field entirely if preferred
       };
     });
     return enrichedEventTypes;

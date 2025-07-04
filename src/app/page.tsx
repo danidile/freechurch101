@@ -20,7 +20,6 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-            
             <PWAInstallButton />
 
             {/* <a href="https://www.captayn.com/en" className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
@@ -31,9 +30,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       <div className="pb-5 pt-10 text-center">
         <h2>Artisti Italiani</h2>
       </div>
+
       <div className="max-w-[1300px] gap-5 grid grid-cols-12 grid-rows-2 px-8 mx-auto my-5">
         <Card isFooterBlurred className="col-span-12 sm:col-span-4 h-[400px]">
           <img

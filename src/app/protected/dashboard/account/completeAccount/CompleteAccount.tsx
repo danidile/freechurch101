@@ -77,8 +77,6 @@ export default function CompleteAccount() {
                 className="flex flex-row gap-4 items-center justify-center !cursor-pointer"
               >
                 <Avatar
-                  as={Link}
-                  href={"/protected/dashboard/account/updateImage"}
                   size="lg"
                   className="transition-transform "
                   src={avatarUrl}

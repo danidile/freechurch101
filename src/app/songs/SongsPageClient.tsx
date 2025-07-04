@@ -9,6 +9,13 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { songType } from "@/utils/types/types";
 import { Button } from "@heroui/button";
 import Link from "next/link";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/dropdown";
+import { FaPlus } from "react-icons/fa";
 
 export default function SongsPageClient() {
   const { userData, loading } = useUserStore();
@@ -39,18 +46,26 @@ export default function SongsPageClient() {
       <h4>Nessuna canzone trovata</h4>
       {userData && hasPermission(userData.role as Role, "create:songs") && (
         <>
-          <Button
-            color="primary"
-            variant="flat"
-            as={Link}
-            href="/songs/addSong"
-          >
-            Aggiungi canzone!
-          </Button>
-          <p>oppure importa canzoni dalla lista di artisti Italiani!</p>
-          <Button color="primary" variant="flat" as={Link} href="/artists">
-            Importa
-          </Button>
+          <p className="flex flex-row items-center gap-5">
+            Aggiungi canzone:
+            {hasPermission(userData.role as Role, "create:songs") && (
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button color="primary" isIconOnly variant="flat">
+                    <FaPlus />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem as={Link} href="/songs/addSong" key="add" color="primary" variant="flat">
+                    Aggiungi canzone
+                  </DropdownItem>
+                  <DropdownItem as={Link} href="/artists" key="import" color="primary" variant="flat">
+                    Importa da ChurchLab
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            )}
+          </p>
         </>
       )}
     </div>

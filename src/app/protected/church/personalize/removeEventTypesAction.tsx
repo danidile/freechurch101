@@ -2,23 +2,25 @@
 import { createClient } from "@/utils/supabase/server";
 import { eventType } from "@/utils/types/types";
 
-const updateEventTypesAction = async (
+const removeEventTypesAction = async (
   eventTypes: eventType[],
   churchId: string
 ) => {
   const supabase = createClient();
-  eventTypes.map(async (event) => {
+  const toDelete = eventTypes.map((event) => event.id);
+
+  if (toDelete.length > 0) {
     const { data, error } = await supabase
       .from("custom-event-types")
-      .update({ label: event.edited })
-      .eq("id", event.id)
-      .select();
+      .delete()
+      .in("id", toDelete);
+
     if (error) {
-      console.log("update", error.message);
+      console.log("delete", error.message);
     } else {
-      console.log("custom-event-types table row updated");
+      console.log("custom-event-types row deleted seccesfully");
     }
-  });
+  }
 };
 
-export default updateEventTypesAction;
+export default removeEventTypesAction;

@@ -2,22 +2,9 @@
 import { churchMembersT, teamData } from "@/utils/types/types";
 import { getChurchTeam } from "@/hooks/GET/getChurchTeam";
 import MoreDropdownTeams from "./MoreDropdownTeams";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableCell,
-  TableRow,
-  Button,
-  Chip,
-  Input,
-  Link,
-} from "@heroui/react";
+import { Button, Chip, Input } from "@heroui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdEditNote } from "react-icons/md";
-import type { Selection } from "@heroui/react";
-import { FaRegFlag } from "react-icons/fa6";
 import { PiFlagBannerBold } from "react-icons/pi";
 
 import {
@@ -47,11 +34,17 @@ import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import { addMemberToTeamAction } from "./addMemberToTeamAction";
 import { saveUpdatedSkillsAction } from "./saveUpdatedSkillsAction";
 import { saveNewLeadersAction } from "./saveNewLeadersAction";
-import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
+import { addNewLeadersAction } from "./addNewLeadersAction";
+import { removeLeadersAction } from "./removeLeadersAction";
 
 export default function Page({ params }: { params: { teamsId: string } }) {
   const { userData, loading: isloading } = useUserStore();
-  const [selectedNewLeaders, setSelectedNewLeaders] = useState<Selection>();
+  const [selectedNewLeaders, setSelectedNewLeaders] = useState<
+    typeof churchTeam.team_members
+  >([]);
+  const [leadersToAdd, setLeadersToAdd] = useState<churchMembersT[]>([]);
+  const [leadersToRemove, setLeadersToRemove] = useState<churchMembersT[]>([]);
+
   const [refetchTrigger, setRefetchTrigger] = useState(false);
 
   const [churchTeam, setChurchTeam] = useState<teamData>();
@@ -83,7 +76,41 @@ export default function Page({ params }: { params: { teamsId: string } }) {
   const [memberToDelete, setMemberToDelete] = useState<churchMembersT | null>(
     null
   );
+  const toggleSelectionLeaders = (
+    member: (typeof churchTeam.team_members)[number]
+  ) => {
+    setSelectedNewLeaders((prev) => {
+      const exists = prev.some((m) => m.profile === member.profile);
+      const newSelected = exists
+        ? prev.filter((m) => m.profile !== member.profile)
+        : [...prev, member];
 
+      // Now calculate the new leaders to add/remove
+      const originallyLeaders = churchTeam.team_members.filter(
+        (m) => m.isLeader
+      );
+
+      const toAdd = newSelected.filter(
+        (m) =>
+          !m.isLeader && !originallyLeaders.some((o) => o.profile === m.profile)
+      );
+
+      const toRemove = originallyLeaders.filter(
+        (m) => !newSelected.some((s) => s.profile === m.profile)
+      );
+
+      setLeadersToAdd(toAdd);
+      setLeadersToRemove(toRemove);
+
+      return newSelected;
+    });
+  };
+
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const toggleDropdown = (id: string) => {
+    setOpenDropdown((prev) => (prev === id ? null : id));
+  };
   const handleOpenModal = (member: churchMembersT) => {
     setSelectedMember(member);
     setNewSkills(member.roles);
@@ -95,20 +122,28 @@ export default function Page({ params }: { params: { teamsId: string } }) {
       setLoading(true);
       const team: teamData = await getChurchTeam(params.teamsId);
       setChurchTeam(team);
+
       const leaderIds = team.team_members
         .filter((member) => member.isLeader)
         .map((member) => member.profile);
+
+      // Set isLeader if user is one of the leaders
       if (leaderIds.includes(userData?.id)) {
         setIsLeader(true);
       }
+
       setLeaderIds(leaderIds);
+
+      // ✅ Initialize selectedNewLeaders with current leaders
+      const initialSelected = team.team_members.filter((m) => m.isLeader);
+      setSelectedNewLeaders(initialSelected);
+
       console.log(leaderIds);
       setLoading(false);
     };
 
     fetchTeam();
   }, [params.teamsId, refetchTrigger]);
-
   useEffect(() => {
     const fetchMembers = async () => {
       if (
@@ -191,177 +226,188 @@ export default function Page({ params }: { params: { teamsId: string } }) {
   };
 
   const saveNewLeaders = () => {
-    const arrayNewLeaders: string[] =
-      Array.from(selectedNewLeaders).map(String);
-    saveNewLeadersAction(arrayNewLeaders, params.teamsId);
+    if (leadersToAdd.length >= 1) {
+      console.log("leadersToAdd", leadersToAdd);
+
+      addNewLeadersAction(leadersToAdd, params.teamsId);
+    }
+    if (leadersToRemove.length >= 1) {
+      console.log("leadersToRemove", leadersToRemove);
+
+      removeLeadersAction(leadersToRemove, params.teamsId);
+    }
     setRefetchTrigger((prev) => !prev);
   };
   if (churchTeam) {
     return (
       <div className="container-sub">
-        <Table
-          defaultSelectedKeys={new Set(leaderIds)}
-          onSelectionChange={(selection) => {
-            setSelectedNewLeaders(selection);
-            console.log(selection);
-          }}
-          removeWrapper
-          classNames={{
-            base: "w-full max-w-[800px]",
-            td: "pr-0 pl-2 py-[2px]", // le tue classi personalizzate
-          }}
-          isStriped
-          aria-label="Team members table"
-          topContent={
-            <div className="flex flex-row justify-around px-3">
-              <div>
-                <h6 className="font-bold">{churchTeam.team_name}</h6>{" "}
-                {hasPermission(userData.role as Role, "update:teams") && (
+        <div className="flex flex-row justify-between px-3">
+          <div>
+            <h3 className="font-medium">{churchTeam.team_name}</h3>{" "}
+            {hasPermission(userData.role as Role, "update:teams") && (
+              <>
+                {!defineLeaders && (
                   <>
-                    {!defineLeaders && (
-                      <>
-                        {!churchTeam.team_members.some(
-                          (member) => member.isLeader
-                        ) && (
-                          <p className="text-red-500">
-                            Questo team non ha un Leader.{" "}
-                            <small
-                              className="text-default-700 underline"
-                              onClick={() => {
-                                setDefineLeaders(true);
-                              }}
-                            >
-                              Clicca qui per aggiungere i leader
-                            </small>
-                          </p>
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-              <div>
-                {hasPermission(userData.role as Role, "update:teams") && (
-                  <>
-                    {!defineLeaders && (
-                      <>
-                        <MoreDropdownTeams
-                          setDefineLeaders={setDefineLeaders}
-                          teamsId={params.teamsId}
-                        />
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-          }
-          bottomContent={
-            <>
-              {(isLeader ||
-                hasPermission(userData.role as Role, "update:teams")) && (
-                <>
-                  <SelectTeamMemberDrawer
-                    state={churchTeam.team_members}
-                    type="add"
-                    churchMembers={churchMembers}
-                    addMemberToTeam={addMemberToTeam} // Pass function correctly
-                    section={null}
-                  />
-                  <div className="transpose-button-container">
-                    {defineLeaders && (
-                      <>
-                        <Button
-                          onPress={() => {
-                            setSaveLeadersModal(true);
-                            onLeaderOpen();
+                    {!churchTeam.team_members.some(
+                      (member) => member.isLeader
+                    ) && (
+                      <p className="text-red-500">
+                        Questo team non ha un Leader.{" "}
+                        <small
+                          className="text-default-700 underline !cursor-pointer"
+                          onClick={() => {
+                            setDefineLeaders(true);
                           }}
                         >
-                          Salva Team Leader
-                        </Button>
-                      </>
+                          Clicca qui per aggiungere i leader
+                        </small>
+                      </p>
                     )}
-                  </div>
-                </>
-              )}
-            </>
-          }
-          selectionMode={defineLeaders ? "multiple" : "none"}
-        >
-          <TableHeader>
-            <TableColumn>Nome</TableColumn>
-            <TableColumn>Ruolo</TableColumn>
-            <TableColumn
-              className={`max-w-[70px] ${defineLeaders ? "hidden" : "table-cell"} `}
-            >
-              {" "}
-              {hasPermission(userData.role as Role, "update:teams") && (
-                <MdEditNote size={20} className="mx-auto" />
-              )}
-            </TableColumn>
-          </TableHeader>
-          <TableBody items={churchTeam.team_members}>
-            {(item) => (
-              <TableRow key={item.profile}>
-                <TableCell
-                  className={item.isLeader ? "font-bold underline" : ""}
-                >
-                  <div className="flex flex-row gap-2 items-center ">
-                    {item.isLeader && (
-                      <>
-                        <PiFlagBannerBold />{" "}
-                      </>
-                    )}
-                    {item.name} {item.lastname}
-                  </div>
-                </TableCell>
-                <TableCell>{item.roles.join(", ")}</TableCell>
-                <TableCell
-                  className={`max-w-[50px]  ${defineLeaders ? "hidden" : "table-cell"}`}
-                >
-                  {(isLeader ||
-                    hasPermission(userData.role as Role, "update:teams")) && (
-                    <div className="relative flex flex-row justify-center items-center gap-1 mx-auto">
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button
-                            className="mx-auto"
-                            isIconOnly
-                            variant="light"
-                            size="sm"
-                          >
-                            <BsThreeDotsVertical />
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Static Actions">
-                          <DropdownItem
-                            key="update"
-                            onPress={() => handleOpenModal(item)}
-                            startContent={<RiEdit2Line />}
-                          >
-                            Aggiorna
-                          </DropdownItem>
-                          <DropdownItem
-                            key="delete"
-                            className="text-danger"
-                            color="danger"
-                            onPress={() => {
-                              setMemberToDelete(item);
-                              onDeleteOpen();
-                            }}
-                            startContent={<PiTrash />}
-                          >
-                            Elimina
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    </div>
-                  )}
-                </TableCell>
-              </TableRow>
+                  </>
+                )}
+              </>
             )}
-          </TableBody>
-        </Table>
+          </div>
+          <div>
+            {hasPermission(userData.role as Role, "update:teams") && (
+              <>
+                {!defineLeaders && (
+                  <>
+                    <MoreDropdownTeams
+                      setDefineLeaders={setDefineLeaders}
+                      teamsId={params.teamsId}
+                    />
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+        <table className="w-full max-w-[800px] table-auto border-collapse">
+          <thead>
+            <tr className="bg-gray-100">
+              {defineLeaders && <th className="w-[30px] px-2 py-1"></th>}
+              <th className="text-left px-2 py-1">Nome</th>
+              <th className="text-left px-2 py-1">Ruolo</th>
+              {!defineLeaders &&
+                hasPermission(userData.role as Role, "update:teams") && (
+                  <th className="text-center px-2 py-1 max-w-[70px]">
+                    <MdEditNote size={20} className="mx-auto" />
+                  </th>
+                )}
+            </tr>
+          </thead>
+          <tbody>
+            {churchTeam.team_members.map((item) => {
+              const isSelected = selectedNewLeaders.some(
+                (i) => i.profile === item.profile
+              );
+              console.log("item", item);
+              return (
+                <tr
+                  key={item.profile}
+                  className={`even:bg-gray-50 border-t border-gray-200 ${
+                    defineLeaders && isSelected ? "bg-blue-100" : ""
+                  }`}
+                >
+                  {defineLeaders && (
+                    <td className="px-2 py-[2px]">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelectionLeaders(item)}
+                        className="cursor-pointer"
+                      />
+                    </td>
+                  )}
+                  <td
+                    className={`px-2 py-[2px] ${item.isLeader ? "font-bold underline" : ""}`}
+                  >
+                    <div className="flex flex-row gap-2 items-center">
+                      {item.isLeader && <PiFlagBannerBold />}
+                      {item.name} {item.lastname}
+                    </div>
+                  </td>
+                  <td className="px-2 py-[2px]">{item.roles.join(", ")}</td>
+                  {!defineLeaders &&
+                    hasPermission(userData.role as Role, "update:teams") && (
+                      <td className="px-2 py-[2px] text-center max-w-[50px]">
+                        {(isLeader ||
+                          hasPermission(
+                            userData.role as Role,
+                            "update:teams"
+                          )) && (
+                          <Dropdown>
+                            <DropdownTrigger>
+                              <Button
+                                className="mx-auto"
+                                isIconOnly
+                                variant="light"
+                                size="sm"
+                              >
+                                <BsThreeDotsVertical />
+                              </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu aria-label="Static Actions">
+                              <DropdownItem
+                                key="update"
+                                onPress={() => handleOpenModal(item)}
+                                startContent={<RiEdit2Line />}
+                              >
+                                Aggiorna
+                              </DropdownItem>
+                              <DropdownItem
+                                key="delete"
+                                className="text-danger"
+                                color="danger"
+                                onPress={() => {
+                                  setMemberToDelete(item);
+                                  onDeleteOpen();
+                                }}
+                                startContent={<PiTrash />}
+                              >
+                                Elimina
+                              </DropdownItem>
+                            </DropdownMenu>
+                          </Dropdown>
+                        )}
+                      </td>
+                    )}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        <>
+          {(isLeader ||
+            hasPermission(userData.role as Role, "update:teams")) && (
+            <>
+              <SelectTeamMemberDrawer
+                state={churchTeam.team_members}
+                type="add"
+                churchMembers={churchMembers}
+                addMemberToTeam={addMemberToTeam} // Pass function correctly
+                section={null}
+              />
+              <div className="transpose-button-container">
+                {defineLeaders &&
+                  (leadersToAdd.length >= 1 || leadersToRemove.length >= 1) && (
+                    <>
+                      <Button
+                        onPress={() => {
+                          setSaveLeadersModal(true);
+                          onLeaderOpen();
+                        }}
+                      >
+                        Salva Team Leader
+                      </Button>
+                    </>
+                  )}
+              </div>
+            </>
+          )}
+        </>
         {selectedMember && (
           <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
             <ModalContent>
@@ -390,7 +436,16 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                         <div className="songs-searchbar-form">
                           <Input
                             value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)} // Update state with input value
+                            onChange={(e) => setSearchText(e.target.value)}
+                            onBlur={() => {
+                              if (searchText.trim() !== "") {
+                                addRolefunction(
+                                  selectedMember.profile,
+                                  searchText.trim()
+                                );
+                                setSearchText("");
+                              }
+                            }}
                             size="sm"
                             type="text"
                             color="primary"
@@ -400,11 +455,11 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                               if (e.key === "Enter") {
                                 addRolefunction(
                                   selectedMember.profile,
-                                  searchText
+                                  searchText.trim()
                                 );
-                                setSearchText(""); // Clear input after adding
+                                setSearchText("");
                               }
-                            }} // Listen for Enter key
+                            }}
                           />
                           <Button
                             size="sm"
@@ -526,38 +581,25 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                     Conferma Eliminazione
                   </ModalHeader>
                   <ModalBody>
-                    <p>
-                      Confermi di voler aggiungere le seguenti persone come
-                      Leader del team?
-                    </p>
-                    {Array.from(selectedNewLeaders).map((id) => {
-                      const person =
-                        churchTeam.team_members.find(
-                          (member) => member.profile === id
-                        ) || {};
-                      return (
-                        <p className="leading-none underline">
-                          {person.name + " " + person.lastname}
-                        </p>
-                      );
-                    })}
-                    <div className="text-center">
-                      <b>Come Team Leader potranno:</b>
-                      <ul>
-                        <li>
-                          Aggiungere e rimuovere persone dal{" "}
-                          {churchTeam.team_name}
-                        </li>
-                        <li>
-                          Aggiungere e rimuovere membri del loro team dalle
-                          turnazioni
-                        </li>
-                        <li>
-                          Vedere tutti gli eventi in cui è coinvolto il{" "}
-                          {churchTeam.team_name}.
-                        </li>
-                      </ul>
-                    </div>
+                    <p>Confermi di voler aggiornare i Leader del team?</p>
+
+                    {leadersToAdd.map((person) => (
+                      <p
+                        key={person.profile}
+                        className="leading-none text-green-700 underline"
+                      >
+                        ✅ Aggiungerai: {person.name} {person.lastname}
+                      </p>
+                    ))}
+
+                    {leadersToRemove.map((person) => (
+                      <p
+                        key={person.profile}
+                        className="leading-none text-red-600 underline"
+                      >
+                        ❌ Rimuoverai: {person.name} {person.lastname}
+                      </p>
+                    ))}
                   </ModalBody>
                   <ModalFooter>
                     <Button
