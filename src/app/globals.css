@@ -206,6 +206,7 @@ p {
 small {
   font-size: 0.75rem;
   font-weight: 400;
+  line-height: 0.75rem;
 }
 .pwaiconsmenu {
   width: 100%;
@@ -363,7 +364,7 @@ Image {
 }
 
 .artist-list {
-  padding:  0.5rem;
+  padding: 0.5rem;
   width: 100%;
   max-width: 500px;
   transition: 0.3s;
@@ -1801,10 +1802,6 @@ tbody tr .tablecellnewteams {
   font-weight: 600;
 }
 
-.custom-table tr:nth-child(even) {
-  background-color: #fafafa;
-}
-
 .custom-table tr:hover {
   background-color: #f0f0f0;
 }
@@ -1825,6 +1822,9 @@ tbody tr .tablecellnewteams {
   max-width: 100%;
   padding: 10px 12px;
   text-align: left;
+}
+
+.settings-table tr {
   border-bottom: 1px solid #ddd;
 }
 

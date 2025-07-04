@@ -1,9 +1,13 @@
-'use client';
-import {Spinner} from "@heroui/spinner";
+"use client";
+import { Spinner } from "@heroui/spinner";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-export default function PullToRefreshLayout({ children }: { children: React.ReactNode }) {
+export default function PullToRefreshLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const startYRef = useRef<number | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
@@ -40,14 +44,14 @@ export default function PullToRefreshLayout({ children }: { children: React.Reac
       window.location.reload(); // Replace with your own data refetch if needed
     };
 
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove);
-    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchend", handleTouchEnd);
 
     return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [pullDistance]);
 
@@ -56,14 +60,20 @@ export default function PullToRefreshLayout({ children }: { children: React.Reac
       <div
         style={{
           height: isRefreshing ? 50 : pullDistance,
-          transition: isRefreshing ? 'height 0.3s' : 'none',
-          background: '#fff',
-          textAlign: 'center',
-          lineHeight: '60px',
+          transition: isRefreshing ? "height 0.3s" : "none",
+          background: "#f8f8f7",
+          textAlign: "center",
+          lineHeight: "60px",
           fontSize: 15,
         }}
       >
-        {isRefreshing ? <Spinner size="sm" variant="simple" /> : pullDistance > 0 ? 'Ricarica Pagina' : ''}
+        {isRefreshing ? (
+          <Spinner size="sm" variant="simple" />
+        ) : pullDistance > 0 ? (
+          "Ricarica Pagina"
+        ) : (
+          ""
+        )}
       </div>
       <div>{children}</div>
     </div>

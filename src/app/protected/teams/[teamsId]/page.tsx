@@ -44,7 +44,13 @@ export default function Page({ params }: { params: { teamsId: string } }) {
   >([]);
   const [leadersToAdd, setLeadersToAdd] = useState<churchMembersT[]>([]);
   const [leadersToRemove, setLeadersToRemove] = useState<churchMembersT[]>([]);
-
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const updateWidth = () => setWidth(window.innerWidth);
+    updateWidth(); // set on mount
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
   const [refetchTrigger, setRefetchTrigger] = useState(false);
 
   const [churchTeam, setChurchTeam] = useState<teamData>();
@@ -241,7 +247,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
   if (churchTeam) {
     return (
       <div className="container-sub">
-        <div className="flex flex-row justify-between px-3">
+        <div className="flex flex-row justify-between px-3 gap-5 items-center mb-7">
           <div>
             <h3 className="font-medium">{churchTeam.team_name}</h3>{" "}
             {hasPermission(userData.role as Role, "update:teams") && (
@@ -283,15 +289,20 @@ export default function Page({ params }: { params: { teamsId: string } }) {
             )}
           </div>
         </div>
-        <table className="w-full max-w-[800px] table-auto border-collapse">
+        <table className="w-full max-w-[800px] table-auto border-collapse ntable">
           <thead>
             <tr className="bg-gray-100">
               {defineLeaders && <th className="w-[30px] px-2 py-1"></th>}
               <th className="text-left px-2 py-1">Nome</th>
-              <th className="text-left px-2 py-1">Ruolo</th>
+              {width >= 800 && (
+                <>
+                  <th className="text-left px-2 py-1 ">Ruolo</th>
+                </>
+              )}
+
               {!defineLeaders &&
                 hasPermission(userData.role as Role, "update:teams") && (
-                  <th className="text-center px-2 py-1 max-w-[70px]">
+                  <th className="text-center px-2 py-1 max-w-[50px] w-[50px]">
                     <MdEditNote size={20} className="mx-auto" />
                   </th>
                 )}
@@ -320,18 +331,36 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                       />
                     </td>
                   )}
-                  <td
-                    className={`px-2 py-[2px] ${item.isLeader ? "font-bold underline" : ""}`}
-                  >
-                    <div className="flex flex-row gap-2 items-center">
-                      {item.isLeader && <PiFlagBannerBold />}
-                      {item.name} {item.lastname}
+                  <td className="px-2 py-[2px]">
+                    <div className="px-2 py-[2px]">
+                      <p
+                        className={` ${item.isLeader ? "font-bold underline" : ""}`}
+                      >
+                        {item.name} {item.lastname}{" "}
+                      </p>
+                      {width < 800 && (
+                        <>
+                          <small className="!no-underline">
+                            {item.roles.join(", ")}
+                          </small>
+                        </>
+                      )}
                     </div>
                   </td>
-                  <td className="px-2 py-[2px]">{item.roles.join(", ")}</td>
+                  {width >= 800 && (
+                    <>
+                      <td
+                        className="px-2 py-[2px] 
+"
+                      >
+                        {item.roles.join(", ")}
+                      </td>
+                    </>
+                  )}
+
                   {!defineLeaders &&
                     hasPermission(userData.role as Role, "update:teams") && (
-                      <td className="px-2 py-[2px] text-center max-w-[50px]">
+                      <td className="px-2 py-[2px] text-center max-w-[50px] w-[50px]">
                         {(isLeader ||
                           hasPermission(
                             userData.role as Role,
