@@ -61,15 +61,15 @@ export default function SongslistComponent({
           {hasPermission(userData.role as Role, "create:songs") && (
             <Dropdown>
               <DropdownTrigger>
-                <Button isIconOnly variant="bordered">
+                <Button color="primary" isIconOnly variant="flat">
                   <FaPlus />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
-                <DropdownItem as={Link} href="/songs/addSong" key="add">
+                <DropdownItem as={Link} href="/songs/addSong" key="add" color="primary" variant="flat">
                   Aggiungi canzone
                 </DropdownItem>
-                <DropdownItem as={Link} href="/artists" key="import">
+                <DropdownItem as={Link} href="/artists" key="import" color="primary" variant="flat">
                   Importa da ChurchLab
                 </DropdownItem>
               </DropdownMenu>

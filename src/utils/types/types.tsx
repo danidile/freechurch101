@@ -145,6 +145,7 @@ export type eventType = {
   label?: string;
   alt?: string; //Alternative label (the personalized label)
   placeholder?: string;
+  edited?: string;
 };
 
 export type teamFormValues = {

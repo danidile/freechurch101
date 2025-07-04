@@ -1,7 +1,7 @@
 "use client";
 
 import { useUserStore } from "@/store/useUserStore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Modal,
@@ -11,28 +11,15 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  Input,
   Link,
 } from "@heroui/react";
 
 import ImageUploader from "../../dashboard/account/updateImage/ImageUploader";
 import CreateMultipleEventsForm from "@/app/setlist/addMultipleEvents/UpdateMultipleEventsForm";
-import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import updateEventTypesAction from "./updateEventTypesAction";
-import { defaultEventTypes } from "@/constants";
-import { eventType } from "@/utils/types/types";
-import { getpersonalizedEventTypesByChurch } from "@/hooks/GET/getpersonalizedEventTypesByChurch";
-import { useChurchStore } from "@/store/useChurchStore";
-type Member = {
-  name: string;
-  lastname: string;
-  email: string;
-};
+
+import PersonalizeEventsModal from "./PersonalizeEventsModal";
+
 export default function PersonalizeChurchComponent() {
-  const { fetchChurchData } = useChurchStore();
-  const [personalizedEventTypes, setPersonalizedEventTypes] = useState<
-    eventType[]
-  >([]);
   const { userData, loading } = useUserStore();
   const [updateLogo, setUpdateLogo] = useState(false);
   const [refetchTrigger, setRefetchTrigger] = useState(false);
@@ -41,69 +28,7 @@ export default function PersonalizeChurchComponent() {
     onOpen: onOpenMultipleEventsModal,
     onOpenChange: onOpenChangeMultipleEventsModal,
   } = useDisclosure();
-  const {
-    isOpen: isOpenCustomizeTypesModal,
-    onOpen: onOpenCustomizeTypesModal,
-    onOpenChange: onOpenChangeCustomizeTypesModal,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenInviteModal,
-    onOpen: onOpenInviteModal,
-    onOpenChange: onOpenChangeInviteModal,
-  } = useDisclosure();
-  const [members, setMembers] = useState<Member[]>([
-    { name: "", lastname: "", email: "" },
-  ]);
-  useEffect(() => {
-    if (!loading && userData.loggedIn) {
-      getpersonalizedEventTypesByChurch(userData.church_id).then(
-        (fetchedEventTypes) => {
-          console.log("fetchedEventTypes", fetchedEventTypes);
-          setPersonalizedEventTypes(fetchedEventTypes);
-        }
-      );
-    }
-  }, [loading, userData, refetchTrigger]);
-  const addMember = () => {
-    setMembers([...members, { name: "", lastname: "", email: "" }]);
-  };
 
-  const handleMembersInputChange = (
-    index: number,
-    field: keyof Member,
-    value: string
-  ) => {
-    const updated = [...members];
-    updated[index][field] = value;
-    setMembers(updated);
-  };
-
-  const handleInputChange = (key: string, value: string) => {
-    setPersonalizedEventTypes((prev) => {
-      // Check if the key exists
-      const existingIndex = prev.findIndex((item) => item.key === key);
-
-      if (existingIndex !== -1) {
-        // Update existing
-        const updated = [...prev];
-        updated[existingIndex] = { ...updated[existingIndex], alt: value };
-        return updated;
-      } else {
-        // Add new
-        return [...prev, { key, label: value }];
-      }
-    });
-  };
-
-  const saveEventTypes = async () => {
-    console.log(personalizedEventTypes);
-    const response = await updateEventTypesAction(
-      personalizedEventTypes,
-      userData.church_id
-    );
-    setRefetchTrigger(!refetchTrigger);
-    fetchChurchData(userData.church_id, userData.role);
-  };
   return (
     <div className="p-0 sm:p-5">
       <div className="w-full">
@@ -175,14 +100,7 @@ export default function PersonalizeChurchComponent() {
                 </small>
               </td>
               <td>
-                <Button
-                  color="primary"
-                  size="md"
-                  variant="light"
-                  onPress={onOpenCustomizeTypesModal}
-                >
-                  Personalizza
-                </Button>
+                <PersonalizeEventsModal />
               </td>
             </tr>
             {/* <tr>
@@ -326,74 +244,6 @@ export default function PersonalizeChurchComponent() {
                 </Button>
                 <Button color="primary" onPress={onCloseMultipleEventsModal}>
                   Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-      <Modal
-        className="max-h-[700px]"
-        placement="center"
-        scrollBehavior="inside"
-        size="lg"
-        isOpen={isOpenCustomizeTypesModal}
-        onOpenChange={onOpenChangeCustomizeTypesModal}
-      >
-        <ModalContent>
-          {(onCloseCustomizeTypesModal) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Personalizza tipi evento
-              </ModalHeader>
-              <ModalBody>
-                <div className="flex flex-col gap-3">
-                  {defaultEventTypes.map((eventTypeKey) => {
-                    const matchingEvent = personalizedEventTypes.find(
-                      (item) => item.key === eventTypeKey.key
-                    );
-                    const inputValue = matchingEvent
-                      ? matchingEvent.alt || ""
-                      : "";
-
-                    return (
-                      <div
-                        key={eventTypeKey.key}
-                        className="grid grid-cols-3 auto-rows-max gap-0 items-center"
-                        style={{ gridTemplateColumns: "45% 10% 45%" }}
-                      >
-                        <p>{eventTypeKey.label}</p>
-                        <div className="text-center w-full">
-                          <MdKeyboardDoubleArrowRight />
-                        </div>
-                        <Input
-                          placeholder={eventTypeKey.placeholder}
-                          value={inputValue}
-                          onChange={(e) =>
-                            handleInputChange(eventTypeKey.key, e.target.value)
-                          }
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="light"
-                  onPress={onCloseCustomizeTypesModal}
-                >
-                  Annulla
-                </Button>
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    saveEventTypes();
-                    onCloseCustomizeTypesModal();
-                  }}
-                >
-                  Salva
                 </Button>
               </ModalFooter>
             </>

@@ -7,8 +7,11 @@ import createThumbnail from "./createThumbnail";
 import convertImageToJpeg from "./convertImageToJpeg";
 import convertImageToPngWithMaxHeight from "./convertImageToWebpWithMaxHeight";
 import convertImageToWebpWithMaxHeight from "./convertImageToWebpWithMaxHeight";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ImageUploader({ type }: { type?: string }) {
+  const { userData, fetchUser, loading } = useUserStore();
+
   const supabase = createClient();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -72,7 +75,7 @@ export default function ImageUploader({ type }: { type?: string }) {
             contentType: "image/jpeg",
             cacheControl: "no-cache",
           });
-
+          
         if (uploadError)
           throw new Error(`Upload error (avatars): ${uploadError.message}`);
         console.log("Original image uploaded:", avatarPath);
@@ -103,6 +106,7 @@ export default function ImageUploader({ type }: { type?: string }) {
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
+      fetchUser();
     } else if (type === "churchlogo") {
       try {
         const { data: userData, error: authError } =
@@ -161,9 +165,13 @@ export default function ImageUploader({ type }: { type?: string }) {
           .update({ logo: logoPath })
           .eq("id", profile.church);
         if (errorURL) {
-          throw new Error(`Upload error (churchlogoURL into churches table): ${errorURL.message}`);
+          throw new Error(
+            `Upload error (churchlogoURL into churches table): ${errorURL.message}`
+          );
         } else {
-          console.log("churchlogo URL updated successfully into churches table");
+          console.log(
+            "churchlogo URL updated successfully into churches table"
+          );
         }
         setFile(null);
         setPreviewUrl(null);
