@@ -2,7 +2,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 /** @type {import('next').NextConfig} */
 
-const isProd = process.env.NODE_ENV === "production";
+const isProd = process.env.NODE_ENV !== "development";
 
 const nextConfig = {
   async headers() {
@@ -19,8 +19,14 @@ const nextConfig = {
             ? [
                 {
                   key: "Content-Security-Policy",
-                  value:
-                    "default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;",
+                  value: `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    img-src 'self' data:;
+    connect-src 'self' https://kadorwmjhklzakafowpu.supabase.co;
+  `.replace(/\n/g, ""), // remove line breaks
                 },
               ]
             : []),
