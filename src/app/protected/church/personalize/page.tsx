@@ -39,11 +39,11 @@ export default function PersonalizeChurchComponent() {
           <thead>
             <tr>
               <th>Impostazioni</th>
-              <th>Azioni</th>
+              <th className="text-center hidden lg:table-cell">Azioni</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Personalizza il logo della chiesa:</p>
               </td>
@@ -91,7 +91,7 @@ export default function PersonalizeChurchComponent() {
                 <button className="settings-action">Gestisci</button>
               </td>
             </tr> */}
-            <tr>
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Personalizza i tipi di evento per la tua chiesa:</p>
                 <small>
@@ -99,7 +99,7 @@ export default function PersonalizeChurchComponent() {
                   selezionabili nella fase di creazione degli eventi.
                 </small>
               </td>
-              <td>
+              <td className="flex flex-col justify-center items-center">
                 <PersonalizeEventsModal />
               </td>
             </tr>
@@ -124,15 +124,15 @@ export default function PersonalizeChurchComponent() {
                 <button className="settings-action">Configura</button>
               </td>
             </tr> */}
-            <tr>
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Gestisci canzoni e accordi personalizzati</p>
               </td>
-              <td>
+              <td className="flex flex-col justify-center items-center">
                 <Button
                   color="primary"
                   size="md"
-                  variant="light"
+                  variant="solid"
                   as={Link}
                   href="/protected/churchsongs"
                 >
@@ -140,15 +140,15 @@ export default function PersonalizeChurchComponent() {
                 </Button>
               </td>
             </tr>
-            <tr>
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Importa canzoni da Planning Center</p>
               </td>
-              <td>
+              <td className="flex flex-col justify-center items-center">
                 <Button
                   color="primary"
                   size="md"
-                  variant="light"
+                  variant="solid"
                   as={Link}
                   href="/importsongs"
                 >
@@ -156,12 +156,12 @@ export default function PersonalizeChurchComponent() {
                 </Button>
               </td>
             </tr>
-            <tr>
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Definisci i tag da assegnare alle canzoni</p>
               </td>
-              <td>
-                <Button color="primary" size="md" variant="light" disabled>
+              <td className="flex flex-col justify-center items-center">
+                <Button color="primary" size="md" variant="solid" disabled>
                   Modifica Tag
                 </Button>
               </td>
@@ -178,15 +178,15 @@ export default function PersonalizeChurchComponent() {
                 <button className="settings-action">Modifica</button>
               </td>
             </tr> */}
-            <tr>
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Invita nuovi membri con un link dedicato</p>
               </td>
-              <td>
+              <td className="flex flex-col justify-center items-center">
                 <Button
                   color="primary"
                   size="md"
-                  variant="light"
+                  variant="solid"
                   as={Link}
                   href="/protected/church/invitemembers"
                 >

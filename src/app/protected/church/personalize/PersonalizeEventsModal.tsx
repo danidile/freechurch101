@@ -111,7 +111,7 @@ export default function PersonalizeEventsModal() {
       <Button
         color="primary"
         size="md"
-        variant="light"
+        variant="solid"
         onPress={onOpenCustomizeTypesModal}
       >
         Personalizza
