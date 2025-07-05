@@ -14,6 +14,8 @@ import UserDataMenu from "./userDataMenu";
 import MenuApp from "./MenuApp";
 import { useUserStore } from "@/store/useUserStore";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoNotifications } from "react-icons/io5";
 export default function MenuBarComponentSecondary({
   notifications,
 }: {
@@ -100,6 +102,7 @@ export default function MenuBarComponentSecondary({
                   Calendario
                 </Link>
               </NavbarItem>
+            
             </>
           )}
         </NavbarContent>

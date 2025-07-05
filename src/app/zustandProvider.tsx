@@ -12,7 +12,6 @@ export function ZustandProviders({ children }: { children: React.ReactNode }) {
     if (!userData && !loading) {
       fetchUser();
     }
-    console.log("refetched")
   }, [userData, loading]);
 
   useEffect(() => {

@@ -15,8 +15,8 @@ export const getPendingNotificationsById = async () => {
     .from("event-team")
     .select(
       `id, 
-       setlist:setlist!inner(date, event_title), 
-       team:team!inner(team_name),status`
+       setlist(date, event_title), 
+       team(team_name),status`
     )
     .eq("member", user.id)
     .eq("status", "pending")

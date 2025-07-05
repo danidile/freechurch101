@@ -301,7 +301,8 @@ Image {
 .container-sub {
   width: 100%;
   max-width: 96vw;
-  margin: 20px auto;
+  margin: 0px auto;
+  padding: 20px 0px;
   display: flex;
   align-items: center;
   flex-direction: column;
