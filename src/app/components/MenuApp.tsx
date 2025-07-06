@@ -72,7 +72,7 @@ export default function MenuApp({
             <>
               <TransitionLink href="/notifications" className="pwaiconsmenu">
                 {notifications >= 1 ? (
-                  <Badge size="sm" color="primary" content={notifications}>
+                  <Badge size="sm" color="danger" content={notifications}>
                     <LuBellRing />
                   </Badge>
                 ) : (

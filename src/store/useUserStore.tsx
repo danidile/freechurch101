@@ -23,8 +23,10 @@ export const useUserStore = create<UserStore>((set) => ({
     try {
       const data = await fbasicUserData();
       set({ userData: data, loading: false });
-      const fetchedNotifications = await getNotificationsById(data.id);
-      set({ notifications: fetchedNotifications });
+      if (data.loggedIn) {
+        const fetchedNotifications = await getNotificationsById(data.id);
+        set({ notifications: fetchedNotifications });
+      }
     } catch (err: any) {
       console.error("Error in fetchUser:", err);
       set({ error: err.message || "Unknown error", loading: false });

@@ -16,8 +16,7 @@ import UserDataMenu from "./userDataMenu";
 import MenuApp from "./MenuApp";
 import { useUserStore } from "@/store/useUserStore";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import { IoMdNotificationsOutline } from "react-icons/io";
-import { IoNotifications } from "react-icons/io5";
+
 import { FaInbox } from "react-icons/fa";
 export default function MenuBarComponentSecondary() {
   const { userData, notifications } = useUserStore();
@@ -100,7 +99,7 @@ export default function MenuBarComponentSecondary() {
                 <Badge
                   size="md"
                   color="danger"
-                  content={notifications?.pending?.notifications.length}
+                  content={notifications?.pending?.notifications?.length}
                 >
                   <Button
                     isIconOnly
@@ -166,7 +165,7 @@ export default function MenuBarComponentSecondary() {
 
       <MenuApp
         userdata={userData || null}
-        notifications={notifications.pending?.notifications.length}
+        notifications={notifications.pending?.notifications?.length}
       />
     </>
   );

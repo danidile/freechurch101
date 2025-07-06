@@ -93,83 +93,58 @@ export default function ChurchComponent() {
       <div className="w-full">
         <h5 className="font-bold ml-3 my-5">{userData.church_name}</h5>
       </div>
-      <div className="max-w-full mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-6">
-          <Card>
-            <Table
-              aria-label="Church members table"
-              isHeaderSticky
-              classNames={{
-                base: "max-h-[600px] overflow-scroll",
-                table: "max-h-[600px]",
-              }}
-              topContent={<h6 className="font-bold">Membri di chiesa:</h6>}
-              // bottomContent={
-              //   <>
-              //     {hasPermission(
-              //       userData.role as Role,
-              //       "insert:churchmembers"
-              //     ) && (
-              //       <>
-              //         <Button color="primary" onPress={onOpen}>
-              //           Aggiungi membro
-              //         </Button>
-              //       </>
-              //     )}
-              //   </>
-              // }
-            >
-              <TableHeader>
-                <TableColumn>Nome</TableColumn>
-                <TableColumn className="hidden sm:table-cell">
-                  Email
-                </TableColumn>
-                <TableColumn>Azioni</TableColumn>
-              </TableHeader>
-              <TableBody items={profiles}>
-                {(item) => (
-                  <TableRow key={item.profile}>
-                    <TableCell className="py-[2px]">
-                      {" "}
-                      {item.name} {item.lastname}
-                    </TableCell>
-                    <TableCell className="py-[2px] hidden sm:table-cell">
-                      {item.email}{" "}
-                    </TableCell>
-                    <TableCell className="max-w-[50px] py-[2px]">
-                      {hasPermission(userData.role as Role, "update:teams") && (
-                        <div className="relative flex flex-row justify-center items-center gap-1 mx-auto">
-                          <Dropdown>
-                            <DropdownTrigger>
-                              <Button
-                                className="mx-auto"
-                                isIconOnly
-                                variant="light"
-                                size="sm"
-                              >
-                                <BsThreeDotsVertical />
-                              </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu aria-label="Static Actions">
-                              <DropdownItem
-                                key="update"
-                                as={Link}
-                                startContent={<FaRegEye />}
-                                href={`/people/${item.id}`}
-                              >
-                                Visualizza dettagli utente
-                              </DropdownItem>
-                            </DropdownMenu>
-                          </Dropdown>
-                        </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </Card>
-        </div>
+      <div className="max-w-full mx-auto w-full ">
+        <h5 className="font-bold">Membri di chiesa:</h5>
+        <table className="ntable max-w-[800px] ">
+          <thead>
+            <th>Nome</th>
+            <th className="hidden sm:table-cell">Email</th>
+            <th className="max-w-[50px] w-[50px] py-[2px]">Azioni</th>
+          </thead>
+          <tbody>
+            {profiles.map((item) => {
+              return (
+                <tr key={item.profile}>
+                  <td className="py-[2px]">
+                    {" "}
+                    {item.name} {item.lastname}
+                  </td>
+                  <td className="py-[2px] hidden sm:table-cell">
+                    {item.email}{" "}
+                  </td>
+                  <td className="max-w-[50px] w-[50px] py-[2px]">
+                    {hasPermission(userData.role as Role, "update:teams") && (
+                      <div className="relative flex flex-row justify-center items-center gap-1 mx-auto">
+                        <Dropdown>
+                          <DropdownTrigger>
+                            <Button
+                              className="mx-auto"
+                              isIconOnly
+                              variant="light"
+                              size="sm"
+                            >
+                              <BsThreeDotsVertical />
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu aria-label="Static Actions">
+                            <DropdownItem
+                              key="update"
+                              as={Link}
+                              startContent={<FaRegEye />}
+                              href={`/people/${item.id}`}
+                            >
+                              Visualizza dettagli utente
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
       <Modal
         isOpen={isOpen}
