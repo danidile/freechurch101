@@ -12,8 +12,10 @@ frontend:
         - echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY" >> .env
         - echo "SMTP_USER=$SMTP_USER" >> .env
         - echo "SMTP_PASS=$SMTP_PASS" >> .env
+        - echo "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY" >> .env
+        - echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" >> .env
+        - echo "STRIPE_WEBHOOK_SECRET=$STRIPE_WEBHOOK_SECRET" >> .env
         - NODE_OPTIONS="--max-old-space-size=4096" npm run build
-        - "npm run build"
   artifacts:
     baseDirectory: .next
     files:
