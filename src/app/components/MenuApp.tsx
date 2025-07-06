@@ -21,6 +21,11 @@ import { basicUserData } from "@/utils/types/userData";
 import { FaRegCompass } from "react-icons/fa";
 import { BiCompass, BiSolidCompass } from "react-icons/bi";
 import { LuBell, LuBellRing } from "react-icons/lu";
+import {
+  BsCalendar2Week,
+  BsCalendar2WeekFill,
+  BsCalendarWeek,
+} from "react-icons/bs";
 
 export default function MenuApp({
   notifications,
@@ -54,21 +59,17 @@ export default function MenuApp({
           </TransitionLink>
           {userdata.loggedIn && (
             <TransitionLink href="/setlist" className="pwaiconsmenu">
-              {parameter === "setlist" ? <MdEvent /> : <MdEventNote />}
+              {parameter === "setlist" ? (
+                <BsCalendar2Week />
+              ) : (
+                <BsCalendar2WeekFill />
+              )}
               <small>Eventi</small>
             </TransitionLink>
           )}
 
           {userdata.loggedIn && (
             <>
-              <TransitionLink href="/calendar" className="pwaiconsmenu">
-                {parameter === "calendar" ? (
-                  <FaRegCalendarAlt />
-                ) : (
-                  <FaRegCalendarAlt />
-                )}
-                <small>Calendario</small>
-              </TransitionLink>
               <TransitionLink href="/notifications" className="pwaiconsmenu">
                 {notifications >= 1 ? (
                   <Badge size="sm" color="primary" content={notifications}>

@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-06-30.basil",
-});
-
 export async function POST(req: NextRequest) {
   try {
     const { priceId, userId, email, church } = await req.json();
@@ -16,6 +12,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2025-06-30.basil",
+    });
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       customer_email: email,
       metadata: {
         user_id: userId,
-        church, // optional custom metadata
+        church,
       },
     });
 

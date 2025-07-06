@@ -7,6 +7,8 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   Image,
+  Button,
+  Badge,
 } from "@heroui/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,12 +18,9 @@ import { useUserStore } from "@/store/useUserStore";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoNotifications } from "react-icons/io5";
-export default function MenuBarComponentSecondary({
-  notifications,
-}: {
-  notifications: number;
-}) {
-  const { userData } = useUserStore();
+import { FaInbox } from "react-icons/fa";
+export default function MenuBarComponentSecondary() {
+  const { userData, notifications } = useUserStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
@@ -97,12 +96,24 @@ export default function MenuBarComponentSecondary({
                   </Link>
                 </NavbarItem>
               )}
-              <NavbarItem>
-                <Link color="foreground" href="/calendar">
-                  Calendario
-                </Link>
+              <NavbarItem isActive>
+                <Badge
+                  size="md"
+                  color="danger"
+                  content={notifications?.pending?.notifications.length}
+                >
+                  <Button
+                    isIconOnly
+                    variant="flat"
+                    radius="full"
+                    color="default"
+                    as={Link}
+                    href="/protected/notifications"
+                  >
+                    <FaInbox size={21} />
+                  </Button>
+                </Badge>
               </NavbarItem>
-            
             </>
           )}
         </NavbarContent>
@@ -139,15 +150,6 @@ export default function MenuBarComponentSecondary({
                   Persone
                 </Link>
               </NavbarItem>
-              <NavbarItem>
-                <Link
-                  onClick={() => setIsMenuOpen(false)}
-                  color="foreground"
-                  href="/calendar"
-                >
-                  Calendario
-                </Link>
-              </NavbarItem>
             </>
           )}
 
@@ -162,7 +164,10 @@ export default function MenuBarComponentSecondary({
         </NavbarMenu>
       </Navbar>
 
-      <MenuApp userdata={userData || null} notifications={notifications} />
+      <MenuApp
+        userdata={userData || null}
+        notifications={notifications.pending?.notifications.length}
+      />
     </>
   );
 }
