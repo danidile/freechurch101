@@ -17,9 +17,13 @@ const forgotPasswordAction = async (
       error: "Errore: Email richiesta.",
     };
   }
+  const redirectTo =
+    process.env.NODE_ENV !== "development"
+      ? "https://churchlab.it/reset-password"
+      : "http://localhost:3000/reset-password";
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `https://churchlab.it/protected/reset-password`,
+    redirectTo,
   });
   if (error) {
     console.log(error);
