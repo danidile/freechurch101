@@ -39,8 +39,6 @@ export const signUpAction = async (data: TauthSchema) => {
   }
 };
 
-
-
 export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   const supabase = createClient();
 
@@ -48,19 +46,11 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   const confirmPassword = data.confirmPassword;
 
   if (!password || !confirmPassword) {
-    return encodedRedirect(
-      "error",
-      "/protected/reset-password",
-      "Password and confirm password are required"
-    );
+    console.log("password o confirm password mancanti");
   }
 
   if (password !== confirmPassword) {
-    return encodedRedirect(
-      "success",
-      "/protected/reset-password",
-      "Passwords do not match"
-    );
+    console.log("password o confirm password non uguali");
   }
 
   const { error } = await supabase.auth.updateUser({
@@ -68,18 +58,10 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   });
 
   if (error) {
-    return encodedRedirect(
-      "error",
-      "/protected/reset-password",
-      "Password update failed"
-    );
+    console.log("error nell'aggiornamento password", error);
   }
 
-  return encodedRedirect(
-    "success",
-    "/protected/reset-password",
-    "Password updated"
-  );
+  console.log("  password aggiornata con successo");
 };
 
 export const signOutAction = async () => {
