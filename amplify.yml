@@ -6,6 +6,8 @@ frontend:
         - nvm install 18
         - nvm use 18
         - npm ci
+        - rm -rf .next/cache
+        - rm -rf node_modules/.cache
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
@@ -22,5 +24,4 @@ frontend:
       - "**/*"
   cache:
     paths:
-      - ".next/cache/**/*"
       - ".npm/**/*"
