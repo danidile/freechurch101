@@ -18,6 +18,7 @@ import ImageUploader from "../../dashboard/account/updateImage/ImageUploader";
 import CreateMultipleEventsForm from "@/app/setlist/addMultipleEvents/UpdateMultipleEventsForm";
 
 import PersonalizeEventsModal from "./PersonalizeEventsModal";
+import PersonalizeSongsTagsModal from "./songsTagsModal";
 
 export default function PersonalizeChurchComponent() {
   const { userData, loading } = useUserStore();
@@ -161,9 +162,7 @@ export default function PersonalizeChurchComponent() {
                 <p>Definisci i tag da assegnare alle canzoni</p>
               </td>
               <td className="flex flex-col justify-center items-center">
-                <Button color="primary" size="md" variant="solid" disabled>
-                  Modifica Tag
-                </Button>
+                <PersonalizeSongsTagsModal />
               </td>
             </tr>
             {/* <tr>

@@ -407,36 +407,55 @@ export default function Page({ params }: { params: { teamsId: string } }) {
             })}
           </tbody>
         </table>
+        <div className="w-full p-4 max-w-[800px] text-center ">
+          <>
+            {!defineLeaders && (
+              <>
+                {" "}
+                {(isLeader ||
+                  hasPermission(userData.role as Role, "update:teams")) && (
+                  <>
+                    <SelectTeamMemberDrawer
+                      state={churchTeam.team_members}
+                      type="add"
+                      churchMembers={churchMembers}
+                      addMemberToTeam={addMemberToTeam} // Pass function correctly
+                      section={null}
+                    />
+                    <div className="transpose-button-container">
+                      {defineLeaders && (
+                        <Button
+                          color="danger"
+                          variant="flat"
+                          onPress={() => setDefineLeaders(false)}
+                        >
+                          Annulla
+                        </Button>
+                      )}
+                      {defineLeaders &&
+                        (leadersToAdd.length >= 1 ||
+                          leadersToRemove.length >= 1) && (
+                          <>
+                            <Button
+                              color="primary"
+                              variant="solid"
+                              onPress={() => {
+                                setSaveLeadersModal(true);
+                                onLeaderOpen();
+                              }}
+                            >
+                              Salva Team Leader
+                            </Button>
+                          </>
+                        )}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </>
+        </div>
 
-        <>
-          {(isLeader ||
-            hasPermission(userData.role as Role, "update:teams")) && (
-            <>
-              <SelectTeamMemberDrawer
-                state={churchTeam.team_members}
-                type="add"
-                churchMembers={churchMembers}
-                addMemberToTeam={addMemberToTeam} // Pass function correctly
-                section={null}
-              />
-              <div className="transpose-button-container">
-                {defineLeaders &&
-                  (leadersToAdd.length >= 1 || leadersToRemove.length >= 1) && (
-                    <>
-                      <Button
-                        onPress={() => {
-                          setSaveLeadersModal(true);
-                          onLeaderOpen();
-                        }}
-                      >
-                        Salva Team Leader
-                      </Button>
-                    </>
-                  )}
-              </div>
-            </>
-          )}
-        </>
         {selectedMember && (
           <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
             <ModalContent>

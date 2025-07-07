@@ -60,9 +60,9 @@ export function SelectTeamMemberDrawer({
     <>
       <Button
         isIconOnly
-        radius="full"
+        radius="sm"
         color="primary"
-        variant="flat"
+        variant="solid"
         size="lg"
         className="mr-0"
         onPress={onOpen}

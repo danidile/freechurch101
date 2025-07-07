@@ -154,6 +154,14 @@ export default function CompleteAccount() {
               <FaLock className="text-l text-default-500 pointer-events-none flex-shrink-0 my-auto" />
             }
           />
+          <Input
+            {...register("phone")}
+            label="Telefono"
+            variant="bordered"
+            size="sm"
+            type="tel"
+            placeholder={userData.phone}
+          />
 
           <Input
             {...register("id")}

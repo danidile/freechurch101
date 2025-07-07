@@ -5,6 +5,7 @@ import { sendErrorToSentry } from "../sentry/SentryErrorDealer";
 type ProfileData = {
   name: string;
   lastname: string;
+  phone: string;
   role?: { role_name: string }; // role is an object, not an array
   church: {
     logo: string | null;
@@ -39,13 +40,16 @@ export default async function fbasicUserData() {
   if (user) {
     const { data, error } = (await supabase
       .from("profiles")
-      .select("name, lastname, role(role_name), church(id,church_name,logo)")
+      .select(
+        "name, lastname, role(role_name), church(id,church_name,logo),phone"
+      )
       .eq("id", user.id) // Filter by the user's id
       .single()) as unknown as SupabaseResponse; // Use the full SupabaseResponse type
     userData = {
       loggedIn: true,
       id: user?.id || null,
       email: user?.email || null,
+      phone: data?.phone || null,
       name: data?.name || null,
       role: data?.role?.role_name || "user", // No array, safe access
       lastname: data?.lastname || null,

@@ -6,6 +6,7 @@ import {
   ModalBody,
   ModalFooter,
   Chip,
+  useDisclosure,
 } from "@heroui/react";
 
 import {
@@ -50,11 +51,12 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { AnimatePresence, motion, Reorder } from "framer-motion";
 import { BiColorFill } from "react-icons/bi";
 import colors from "@/utils/eventsColors";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaRegCalendarAlt } from "react-icons/fa";
 import { ScheduleComponents } from "./ScheduleComponents";
 import { useChurchStore } from "@/store/useChurchStore";
 import { MdEditNote, MdOutlineTitle } from "react-icons/md";
 import { TbMusicPlus } from "react-icons/tb";
+import BlockoutsCalendarComponent from "@/app/protected/blockouts-calendar/calendarComponent";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -66,6 +68,8 @@ export default function UpdateSetlistForm({
   songsList: TsongNameAuthor[];
   setlistData: setListT;
 }) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const { eventTypes } = useChurchStore();
 
   const date = new Date();
@@ -86,6 +90,8 @@ export default function UpdateSetlistForm({
     (teams || []).filter((team) => team.selected.length > 0)
   );
   const [team, setTeam] = useState<churchMembersT[]>([]);
+  const [showBlockoutsCalendar, setShowBlockoutsCalendar] =
+    useState<boolean>(false);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
   const [previousEventDate, setPreviousEventDate] = useState<string>(
     setlistData?.date?.split("T")[0] || todaysDate
@@ -556,8 +562,13 @@ export default function UpdateSetlistForm({
             </div>
           </div>
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
-            <div className="form-div crea-setlist-container">
+            <div className="flex flex-row justify-start gap-3 items-center">
               <h5>Turnazioni</h5>
+              <Tooltip className="text-sm" content="Mostra calendario con date bloccate.">
+                <Button isIconOnly className="ml-0" onPress={onOpen}>
+                  <FaRegCalendarAlt />
+                </Button>
+              </Tooltip>
             </div>
             <Dropdown>
               <DropdownTrigger>
@@ -740,6 +751,36 @@ export default function UpdateSetlistForm({
               Annulla
             </Button>
           </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="center"
+        size="4xl"
+        className="max-h-[90vh]"
+        scrollBehavior="inside"
+        shouldBlockScroll
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Calendario
+              </ModalHeader>
+              <ModalBody>
+                <BlockoutsCalendarComponent />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Action
+                </Button>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
     </div>

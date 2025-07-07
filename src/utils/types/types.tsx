@@ -29,7 +29,7 @@ export type songType = {
   key?: string;
   order?: number;
   church?: string;
-  tags?: string;
+  tags?: string[];
   bpm?: string;
 };
 
@@ -288,7 +288,10 @@ export type teamData = {
   is_worship?: boolean;
   selected?: churchMembersT[];
 };
-
+export type Blockout = {
+  start: string; // ISO date string like "2025-08-07"
+  end: string; // ISO date string like "2025-08-09"
+};
 export type churchMembersT = {
   id?: string;
   status?: string;
@@ -302,10 +305,21 @@ export type churchMembersT = {
   selected_roles?: string;
   profile?: string;
   team_name?: string;
-  blockouts?: { start: string; end: string }[];
+  blockouts?: Blockout[];
   isLeader?: boolean;
 };
+export type TeamMemberWithBlockouts = {
+  id: string;
+  name: string;
+  lastname: string;
+  blockouts: Blockout[];
+};
 
+export type TeamWithBlockouts = {
+  team_name: string;
+  team_id: string;
+  teamMembers: TeamMemberWithBlockouts[];
+};
 export type searchBar = {
   text: string;
 };
@@ -410,7 +424,7 @@ export type SongWithAlbum = {
   upload_key?: string;
   artist?: string;
   album?: AlbumReference | null; // joined album
-  tags?: string;
+  tags?: string[];
   bpm?: string;
 };
 

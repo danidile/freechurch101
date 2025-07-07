@@ -174,17 +174,30 @@ export default function Sidebar() {
             )}
             {(hasPermission(userData.role as Role, "update:churchdetails") ||
               TeamLeader) && (
-              <li className="sidebar-li">
-                <Link
-                  className="sidebar-link"
-                  href="/protected/church/personalize"
-                >
-                  <div className="sidebar-element">
-                    <PiChurchFill />
-                    Personalizza Chiesa
-                  </div>
-                </Link>
-              </li>
+              <>
+                <li className="sidebar-li">
+                  <Link
+                    className="sidebar-link"
+                    href="/protected/church/personalize"
+                  >
+                    <div className="sidebar-element">
+                      <PiChurchFill />
+                      Personalizza Chiesa
+                    </div>
+                  </Link>
+                </li>
+                <li className="sidebar-li">
+                  <Link
+                    className="sidebar-link"
+                    href="/protected/blockouts-calendar"
+                  >
+                    <div className="sidebar-element">
+                      <FaRegCalendarAlt />
+                      Calendario Presenze
+                    </div>
+                  </Link>
+                </li>
+              </>
             )}
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/events">
@@ -201,16 +214,6 @@ export default function Sidebar() {
                 <div className="sidebar-element">
                   <BsMusicNoteList />
                   Canzoni
-                </div>
-              </Link>
-            </li>
-
-            <li className="sidebar-li">
-              <Link className="sidebar-link" href="/protected/calendar">
-                {" "}
-                <div className="sidebar-element">
-                  <FaRegCalendarAlt />
-                  Calendario
                 </div>
               </Link>
             </li>

@@ -58,10 +58,15 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   });
 
   if (error) {
-    console.log("error nell'aggiornamento password", error);
+    return {
+      sucess: false,
+      message: error.message,
+    };
   }
-
-  console.log("  password aggiornata con successo");
+  return {
+    sucess: true,
+    message: "password aggiornata con successo",
+  };
 };
 
 export const signOutAction = async () => {
