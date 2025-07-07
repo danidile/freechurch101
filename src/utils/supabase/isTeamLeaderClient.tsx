@@ -1,9 +1,9 @@
 import { createClient } from "@/utils/supabase/client";
 
 export default async function isTeamLeaderClient() {
-  let isLeader = {
+  let isLeader: { isLeader: boolean; teams: string[] } = {
     isLeader: false,
-    teams: [""],
+    teams: [],
   };
 
   const supabase = createClient();

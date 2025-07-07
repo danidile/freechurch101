@@ -49,10 +49,10 @@ export default function ResetPassword() {
     resolver: zodResolver(resetPasswordSchema),
   });
   const [passwordResetted, setPasswordReset] = useState<boolean>(false);
+
   const convertData = async (data: TresetPasswordSchema) => {
-    console.log(data);
-    resetPasswordAction(data);
-    console.log(data);
+    const response = await resetPasswordAction(data);
+
     setPasswordReset(true);
   };
 

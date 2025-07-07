@@ -13,6 +13,7 @@ export type basicUserData = {
   id?: string;
   email?: string;
   name?: string;
+  phone?: string;
   role?: string;
   lastname?: string;
   church_id?: string;

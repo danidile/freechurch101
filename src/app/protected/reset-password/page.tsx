@@ -1,16 +1,13 @@
 "use client";
 
 import { resetPasswordAction } from "@/app/actions";
-import { FormMessage } from "@/app/components/form-message";
 import { Input, Button, Alert } from "@heroui/react";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TresetPasswordSchema, resetPasswordSchema } from "@/utils/types/auth";
-import { TalertMessage } from "@/utils/types/types";
 import { useState } from "react";
 
-export default function ResetPassword() {
+export default function ResetPasswordComponent() {
   const {
     register,
     handleSubmit,

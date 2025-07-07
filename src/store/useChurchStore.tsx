@@ -5,11 +5,13 @@ import { churchMembersT, eventType, profileT } from "@/utils/types/types";
 import getChurchEventTypes from "./getChurchEventTypes";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getProfilesByChurch } from "@/hooks/GET/getProfilesByChurch";
+import getChurchTags from "./getChurchTags";
 type useChurchStore = {
   eventTypes: eventType[] | null;
   churchMembers: profileT[] | null;
   loadingChurchData: boolean;
   errorChurchData: string | null;
+  tags: string[];
   fetchChurchData: (churchId: string, role?: string) => Promise<void>;
 };
 
@@ -18,12 +20,15 @@ export const useChurchStore = create<useChurchStore>((set) => ({
   churchMembers: null,
   loadingChurchData: false,
   errorChurchData: null,
+  tags: [],
 
   fetchChurchData: async (churchId: string, role?: string) => {
     set({ loadingChurchData: true, errorChurchData: null });
     try {
       const data = await getChurchEventTypes(churchId);
       set({ eventTypes: data, loadingChurchData: false });
+      const tags = await getChurchTags(churchId);
+      set({ tags: tags });
     } catch (err: any) {
       console.error("Error in fetchChurchData:", err);
       set({

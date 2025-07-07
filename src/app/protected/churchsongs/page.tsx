@@ -24,9 +24,7 @@ export default function SongsPageClient() {
   if (loading || loadingSongs) return <p>loading</p>;
 
   if (songs && songs.length > 0) {
-    return (
-        <ChurchSongTableComponent songs={songs} userData={userData} />
-    );
+    return <ChurchSongTableComponent songs={songs} />;
   }
   console.log(userData);
   return (
