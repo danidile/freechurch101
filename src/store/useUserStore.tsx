@@ -35,6 +35,7 @@ export const useUserStore = create<UserStore>((set) => ({
         const fetchedNotifications = await getNotificationsById(data.id);
         set({ notifications: fetchedNotifications });
       }
+      set({ loading: false });
     } catch (err: any) {
       console.error("Error in fetchUser:", err);
       set({ error: err.message || "Unknown error", loading: false });
