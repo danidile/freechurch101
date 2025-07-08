@@ -388,7 +388,7 @@ export default function UpdateSetlistForm({
         <form onSubmit={handleSubmit(convertData)}>
           <div className="flex items-center">
             <div className="flex items-center gap-2">
-              <Popover placement="bottom-start">
+              {/* <Popover placement="bottom-start">
                 <PopoverTrigger>
                   <Button isIconOnly style={{ backgroundColor: eventColor }}>
                     <BiColorFill color="white" size={24} />
@@ -397,7 +397,7 @@ export default function UpdateSetlistForm({
                 <PopoverContent style={{ borderWidth: "0px !important" }}>
                   <TwitterPicker colors={colors} onChange={handleColorChange} />
                 </PopoverContent>
-              </Popover>
+              </Popover> */}
               <h4>
                 {page === "create" && "Crea"}
                 {page === "update" && "Aggiorna"} Evento

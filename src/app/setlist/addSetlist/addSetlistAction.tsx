@@ -33,7 +33,6 @@ export const addSetlist = async (formData: setListT) => {
       date: formData.date,
       event_type: formData.event_type,
       private: formData.private,
-      color: formData.color,
     })
     .select()
     .single();
