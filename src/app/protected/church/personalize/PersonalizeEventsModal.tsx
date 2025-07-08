@@ -18,7 +18,6 @@ import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import updateEventTypesAction from "./updateEventTypesAction";
 import { defaultEventTypes } from "@/constants";
 import { eventType } from "@/utils/types/types";
-import { getpersonalizedEventTypesByChurch } from "@/hooks/GET/getpersonalizedEventTypesByChurch";
 import { useChurchStore } from "@/store/useChurchStore";
 import addEventTypesAction from "./addEventTypesAction";
 import removeEventTypesAction from "./removeEventTypesAction";
@@ -131,8 +130,8 @@ export default function PersonalizeEventsModal() {
               <ModalHeader className="flex flex-col gap-1">
                 Personalizza tipi evento
               </ModalHeader>
-              <ModalBody>
-                <div className="flex flex-col gap-3">
+              <ModalBody className="!px-3">
+                <div className="flex flex-col gap-3 ">
                   {defaultEventTypes.map((eventTypeKey) => {
                     const matchingEvent = personalizedEventTypes.find(
                       (item) => item.key === eventTypeKey.key
@@ -142,8 +141,11 @@ export default function PersonalizeEventsModal() {
                     return (
                       <div
                         key={eventTypeKey.key}
-                        className="grid grid-cols-3 auto-rows-max gap-0 items-center"
-                        style={{ gridTemplateColumns: "45% 10% 45%" }}
+                        className="grid grid-cols-3 border-l-3 auto-rows-max gap-0 pl-2 items-center"
+                        style={{
+                          gridTemplateColumns: "45% 10% 45%",
+                          borderLeftColor: matchingEvent.color,
+                        }}
                       >
                         <p>{eventTypeKey.label}</p>
                         <div className="text-center w-full">

@@ -77,7 +77,6 @@ export const updateSetlistData = async (
     updatedSetlist.date !== setlistData.date.split("T")[0] ||
     updatedSetlist.event_title !== setlistData.event_title ||
     updatedSetlist.private !== setlistData.private ||
-    updatedSetlist.color !== setlistData.color ||
     updatedSetlist.event_type !== setlistData.event_type
   ) {
     hasChanged = true;
@@ -91,7 +90,6 @@ export const updateSetlistData = async (
         date: updatedSetlist.date,
         event_type: updatedSetlist.event_type,
         private: updatedSetlist.private,
-        color: updatedSetlist.color,
       })
       .eq("id", setlistData.id)
       .select();

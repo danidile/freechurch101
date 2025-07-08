@@ -64,7 +64,7 @@ export default function SetListTabs({
                         left: "0px",
                         height: "77%",
                         width: "2px",
-                        backgroundColor: setlist.color,
+                        backgroundColor: matched.color,
                         position: "absolute",
                       }}
                     ></div>
