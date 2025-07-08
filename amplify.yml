@@ -6,8 +6,8 @@ frontend:
         - nvm install 18
         - nvm use 18
         - npm ci
-        - rm -rf .next/cache
-        - rm -rf node_modules/.cache
+        - rm -rf .next .next/cache node_modules/.cache dist .turbo .eslintcache .vercel/output
+
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
