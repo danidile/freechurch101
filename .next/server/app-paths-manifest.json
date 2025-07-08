@@ -1,8 +1,0 @@
-{
-  "/songs/page": "app/songs/page.js",
-  "/setlist/page": "app/setlist/page.js",
-  "/setlist/addSetlist/page": "app/setlist/addSetlist/page.js",
-  "/sundayPlanner/page": "app/sundayPlanner/page.js",
-  "/sundayPlanner/CreateSundayPlan/page": "app/sundayPlanner/CreateSundayPlan/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
-}
