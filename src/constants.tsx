@@ -25,6 +25,7 @@ export const defaultEventTypes = [
     key: "prayermeeting",
     label: "Riunione Preghiera",
     placeholder: "Prayer Night",
+    
   },
   { key: "biblestudy", label: "Studio Biblico", placeholder: "Studio" },
   { key: "preyervigil", label: "Veglia", placeholder: "Veglia notturna" },
