@@ -283,14 +283,6 @@ Image {
 .header-homepage {
   padding: 1rem;
   height: calc(100vh - 70px);
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background-image: url(/images/bg-3.webp);
-  background-size: cover;
-  background-position: 15%;
-  color: white;
 }
 .mobile-mockup {
   width: 500px;
