@@ -7,6 +7,8 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Badge,
+  Button,
 } from "@heroui/react";
 import isLoggedIn from "@/utils/supabase/getuser";
 import logoutTest from "@/app/components/logOutAction";
@@ -16,14 +18,11 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 import Link from "next/link";
+import { FaInbox } from "react-icons/fa";
 
-export default function UserDataMenu({
-  userData,
-}: {
-  userData: basicUserData;
-}) {
+export default function UserDataMenu() {
   const router = useRouter();
-  const { fetchUser } = useUserStore();
+  const { fetchUser, userData, notifications } = useUserStore();
 
   async function logouter() {
     await logoutTest();
@@ -49,92 +48,89 @@ export default function UserDataMenu({
   }, [userData?.id]);
   if (userData.loggedIn) {
     return (
-      <>
-        <NavbarItem>
-          <Dropdown placement="bottom-end">
-            <DropdownTrigger>
-              <Avatar
-                as="button"
-                size="sm"
-                className="transition-transform"
-                src={avatarUrl}
-                onError={() => {
-                  setAvatarUrl("/images/userAvatarDefault.jpg");
-                }}
-              />
-            </DropdownTrigger>
+      <div className="w-[100px] flex flex-row justify-end items-center gap-5 ml-auto mr-9">
+        <Badge
+          size="md"
+          color="danger"
+          content={notifications?.pending?.notifications?.length}
+        >
+          <Button
+            isIconOnly
+            variant="flat"
+            radius="full"
+            color="default"
+            as={Link}
+            href="/notifications"
+          >
+            <FaInbox size={21} />
+          </Button>
+        </Badge>
+        <Dropdown placement="bottom-end">
+          <DropdownTrigger>
+            <Avatar
+              as="button"
+              size="sm"
+              className="transition-transform"
+              src={avatarUrl}
+              onError={() => {
+                setAvatarUrl("/images/userAvatarDefault.jpg");
+              }}
+            />
+          </DropdownTrigger>
 
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-10 gap-2">
-                <small>{userData.email}</small>
-              </DropdownItem>
+          <DropdownMenu aria-label="Profile Actions" variant="flat">
+            <DropdownItem key="profile" className="h-10 gap-2">
+              <small>{userData.email}</small>
+            </DropdownItem>
 
-              <DropdownItem
-                as={Link}
-                key="account"
-                href="/protected/dashboard/account"
-              >
-                Account
-              </DropdownItem>
-              {userData.church_id && (
-                <DropdownItem
-                  as={Link}
-                  key="blockouts"
-                  href="/protected/blockouts"
-                >
-                  Blocca date
+            <DropdownItem
+              as={Link}
+              key="account"
+              href="/protected/dashboard/account"
+            >
+              Account
+            </DropdownItem>
+
+            <DropdownItem as={Link} key="explore" href="/">
+              Esplora
+            </DropdownItem>
+
+            {hasPermission(userData.role as Role, "view:teams") && (
+              <>
+                <DropdownItem as={Link} key="church" href="/protected/church">
+                  Chiesa
                 </DropdownItem>
-              )}
+                <DropdownItem as={Link} key="teams" href="/protected/teams">
+                  Teams
+                </DropdownItem>
+              </>
+            )}
+            <DropdownItem as={Link} key="events" href="/setlist">
+              Eventi
+            </DropdownItem>
+            <DropdownItem as={Link} key="songs" href="/songs">
+              Canzoni
+            </DropdownItem>
 
-              {hasPermission(userData.role as Role, "view:teams") && (
-                <>
-                  <DropdownItem as={Link} key="teams" href="/protected/teams">
-                    Teams
-                  </DropdownItem>
-                  <DropdownItem as={Link} key="songs" href="/italiansongs">
-                    Italian Songs
-                  </DropdownItem>
-                  <DropdownItem
-                    as={Link}
-                    key="share"
-                    href="/protected/dashboard/share"
-                  >
-                    Condividi Canzoni
-                  </DropdownItem>
-                  <DropdownItem
-                    as={Link}
-                    key="import "
-                    className="flex"
-                    href="/protected/dashboard/import-songs"
-                  >
-                    Importa Canzoni
-                  </DropdownItem>
-                  /protected/blockouts
-                </>
-              )}
+            <DropdownItem
+              as={Link}
+              key="account"
+              href="/protected/dashboard/account/completeAccount"
+            >
+              Aggiorna Account
+            </DropdownItem>
 
-              <DropdownItem
-                className="text-red-500"
-                key="logout"
-                color="danger"
-                onPress={logouter}
-              >
-                Esci
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </NavbarItem>
-      </>
+            <DropdownItem
+              className="text-red-500"
+              key="logout"
+              color="danger"
+              onPress={logouter}
+            >
+              Esci
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </div>
     );
   }
-
-  return (
-    <>
-      <NavbarContent justify="end">
-        <NavbarItem>
-          <Link href="/login">Accedi</Link>
-        </NavbarItem>
-      </NavbarContent>
-    </>
-  );
 }

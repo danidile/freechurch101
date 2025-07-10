@@ -21,12 +21,21 @@ import { FaInbox } from "react-icons/fa";
 export default function MenuBarComponentSecondary() {
   const { userData, notifications } = useUserStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  if (userData.loggedIn) {
+    return (
+      <MenuApp
+        userdata={userData || null}
+        notifications={notifications.pending?.notifications?.length}
+      />
+    );
+  }
   return (
     <>
       <Navbar
         onMenuOpenChange={setIsMenuOpen}
         isMenuOpen={isMenuOpen}
-        className="standalone:!hidden  h-[75px] bg-[#f8f8f7]"
+        className="standalone:!hidden  h-[75px] bg-[#ffffff0] relative z-30"
       >
         <NavbarContent>
           <NavbarMenuToggle
@@ -63,14 +72,15 @@ export default function MenuBarComponentSecondary() {
                     Artisti
                   </Link>
                 </NavbarItem>
-                <NavbarItem>
-                  <Link color="foreground" href="/esplora">
-                    Esplora
-                  </Link>
-                </NavbarItem>
+
                 <NavbarItem>
                   <Link color="foreground" href="/italiansongs">
                     Canzoni
+                  </Link>
+                </NavbarItem>
+                <NavbarItem>
+                  <Link color="primary" href="/login">
+                    Accedi
                   </Link>
                 </NavbarItem>
               </>
@@ -83,18 +93,6 @@ export default function MenuBarComponentSecondary() {
                   Canzoni
                 </Link>
               </NavbarItem>
-              <NavbarItem isActive>
-                <Link aria-current="page" href="/setlist">
-                  Eventi
-                </Link>
-              </NavbarItem>
-              {hasPermission(userData.role as Role, "view:churchmembers") && (
-                <NavbarItem>
-                  <Link color="foreground" href="/people">
-                    People
-                  </Link>
-                </NavbarItem>
-              )}
               <NavbarItem isActive>
                 <Badge
                   size="md"
@@ -116,50 +114,35 @@ export default function MenuBarComponentSecondary() {
             </>
           )}
         </NavbarContent>
-        <UserDataMenu userData={userData} />
 
         {/* // Mobile Menu */}
         <NavbarMenu>
           <NavbarItem>
-            <Link
-              onClick={() => setIsMenuOpen(false)}
-              color="foreground"
-              href="/songs"
-            >
+            <Link color="foreground" href="/">
+              Home
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link color="foreground" href="/app">
+              App
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link color="foreground" href="/artists">
+              Artisti
+            </Link>
+          </NavbarItem>
+
+          <NavbarItem>
+            <Link color="foreground" href="/italiansongs">
               Canzoni
             </Link>
           </NavbarItem>
-          {userData.loggedIn && (
-            <>
-              <NavbarItem isActive>
-                <Link
-                  onClick={() => setIsMenuOpen(false)}
-                  aria-current="page"
-                  href="/setlist"
-                >
-                  Eventi
-                </Link>
-              </NavbarItem>
-              <NavbarItem isActive>
-                <Link
-                  onClick={() => setIsMenuOpen(false)}
-                  aria-current="page"
-                  href="/people"
-                >
-                  Persone
-                </Link>
-              </NavbarItem>
-            </>
-          )}
-
-          {!userData ||
-            (!userData.loggedIn && (
-              <>
-                <NavbarItem>
-                  <Link href="/login">Accedi</Link>
-                </NavbarItem>
-              </>
-            ))}
+          <NavbarItem>
+            <Link color="primary" href="/login">
+              Accedi
+            </Link>
+          </NavbarItem>
         </NavbarMenu>
       </Navbar>
 

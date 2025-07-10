@@ -9,7 +9,7 @@ export const getSetListsByChurch = async (churchId: string) => {
   let setlistsFull;
   const { data: setlist, error } = await supabase
     .from("setlist")
-    .select("id,event_type,date,private,color")
+    .select("id,event_type,date,private,color,hour")
     .eq("church", churchId)
     .order("date", { ascending: true });
   if (setlist) {

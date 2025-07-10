@@ -45,7 +45,7 @@ export default function CalendarTabs({
   };
 
   return (
-    <div className="flex w-full flex-col max-w-[900px] mx-auto">
+    <div className="flex w-full flex-col max-w-[1300px] mx-auto">
       {/* Navigation */}
       <div className="flex justify-between">
         <Button

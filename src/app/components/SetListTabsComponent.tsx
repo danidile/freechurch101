@@ -17,6 +17,7 @@ export default function SetListTabs({
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
   let month = "ve";
+
   return (
     <div className="setlistviewmode-container">
       {setlists &&
@@ -45,6 +46,7 @@ export default function SetListTabs({
             const matched = eventTypes?.find(
               (event) => event.key === setlist.event_type
             );
+            const date = new Date(setlist.hour);
             return (
               <>
                 {newMonth && (
@@ -55,7 +57,7 @@ export default function SetListTabs({
                   </div>
                 )}
                 <TransitionLink
-                  className="setlist-list-link border-1  border-gray-100 over my-1 bg-white   !max-w-full"
+                  className="setlist-list-link    !max-w-full"
                   href={`/setlist/${setlist.id}`}
                 >
                   <div className="setlist-list" key={setlist.id}>
@@ -81,6 +83,19 @@ export default function SetListTabs({
                     </div>
 
                     <div className="setlist-name-exp" key={setlist.id}>
+                      <small>
+                        {setlist?.hour && (
+                          <strong>
+                            {new Date(
+                              `1970-01-01T${setlist.hour}`
+                            ).toLocaleTimeString([], {
+                              hour: "numeric",
+                              minute: "2-digit",
+                              hour12: false, // or false for 24h format
+                            })}{" "}
+                          </strong>
+                        )}
+                      </small>
                       <p>
                         {matched?.alt || matched?.label || "Evento sconosciuto"}
                       </p>

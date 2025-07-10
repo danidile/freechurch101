@@ -77,6 +77,7 @@ export const updateSetlistData = async (
     updatedSetlist.date !== setlistData.date.split("T")[0] ||
     updatedSetlist.event_title !== setlistData.event_title ||
     updatedSetlist.private !== setlistData.private ||
+    updatedSetlist.hour !== setlistData.hour ||
     updatedSetlist.event_type !== setlistData.event_type
   ) {
     hasChanged = true;
@@ -88,6 +89,7 @@ export const updateSetlistData = async (
       .from("setlist")
       .update({
         date: updatedSetlist.date,
+        hour: updatedSetlist.hour,
         event_type: updatedSetlist.event_type,
         private: updatedSetlist.private,
       })

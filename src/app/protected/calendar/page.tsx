@@ -1,5 +1,0 @@
-import BlockoutsCalendarComponent from "../blockouts-calendar/calendarComponent";
-
-export default async function Page() {
-  return <BlockoutsCalendarComponent />;
-}

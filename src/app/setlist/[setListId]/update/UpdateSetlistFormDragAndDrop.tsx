@@ -7,7 +7,18 @@ import {
   ModalFooter,
   Chip,
   useDisclosure,
+  TimeInput,
 } from "@heroui/react";
+import {
+  DateValue,
+  CalendarDate,
+  Time,
+  parseTime,
+} from "@internationalized/date";
+
+import { DatePicker } from "@heroui/react";
+import { parseDate, getLocalTimeZone } from "@internationalized/date";
+import { useDateFormatter } from "@react-aria/i18n";
 
 import {
   ChipColor,
@@ -40,7 +51,7 @@ import {
 } from "@heroui/react";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TwitterPicker, ColorResult } from "react-color";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
@@ -55,7 +66,7 @@ import { FaPlus, FaRegCalendarAlt } from "react-icons/fa";
 import { ScheduleComponents } from "./ScheduleComponents";
 import { useChurchStore } from "@/store/useChurchStore";
 import { MdEditNote, MdOutlineTitle } from "react-icons/md";
-import { TbMusicPlus } from "react-icons/tb";
+import { TbClockHour2, TbMusicPlus } from "react-icons/tb";
 import BlockoutsCalendarComponent from "@/app/protected/blockouts-calendar/calendarComponent";
 export default function UpdateSetlistForm({
   teams,
@@ -74,9 +85,14 @@ export default function UpdateSetlistForm({
 
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
-  const [eventDate, setEventDate] = useState<string>(
-    setlistData?.date?.split("T")[0] || todaysDate
-  );
+  const [eventDate, setEventDate] = useState<DateValue | null>(() => {
+    if (setlistData?.date) {
+      return parseDate(setlistData.date.split("T")[0]); // "2025-07-09"
+    }
+    return parseDate(todaysDate);
+  });
+  let formatter = useDateFormatter({ dateStyle: "full" });
+
   const [state, setState] = useState<setListSongT[]>(
     setlistData?.setListSongs || []
   );
@@ -93,12 +109,20 @@ export default function UpdateSetlistForm({
   const [showBlockoutsCalendar, setShowBlockoutsCalendar] =
     useState<boolean>(false);
   const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
-  const [previousEventDate, setPreviousEventDate] = useState<string>(
-    setlistData?.date?.split("T")[0] || todaysDate
+  const [previousEventDate, setPreviousEventDate] = useState<DateValue | null>(
+    () => {
+      if (setlistData?.date) {
+        return parseDate(setlistData.date.split("T")[0]); // "2025-07-09"
+      }
+      return parseDate(todaysDate);
+    }
   );
-  const [pendingDate, setPendingDate] = useState<string>(
-    setlistData?.date?.split("T")[0] || todaysDate
-  );
+  const [pendingDate, setPendingDate] = useState<DateValue | null>(() => {
+    if (setlistData?.date) {
+      return parseDate(setlistData.date.split("T")[0]); // "2025-07-09"
+    }
+    return parseDate(todaysDate);
+  });
   const container = useRef(null);
   useEffect(() => {
     setEventDetails(setlistData);
@@ -106,10 +130,13 @@ export default function UpdateSetlistForm({
   const {
     handleSubmit,
     register,
+    control,
     watch,
     formState: { isSubmitting },
   } = useForm<formValues>({
-    resolver: zodResolver(eventSchema),
+    defaultValues: {
+      hour: setlistData.hour || "11:45",
+    },
   });
 
   const addTeam = (id: string) => {
@@ -185,6 +212,15 @@ export default function UpdateSetlistForm({
     );
   };
 
+  function dateValueToString(date: DateValue): string {
+    if (!(date instanceof CalendarDate)) return "";
+
+    const year = date.year;
+    const month = String(date.month).padStart(2, "0");
+    const day = String(date.day).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
   const addSongtoSetlist = (song: setListSongT) => {
     setState([
       ...state,
@@ -292,12 +328,13 @@ export default function UpdateSetlistForm({
       id: setlistData?.id || crypto.randomUUID(),
       event_title: watchAllFields.event_title,
       event_type: data.event_type,
-      date: watchAllFields.date,
+      date: eventDate.toString(),
       private: data.private,
       setListSongs: state,
       teams: teamsState,
       color: eventColor,
       schedule: schedule,
+      hour: watchAllFields.hour,
     };
     console.log("updatedSetlist");
     console.log(updatedSetlist);
@@ -336,52 +373,6 @@ export default function UpdateSetlistForm({
     return teamMember?.roles;
   };
 
-  const renderCell = useCallback(
-    (user: ChurchMemberByTeam, columnKey: React.Key) => {
-      const cellValue = user[columnKey.toString() as keyof ChurchMemberByTeam];
-
-      switch (columnKey) {
-        case "name":
-          return <p>{user.name + " " + user.lastname}</p>;
-        case "roles":
-          return <p>{user.selected_roles}</p>;
-
-        case "status":
-          const statusColorMap: Record<string, ChipColor> = {
-            pending: "warning",
-            confirmed: "success",
-            denied: "danger",
-          };
-
-          const colorChip: ChipColor = statusColorMap[user.status] ?? "default";
-          return (
-            <Chip
-              className="capitalize"
-              color={colorChip}
-              size="sm"
-              variant="flat"
-            >
-              {user.status === "pending" && <>In attesa</>}
-              {user.status === "confirmed" && <>Confermato</>}
-              {user.status === "denied" && <>Rifiutato</>}
-            </Chip>
-          );
-
-        default:
-          if (Array.isArray(cellValue)) {
-            // se è array di stringhe
-            if (typeof cellValue[0] === "string") {
-              return <p>{cellValue.join(", ")}</p>;
-            }
-            // altrimenti (array di oggetti) ritorna null o una stringa fallback
-            return null;
-          }
-          // per altri tipi (string, boolean, JSX.Element) ritorna direttamente
-          return cellValue as React.ReactNode;
-      }
-    },
-    []
-  );
   return (
     <div className="container-sub">
       <div className=" crea-setlist-container">
@@ -454,9 +445,51 @@ export default function UpdateSetlistForm({
             </div> */}
 
             <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-              <Input
+              <Controller
+                name="hour"
+                control={control}
+                render={({ field }) => {
+                  const timeValue = parseTime(field.value); // string → Time
+
+                  return (
+                    <TimeInput
+                      label="Ora"
+                      variant="underlined"
+                      startContent={<TbClockHour2 />}
+                      value={timeValue}
+                      onChange={(newTime) => {
+                        const hourStr = newTime.toString(); // Time → string "HH:mm"
+                        field.onChange(hourStr);
+                      }}
+                    />
+                  );
+                }}
+              />
+              <DatePicker
+                label="Data"
+                variant="underlined"
+                showMonthAndYearPickers
+                value={eventDate}
+                onChange={(newDate) => {
+                  const newDateStr = dateValueToString(newDate); // ← conversione qui
+                  const unavailable = getUnavailableMembers(
+                    newDateStr,
+                    teamsState
+                  );
+
+                  if (unavailable.length > 0) {
+                    setPreviousEventDate(eventDate);
+                    setIsDateConflictModalOpen(true);
+                    setPendingDate(newDate);
+                  } else {
+                    setEventDate(newDate);
+                  }
+                }}
+              />
+
+              {/* <Input
                 type="date"
-                {...register("date")}
+                // {...register("date")}
                 label="Event Date"
                 variant="bordered"
                 size="sm"
@@ -476,7 +509,7 @@ export default function UpdateSetlistForm({
                     setEventDate(newDate);
                   }
                 }}
-              />
+              /> */}
             </div>
           </div>
           <div className="">
@@ -564,7 +597,10 @@ export default function UpdateSetlistForm({
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
             <div className="flex flex-row justify-start gap-3 items-center">
               <h5>Turnazioni</h5>
-              <Tooltip className="text-sm" content="Mostra calendario con date bloccate.">
+              <Tooltip
+                className="text-sm"
+                content="Mostra calendario con date bloccate."
+              >
                 <Button isIconOnly className="ml-0" onPress={onOpen}>
                   <FaRegCalendarAlt />
                 </Button>
@@ -637,7 +673,11 @@ export default function UpdateSetlistForm({
                               member.blockouts?.some((b) => {
                                 const start = new Date(b.start);
                                 const end = new Date(b.end);
-                                const target = new Date(eventDate);
+                                const target = new Date(
+                                  eventDate.year,
+                                  eventDate.month - 1,
+                                  eventDate.day
+                                );
                                 return target >= start && target <= end;
                               }) ?? false,
                           })) || []

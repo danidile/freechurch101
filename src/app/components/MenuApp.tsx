@@ -12,7 +12,7 @@ import {
   IoNotificationsOutline,
   IoNotificationsSharp,
 } from "react-icons/io5";
-import { FaRegCalendarAlt } from "react-icons/fa";
+import { FaRegCalendar, FaRegCalendarAlt } from "react-icons/fa";
 import { Badge } from "@heroui/badge";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
@@ -26,6 +26,7 @@ import {
   BsCalendar2WeekFill,
   BsCalendarWeek,
 } from "react-icons/bs";
+import { FaRegCalendarDays } from "react-icons/fa6";
 
 export default function MenuApp({
   notifications,
@@ -60,9 +61,9 @@ export default function MenuApp({
           {userdata.loggedIn && (
             <TransitionLink href="/setlist" className="pwaiconsmenu">
               {parameter === "setlist" ? (
-                <BsCalendar2Week />
+                <FaRegCalendarDays />
               ) : (
-                <BsCalendar2WeekFill />
+                <FaRegCalendarAlt />
               )}
               <small>Eventi</small>
             </TransitionLink>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { getSongs } from "@/hooks/GET/getSongs";
 import { useUserStore } from "@/store/useUserStore";
-import SongslistComponent from "../components/songslistComponent";
 import LoadingSongsPage from "./loading";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { songType } from "@/utils/types/types";
@@ -16,6 +15,7 @@ import {
   DropdownTrigger,
 } from "@heroui/dropdown";
 import { FaPlus } from "react-icons/fa";
+import ChurchSongTableComponent from "./ChurchSongTableComponent";
 
 export default function SongsPageClient() {
   const { userData, loading } = useUserStore();
@@ -36,7 +36,7 @@ export default function SongsPageClient() {
   if (songs && songs.length > 0) {
     return (
       <div className="container-sub">
-        <SongslistComponent songs={songs} userData={userData} />
+        <ChurchSongTableComponent songs={songs} />
       </div>
     );
   }
@@ -56,10 +56,22 @@ export default function SongsPageClient() {
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Static Actions">
-                  <DropdownItem as={Link} href="/songs/addSong" key="add" color="primary" variant="flat">
+                  <DropdownItem
+                    as={Link}
+                    href="/songs/addSong"
+                    key="add"
+                    color="primary"
+                    variant="flat"
+                  >
                     Aggiungi canzone
                   </DropdownItem>
-                  <DropdownItem as={Link} href="/artists" key="import" color="primary" variant="flat">
+                  <DropdownItem
+                    as={Link}
+                    href="/artists"
+                    key="import"
+                    color="primary"
+                    variant="flat"
+                  >
                     Importa da ChurchLab
                   </DropdownItem>
                 </DropdownMenu>

@@ -31,11 +31,16 @@ export const addSetlist = async (formData: setListT) => {
       church: church,
       created_by: user?.id,
       date: formData.date,
+      hour: formData.hour,
       event_type: formData.event_type,
       private: formData.private,
     })
     .select()
     .single();
+  if (error) {
+    console.log("error in setlist insert", error);
+    return;
+  }
   // Take the id of the setlist just created
   const sectionId = data.id;
 
