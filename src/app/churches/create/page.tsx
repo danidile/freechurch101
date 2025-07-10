@@ -1,6 +1,6 @@
 // app/login/page.tsx
 import GetParamsMessage from "@/app/components/getParams";
-import CreateChurch from "./loginForm";
+import CreateChurch from "./CreateChurchForm";
 
 export default function Page({
   searchParams,

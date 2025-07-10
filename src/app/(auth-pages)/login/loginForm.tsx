@@ -114,43 +114,43 @@ export default function LoginForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNext = () => {
-    setError("");
-    if (step === 1 && (!formData.firstName || !formData.lastName)) {
-      return setError("Inserisci nome e cognome per procedere.");
-    }
-    if (step === 2 && !isCreatingChurch && !formData.church) {
-      return setError("Seleziona la tua chiesa");
-    }
-    if (step === 2 && isCreatingChurch && !formData.churchName) {
-      return setError("Dai un nome alla tua chiesa");
-    }
-    if (step === 2 && isCreatingChurch && !formData.pastor) {
-      return setError("Inserisci il nome del tuo pastore.");
-    }
+  // const handleNext = () => {
+  //   setError("");
+  //   if (step === 1 && (!formData.firstName || !formData.lastName)) {
+  //     return setError("Inserisci nome e cognome per procedere.");
+  //   }
+  //   if (step === 2 && !isCreatingChurch && !formData.church) {
+  //     return setError("Seleziona la tua chiesa");
+  //   }
+  //   if (step === 2 && isCreatingChurch && !formData.churchName) {
+  //     return setError("Dai un nome alla tua chiesa");
+  //   }
+  //   if (step === 2 && isCreatingChurch && !formData.pastor) {
+  //     return setError("Inserisci il nome del tuo pastore.");
+  //   }
 
-    setDirection(1);
-    setStep(step + 1);
-  };
-  const handleBack = () => {
-    if (step > 1) {
-      setDirection(-1);
-      setStep(step - 1);
-    }
-  };
+  //   setDirection(1);
+  //   setStep(step + 1);
+  // };
+  // const handleBack = () => {
+  //   if (step > 1) {
+  //     setDirection(-1);
+  //     setStep(step - 1);
+  //   }
+  // };
 
-  const handleRegister = async () => {
-    setError("");
-    setSending(true);
-    const response = await regristrationAction(formData, isCreatingChurch);
-    if (response!.success) {
-      registrationEmail(formData);
-      router.push("/protected/dashboard/account");
-      setSending(false);
-      await fetchUser();
-    } else if (response!.error) return setError(response.error);
-    setSuccess(true);
-  };
+  // const handleRegister = async () => {
+  //   setError("");
+  //   setSending(true);
+  //   const response = await regristrationAction(formData, isCreatingChurch);
+  //   if (response!.success) {
+  //     registrationEmail(formData);
+  //     router.push("/protected/dashboard/account");
+  //     setSending(false);
+  //     await fetchUser();
+  //   } else if (response!.error) return setError(response.error);
+  //   setSuccess(true);
+  // };
 
   const variants = {
     enter: (direction: number) => ({
@@ -168,349 +168,87 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="container-sub">
-      <div className="flex flex-col">
-        <Card className="max-w-full w-[340px]">
-          <CardHeader className="text-center">
-            <h1 className="text-2xl font-medium capitalize mx-auto my-4">
-              {selected}
-            </h1>
-          </CardHeader>
-          <CardBody>
-            <Tabs
-              fullWidth
-              aria-label="Tabs form"
-              selectedKey={selected}
-              size="md"
-              onSelectionChange={(key) => setSelected(String(key))}
+    <div className="w-full max-w-[400px]">
+      <h2 className="font-regular">Accedi</h2>
+      <small>
+        Non hai un account? Se la tua chiesa è già registrata, chiedi al tuo
+        responsabile di invitarti.
+      </small>{" "}
+      <Link href="/churches/create" className="text-center text-small ">
+        <small>
+          Altrimenti, <strong className="underlined ">Clicca qui</strong> per
+          creare un account per la tua chiesa.
+        </small>
+      </Link>
+      <form
+        className="flex mt-12 flex-col gap-4 max-w-[500px] w-full"
+        onSubmit={handleSubmit(loginFunction)}
+      >
+        <Input
+          {...register("email")}
+          isRequired
+          name="email"
+          label="Email"
+          variant="underlined"
+          size="sm"
+          fullWidth
+          placeholder="email..."
+          minLength={8}
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        <Input
+          fullWidth
+          variant="underlined"
+          size="sm"
+          name="password"
+          {...register("password")}
+          isRequired
+          value={formData.password}
+          onChange={handleChange}
+          label="Password"
+          minLength={8}
+          placeholder="password..."
+          endContent={
+            <button
+              aria-label="toggle password visibility"
+              className="focus:outline-none"
+              type="button"
+              onClick={toggleVisibility}
             >
-              <Tab key="accedi" title="Accedi">
-                <form
-                  className="flex flex-col gap-4"
-                  onSubmit={handleSubmit(loginFunction)}
-                >
-                  <Input
-                    {...register("email")}
-                    isRequired
-                    name="email"
-                    label="Email"
-                    placeholder="email..."
-                    minLength={8}
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                  <Input
-                    name="password"
-                    {...register("password")}
-                    isRequired
-                    value={formData.password}
-                    onChange={handleChange}
-                    label="Password"
-                    minLength={8}
-                    placeholder="password..."
-                    endContent={
-                      <button
-                        aria-label="toggle password visibility"
-                        className="focus:outline-none"
-                        type="button"
-                        onClick={toggleVisibility}
-                      >
-                        {isVisible ? (
-                          <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
-                        ) : (
-                          <FaEye className="text-xl text-default-400 pointer-events-none" />
-                        )}
-                      </button>
-                    }
-                    type={isVisible ? "text" : "password"}
-                  />
-                  <Link
-                    href="/forgot-password"
-                    className="text-center text-small text-blue-600 underline"
-                  >
-                    Password dimenticata?
-                  </Link>
-                  <Button
-                    fullWidth
-                    color="primary"
-                    variant="shadow"
-                    type="submit"
-                    className="mb-4"
-                    disabled={isSubmitting}
-                    onPress={loginFunction}
-                  >
-                    {isSubmitting ? (
-                      <Spinner color="white" size="sm" />
-                    ) : (
-                      "Accedi"
-                    )}
-                  </Button>
-                  <SignInWithGoogleButton />
-                  {error && (
-                    <>
-                      <Alert color="danger">{error}</Alert>
-                    </>
-                  )}
-                </form>
-              </Tab>
+              {isVisible ? (
+                <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
+              ) : (
+                <FaEye className="text-xl text-default-400 pointer-events-none" />
+              )}
+            </button>
+          }
+          type={isVisible ? "text" : "password"}
+        />
 
-              <Tab key="iscriviti" title="Iscriviti">
-                <form
-                  className="flex flex-col gap-4"
-                  onSubmit={handleSubmit(handleRegister)}
-                >
-                  {success ? (
-                    <Alert color="success">
-                      Utente registrato con successo!
-                    </Alert>
-                  ) : (
-                    <>
-                      <AnimatePresence mode="wait" custom={direction}>
-                        <motion.div
-                          key={step}
-                          custom={direction}
-                          variants={variants}
-                          initial="enter"
-                          animate="center"
-                          exit="exit"
-                          className="flex flex-col gap-4"
-                          transition={{ duration: 0.4 }}
-                        >
-                          {step === 1 && (
-                            <>
-                              <Input
-                                isRequired
-                                minLength={3}
-                                label="Nome"
-                                name="firstName"
-                                placeholder="Marco"
-                                value={formData.firstName}
-                                onChange={handleChange}
-                              />
-
-                              <Input
-                                minLength={3}
-                                isRequired
-                                type="text"
-                                label="Cognome"
-                                name="lastName"
-                                placeholder="Rossi"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                              />
-                            </>
-                          )}
-
-                          {step === 2 && (
-                            <>
-                              {!isCreatingChurch && (
-                                <>
-                                  <Autocomplete
-                                    inputValue={churchSearchQuery}
-                                    onInputChange={(value) =>
-                                      setChurchSearchQuery(value)
-                                    }
-                                    defaultSelectedKey={userData.church_id}
-                                    variant="bordered"
-                                    isRequired={isCreatingChurch}
-                                    name="church"
-                                    placeholder="La mia chiesa..."
-                                    label="Seleziona la tua chiesa."
-                                    selectedKey={formData.church}
-                                    onSelectionChange={(key) =>
-                                      setFormData((prev) => ({
-                                        ...prev,
-                                        church: String(key),
-                                      }))
-                                    }
-                                  >
-                                    {filteredChurches.map((church) => (
-                                      <AutocompleteItem
-                                        key={church.id}
-                                        id={church.id}
-                                        textValue={
-                                          church.churchName +
-                                          " " +
-                                          church.address +
-                                          " " +
-                                          church.city +
-                                          " " +
-                                          church.provincia
-                                        }
-                                      >
-                                        <p>{church.churchName}</p>
-                                        <small className="truncate">
-                                          {church.address && (
-                                            <>{church.address + ", "}</>
-                                          )}
-                                          {church.provincia && (
-                                            <>{church.provincia + ", "}</>
-                                          )}
-                                          {church.city && <>{church.city}</>}
-                                        </small>
-                                      </AutocompleteItem>
-                                    ))}
-                                  </Autocomplete>
-                                  <small>
-                                    Digita almeno 3 caratteri per trovare la tua
-                                    chiesa
-                                  </small>
-
-                                  <div className="flex flex-row justify-center items-center">
-                                    <small>
-                                      Se la tua chiesa non è nella lista
-                                      <Button
-                                        variant="light"
-                                        color="primary"
-                                        className="ml-2"
-                                        onPress={() => {
-                                          setIsCreatingChurch(true);
-                                          setFormData((prev) => ({
-                                            ...prev,
-                                            isCreatingChurch: true,
-                                          }));
-                                        }}
-                                      >
-                                        Clicca qui
-                                      </Button>
-                                    </small>
-                                  </div>
-                                </>
-                              )}
-                              {isCreatingChurch && (
-                                <>
-                                  <Input
-                                    {...register("churchName")}
-                                    label="Church Name"
-                                    name="churchName"
-                                    placeholder="La mia chiesa "
-                                    required
-                                    value={formData.churchName}
-                                    onChange={handleChange}
-                                  />
-                                  <Input
-                                    {...register("pastor")}
-                                    label="Pastor"
-                                    name="pastor"
-                                    placeholder="Paolo "
-                                    required
-                                    value={formData.pastor}
-                                    onChange={handleChange}
-                                  />
-                                  <Input
-                                    {...register("address")}
-                                    label="Address"
-                                    name="address"
-                                    placeholder="Via XII Sett.."
-                                    value={formData.address}
-                                    onChange={handleChange}
-                                  />
-                                  <Input
-                                    {...register("website")}
-                                    label="Sito Web"
-                                    name="website"
-                                    placeholder="www.lamiachiesa.it"
-                                    value={formData.website}
-                                    onChange={handleChange}
-                                  />
-                                  <Input
-                                    {...register("igHandle")}
-                                    label="handle Instagram"
-                                    name="igHandle"
-                                    placeholder="@my_church"
-                                    value={formData.igHandle}
-                                    onChange={handleChange}
-                                  />
-                                </>
-                              )}
-                            </>
-                          )}
-
-                          {step === 3 && (
-                            <>
-                              <Input
-                                {...register("email")}
-                                isRequired
-                                name="email"
-                                label="Email"
-                                placeholder="email..."
-                                minLength={8}
-                                type="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                              />
-                              <Input
-                                name="password"
-                                {...register("password")}
-                                isRequired
-                                value={formData.password}
-                                onChange={handleChange}
-                                label="Password"
-                                minLength={8}
-                                placeholder="password..."
-                                endContent={
-                                  <button
-                                    aria-label="toggle password visibility"
-                                    className="focus:outline-none"
-                                    type="button"
-                                    onClick={toggleVisibility}
-                                  >
-                                    {isVisible ? (
-                                      <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
-                                    ) : (
-                                      <FaEye className="text-xl text-default-400 pointer-events-none" />
-                                    )}
-                                  </button>
-                                }
-                                type={isVisible ? "text" : "password"}
-                              />
-                            </>
-                          )}
-                        </motion.div>
-                      </AnimatePresence>
-
-                      {error && (
-                        <>
-                          <Alert color="danger" description={error}></Alert>
-                        </>
-                      )}
-
-                      <div className="flex justify-between items-center mt-4 gap-4">
-                        {step > 1 && (
-                          <Button
-                            variant="flat"
-                            color="danger"
-                            fullWidth
-                            onPress={handleBack}
-                          >
-                            Indietro
-                          </Button>
-                        )}
-                        {step < 3 ? (
-                          <Button color="primary" onPress={handleNext}>
-                            Avanti <GrFormNext />
-                          </Button>
-                        ) : (
-                          <Button
-                            onPress={handleRegister}
-                            disabled={sending}
-                            fullWidth
-                            color="primary"
-                            variant="solid"
-                          >
-                            {sending ? "..." : "Iscriviti"}
-                          </Button>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </form>
-              </Tab>
-            </Tabs>
-          </CardBody>
-        </Card>
-      </div>
+        <Button
+          fullWidth
+          variant="solid"
+          type="submit"
+          radius="sm"
+          className="mb-4 bg-gradient-to-br from-[#474be1] to-[#0e117f] text-white"
+          disabled={isSubmitting}
+          onPress={loginFunction}
+        >
+          {isSubmitting ? <Spinner color="white" size="sm" /> : "Accedi"}
+        </Button>
+        {/* <SignInWithGoogleButton /> */}
+        {error && (
+          <>
+            <Alert color="danger">{error}</Alert>
+          </>
+        )}
+        <Link href="/forgot-password" className="text-center text-small ">
+          <span className="text-gray-500">Password dimenticata? </span>
+          <strong className="underlined ">Clicca qui</strong>
+        </Link>
+      </form>
     </div>
   );
 }
