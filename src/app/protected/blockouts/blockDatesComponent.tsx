@@ -187,7 +187,7 @@ export default function BlockDatesComponent({}: {}) {
                     color="danger"
                     className="your-custom-calendar-class"
                     aria-label="Date (Uncontrolled)"
-                    onChange={setValue}
+                    onChange={() => setValue}
                     minValue={today(getLocalTimeZone()).add({ days: 1 })}
                     allowsNonContiguousRanges
                     isDateUnavailable={(date) =>

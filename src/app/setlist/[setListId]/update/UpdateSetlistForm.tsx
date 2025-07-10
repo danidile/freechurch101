@@ -101,9 +101,7 @@ export default function UpdateSetlistForm({
     register,
     watch,
     formState: { isSubmitting },
-  } = useForm<formValues>({
-    resolver: zodResolver(eventSchema),
-  });
+  } = useForm<formValues>();
 
   const addTeam = (id: string) => {
     setTeamsState([
@@ -582,7 +580,7 @@ export default function UpdateSetlistForm({
                       }
                       bottomContent={
                         <div className="team-title-container">
-                          <SelectWorshipTeamMemberDrawer
+                          {/* <SelectWorshipTeamMemberDrawer
                             state={section.selected}
                             type="add"
                             teamMembers={section.team_members}
@@ -590,7 +588,7 @@ export default function UpdateSetlistForm({
                             section={null}
                             teamId={section.id}
                             date={eventDate}
-                          />
+                          /> */}
                         </div>
                       }
                     >

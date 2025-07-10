@@ -1,4 +1,4 @@
-import SongsPageClient from "../churchsongs/page";
+import SongsPageClient from "@/app/songs/SongsPageClient";
 
 export default function Page() {
   return <SongsPageClient />;

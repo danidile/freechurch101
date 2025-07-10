@@ -47,13 +47,7 @@ export default function TeamsForm({
     register,
     watch,
     formState: { isSubmitting, errors },
-  } = useForm<teamFormValues>({
-    resolver: zodResolver(eventSchema), // ← MISSING!
-    defaultValues: {
-      team_name: churchTeam?.team_name ?? "Worship Team",
-      is_worship: churchTeam?.is_worship ?? false,
-    },
-  });
+  } = useForm<teamFormValues>();
 
   // MANAGE roleS
 
