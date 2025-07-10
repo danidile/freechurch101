@@ -74,7 +74,7 @@ export default function MenuBarComponent({
           )}
         </NavbarContent>
 
-        <UserDataMenu userData={userData} />
+        <UserDataMenu />
 
         <NavbarMenu>
           {menuItems.map((item, index) => (

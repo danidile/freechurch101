@@ -69,7 +69,7 @@ function prepareScheduleDiff(
 export const updateSetlistData = async (
   updatedSetlist: setListT,
   setlistData: setListT,
-  supabase: SupabaseClient
+  supabase: SupabaseClient<any, any, any>
 ) => {
   let hasChanged: boolean = false;
 
@@ -110,7 +110,7 @@ export const updateSetlistData = async (
 export const updateSetlistSchedule = async (
   updatedSetlist: setListT,
   setlistData: setListT,
-  supabase: SupabaseClient
+  supabase: SupabaseClient<any, any, any>
 ) => {
   const diff = prepareScheduleDiff(
     updatedSetlist.schedule,
@@ -278,7 +278,7 @@ function compareTeamMembers(a: FlattenedMember, b: FlattenedMember) {
 export const updateSetlistTeam = async (
   updatedSetlist: setListT,
   setlistData: setListT,
-  supabase: SupabaseClient
+  supabase: SupabaseClient<any, any, any>
 ) => {
   const newMembers = flattenTeams(updatedSetlist);
   const oldMembers = flattenTeams(setlistData);
