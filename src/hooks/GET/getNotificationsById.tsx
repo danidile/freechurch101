@@ -17,7 +17,7 @@ export const getNotificationsById = async (
     .from("event-team")
     .select(
       `id, 
-       setlist:setlist!inner(date, event_title), 
+       setlist:setlist!inner(date, event_title,event_type), 
        team:team!inner(team_name),status`
     )
     .eq("member", userId)

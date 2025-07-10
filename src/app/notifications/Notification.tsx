@@ -13,6 +13,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { confirmAction } from "./confirmAction";
 import { denyAction } from "./denyAction";
+import { useChurchStore } from "@/store/useChurchStore";
 export default function NotificationElement({
   details,
   type,
@@ -31,6 +32,7 @@ export default function NotificationElement({
   ) => void;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { eventTypes } = useChurchStore();
 
   const date = new Date(notification.setlist.date);
   const readableCurrentDate = date.toLocaleString("it-IT", {
@@ -56,6 +58,9 @@ export default function NotificationElement({
     isSunday = true;
   }
   if (nextDate <= date) {
+    const matched = eventTypes?.find(
+      (event) => event.key === notification.setlist.event_type
+    );
     return (
       <motion.div
         initial={{
@@ -91,7 +96,8 @@ export default function NotificationElement({
           </div>
 
           <p className="setlist-name" key={notification.id}>
-            {notification.setlist.event_title}
+            {matched?.alt || matched?.label || "Evento sconosciuto"}
+
             <br />
             <small>{notification.team.team_name}</small>
           </p>
@@ -103,9 +109,11 @@ export default function NotificationElement({
               <>
                 <ModalHeader className="flex flex-col gap-1"></ModalHeader>
                 <ModalBody>
-                  <h5>{notification.setlist.event_title}</h5>
-                  <p>
+                  <h5>
                     {" "}
+                    {matched?.alt || matched?.label || "Evento sconosciuto"}
+                  </h5>
+                  <p>
                     Dai la tua disponibilità a servire{" "}
                     <span className="capitalize underline">
                       {readableCurrentDate}

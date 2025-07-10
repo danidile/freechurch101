@@ -9,6 +9,8 @@ import {
   useDisclosure,
   TimeInput,
 } from "@heroui/react";
+import { I18nProvider } from "@react-aria/i18n";
+
 import {
   DateValue,
   CalendarDate,
@@ -135,7 +137,7 @@ export default function UpdateSetlistForm({
     formState: { isSubmitting },
   } = useForm<formValues>({
     defaultValues: {
-      hour: setlistData.hour || "11:45",
+      hour: setlistData?.hour || "21:00",
     },
   });
 
@@ -375,11 +377,12 @@ export default function UpdateSetlistForm({
 
   return (
     <div className="container-sub">
-      <div className=" crea-setlist-container">
-        <form onSubmit={handleSubmit(convertData)}>
-          <div className="flex items-center">
-            <div className="flex items-center gap-2">
-              {/* <Popover placement="bottom-start">
+      <I18nProvider locale="it-IT-u-ca-gregory">
+        <div className=" crea-setlist-container">
+          <form onSubmit={handleSubmit(convertData)}>
+            <div className="flex items-center">
+              <div className="flex items-center gap-2">
+                {/* <Popover placement="bottom-start">
                 <PopoverTrigger>
                   <Button isIconOnly style={{ backgroundColor: eventColor }}>
                     <BiColorFill color="white" size={24} />
@@ -389,31 +392,33 @@ export default function UpdateSetlistForm({
                   <TwitterPicker colors={colors} onChange={handleColorChange} />
                 </PopoverContent>
               </Popover> */}
-              <h4>
-                {page === "create" && "Crea"}
-                {page === "update" && "Aggiorna"} Evento
-              </h4>
+                <h4>
+                  {page === "create" && "Crea"}
+                  {page === "update" && "Aggiorna"} Evento
+                </h4>
+              </div>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-            <div className="gap-1.5">
-              <Select
-                {...register("event_type")}
-                fullWidth
-                defaultSelectedKeys={new Set([setlistData?.event_type]) || null}
-                items={eventTypes}
-                label="Tipo di evento"
-                variant="underlined"
-                placeholder="Seleziona il tipo di evento"
-              >
-                {(type) => (
-                  <SelectItem key={type.key}>
-                    {type.alt ? type.alt : type.label}
-                  </SelectItem>
-                )}
-              </Select>
-              {/* <Input
+            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+              <div className="gap-1.5">
+                <Select
+                  {...register("event_type")}
+                  fullWidth
+                  defaultSelectedKeys={
+                    new Set([setlistData?.event_type]) || null
+                  }
+                  items={eventTypes}
+                  label="Tipo di evento"
+                  variant="underlined"
+                  placeholder="Seleziona il tipo di evento"
+                >
+                  {(type) => (
+                    <SelectItem key={type.key}>
+                      {type.alt ? type.alt : type.label}
+                    </SelectItem>
+                  )}
+                </Select>
+                {/* <Input
                 {...register("event_title")}
                 label="Tipo di evento"
                 variant="underlined"
@@ -423,8 +428,8 @@ export default function UpdateSetlistForm({
                 defaultValue={eventDetails?.event_title || ""}
                 placeholder="Serata di Preghiera..."
               /> */}
-            </div>
-            {/* <div className="flex justify-center">
+              </div>
+              {/* <div className="flex justify-center">
               <Checkbox
                 {...register("private")}
                 defaultSelected={eventDetails?.private || false}
@@ -444,50 +449,50 @@ export default function UpdateSetlistForm({
               </Tooltip>
             </div> */}
 
-            <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-              <Controller
-                name="hour"
-                control={control}
-                render={({ field }) => {
-                  const timeValue = parseTime(field.value); // string → Time
+              <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                <Controller
+                  name="hour"
+                  control={control}
+                  render={({ field }) => {
+                    const timeValue = parseTime(field.value); // string → Time
 
-                  return (
-                    <TimeInput
-                      label="Ora"
-                      variant="underlined"
-                      startContent={<TbClockHour2 />}
-                      value={timeValue}
-                      onChange={(newTime) => {
-                        const hourStr = newTime.toString(); // Time → string "HH:mm"
-                        field.onChange(hourStr);
-                      }}
-                    />
-                  );
-                }}
-              />
-              <DatePicker
-                label="Data"
-                variant="underlined"
-                showMonthAndYearPickers
-                value={eventDate}
-                onChange={(newDate) => {
-                  const newDateStr = dateValueToString(newDate); // ← conversione qui
-                  const unavailable = getUnavailableMembers(
-                    newDateStr,
-                    teamsState
-                  );
+                    return (
+                      <TimeInput
+                        label="Ora"
+                        variant="underlined"
+                        startContent={<TbClockHour2 />}
+                        value={timeValue}
+                        onChange={(newTime) => {
+                          const hourStr = newTime.toString(); // Time → string "HH:mm"
+                          field.onChange(hourStr);
+                        }}
+                      />
+                    );
+                  }}
+                />
+                <DatePicker
+                  label="Data"
+                  variant="underlined"
+                  showMonthAndYearPickers
+                  value={eventDate}
+                  onChange={(newDate) => {
+                    const newDateStr = dateValueToString(newDate); // ← conversione qui
+                    const unavailable = getUnavailableMembers(
+                      newDateStr,
+                      teamsState
+                    );
 
-                  if (unavailable.length > 0) {
-                    setPreviousEventDate(eventDate);
-                    setIsDateConflictModalOpen(true);
-                    setPendingDate(newDate);
-                  } else {
-                    setEventDate(newDate);
-                  }
-                }}
-              />
+                    if (unavailable.length > 0) {
+                      setPreviousEventDate(eventDate);
+                      setIsDateConflictModalOpen(true);
+                      setPendingDate(newDate);
+                    } else {
+                      setEventDate(newDate);
+                    }
+                  }}
+                />
 
-              {/* <Input
+                {/* <Input
                 type="date"
                 // {...register("date")}
                 label="Event Date"
@@ -510,319 +515,320 @@ export default function UpdateSetlistForm({
                   }
                 }}
               /> */}
-            </div>
-          </div>
-          <div className="">
-            <h5 className="p-4">Scaletta</h5>
-            {schedule.length > 0 && (
-              <div className="ncard nborder !p-3">
-                <Reorder.Group
-                  values={schedule.map((s) => s.id)}
-                  onReorder={(newOrderIds) => {
-                    const reordered = newOrderIds.map((id) =>
-                      schedule.find((s) => s.id === id)
-                    );
-                    setSchedule(reordered as setListSongT[]);
-                  }}
-                  ref={container}
-                >
-                  {schedule.map((section, index) => {
-                    return (
-                      <ScheduleComponents
-                        key={section.id} // <-- Add this!
-                        updateSongtoSetlist={updateSongtoSetlist}
-                        removeItemFromSchedule={removeItemFromSchedule}
-                        section={section}
-                        index={index}
-                        songsList={songsList}
-                        updateKey={updateKey}
-                        container={container}
-                        updateTitleSection={updateTitleSection}
-                        updateNotesSection={updateNotesSection}
-                      />
-                    );
-                  })}
-                </Reorder.Group>
               </div>
-            )}
+            </div>
+            <div className="">
+              <h5 className="p-4">Scaletta</h5>
+              {schedule.length > 0 && (
+                <div className="ncard nborder !p-3">
+                  <Reorder.Group
+                    values={schedule.map((s) => s.id)}
+                    onReorder={(newOrderIds) => {
+                      const reordered = newOrderIds.map((id) =>
+                        schedule.find((s) => s.id === id)
+                      );
+                      setSchedule(reordered as setListSongT[]);
+                    }}
+                    ref={container}
+                  >
+                    {schedule.map((section, index) => {
+                      return (
+                        <ScheduleComponents
+                          key={section.id} // <-- Add this!
+                          updateSongtoSetlist={updateSongtoSetlist}
+                          removeItemFromSchedule={removeItemFromSchedule}
+                          section={section}
+                          index={index}
+                          songsList={songsList}
+                          updateKey={updateKey}
+                          container={container}
+                          updateTitleSection={updateTitleSection}
+                          updateNotesSection={updateNotesSection}
+                        />
+                      );
+                    })}
+                  </Reorder.Group>
+                </div>
+              )}
 
-            <div className="transpose-button-container mr-8">
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button variant="bordered">
-                    <FaPlus />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Static Actions">
-                  <DropdownItem
-                    key="title"
-                    as={Button}
-                    color="primary"
-                    variant="light"
-                    onPress={() => addItemToSetlist("title")}
-                    startContent={<MdOutlineTitle />}
-                  >
-                    Titolo
-                  </DropdownItem>
-                  <DropdownItem
-                    key="song"
-                    as={Button}
-                    color="primary"
-                    variant="light"
-                    onPress={() => addItemToSetlist("song")}
-                    startContent={<TbMusicPlus />}
-                  >
-                    Canzone
-                  </DropdownItem>
-                  <DropdownItem
-                    key="note"
-                    variant="light"
-                    color="primary"
-                    as={Button}
-                    onPress={() => addItemToSetlist("note")}
-                    startContent={<MdEditNote />}
-                  >
-                    Nota
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-              {/* <SelectSongsDrawer
+              <div className="transpose-button-container mr-8">
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button variant="bordered">
+                      <FaPlus />
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu aria-label="Static Actions">
+                    <DropdownItem
+                      key="title"
+                      as={Button}
+                      color="primary"
+                      variant="light"
+                      onPress={() => addItemToSetlist("title")}
+                      startContent={<MdOutlineTitle />}
+                    >
+                      Titolo
+                    </DropdownItem>
+                    <DropdownItem
+                      key="song"
+                      as={Button}
+                      color="primary"
+                      variant="light"
+                      onPress={() => addItemToSetlist("song")}
+                      startContent={<TbMusicPlus />}
+                    >
+                      Canzone
+                    </DropdownItem>
+                    <DropdownItem
+                      key="note"
+                      variant="light"
+                      color="primary"
+                      as={Button}
+                      onPress={() => addItemToSetlist("note")}
+                      startContent={<MdEditNote />}
+                    >
+                      Nota
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+                {/* <SelectSongsDrawer
               type="add"
               songsList={songsList}
               addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
               section={null}
             /> */}
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
-            <div className="flex flex-row justify-start gap-3 items-center">
-              <h5>Turnazioni</h5>
-              <Tooltip
-                className="text-sm"
-                content="Mostra calendario con date bloccate."
-              >
-                <Button isIconOnly className="ml-0" onPress={onOpen}>
-                  <FaRegCalendarAlt />
-                </Button>
-              </Tooltip>
-            </div>
-            <Dropdown>
-              <DropdownTrigger>
-                <Button variant="bordered">Aggiungi Team</Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Static Actions">
-                {teams &&
-                  teams
-                    .filter(
-                      (team) =>
-                        !teamsState.some(
-                          (el) => el.team_name === team.team_name
-                        )
-                    )
-                    .map((team: teamData) => (
-                      <DropdownItem
-                        key={team.id}
-                        onPress={() => addTeam(team.id)}
-                      >
-                        {team.team_name}
-                      </DropdownItem>
-                    ))}
-              </DropdownMenu>
-            </Dropdown>
-            <AnimatePresence>
-              {teamsState.map((section, index) => {
-                return (
-                  <>
-                    <Table
-                      key={section.id}
-                      aria-label="Team members table"
-                      topContent={
-                        <h6 className="font-bold">{section.team_name}</h6>
-                      }
-                      bottomContent={
-                        <div className="team-title-container">
-                          <SelectWorshipTeamMemberDrawer
-                            state={section.selected}
-                            type="add"
-                            teamMembers={section.team_members}
-                            addMemberToTeam={addMemberToTeam} // Pass function correctly
-                            section={null}
-                            teamId={section.id}
-                            date={eventDate}
-                          />
-                        </div>
-                      }
-                    >
-                      <TableHeader>
-                        <TableColumn>Nome</TableColumn>
-                        <TableColumn>Ruolo</TableColumn>
-                        <TableColumn>Azioni</TableColumn>
-                      </TableHeader>
-                      <TableBody
-                        items={
-                          section.selected?.map((member) => ({
-                            ...member,
-                            teamId: section.id,
-                            teamName: section.team_name,
-                            roles:
-                              getRolesFromTeamMembers(
-                                section.id,
-                                member.profile
-                              ) || [],
-                            isUnavailable:
-                              member.blockouts?.some((b) => {
-                                const start = new Date(b.start);
-                                const end = new Date(b.end);
-                                const target = new Date(
-                                  eventDate.year,
-                                  eventDate.month - 1,
-                                  eventDate.day
-                                );
-                                return target >= start && target <= end;
-                              }) ?? false,
-                          })) || []
+            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
+              <div className="flex flex-row justify-start gap-3 items-center">
+                <h5>Turnazioni</h5>
+                <Tooltip
+                  className="text-sm"
+                  content="Mostra calendario con date bloccate."
+                >
+                  <Button isIconOnly className="ml-0" onPress={onOpen}>
+                    <FaRegCalendarAlt />
+                  </Button>
+                </Tooltip>
+              </div>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button variant="bordered">Aggiungi Team</Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Static Actions">
+                  {teams &&
+                    teams
+                      .filter(
+                        (team) =>
+                          !teamsState.some(
+                            (el) => el.team_name === team.team_name
+                          )
+                      )
+                      .map((team: teamData) => (
+                        <DropdownItem
+                          key={team.id}
+                          onPress={() => addTeam(team.id)}
+                        >
+                          {team.team_name}
+                        </DropdownItem>
+                      ))}
+                </DropdownMenu>
+              </Dropdown>
+              <AnimatePresence>
+                {teamsState.map((section, index) => {
+                  return (
+                    <>
+                      <Table
+                        key={section.id}
+                        aria-label="Team members table"
+                        topContent={
+                          <h6 className="font-bold">{section.team_name}</h6>
+                        }
+                        bottomContent={
+                          <div className="team-title-container">
+                            <SelectWorshipTeamMemberDrawer
+                              state={section.selected}
+                              type="add"
+                              teamMembers={section.team_members}
+                              addMemberToTeam={addMemberToTeam} // Pass function correctly
+                              section={null}
+                              teamId={section.id}
+                              date={eventDate}
+                            />
+                          </div>
                         }
                       >
-                        {(item) => (
-                          <TableRow key={item.profile + section.id}>
-                            <TableCell>
-                              {item.name} {item.lastname}
-                            </TableCell>
-                            <TableCell>
-                              {item.roles.length >= 1 && (
-                                <Select
-                                  aria-label="Select roles"
-                                  className="max-w-[150px]"
+                        <TableHeader>
+                          <TableColumn>Nome</TableColumn>
+                          <TableColumn>Ruolo</TableColumn>
+                          <TableColumn>Azioni</TableColumn>
+                        </TableHeader>
+                        <TableBody
+                          items={
+                            section.selected?.map((member) => ({
+                              ...member,
+                              teamId: section.id,
+                              teamName: section.team_name,
+                              roles:
+                                getRolesFromTeamMembers(
+                                  section.id,
+                                  member.profile
+                                ) || [],
+                              isUnavailable:
+                                member.blockouts?.some((b) => {
+                                  const start = new Date(b.start);
+                                  const end = new Date(b.end);
+                                  const target = new Date(
+                                    eventDate.year,
+                                    eventDate.month - 1,
+                                    eventDate.day
+                                  );
+                                  return target >= start && target <= end;
+                                }) ?? false,
+                            })) || []
+                          }
+                        >
+                          {(item) => (
+                            <TableRow key={item.profile + section.id}>
+                              <TableCell>
+                                {item.name} {item.lastname}
+                              </TableCell>
+                              <TableCell>
+                                {item.roles.length >= 1 && (
+                                  <Select
+                                    aria-label="Select roles"
+                                    className="max-w-[150px]"
+                                    size="sm"
+                                    placeholder="Seleziona Ruolo"
+                                    defaultSelectedKeys={
+                                      item.roles.includes(item.selected_roles)
+                                        ? new Set([item.selected_roles])
+                                        : undefined
+                                    }
+                                    onSelectionChange={(e) =>
+                                      addRoleToMemberTeam(
+                                        item.profile,
+                                        item.teamId,
+                                        e.currentKey as string
+                                      )
+                                    }
+                                  >
+                                    {item.roles.map((role) => (
+                                      <SelectItem key={role}>{role}</SelectItem>
+                                    ))}
+                                  </Select>
+                                )}
+                              </TableCell>
+
+                              <TableCell>
+                                <Button
                                   size="sm"
-                                  placeholder="Seleziona Ruolo"
-                                  defaultSelectedKeys={
-                                    item.roles.includes(item.selected_roles)
-                                      ? new Set([item.selected_roles])
-                                      : undefined
-                                  }
-                                  onSelectionChange={(e) =>
-                                    addRoleToMemberTeam(
-                                      item.profile,
-                                      item.teamId,
-                                      e.currentKey as string
-                                    )
+                                  isIconOnly
+                                  color="danger"
+                                  variant="light"
+                                  onPress={() =>
+                                    removeMemberToTeam(item.profile, section.id)
                                   }
                                 >
-                                  {item.roles.map((role) => (
-                                    <SelectItem key={role}>{role}</SelectItem>
-                                  ))}
-                                </Select>
-                              )}
-                            </TableCell>
+                                  <RiDeleteBinLine size={20} />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
 
-                            <TableCell>
-                              <Button
-                                size="sm"
-                                isIconOnly
-                                color="danger"
-                                variant="light"
-                                onPress={() =>
-                                  removeMemberToTeam(item.profile, section.id)
-                                }
-                              >
-                                <RiDeleteBinLine size={20} />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </>
-                );
-              })}
-            </AnimatePresence>
-          </div>
-
-          <br />
-          <Button
-            color="primary"
-            variant="shadow"
-            type="submit"
-            fullWidth
-            disabled={isSubmitting}
-          >
-            {page === "create" && "Crea"}
-            {page === "update" && "Aggiorna"} Evento
-          </Button>
-        </form>
-      </div>
-      <Modal
-        isOpen={isDateConflictModalOpen}
-        onClose={() => setIsDateConflictModalOpen(false)}
-      >
-        <ModalContent>
-          <ModalHeader>Membri non disponibili</ModalHeader>
-          <ModalBody>
-            <p>Alcuni membri non sono disponibili per la data selezionata:</p>
-            <ul className="list-disc list-inside">
-              {conflictedMembers.map((member) => (
-                <li key={member.id}>
-                  {member.name} {member.lastname}
-                </li>
-              ))}
-            </ul>
-            <p>
-              Vuoi mantenere la data e rimuovere questi membri, o annullare la
-              modifica?
-            </p>
-          </ModalBody>
-          <ModalFooter>
+            <br />
             <Button
-              color="danger"
-              onPress={() => {
-                setEventDate(pendingDate); // ❌ will cause "gg/mm/aaaa"
-                setIsDateConflictModalOpen(false);
-              }}
+              color="primary"
+              variant="shadow"
+              type="submit"
+              fullWidth
+              disabled={isSubmitting}
             >
-              Mantieni data nuova
+              {page === "create" && "Crea"}
+              {page === "update" && "Aggiorna"} Evento
             </Button>
+          </form>
+        </div>
+        <Modal
+          isOpen={isDateConflictModalOpen}
+          onClose={() => setIsDateConflictModalOpen(false)}
+        >
+          <ModalContent>
+            <ModalHeader>Membri non disponibili</ModalHeader>
+            <ModalBody>
+              <p>Alcuni membri non sono disponibili per la data selezionata:</p>
+              <ul className="list-disc list-inside">
+                {conflictedMembers.map((member) => (
+                  <li key={member.id}>
+                    {member.name} {member.lastname}
+                  </li>
+                ))}
+              </ul>
+              <p>
+                Vuoi mantenere la data e rimuovere questi membri, o annullare la
+                modifica?
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color="danger"
+                onPress={() => {
+                  setEventDate(pendingDate); // ❌ will cause "gg/mm/aaaa"
+                  setIsDateConflictModalOpen(false);
+                }}
+              >
+                Mantieni data nuova
+              </Button>
 
-            <Button
-              onPress={() => {
-                setIsDateConflictModalOpen(false);
-                setEventDate(previousEventDate); // Restore previous valid date
-              }}
-            >
-              Annulla
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement="center"
-        size="4xl"
-        className="max-h-[90vh]"
-        scrollBehavior="inside"
-        shouldBlockScroll
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Calendario
-              </ModalHeader>
-              <ModalBody>
-                <BlockoutsCalendarComponent />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+              <Button
+                onPress={() => {
+                  setIsDateConflictModalOpen(false);
+                  setEventDate(previousEventDate); // Restore previous valid date
+                }}
+              >
+                Annulla
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          placement="center"
+          size="4xl"
+          className="max-h-[90vh]"
+          scrollBehavior="inside"
+          shouldBlockScroll
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Calendario
+                </ModalHeader>
+                <ModalBody>
+                  <BlockoutsCalendarComponent />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Close
+                  </Button>
+                  <Button color="primary" onPress={onClose}>
+                    Action
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </I18nProvider>
     </div>
   );
 }

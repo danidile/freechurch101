@@ -11,6 +11,8 @@ export const authSchema = z.object({
   address: z.string(),
   igHandle: z.string(),
   pastor: z.string(),
+  room_name: z.string(),
+  comune: z.string(),
 });
 export type TauthSchema = z.infer<typeof authSchema>;
 

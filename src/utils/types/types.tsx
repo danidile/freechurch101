@@ -1,4 +1,4 @@
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, DateValue } from "@internationalized/date";
 import z from "zod";
 
 export type songSchema = {
@@ -31,6 +31,14 @@ export type songType = {
   church?: string;
   tags?: string[];
   bpm?: string;
+};
+
+export type Comune = {
+  nome: string;
+  codice: string;
+  sigla: string;
+  provincia: string;
+  regione: string;
 };
 
 export type songsListType = songType[];
@@ -426,8 +434,8 @@ export type GroupedSongsByAlbum = Record<string, SongWithAlbum[]>;
 export type RangeValue = {
   profile?: string;
   id?: string;
-  start: CalendarDate;
-  end: CalendarDate;
+  start: DateValue;
+  end: DateValue;
 };
 export type RangeValueString = {
   profile?: string;
@@ -457,6 +465,8 @@ export type registrationData = {
   provincia?: string;
   city?: string;
   token?: string;
+  room_name?: string;
+  comune?: string;
 };
 
 export type ServerActionResponse<T> = {
