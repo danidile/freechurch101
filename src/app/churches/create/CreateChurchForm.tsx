@@ -5,6 +5,8 @@ import {
   Autocomplete,
   AutocompleteItem,
   Alert,
+  Link,
+  addToast,
 } from "@heroui/react";
 import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useForm } from "react-hook-form";
@@ -18,6 +20,8 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { Comune, registrationData } from "@/utils/types/types";
+import { regristrationAction } from "./regristrationAction";
+import registrationEmail from "./registrationEmail";
 
 export default function CreateChurch() {
   const router = useRouter();
@@ -73,16 +77,24 @@ export default function CreateChurch() {
   const handleRegister = async () => {
     console.log("formData", formData);
 
-    // setError("");
-    // setSending(true);
-    // const response = await regristrationAction(formData);
-    // if (response!.success) {
-    //   registrationEmail(formData);
-    //   router.push("/protected/dashboard/account");
-    //   setSending(false);
-    //   await fetchUser();
-    // } else if (response!.error) return setError(response.error);
-    // setSuccess(true);
+    setError("");
+    setSending(true);
+    const response = await regristrationAction(formData);
+    if (response.success) {
+      router.push("/protected/dashboard/account");
+
+      setSending(false);
+    } else {
+      addToast({
+        title: `Errore durante il login:`,
+        description: response.error,
+        color: "danger",
+      });
+      setError(response.error);
+
+      await fetchUser();
+    }
+    setSuccess(true);
   };
 
   const variants = {
@@ -128,14 +140,9 @@ export default function CreateChurch() {
   return (
     <div className="container-sub">
       <div className="flex flex-col">
-        <h1 className="text-2xl font-medium  mx-auto my-4">
-          Crea una nuova chiesa
-        </h1>
+        <h2 className="font-regular my-12"> Crea una nuova chiesa</h2>
 
-        <form
-          className="flex flex-col gap-4 ncard nborder"
-          onSubmit={handleSubmit(handleRegister)}
-        >
+        <form className="flex flex-col gap-4 ">
           {success ? (
             <Alert color="success">Utente registrato con successo!</Alert>
           ) : (
@@ -156,6 +163,8 @@ export default function CreateChurch() {
                     <Input
                       isRequired
                       minLength={3}
+                      size="sm"
+                      variant="underlined"
                       label="Nome"
                       name="firstName"
                       placeholder="Marco"
@@ -165,6 +174,8 @@ export default function CreateChurch() {
                     />
 
                     <Input
+                      size="sm"
+                      variant="underlined"
                       minLength={3}
                       isRequired
                       type="text"
@@ -178,6 +189,8 @@ export default function CreateChurch() {
                   </div>
                   <div className="flex flex-row flex-wrap items-center justify-center gap-4">
                     <Input
+                      size="sm"
+                      variant="underlined"
                       {...register("email")}
                       isRequired
                       name="email"
@@ -189,6 +202,8 @@ export default function CreateChurch() {
                       onChange={handleChange}
                     />
                     <Input
+                      size="sm"
+                      variant="underlined"
                       name="password"
                       {...register("password")}
                       isRequired
@@ -218,6 +233,8 @@ export default function CreateChurch() {
                   <div className="border-b-1 border-b- "></div>
                   <div className="flex flex-row flex-wrap items-center justify-center gap-4">
                     <Input
+                      size="sm"
+                      variant="underlined"
                       {...register("churchName")}
                       label="Church Name"
                       name="churchName"
@@ -227,6 +244,8 @@ export default function CreateChurch() {
                       onChange={handleChange}
                     />
                     <Input
+                      size="sm"
+                      variant="underlined"
                       {...register("pastor")}
                       label="Pastor"
                       name="pastor"
@@ -238,6 +257,8 @@ export default function CreateChurch() {
                   </div>
                   <div className="flex flex-row flex-wrap items-center justify-center gap-4">
                     <Input
+                      size="sm"
+                      variant="underlined"
                       {...register("website")}
                       label="Sito Web"
                       name="website"
@@ -246,6 +267,8 @@ export default function CreateChurch() {
                       onChange={handleChange}
                     />
                     <Input
+                      size="sm"
+                      variant="underlined"
                       {...register("igHandle")}
                       label="handle Instagram"
                       name="igHandle"
@@ -259,6 +282,8 @@ export default function CreateChurch() {
                   <div className="border-b-1 border-b- "></div>
                   <div className="flex flex-row items-center justify-center gap-4">
                     <Input
+                      size="sm"
+                      variant="underlined"
                       {...register("room_name")}
                       label="Nome stanza"
                       name="room_name"
@@ -270,6 +295,8 @@ export default function CreateChurch() {
                   </div>
                   <div className="flex flex-row items-center justify-center gap-4">
                     <Autocomplete
+                      size="sm"
+                      variant="underlined"
                       label="Comune"
                       selectedKey={selectedKey ?? undefined}
                       onSelectionChange={(key) => {
@@ -303,6 +330,8 @@ export default function CreateChurch() {
                       ))}
                     </Autocomplete>
                     <Input
+                      size="sm"
+                      variant="underlined"
                       {...register("address")}
                       label="Indirizzo"
                       name="address"
@@ -326,8 +355,9 @@ export default function CreateChurch() {
                   fullWidth
                   color="primary"
                   variant="solid"
+                  className="mb-4 bg-gradient-to-br from-[#474be1] to-[#0e117f] text-white"
                 >
-                  {sending ? "..." : "Iscriviti e crea chiesa"}
+                  {sending ? "..." : "Iscriviti e Crea Chiesa"}
                 </Button>
               </div>
             </>

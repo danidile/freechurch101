@@ -160,8 +160,7 @@ export default function Home() {
       <div className="visita-feed-section px-4 py-6 ">
         <h1 className="text-center my-6">Uno spazio unico per tutti i team.</h1>
         <p className="text-center my-4 max-w-[1000px]">
-          ChurchLab è progettato per semplificare la gestione dei team: dalla
-          musica all'accoglienza, dalla predicazione ai media.
+          ChurchLab è progettato per semplificare la gestione dei team.
         </p>
         <Image
           src="/images/teamscover.webp"
