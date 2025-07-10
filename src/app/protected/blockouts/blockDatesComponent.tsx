@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { parseDate } from "@internationalized/date";
+import { DateValue, parseDate } from "@internationalized/date";
 import { useRouter } from "next/navigation";
 
 import {
@@ -187,7 +187,7 @@ export default function BlockDatesComponent({}: {}) {
                     color="danger"
                     className="your-custom-calendar-class"
                     aria-label="Date (Uncontrolled)"
-                    onChange={() => setValue}
+                    onChange={(val) => setValue({ ...val })}
                     minValue={today(getLocalTimeZone()).add({ days: 1 })}
                     allowsNonContiguousRanges
                     isDateUnavailable={(date) =>

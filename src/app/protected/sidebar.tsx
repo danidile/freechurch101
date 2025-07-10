@@ -1,17 +1,13 @@
 "use client";
-import { Avatar } from "@heroui/react";
 import Link from "next/link";
-import { Dispatch, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import {
   FaUserCircle,
   FaCalendarTimes,
   FaRegCalendarAlt,
-  FaChevronDown,
-  FaRegCompass,
+
 } from "react-icons/fa";
-import { BsMusicNoteList } from "react-icons/bs";
 import {
-  MdLibraryMusic,
   MdOutlineEventNote,
   MdOutlineLibraryMusic,
 } from "react-icons/md";
@@ -19,8 +15,7 @@ import {
 import { HiUserGroup } from "react-icons/hi2";
 import {
   IoNotificationsSharp,
-  IoSettingsOutline,
-  IoSettingsSharp,
+
 } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import logoutAction from "../components/logOutAction";
@@ -28,7 +23,6 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 import {
   PiChurch,
-  PiChurchDuotone,
   PiChurchFill,
   PiPasswordBold,
 } from "react-icons/pi";
@@ -37,9 +31,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Button,
 } from "@heroui/react";
-import { BiChurch } from "react-icons/bi";
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { FaCompass } from "react-icons/fa6";
@@ -84,7 +76,7 @@ export default function Sidebar() {
             />
           </>
         )}
-        <li className="sidebar-li">
+        <li className="">
           <div className="sidebar-link my-5">
             <h4 className="font-normal text-center ">
               {userData.name + " " + userData.lastname}
