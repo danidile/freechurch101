@@ -5,9 +5,10 @@ frontend:
       commands:
         - nvm install 18
         - nvm use 18
-        - npm ci
-        - rm -rf .next .next/cache node_modules/.cache dist .turbo .eslintcache .vercel/output
-
+        # Pulisci eventuali file/cache residue
+        - rm -rf .next .next/cache node_modules .npm package-lock.json
+        # Installa da zero e genera un nuovo package-lock.json
+        - npm install
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env

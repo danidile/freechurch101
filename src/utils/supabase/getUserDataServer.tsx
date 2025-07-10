@@ -1,6 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
 import { basicUserData } from "@/utils/types/userData";
-import { sendErrorToSentry } from "../sentry/SentryErrorDealer";
 
 type ProfileData = {
   name: string;
@@ -60,7 +59,6 @@ export default async function userDataServer() {
     };
     if (error) {
       console.error("Error fetching profile:", error.message);
-      sendErrorToSentry(error.message, userData);
       return userData;
     }
   }

@@ -99,7 +99,6 @@
     "@react-aria/i18n": "^3.12.10",
     "@react-aria/selection": "^3.23.1",
     "@react-aria/utils": "^3.28.1",
-    "@sentry/nextjs": "^9.15.0",
     "@stripe/stripe-js": "^7.4.0",
     "@supabase/ssr": "0.5.1",
     "@supabase/supabase-js": "2.45.4",
@@ -163,5 +162,4 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }
-
 }

@@ -1,5 +1,3 @@
-import { withSentryConfig } from "@sentry/nextjs";
-
 /** @type {import('next').NextConfig} */
 
 const isProd = process.env.NODE_ENV !== "development";
@@ -14,7 +12,6 @@ const nextConfig = {
             key: "Strict-Transport-Security",
             value: "max-age=31536000; includeSubDomains",
           },
-          // ✅ Only include CSP in production
           ...(isProd
             ? [
                 {
@@ -28,8 +25,7 @@ img-src 'self' data: https://kadorwmjhklzakafowpu.supabase.co https://*.stripe.c
 connect-src 'self' https://kadorwmjhklzakafowpu.supabase.co https://api.stripe.com;
 frame-src https://js.stripe.com https://hooks.stripe.com;
 worker-src blob: 'self';
-
-  `.replace(/\n/g, ""), // remove line breaks
+`.replace(/\n/g, ""),
                 },
               ]
             : []),
@@ -55,18 +51,4 @@ worker-src blob: 'self';
   },
 };
 
-export default withSentryConfig(nextConfig, {
-  org: "churchlab-0b",
-  project: "javascript-nextjs",
-  silent: !process.env.CI,
-  experimental: {
-    workerThreads: false,
-    cpus: 1,
-  },
-  prerenderConcurrency: 2,
-  widenClientFileUpload: true,
-  staticPageGenerationTimeout: 300,
-  tunnelRoute: "/monitoring",
-  disableLogger: true,
-  automaticVercelMonitors: true,
-});
+export default nextConfig;
