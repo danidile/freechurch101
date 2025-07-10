@@ -4,6 +4,10 @@ import { Viewport } from "next";
 import PullToRefreshLayout from "./components/PullToRefreshLayout";
 import { ZustandProviders } from "./zustandProvider";
 import { ToastProvider } from "@heroui/toast";
+import UserDataMenu from "./components/userDataMenu";
+
+import Sidebar from "./protected/sidebar";
+import { SiderbarProvider } from "./SiderbarProvider";
 
 export const viewport: Viewport = {
   maximumScale: 1,
@@ -48,7 +52,6 @@ export default function RootLayout({
         />
       </head>
       <body>
-        
         <ZustandProviders>
           <PullToRefreshLayout>
             <main className="standalone:pb-[120px]">
@@ -82,7 +85,7 @@ export default function RootLayout({
                   ),
                 }}
               />
-              {children}
+              <SiderbarProvider> {children}</SiderbarProvider>
             </main>
           </PullToRefreshLayout>
         </ZustandProviders>

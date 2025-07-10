@@ -10,7 +10,11 @@ import {
   FaRegCompass,
 } from "react-icons/fa";
 import { BsMusicNoteList } from "react-icons/bs";
-import { MdOutlineEventNote } from "react-icons/md";
+import {
+  MdLibraryMusic,
+  MdOutlineEventNote,
+  MdOutlineLibraryMusic,
+} from "react-icons/md";
 
 import { HiUserGroup } from "react-icons/hi2";
 import {
@@ -81,19 +85,24 @@ export default function Sidebar() {
           </>
         )}
         <li className="sidebar-li">
-          <div className="sidebar-link ">
-            <h5> {userData.name + " " + userData.lastname}</h5>
+          <div className="sidebar-link my-5">
+            <h4 className="font-normal text-center ">
+              {userData.name + " " + userData.lastname}
+            </h4>
           </div>
         </li>
-
-        <li className="sidebar-li  border-b-1 ">
+        <li className=" !mt-6 border-b-1 ">
+          <span className="sidebar-link">
+            <div className="sidebar-element sidebar-title">
+              <h6>Area personale</h6>
+            </div>
+          </span>
+        </li>
+        <li className=" border-b-1 ">
           <Dropdown placement="bottom">
             <DropdownTrigger>
-              <span className="sidebar-link">
-                <div className="sidebar-element sidebar-title !justify-between">
-                  Area personale
-                  <IoSettingsOutline className="mr-0" />
-                </div>
+              <span className="">
+                <div className="sidebar-element sidebar-title !justify-between"></div>
               </span>
             </DropdownTrigger>
             <DropdownMenu aria-label="Static Actions">
@@ -121,7 +130,7 @@ export default function Sidebar() {
           <Link className="sidebar-link" href="/protected/dashboard/account">
             <div className="sidebar-element">
               <FaUserCircle className="dashboard-icon" />
-              Account
+              <p>Account</p>
             </div>
           </Link>
         </li>
@@ -130,32 +139,33 @@ export default function Sidebar() {
             <Link className="sidebar-link" href="/protected/blockouts">
               <div className="sidebar-element">
                 <FaCalendarTimes className="dashboard-icon" />
-                Blocca Date{" "}
+                <p>Blocca Date</p>
               </div>
             </Link>
           </li>
         )}
         <li className="sidebar-li">
-          <Link className="sidebar-link" href="/protected/notifications">
-            {" "}
+          <Link className="sidebar-link" href="/notifications">
             <div className="sidebar-element">
               <IoNotificationsSharp />
-              Notifiche{" "}
+              <p>Notifiche</p>
             </div>
           </Link>
         </li>
         <li className="sidebar-li">
-          <Link className="sidebar-link" href="/">
+          <Link className="sidebar-link" href="/artists">
             <div className="sidebar-element">
               <FaCompass />
-              Esplora
+              <p>Esplora</p>
             </div>
           </Link>
         </li>
         {userData.church_id && (
-          <li className="sidebar-li !mt-6 border-b-1 ">
+          <li className=" !mt-6 border-b-1 ">
             <span className="sidebar-link">
-              <div className="sidebar-element sidebar-title">La mia Chiesa</div>
+              <div className="sidebar-element sidebar-title">
+                <h6>La mia Chiesa</h6>
+              </div>
             </span>
           </li>
         )}
@@ -167,7 +177,8 @@ export default function Sidebar() {
                 <Link className="sidebar-link" href="/protected/church">
                   <div className="sidebar-element">
                     <PiChurch />
-                    Chiesa
+
+                    <p>Chiesa</p>
                   </div>
                 </Link>
               </li>
@@ -182,7 +193,7 @@ export default function Sidebar() {
                   >
                     <div className="sidebar-element">
                       <PiChurchFill />
-                      Personalizza Chiesa
+                      <p> Personalizza Chiesa</p>
                     </div>
                   </Link>
                 </li>
@@ -193,27 +204,25 @@ export default function Sidebar() {
                   >
                     <div className="sidebar-element">
                       <FaRegCalendarAlt />
-                      Calendario Presenze
+                      <p> Calendario Presenze</p>
                     </div>
                   </Link>
                 </li>
               </>
             )}
             <li className="sidebar-li">
-              <Link className="sidebar-link" href="/protected/events">
-                {" "}
+              <Link className="sidebar-link" href="/songs">
                 <div className="sidebar-element">
-                  <MdOutlineEventNote />
-                  Eventi
+                  <MdOutlineLibraryMusic />
+                  <p>Canzoni</p>
                 </div>
               </Link>
             </li>
             <li className="sidebar-li">
-              <Link className="sidebar-link" href="/protected/churchsongs">
-                {" "}
+              <Link className="sidebar-link" href="/setlist">
                 <div className="sidebar-element">
-                  <BsMusicNoteList />
-                  Canzoni
+                  <MdOutlineEventNote />
+                  <p>Eventi</p>
                 </div>
               </Link>
             </li>
@@ -222,7 +231,7 @@ export default function Sidebar() {
               <Link className="sidebar-link" href="/protected/teams">
                 <div className="sidebar-element">
                   <HiUserGroup className="dashboard-icon" />
-                  Team{" "}
+                  <p>Team</p>
                 </div>
               </Link>
             </li>

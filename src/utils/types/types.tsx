@@ -35,23 +35,12 @@ export type songType = {
 
 export type songsListType = songType[];
 
-export const eventSchema = z.object({
-  event_type: z.string().optional().default("1"),
-  event_title: z.string().optional().default(""),
-  date: z.string().date().optional().default("2025-01-01"),
-  start: z.string().optional().default("todo"),
-  sections: z
-    .object({
-      sectionId: z.string().optional().default(""),
-      sectionType: z.string().optional().default(""),
-      duration: z.string().optional().default(""),
-      description: z.string().optional().default(""),
-      song: z.string().optional().default(""),
-    })
-    .array()
-    .optional(),
-});
-export type TeventSchema = z.infer<typeof eventSchema>;
+export type eventSchema = {
+  event_type: string;
+  event_title: string;
+  date: string;
+  hour: string;
+};
 
 export const setlistData = z.object({
   id: z.string().optional(),
@@ -127,6 +116,7 @@ export type formValues = {
   event_title?: string;
   date?: string;
   private?: boolean;
+  hour?: string;
   sections?: {
     id?: string;
     song_title?: string;
@@ -268,6 +258,7 @@ export type setListT = {
   event_title?: string;
   event_type?: string;
   date?: string;
+  hour?: string;
   setListSongs?: setListSongT[];
   type?: string;
   private?: boolean;

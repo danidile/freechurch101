@@ -53,7 +53,5 @@ export default function CalendarComponent() {
     months.push({ name: monthName, year, month, days, emptySpaces });
   }
 
-  return (
-    <CalendarTabs months={months} eventsByDate={eventsByDate}></CalendarTabs>
-  );
+  return <CalendarTabs months={months} eventsByDate={eventsByDate} />;
 }

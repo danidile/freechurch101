@@ -12,6 +12,7 @@ import {
 import { FaPlus } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { DateValue } from "@internationalized/date";
 
 export function SelectWorshipTeamMemberDrawer({
   teamId,
@@ -28,7 +29,7 @@ export function SelectWorshipTeamMemberDrawer({
   teamMembers: churchMembersT[];
   addMemberToTeam: (song: setListSongT, teamId: string) => void;
   section: number;
-  date: string;
+  date: DateValue;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [members, setmembers] = useState(teamMembers);
@@ -85,7 +86,12 @@ export function SelectWorshipTeamMemberDrawer({
                             member.blockouts.some((b) => {
                               const start = new Date(b.start);
                               const end = new Date(b.end);
-                              const target = new Date(date);
+                              const target = new Date(
+                                date.year,
+                                date.month - 1,
+                                date.day
+                              );
+
                               return target >= start && target <= end;
                             });
 

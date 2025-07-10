@@ -32,7 +32,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   min-height: 100vh;
-  background-color: #f8f8f7;
+  background-color: #fff;
 }
 main {
 }
@@ -192,7 +192,7 @@ h6 {
 }
 
 p {
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(0, 0, 0, 1);
   font-size: 16px;
   line-height: 100%;
   font-family:
@@ -282,7 +282,7 @@ Image {
 }
 .header-homepage {
   padding: 1rem;
-  height: calc(100vh - 70px);
+  height: calc(70vh - 70px);
 }
 .mobile-mockup {
   width: 500px;
@@ -294,7 +294,7 @@ Image {
   width: 100%;
   max-width: 96vw;
   margin: 0px auto;
-  padding: 20px 0px;
+  padding: 5px 0px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -823,13 +823,15 @@ tbody tr .tablecellnewteams {
   display: flex;
   flex-direction: column;
   align-items: center;
+
   gap: 20px;
   min-height: 94vh;
   border-radius: 0.5rem;
 }
 
 .dashboard-icon {
-  width: 20px;
+  max-width: 16px;
+  width: 100%;
   overflow: visible;
 }
 
@@ -906,10 +908,7 @@ tbody tr .tablecellnewteams {
   cursor: pointer;
   max-width: 500px;
   width: 100%;
-  box-shadow:
-    rgba(0, 0, 0, 0.03) 0px 12px 32px,
-    rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
-  border-radius: 12px;
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1595,7 +1594,7 @@ tbody tr .tablecellnewteams {
   height: calc(80vh / 5);
   width: 100%;
 
-  border: 0.8px solid #f5f5f4;
+  border: 0.8px solid #ebebeb;
   background-color: #ffffff;
 }
 
@@ -1685,7 +1684,7 @@ tbody tr .tablecellnewteams {
 }
 
 .sidebar-ul {
-  padding: 1rem;
+  padding: 3rem 1rem 1rem 1rem;
   width: 100%;
 }
 .sidebar-link {
@@ -1698,7 +1697,7 @@ tbody tr .tablecellnewteams {
   padding: 0.3rem 0.3rem;
 }
 .sidebar-li {
-  background: #f8f8f7;
+  background: #f8f8f700;
   border-radius: 0.4rem;
   margin: 0.4rem 0;
   transition: 0.5s;
@@ -1718,7 +1717,7 @@ tbody tr .tablecellnewteams {
   padding-left: 0.5rem;
   font-size: 12px;
   justify-content: start;
-  color: #777d85 !important; /* Tailwind's gray-600 */
+  color: #404040 !important; /* Tailwind's gray-600 */
 }
 
 .sidebar-li:hover {
@@ -1735,7 +1734,7 @@ tbody tr .tablecellnewteams {
   max-width: 240px;
   min-height: 100vh;
   position: fixed;
-  z-index: 20;
+  z-index: 99;
   background: rgb(248, 248, 247);
   box-shadow: rgb(238, 238, 236) -1px 0px 0px 0px inset;
 }
