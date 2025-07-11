@@ -27,6 +27,7 @@ import {
   ChurchMemberByTeam,
   churchMembersT,
   eventSchema,
+  roomsType,
   setListSongT,
   setListT,
   teamData,
@@ -82,9 +83,10 @@ export default function UpdateSetlistForm({
   setlistData: setListT;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
-  const { eventTypes } = useChurchStore();
-
+  const { eventTypes, rooms } = useChurchStore();
+  const [churchRooms, setChurchRooms] = useState<roomsType[]>([]);
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
   const [eventDate, setEventDate] = useState<DateValue | null>(() => {
@@ -93,7 +95,12 @@ export default function UpdateSetlistForm({
     }
     return parseDate(todaysDate);
   });
-  let formatter = useDateFormatter({ dateStyle: "full" });
+
+  useEffect(() => {
+    if (rooms) {
+      setChurchRooms(rooms);
+    }
+  }, [rooms]);
 
   const [state, setState] = useState<setListSongT[]>(
     setlistData?.setListSongs || []
@@ -317,6 +324,7 @@ export default function UpdateSetlistForm({
     console.log("schedule", schedule);
 
     console.log("teamsState", teamsState);
+    console.log("selectedRoom", selectedRoom);
 
     console.log("teams", teams);
     const newTeam: any = [];
@@ -332,6 +340,7 @@ export default function UpdateSetlistForm({
       event_type: data.event_type,
       date: eventDate.toString(),
       private: data.private,
+      room: selectedRoom,
       setListSongs: state,
       teams: teamsState,
       color: eventColor,
@@ -382,16 +391,6 @@ export default function UpdateSetlistForm({
           <form onSubmit={handleSubmit(convertData)}>
             <div className="flex items-center">
               <div className="flex items-center gap-2">
-                {/* <Popover placement="bottom-start">
-                <PopoverTrigger>
-                  <Button isIconOnly style={{ backgroundColor: eventColor }}>
-                    <BiColorFill color="white" size={24} />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent style={{ borderWidth: "0px !important" }}>
-                  <TwitterPicker colors={colors} onChange={handleColorChange} />
-                </PopoverContent>
-              </Popover> */}
                 <h4>
                   {page === "create" && "Crea"}
                   {page === "update" && "Aggiorna"} Evento
@@ -418,36 +417,41 @@ export default function UpdateSetlistForm({
                     </SelectItem>
                   )}
                 </Select>
-                {/* <Input
-                {...register("event_title")}
-                label="Tipo di evento"
-                variant="underlined"
-                labelPlacement="outside"
-                size="sm"
-                required
-                defaultValue={eventDetails?.event_title || ""}
-                placeholder="Serata di Preghiera..."
-              /> */}
               </div>
-              {/* <div className="flex justify-center">
-              <Checkbox
-                {...register("private")}
-                defaultSelected={eventDetails?.private || false}
-              >
-                Evento Privato
-              </Checkbox>
-              <Tooltip content="Selezionando 'evento privato' l'evento sarà visibile solo ai leader della chiesa e membri aggiunti alla turnazione.">
-                <Button
-                  isIconOnly
-                  radius="md"
-                  variant="light"
-                  size="sm"
-                  className="ml-1"
-                >
-                  <IoMdInformationCircleOutline size={"22"} />
-                </Button>
-              </Tooltip>
-            </div> */}
+              {churchRooms && churchRooms.length === 1 ? (
+                <p>
+                  Location:{" "}
+                  <span className="font-medium">
+                    {churchRooms[0].name} - {churchRooms[0].address},{" "}
+                    {churchRooms[0].comune}
+                  </span>
+                </p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <Select
+                    label="Seleziona la Location"
+                    variant="underlined"
+                    size="sm"
+                    placeholder="Scegli una stanza"
+                    selectedKeys={selectedRoom ? [selectedRoom] : []}
+                    onSelectionChange={(keys) => {
+                      const selectedId = Array.from(keys)[0];
+                      setSelectedRoom(selectedId as string); // You must define this state
+                    }}
+                  >
+                    {churchRooms.map((room) => (
+                      <SelectItem key={room.id} textValue={room.name}>
+                        <div>
+                          <p className="font-regular">{room.name}</p>
+                          <small className="text-default-500">
+                            {room.address}, {room.comune}
+                          </small>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+              )}
 
               <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
                 <Controller

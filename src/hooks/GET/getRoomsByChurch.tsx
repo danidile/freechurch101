@@ -12,5 +12,6 @@ export const getRoomsByChurch = async (churchId: string) => {
   if (error) {
     console.error("Errore durante il fetch:", error);
   }
+  console.log("rooms",rooms);
   return rooms;
 };

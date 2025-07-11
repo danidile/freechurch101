@@ -260,15 +260,17 @@ export default function CreateChurch() {
                       label="Comune"
                       selectedKey={selectedKey ?? undefined}
                       onSelectionChange={(key) => {
+                        if (!key) return; // Don't react if it's just typing
+
                         const selectedComune = filteredComuni.find(
                           (c) => c.codice === key
                         );
-                        setSelectedKey(key as string);
-                        setInputValue(selectedComune?.nome ?? "");
 
                         if (selectedComune) {
-                          setValue("comune", selectedComune.nome); // Set comune field
-                          setValue("provincia", selectedComune.sigla); // Set provincia field
+                          setInputValue(selectedComune.nome); // <--- only set if user selects
+                          setSelectedKey(key as string);
+                          setValue("comune", selectedComune.nome);
+                          setValue("provincia", selectedComune.sigla);
                         }
                       }}
                       inputValue={inputValue}

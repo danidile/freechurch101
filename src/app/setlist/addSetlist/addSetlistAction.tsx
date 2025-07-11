@@ -31,6 +31,7 @@ export const addSetlist = async (formData: setListT) => {
       church: church,
       created_by: user?.id,
       date: formData.date,
+      room: formData.room,
       hour: formData.hour,
       event_type: formData.event_type,
       private: formData.private,
