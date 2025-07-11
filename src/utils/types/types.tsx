@@ -291,6 +291,7 @@ export type setListT = {
   teams?: teamData[];
   setlistTeams?: GroupedMembers;
   color?: string;
+  room?: string;
   schedule?: setListSongT[];
 };
 
