@@ -6,64 +6,57 @@ import { addToast, Button, Input, Textarea } from "@heroui/react";
 import { useChurchStore } from "@/store/useChurchStore";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { TagWithDescription } from "@/utils/types/types";
-import insertTagsAction from "./insertTagsAction";
-import deleteTagsAction from "./deleteTagsAction";
-import updateTagsAction from "./updateTagsAction";
-import { RiEdit2Line } from "react-icons/ri";
+import { roomsType } from "@/utils/types/types";
 
-export default function PersonalizeSongsTagsModal() {
-  const { loadingChurchData, tags, fetchChurchData } = useChurchStore();
+import insertRoomsAction from "./insertRoomsAction";
+import updateRoomsAction from "./updateRoomsAction";
+import deleteRoomsAction from "./deleteRoomsAction";
+
+export default function PersonalizeRoomsModal() {
+  const { loadingChurchData, rooms, fetchChurchData } = useChurchStore();
   const [currentlyEditingIndex, setCurrentlyEditingIndex] = useState<
     number | null
   >(null);
 
   const { userData } = useUserStore();
-  const [searchText, setSearchText] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
 
-  const [personalizedTags, setPersonalizedTags] = useState<
-    TagWithDescription[]
-  >([]);
+  const [personalizedRooms, setPersonalizedRooms] = useState<roomsType[]>([]);
 
-  const [refetchTrigger, setRefetchTrigger] = useState(false);
   const [duplicateError, setDuplicateError] = useState({
     status: false,
     name: "",
   });
-  function diffTags(
-    personalizedTags: TagWithDescription[],
-    tags: TagWithDescription[]
-  ) {
-    const toInsert: TagWithDescription[] = [];
-    const toUpdate: TagWithDescription[] = [];
-    const toDelete: TagWithDescription[] = [];
+  function diffRooms(personalizedRooms: roomsType[], rooms: roomsType[]) {
+    const toInsert: roomsType[] = [];
+    const toUpdate: roomsType[] = [];
+    const toDelete: roomsType[] = [];
 
-    const existingTagsMap = new Map(tags.map((tag) => [tag.id, tag]));
+    const existingRoomsMap = new Map(rooms.map((room) => [room.id, room]));
 
     // Determine inserts and updates
-    for (const tag of personalizedTags) {
-      if (!tag.id) {
-        toInsert.push(tag); // New tag (no ID)
+    for (const room of personalizedRooms) {
+      if (!room.id) {
+        toInsert.push(room); // New room (no ID)
       } else {
-        const original = existingTagsMap.get(tag.id);
+        const original = existingRoomsMap.get(room.id);
         if (
           original &&
-          (original.tag !== tag.tag || original.description !== tag.description)
+          (original.name !== room.name || original.address !== room.address)
         ) {
-          toUpdate.push(tag); // Tag exists but has changed
+          toUpdate.push(room); // room exists but has changed
         }
       }
     }
 
     const personalizedIds = new Set(
-      personalizedTags.map((tag) => tag.id).filter(Boolean)
+      personalizedRooms.map((room) => room.id).filter(Boolean)
     );
 
     // Determine deletes
-    for (const tag of tags) {
-      if (tag.id && !personalizedIds.has(tag.id)) {
-        toDelete.push(tag); // Tag is no longer present
+    for (const room of rooms) {
+      if (room.id && !personalizedIds.has(room.id)) {
+        toDelete.push(room); // room is no longer present
       }
     }
 
@@ -71,108 +64,94 @@ export default function PersonalizeSongsTagsModal() {
   }
 
   useEffect(() => {
-    if (!loadingChurchData && tags) {
-      setPersonalizedTags(tags);
+    if (!loadingChurchData && rooms) {
+      setPersonalizedRooms(rooms);
     }
-  }, [loadingChurchData, tags]);
+  }, [loadingChurchData, rooms]);
   useEffect(() => {
     if (!loadingChurchData) {
-      const { toInsert, toUpdate, toDelete } = diffTags(personalizedTags, tags);
+      const { toInsert, toUpdate, toDelete } = diffRooms(
+        personalizedRooms,
+        rooms
+      );
       const hasDiffs =
         toInsert.length > 0 || toUpdate.length > 0 || toDelete.length > 0;
       setHasChanges(hasDiffs);
     }
-  }, [personalizedTags, tags, loadingChurchData]);
-  const saveTags = async () => {
+  }, [personalizedRooms, rooms, loadingChurchData]);
+
+  const saveRooms = async () => {
     setHasChanges(false);
-    const { toInsert, toUpdate, toDelete } = diffTags(personalizedTags, tags);
+    const { toInsert, toUpdate, toDelete } = diffRooms(
+      personalizedRooms,
+      rooms
+    );
     console.log("Insert:", toInsert);
     console.log("Update:", toUpdate);
     console.log("Delete:", toDelete);
 
     if (toDelete.length >= 1) {
-      const response = await deleteTagsAction(toDelete, userData.church_id);
+      const response = await deleteRoomsAction(toDelete, userData.church_id);
       if (!response.success) {
         addToast({
-          title: `Errore durante l'eliminazione del Tag`,
+          title: `Errore durante l'eliminazione della stanza`,
           description: response.error,
           color: "danger",
         });
       }
     }
     if (toUpdate.length >= 1) {
-      const response = await updateTagsAction(
-        personalizedTags,
+      const response = await updateRoomsAction(
+        personalizedRooms,
         userData.church_id
       );
       if (!response.success) {
         addToast({
-          title: `Errore durante l'aggiornamento del Tag`,
+          title: `Errore durante l'aggiornamento della stanza`,
           description: response.error,
           color: "danger",
         });
       }
     }
     if (toInsert.length >= 1) {
-      const response = await insertTagsAction(toInsert, userData.church_id);
+      const response = await insertRoomsAction(toInsert, userData.church_id);
       if (!response.success) {
         addToast({
-          title: `Errore durante creazione del Tag`,
+          title: `Errore durante creazione della stanza`,
           description: response.error,
           color: "danger",
         });
       }
     }
+    setCurrentlyEditingIndex(null);
     fetchChurchData(userData.church_id);
   };
-  const addTagsfunction = (tagsToAdd: string) => {
-    const newTags = tagsToAdd
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== "");
 
-    const duplicates: string[] = [];
+  const addRoomFunction = () => {
+    const newRoom: roomsType = {
+      id: "", // or generate a temporary unique id if needed
+      name: "",
+      address: "",
+      comune: "",
+      church: "",
+    };
 
-    const uniqueNewTags = newTags.filter((tag) => {
-      const isDuplicate = personalizedTags.some(
-        (t) => t.name?.toLowerCase() === tag.toLowerCase()
-      );
-      if (isDuplicate) {
-        duplicates.push(tag);
-        return false; // exclude from tags to be added
-      }
-      return true;
-    });
-
-    if (duplicates.length > 0) {
-      setDuplicateError({
-        status: true,
-        name: duplicates.join(", "),
-      });
-      return;
-    }
-
-    const tagObjects = uniqueNewTags.map((name) => ({
-      name,
-      description: "",
-    }));
-
-    setPersonalizedTags((prev) => [...prev, ...tagObjects]);
+    setPersonalizedRooms((prev) => [...prev, newRoom]);
     setDuplicateError({ status: false, name: "" }); // clear previous errors
   };
-  const removeTag = (tagNameToRemove: string) => {
-    setPersonalizedTags((prevSkills) =>
-      prevSkills.filter((tagObj) => tagObj.name !== tagNameToRemove)
+  const removeRoom = (roomToRemove: string) => {
+    setPersonalizedRooms((prevSkills) =>
+      prevSkills.filter((roomObj) => roomObj.name !== roomToRemove)
     );
   };
 
   return (
     <>
-      <h2> Personalizza Tag Canzoni</h2>
+      <h2> Personalizza Stanze</h2>
 
       <>
         <div>
-          {personalizedTags.map((tagObj, idx) => (
+          {personalizedRooms.map((room, idx) => (
             <div
               key={idx}
               className="flex flex-col gap-2 w-[500px] nborder ncard"
@@ -183,11 +162,12 @@ export default function PersonalizeSongsTagsModal() {
                     size="sm"
                     variant="bordered"
                     radius="sm"
+                    placeholder="Sala principale..."
                     className="w-full"
-                    value={tagObj.name}
+                    value={room.name}
                     onChange={(e) => {
                       const newName = e.target.value;
-                      setPersonalizedTags((prev) =>
+                      setPersonalizedRooms((prev) =>
                         prev.map((t, i) =>
                           i === idx ? { ...t, name: newName } : t
                         )
@@ -196,7 +176,7 @@ export default function PersonalizeSongsTagsModal() {
                   />
                 ) : (
                   <p className="text-sm font-medium text-gray-800">
-                    {tagObj.name}
+                    {room.name}
                   </p>
                 )}
 
@@ -222,7 +202,7 @@ export default function PersonalizeSongsTagsModal() {
                     color="danger"
                     variant="light"
                     isIconOnly
-                    onPress={() => removeTag(tagObj.name ?? "")}
+                    onPress={() => removeRoom(room.name ?? "")}
                   >
                     <FaRegTrashAlt />
                   </Button>
@@ -237,20 +217,20 @@ export default function PersonalizeSongsTagsModal() {
                     radius="sm"
                     className="w-full"
                     minRows={1}
-                    placeholder="Es. Canzoni energiche per la lode"
-                    value={tagObj.description}
+                    placeholder="Indirizzo: Es. Via XX Settembre, 9E"
+                    value={room.address}
                     onChange={(e) => {
                       const newDesc = e.target.value;
-                      setPersonalizedTags((prev) =>
+                      setPersonalizedRooms((prev) =>
                         prev.map((t, i) =>
-                          i === idx ? { ...t, description: newDesc } : t
+                          i === idx ? { ...t, address: newDesc } : t
                         )
                       );
                     }}
                   />
                 ) : (
                   <p className="text-sm text-gray-700 w-full">
-                    {tagObj.description || "—"}
+                    {room.address || "—"}
                   </p>
                 )}
               </div>
@@ -261,51 +241,26 @@ export default function PersonalizeSongsTagsModal() {
             <div className="flex nborder ncard max-w-[90vw] flex-col items-start gap-2 !bg-red-100 w-[500px] ">
               <div className="flex flex-row gap-4 items-center justify-center w-full">
                 <small className="text-red-700">
-                  Non è possibile aggiungere due tag con lo stesso nome.{" "}
+                  Non è possibile aggiungere due stanze con lo stesso nome.{" "}
                   <strong>{duplicateError.name}</strong>
                 </small>
               </div>
             </div>
           )}
           <div className="songs-searchbar-form">
-            <Input
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              onBlur={() => {
-                if (searchText.trim() !== "") {
-                  addTagsfunction(searchText.trim());
-                  setSearchText("");
-                }
-              }}
-              size="sm"
-              type="text"
-              color="primary"
-              variant="bordered"
-              placeholder="Adorazione, Lode"
-              onKeyDown={(e: React.KeyboardEvent) => {
-                if (e.key === "Enter") {
-                  addTagsfunction(searchText.trim());
-                  setSearchText("");
-                }
-              }}
-            />
             <Button
               size="sm"
               color="primary"
               variant="ghost"
               isIconOnly
               onPress={() => {
-                if (searchText.trim() !== "") {
-                  // Prevent empty input submission
-                  addTagsfunction(searchText);
-                  setSearchText(""); // Clear input after adding
-                }
+                addRoomFunction();
+                setCurrentlyEditingIndex(personalizedRooms.length);
               }}
             >
               <FaPlus />
             </Button>
           </div>
-          <small>Per aggiungere più tag dividili con una virgola " , ".</small>
           <br />
         </div>
       </>
@@ -314,7 +269,7 @@ export default function PersonalizeSongsTagsModal() {
         <Button
           color="primary"
           onPress={() => {
-            saveTags();
+            saveRooms();
           }}
         >
           Salva

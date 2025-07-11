@@ -83,7 +83,7 @@ export default function SetListTabs({
                     </div>
 
                     <div className="setlist-name-exp" key={setlist.id}>
-                      <small>
+                      <p>
                         {setlist?.hour && (
                           <strong>
                             {new Date(
@@ -95,8 +95,6 @@ export default function SetListTabs({
                             })}{" "}
                           </strong>
                         )}
-                      </small>
-                      <p>
                         {matched?.alt || matched?.label || "Evento sconosciuto"}
                       </p>
                       <div className="flex gap-1 flex-wrap leading-3 text-slate-600">

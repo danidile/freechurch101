@@ -56,7 +56,7 @@ import { FaRegCircleXmark } from "react-icons/fa6";
 import { useChurchStore } from "@/store/useChurchStore";
 import { statusColorMap, statusMap } from "@/constants";
 export default function SetlistPage({ setListId }: { setListId: string }) {
-  const { userData, fetchUser, loading } = useUserStore();
+  const { userData, loading } = useUserStore();
   const [setlistSchedule, setSetlistSchedule] = useState<any[] | null>(null);
   const [setlistData, setSetlistData] = useState<setListT | null>(null);
   const [setlistTeams, setSetlistTeams] = useState<GroupedMembers | null>(null);
@@ -65,7 +65,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
   const [emailPerson, setEmailPerson] = useState(null);
   const [emailTeam, setEmailTeam] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { eventTypes } = useChurchStore();
+  const { eventTypes, rooms } = useChurchStore();
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
@@ -124,12 +124,23 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
   const matched = eventTypes?.find(
     (event) => event.key === setlistData.event_type
   );
+  const setlistRoom = rooms?.find((room) => room.id === setlistData.room);
   return (
     <div className="container-sub ">
       <div className="song-presentation-container">
         <div className="team-show">
-          <h5> {matched?.alt || matched?.label || "Evento sconosciuto"}</h5>
-          <p className="capitalize">{readableDate}</p>
+          <h2> {matched?.alt || matched?.label || "Evento sconosciuto"}</h2>
+
+          <p className="capitalize my-2">
+            {" "}
+            <b> ora: </b>
+            {readableDate}
+          </p>
+          <p className="my-2">
+            <b> Location: </b>
+            {setlistRoom.name}
+            {" - "} {setlistRoom.address}
+          </p>
           <div className="top-settings-bar">
             <CopyLinkButton />
             {userData &&
@@ -145,12 +156,12 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
 
         {setlistSchedule && setlistSchedule.length > 0 && (
           <>
-            <div className="ncard nborder mb-5 px-3 py-4">
+            <div className="ncard nborder mb-2 px-3 py-4">
               {setlistSchedule.map((element) => {
                 return <ScheduleViewComponents element={element} />;
               })}
             </div>
-            <div className="center- gap-3 mt-5 mb-20">
+            <div className="center- gap-3 mt-5 mb-5">
               <Link href={`/setlist/${setListId}/view`}>
                 <Button color="primary"> Visualizza set completo</Button>
               </Link>
@@ -198,15 +209,19 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
                       }}
                     >
                       <TableHeader>
-                        <TableColumn className="!text-left">Nome</TableColumn>
-                        <TableColumn>Ruolo</TableColumn>
-                        <TableColumn>Stato</TableColumn>
-                        <TableColumn>
+                        <TableColumn className="!text-left !h-2 !bg-white">
+                          Nome
+                        </TableColumn>
+                        <TableColumn className=" !h-2 !bg-white">
+                          Ruolo
+                        </TableColumn>
+                        <TableColumn className=" !h-2 !bg-white">
+                          Stato
+                        </TableColumn>
+                        <TableColumn className=" !h-2 !bg-white">
                           <IoMailOutline size={20} />
                         </TableColumn>
-                        <TableColumn>
-                          <FaWhatsapp size={20} />
-                        </TableColumn>
+                        <TableColumn className=" !h-2 !bg-white"> </TableColumn>
                       </TableHeader>
                       <TableBody items={team[1]}>
                         {(item) => {
@@ -367,9 +382,15 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                       }}
                     >
                       <TableHeader>
-                        <TableColumn className="!text-left">Nome</TableColumn>
-                        <TableColumn>Ruolo</TableColumn>
-                        <TableColumn>Stato</TableColumn>
+                        <TableColumn className="!text-left !h-2 !bg-white">
+                          Nome
+                        </TableColumn>
+                        <TableColumn className=" !h-2 !bg-white">
+                          Ruolo
+                        </TableColumn>
+                        <TableColumn className=" !h-2 !bg-white">
+                          Stato
+                        </TableColumn>
                       </TableHeader>
                       <TableBody items={team[1]}>
                         {(item) => {

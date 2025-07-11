@@ -4,7 +4,7 @@ export const getSetList = async (setlistId: string) => {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("setlist")
-    .select("id, date, event_type,private,hour")
+    .select("id, date, event_type,private,hour,room")
     .eq("id", setlistId)
     .single();
   if (error) {
