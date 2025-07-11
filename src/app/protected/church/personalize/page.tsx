@@ -97,7 +97,7 @@ export default function PersonalizeChurchComponent() {
               </td>
               <td className="flex flex-col justify-center items-center">
                 <Link
-                  href="/rooms"
+                  href="/protected/church/personalize/rooms"
                   className="flex-row flex gap-1 items-center"
                 >
                   <AiOutlineLink size={14} />

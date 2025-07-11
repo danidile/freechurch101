@@ -131,6 +131,8 @@ export default function PersonalizeEventsModal() {
                 <MdKeyboardDoubleArrowRight />
               </div>
               <Input
+                radius="sm"
+                size="sm"
                 placeholder={eventTypeKey.placeholder}
                 value={inputValue}
                 onChange={(e) =>
