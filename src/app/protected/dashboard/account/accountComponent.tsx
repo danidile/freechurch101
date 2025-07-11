@@ -10,18 +10,23 @@ import {
   CardBody,
   CardHeader,
   Chip,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Spinner,
 } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
 import { Alert } from "@heroui/alert";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useChurchStore } from "@/store/useChurchStore";
 import { FaLink } from "react-icons/fa6";
 import { FiPlus } from "react-icons/fi";
 import Link from "next/link";
+import { IoSettingsOutline } from "react-icons/io5";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
@@ -79,10 +84,47 @@ export default function AccountComponent() {
   return (
     <div className=" w-full">
       <div className="p-0 sm:p-12">
-        <h4>
-          Benvenuto {userData?.name + " "}
-          {userData.lastname && userData.lastname}
-        </h4>
+        <div className="flex flex-row items-center  gap-5">
+          <h4>
+            Benvenuto {userData?.name + " "}
+            {userData.lastname && userData.lastname}
+          </h4>
+
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                size="sm"
+                className="ml-0"
+                color="default"
+                isIconOnly
+                variant="flat"
+              >
+                <IoSettingsOutline size={20} />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Static Actions">
+              <DropdownItem
+                as={Link}
+                href="/protected/dashboard/account/completeAccount"
+                key="add"
+                color="primary"
+                variant="flat"
+              >
+                Aggiorna Account
+              </DropdownItem>
+              <DropdownItem
+                as={Link}
+                href="/protected/reset-password"
+                key="import"
+                color="primary"
+                variant="flat"
+              >
+                Reimposta Password
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+
         <p>{userData?.email}</p>
         <div className=" ncard">
           {teams && teams.length >= 1 && (
