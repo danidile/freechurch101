@@ -55,7 +55,6 @@ export default function CreateChurch() {
   const [success, setSuccess] = useState(false);
 
   const handleRegister = async (data: TauthSchema) => {
-
     setSending(true);
     const response = await regristrationAction(data);
     if (response.success) {
@@ -255,7 +254,6 @@ export default function CreateChurch() {
                   <div className="flex flex-row items-center justify-center gap-4">
                     <Autocomplete
                       size="sm"
-                      {...register("comune")}
                       errorMessage={errors.comune?.message}
                       isInvalid={!!errors.comune}
                       variant="underlined"
@@ -273,9 +271,11 @@ export default function CreateChurch() {
                           setValue("provincia", selectedComune.sigla); // Set provincia field
                         }
                       }}
-                      {...register("comune")}
                       inputValue={inputValue}
-                      onInputChange={(value) => setInputValue(value)}
+                      onInputChange={(value) => {
+                        setInputValue(value);
+                        setValue("comune", value); // keep form in sync
+                      }}
                       placeholder="Cerca un comune"
                       isClearable
                       className="max-w-[300px]"
@@ -289,6 +289,7 @@ export default function CreateChurch() {
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>
+
                     <Input
                       {...register("provincia")}
                       value={getValues("provincia")}

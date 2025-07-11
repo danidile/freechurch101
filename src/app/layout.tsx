@@ -53,7 +53,7 @@ export default function RootLayout({
       </head>
       <body>
         <ZustandProviders>
-          <PullToRefreshLayout>
+          {/* <PullToRefreshLayout> */}
             <main className="standalone:pb-[120px]">
               <MenuBar />
               <ToastProvider
@@ -87,7 +87,7 @@ export default function RootLayout({
               />
               <SiderbarProvider> {children}</SiderbarProvider>
             </main>
-          </PullToRefreshLayout>
+          {/* </PullToRefreshLayout> */}
         </ZustandProviders>
       </body>
     </html>
