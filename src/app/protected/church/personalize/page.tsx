@@ -2,6 +2,7 @@
 
 import { useUserStore } from "@/store/useUserStore";
 import { useState } from "react";
+import { AiOutlineLink } from "react-icons/ai";
 
 import {
   Modal,
@@ -11,14 +12,12 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  Link,
 } from "@heroui/react";
 
 import ImageUploader from "../../dashboard/account/updateImage/ImageUploader";
 import CreateMultipleEventsForm from "@/app/setlist/addMultipleEvents/UpdateMultipleEventsForm";
 
-import PersonalizeEventsModal from "./PersonalizeEventsModal";
-import PersonalizeSongsTagsModal from "./songsTagsModal";
+import Link from "next/link";
 
 export default function PersonalizeChurchComponent() {
   const { userData, loading } = useUserStore();
@@ -94,6 +93,20 @@ export default function PersonalizeChurchComponent() {
             </tr> */}
             <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
+                <p>Organizza gli spazi della tua chiesa:</p>
+              </td>
+              <td className="flex flex-col justify-center items-center">
+                <Link
+                  href="/rooms"
+                  className="flex-row flex gap-1 items-center"
+                >
+                  <AiOutlineLink size={14} />
+                  Personalizza
+                </Link>
+              </td>
+            </tr>
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
+              <td>
                 <p>Personalizza i tipi di evento per la tua chiesa:</p>
                 <small>
                   Se non li personalizzi rimarranno comunque disponibili e
@@ -101,7 +114,14 @@ export default function PersonalizeChurchComponent() {
                 </small>
               </td>
               <td className="flex flex-col justify-center items-center">
-                <PersonalizeEventsModal />
+                <Link
+                  className="flex-row flex gap-1 items-center"
+                  href="/protected/church/personalize/eventtypes
+                "
+                >
+                  <AiOutlineLink size={14} />
+                  Personalizza
+                </Link>
               </td>
             </tr>
             {/* <tr>
@@ -130,15 +150,14 @@ export default function PersonalizeChurchComponent() {
                 <p>Gestisci canzoni e accordi personalizzati</p>
               </td>
               <td className="flex flex-col justify-center items-center">
-                <Button
-                  color="primary"
-                  size="md"
-                  variant="solid"
-                  as={Link}
+                <Link
+                  className="flex-row flex gap-1 items-center"
                   href="/protected/churchsongs"
                 >
+                  {" "}
+                  <AiOutlineLink size={14} />
                   Lista Canzoni
-                </Button>
+                </Link>
               </td>
             </tr>
             <tr className="flex flex-col w-full lg:table-row lg:w-auto">
@@ -146,15 +165,14 @@ export default function PersonalizeChurchComponent() {
                 <p>Importa canzoni da Planning Center</p>
               </td>
               <td className="flex flex-col justify-center items-center">
-                <Button
-                  color="primary"
-                  size="md"
-                  variant="solid"
-                  as={Link}
+                <Link
+                  className="flex-row flex gap-1 items-center"
                   href="/importsongs"
                 >
+                  {" "}
+                  <AiOutlineLink size={14} />
                   Importa Canzoni
-                </Button>
+                </Link>
               </td>
             </tr>
             <tr className="flex flex-col w-full lg:table-row lg:w-auto">
@@ -162,7 +180,13 @@ export default function PersonalizeChurchComponent() {
                 <p>Definisci i tag da assegnare alle canzoni</p>
               </td>
               <td className="flex flex-col justify-center items-center">
-                <PersonalizeSongsTagsModal />
+                <Link
+                  className="flex-row flex gap-1 items-center"
+                  href="/protected/church/personalize/tags"
+                >
+                  <AiOutlineLink size={14} />
+                  Personalizza
+                </Link>
               </td>
             </tr>
             {/* <tr>
@@ -182,15 +206,14 @@ export default function PersonalizeChurchComponent() {
                 <p>Invita nuovi membri con un link dedicato</p>
               </td>
               <td className="flex flex-col justify-center items-center">
-                <Button
-                  color="primary"
-                  size="md"
-                  variant="solid"
-                  as={Link}
+                <Link
+                  className="flex-row flex gap-1 items-center"
                   href="/protected/church/invitemembers"
                 >
+                  {" "}
+                  <AiOutlineLink size={14} />
                   Invita
-                </Button>
+                </Link>
               </td>
             </tr>
             {/* <tr>

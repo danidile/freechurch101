@@ -22,8 +22,15 @@ const addEventTypesAction = async (
       .select();
     if (error) {
       console.log(error.message);
+      return {
+        success: false,
+        error: error.message,
+      };
     } else {
       console.log("custom-event-types table row inserted");
+      return {
+        success: true,
+      };
     }
   }
 };

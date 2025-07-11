@@ -2,12 +2,13 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
+import { TauthSchema } from "@/utils/types/auth";
 import { registrationData } from "@/utils/types/types";
 
-export const regristrationAction = async (formData: registrationData) => {
+export const regristrationAction = async (formData: TauthSchema) => {
   const supabase = createClient();
 
-  const { email, password, firstName, lastName, church } = formData;
+  const { email, password, firstname, lastname } = formData;
 
   if (password.length <= 7) {
     return { error: "Password troppo corta." };
@@ -18,9 +19,8 @@ export const regristrationAction = async (formData: registrationData) => {
     password,
     options: {
       data: {
-        firstName,
-        lastName,
-        church,
+        firstname,
+        lastname,
       },
     },
   });
@@ -39,13 +39,13 @@ export const regristrationAction = async (formData: registrationData) => {
       .from("churches")
       .insert([
         {
-          church_name: formData.churchName,
+          church_name: formData.churchname,
           pastor: formData.pastor,
           address: formData.address,
           website: formData.website,
-          ig_handle: formData.igHandle,
+          ig_handle: formData.ighandle,
           provincia: formData.provincia,
-          city: formData.city,
+          comune: formData.comune,
           creator: data.user.id,
         },
       ])
@@ -63,8 +63,8 @@ export const regristrationAction = async (formData: registrationData) => {
     const { data: profileData, error: profileDataError } = await supabase
       .from("profiles")
       .update({
-        name: firstName,
-        lastname: lastName,
+        name: firstname,
+        lastname: lastname,
         church: newChurchId,
         role: 1,
       })

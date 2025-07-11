@@ -35,7 +35,7 @@ export default function LoginPage() {
           </h4>
         </div>
       </div>
-      <div className="flex flex-col h-full items-center justify-center w-full lg:max-w-[40vw]">
+      <div className="flex flex-col h-full items-center justify-center w-full lg:max-w-[40vw]  p-4">
         <LoginForm />
       </div>
     </div>

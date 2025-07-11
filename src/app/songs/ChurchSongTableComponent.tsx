@@ -75,18 +75,19 @@ export default function ChurchSongTableComponent({
           className="w-full table-fixed border-collapse ntable"
         >
           <thead>
-            <th className="w-9/12 min-w-[200px]">Title</th>
+            <th className="w-6/12 min-w-[200px]">Title</th>
             <th className="w-3/12">Autore</th>
             <th className="w-3/12">Tag</th>
-            <td className="w-1/12 !text-center">Apri</td>
           </thead>
           <tbody>
             {songList.map((song) => (
               <tr key={song.id}>
                 <td>
-                  <span className="font-medium line-clamp-1">
-                    {song.song_title}
-                  </span>
+                  <Link href={`/songs/${song.id}`}>
+                    <span className="font-medium line-clamp-1">
+                      {song.song_title}
+                    </span>
+                  </Link>
                 </td>
 
                 <td>
@@ -95,29 +96,21 @@ export default function ChurchSongTableComponent({
                   </small>
                 </td>
                 <td>
-                  <div className="flex flex-row items-center items-center gap-1 flex-wrap">
+                  <div className="flex flex-row items-center gap-1 flex-wrap">
                     {song?.tags &&
-                      song.tags.map((tag, idx) => (
-                        <small
-                          key={idx}
-                          className="bg-blue-100 text-blue-800  font-medium px-3 py-1 rounded-full"
-                        >
-                          {tag}
-                        </small>
-                      ))}
+                      song.tags
+                        .split(",") // split string into array
+                        .map((tag, idx) => (
+                          <small
+                            key={idx}
+                            className=" text-blue-800 font-medium "
+                          >
+                            {tag.trim()}
+                            {", "}
+                            {/* trim removes leading/trailing spaces */}
+                          </small>
+                        ))}
                   </div>
-                </td>
-
-                <td className="!text-center">
-                  <Button
-                    size="sm"
-                    color="primary"
-                    isIconOnly
-                    as={Link}
-                    href={`/songs/${song.id}`}
-                  >
-                    <TbExternalLink size={20} />
-                  </Button>
                 </td>
               </tr>
             ))}

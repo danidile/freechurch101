@@ -114,43 +114,6 @@ export default function LoginForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handleNext = () => {
-  //   setError("");
-  //   if (step === 1 && (!formData.firstName || !formData.lastName)) {
-  //     return setError("Inserisci nome e cognome per procedere.");
-  //   }
-  //   if (step === 2 && !isCreatingChurch && !formData.church) {
-  //     return setError("Seleziona la tua chiesa");
-  //   }
-  //   if (step === 2 && isCreatingChurch && !formData.churchName) {
-  //     return setError("Dai un nome alla tua chiesa");
-  //   }
-  //   if (step === 2 && isCreatingChurch && !formData.pastor) {
-  //     return setError("Inserisci il nome del tuo pastore.");
-  //   }
-
-  //   setDirection(1);
-  //   setStep(step + 1);
-  // };
-  // const handleBack = () => {
-  //   if (step > 1) {
-  //     setDirection(-1);
-  //     setStep(step - 1);
-  //   }
-  // };
-
-  // const handleRegister = async () => {
-  //   setError("");
-  //   setSending(true);
-  //   const response = await regristrationAction(formData, isCreatingChurch);
-  //   if (response!.success) {
-  //     registrationEmail(formData);
-  //     router.push("/protected/dashboard/account");
-  //     setSending(false);
-  //     await fetchUser();
-  //   } else if (response!.error) return setError(response.error);
-  //   setSuccess(true);
-  // };
 
   const variants = {
     enter: (direction: number) => ({
@@ -232,7 +195,7 @@ export default function LoginForm() {
           variant="solid"
           type="submit"
           radius="sm"
-          className="mb-4 bg-gradient-to-br from-[#474be1] to-[#0e117f] text-white"
+          className="mb-4 bg-black text-white"
           disabled={isSubmitting}
           onPress={loginFunction}
         >

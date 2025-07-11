@@ -17,8 +17,15 @@ const removeEventTypesAction = async (
 
     if (error) {
       console.log("delete", error.message);
+      return {
+        success: false,
+        error: error.message,
+      };
     } else {
       console.log("custom-event-types row deleted seccesfully");
+      return {
+        success: true,
+      };
     }
   }
 };

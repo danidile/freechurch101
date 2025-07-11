@@ -1,17 +1,20 @@
 import { createClient } from "@/utils/supabase/client";
+import { TagWithDescription } from "@/utils/types/types";
 
-export default async function getChurchTags(churchId: string) {
+export default async function getChurchTags(
+  churchId: string
+): Promise<TagWithDescription[]> {
   const supabase = createClient();
 
-  const { data: data, error } = await supabase
+  const { data, error } = await supabase
     .from("tags")
-    .select("tags")
-    .eq("church", churchId)
-    .single();
-  if (error) {
-    console.log("Error in selection church tags");
+    .select("id,name,description")
+    .eq("church", churchId);
+
+  if (error || !data) {
+    console.error("Error fetching church tags:", error?.message);
+    return []; // oppure null se preferisci
   }
-  const tags: string[] = data.tags;
-  console.log("tags", tags);
-  return tags;
+
+  return data;
 }

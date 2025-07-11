@@ -8,7 +8,7 @@ export const addSong = async (data: songSchema) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
+  
   // GET profile
   const { data: profile } = await supabase
     .from("profiles")
@@ -25,8 +25,6 @@ export const addSong = async (data: songSchema) => {
         author: data.author,
         lyrics: data.lyrics,
         upload_key: data.upload_key,
-        bpm: data.bpm,
-        tags: data.tags,
         church: church,
       })
       .select();

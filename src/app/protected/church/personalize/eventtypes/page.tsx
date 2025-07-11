@@ -12,6 +12,7 @@ import {
   Button,
   useDisclosure,
   Input,
+  addToast,
 } from "@heroui/react";
 
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
@@ -29,12 +30,6 @@ export default function PersonalizeEventsModal() {
   const { userData, loading } = useUserStore();
 
   const [refetchTrigger, setRefetchTrigger] = useState(false);
-
-  const {
-    isOpen: isOpenCustomizeTypesModal,
-    onOpen: onOpenCustomizeTypesModal,
-    onOpenChange: onOpenChangeCustomizeTypesModal,
-  } = useDisclosure();
 
   useEffect(() => {
     if (!loadingChurchData) {
@@ -97,94 +92,64 @@ export default function PersonalizeEventsModal() {
         deleted,
         userData.church_id
       );
+      if (!response.success) {
+        addToast({
+          title: `Errore durante l'eliminazione del tipo di evento`,
+          description: response.error,
+          color: "danger",
+        });
+      }
     }
     if (edited.length >= 1) {
       const response = await updateEventTypesAction(edited, userData.church_id);
     }
 
-    // setRefetchTrigger(!refetchTrigger);
+    setRefetchTrigger(!refetchTrigger);
     // fetchChurchData(userData.church_id, userData.role);
   };
   return (
     <>
+      <h2>Personalizza tipi evento</h2>
+
+      <div className="flex flex-col gap-3 ">
+        {defaultEventTypes.map((eventTypeKey) => {
+          const matchingEvent = personalizedEventTypes.find(
+            (item) => item.key === eventTypeKey.key
+          );
+          const inputValue = matchingEvent?.edited ?? matchingEvent?.alt ?? "";
+          return (
+            <div
+              key={eventTypeKey.key}
+              className="grid grid-cols-3 border-l-3 auto-rows-max gap-0 pl-2 items-center"
+              style={{
+                gridTemplateColumns: "45% 10% 45%",
+                borderLeftColor: matchingEvent.color,
+              }}
+            >
+              <p>{eventTypeKey.label}</p>
+              <div className="text-center w-full">
+                <MdKeyboardDoubleArrowRight />
+              </div>
+              <Input
+                placeholder={eventTypeKey.placeholder}
+                value={inputValue}
+                onChange={(e) =>
+                  handleInputChange(eventTypeKey.key, e.target.value)
+                }
+              />
+            </div>
+          );
+        })}
+      </div>
+
       <Button
         color="primary"
-        size="md"
-        variant="solid"
-        onPress={onOpenCustomizeTypesModal}
+        onPress={() => {
+          saveEventTypes();
+        }}
       >
-        Personalizza
+        Salva
       </Button>
-
-      <Modal
-        className="max-h-[700px]"
-        placement="center"
-        scrollBehavior="inside"
-        size="lg"
-        isOpen={isOpenCustomizeTypesModal}
-        onOpenChange={onOpenChangeCustomizeTypesModal}
-      >
-        <ModalContent>
-          {(onCloseCustomizeTypesModal) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Personalizza tipi evento
-              </ModalHeader>
-              <ModalBody className="!px-3">
-                <div className="flex flex-col gap-3 ">
-                  {defaultEventTypes.map((eventTypeKey) => {
-                    const matchingEvent = personalizedEventTypes.find(
-                      (item) => item.key === eventTypeKey.key
-                    );
-                    const inputValue =
-                      matchingEvent?.edited ?? matchingEvent?.alt ?? "";
-                    return (
-                      <div
-                        key={eventTypeKey.key}
-                        className="grid grid-cols-3 border-l-3 auto-rows-max gap-0 pl-2 items-center"
-                        style={{
-                          gridTemplateColumns: "45% 10% 45%",
-                          borderLeftColor: matchingEvent.color,
-                        }}
-                      >
-                        <p>{eventTypeKey.label}</p>
-                        <div className="text-center w-full">
-                          <MdKeyboardDoubleArrowRight />
-                        </div>
-                        <Input
-                          placeholder={eventTypeKey.placeholder}
-                          value={inputValue}
-                          onChange={(e) =>
-                            handleInputChange(eventTypeKey.key, e.target.value)
-                          }
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="light"
-                  onPress={onCloseCustomizeTypesModal}
-                >
-                  Annulla
-                </Button>
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    saveEventTypes();
-                    onCloseCustomizeTypesModal();
-                  }}
-                >
-                  Salva
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </>
   );
 }
