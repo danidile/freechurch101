@@ -37,7 +37,9 @@ export default function CreateChurch() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    setValue,
+    getValues,
+    formState: { errors },
   } = useForm<TauthSchema>({
     resolver: zodResolver(authSchema),
   });
@@ -50,36 +52,12 @@ export default function CreateChurch() {
 
   const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward (optional)
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [formData, setFormData] = useState<registrationData>({
-    firstName: "",
-    lastName: "",
-    church: "",
-    email: "",
-    password: "",
-    isCreatingChurch: false,
-    churchName: "",
-    pastor: "",
-    address: "",
-    website: "",
-    igHandle: "",
-    provincia: "",
-    city: "",
-    comune: "",
-  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleRegister = async (data: TauthSchema) => {
 
-  const handleRegister = async () => {
-    console.log("formData", formData);
-
-    setError("");
     setSending(true);
-    const response = await regristrationAction(formData);
+    const response = await regristrationAction(data);
     if (response.success) {
       router.push("/protected/dashboard/account");
 
@@ -90,7 +68,6 @@ export default function CreateChurch() {
         description: response.error,
         color: "danger",
       });
-      setError(response.error);
 
       await fetchUser();
     }
@@ -142,7 +119,7 @@ export default function CreateChurch() {
       <div className="flex flex-col">
         <h2 className="font-regular my-12"> Crea una nuova chiesa</h2>
 
-        <form className="flex flex-col gap-4 ">
+        <form onSubmit={handleSubmit(handleRegister)}>
           {success ? (
             <Alert color="success">Utente registrato con successo!</Alert>
           ) : (
@@ -161,30 +138,24 @@ export default function CreateChurch() {
                   <div className="border-b-1 border-b- "></div>
                   <div className="flex flex-row flex-wrap items-center justify-center gap-4">
                     <Input
-                      isRequired
-                      minLength={3}
+                      {...register("firstname")}
+                      errorMessage={errors.firstname?.message}
                       size="sm"
                       variant="underlined"
+                      isInvalid={!!errors.firstname}
                       label="Nome"
-                      name="firstName"
                       placeholder="Marco"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className="min-w-[300px]"
                     />
 
                     <Input
                       size="sm"
                       variant="underlined"
-                      minLength={3}
-                      isRequired
                       type="text"
                       label="Cognome"
-                      name="lastName"
                       placeholder="Rossi"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className="min-w-[300px]"
+                      isInvalid={!!errors.lastname}
+                      errorMessage={errors.lastname?.message}
+                      {...register("lastname")}
                     />
                   </div>
                   <div className="flex flex-row flex-wrap items-center justify-center gap-4">
@@ -192,32 +163,28 @@ export default function CreateChurch() {
                       size="sm"
                       variant="underlined"
                       {...register("email")}
-                      isRequired
-                      name="email"
+                      errorMessage={errors.email?.message}
+                      isInvalid={!!errors.email}
                       label="Email"
                       placeholder="email..."
-                      minLength={8}
                       type="email"
-                      value={formData.email}
-                      onChange={handleChange}
                     />
                     <Input
+                      {...register("password")}
+                      errorMessage={errors.password?.message}
+                      isInvalid={!!errors.password}
                       size="sm"
                       variant="underlined"
-                      name="password"
-                      {...register("password")}
-                      isRequired
-                      value={formData.password}
-                      onChange={handleChange}
                       label="Password"
+                      placeholder="Inserisci la password"
+                      type={isVisible ? "text" : "password"}
                       minLength={8}
-                      placeholder="password..."
                       endContent={
                         <button
-                          aria-label="toggle password visibility"
-                          className="focus:outline-none"
                           type="button"
                           onClick={toggleVisibility}
+                          aria-label="Toggle password visibility"
+                          className="focus:outline-none"
                         >
                           {isVisible ? (
                             <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
@@ -226,7 +193,6 @@ export default function CreateChurch() {
                           )}
                         </button>
                       }
-                      type={isVisible ? "text" : "password"}
                     />
                   </div>
                   <small>Informazioni chiesa</small>
@@ -235,24 +201,20 @@ export default function CreateChurch() {
                     <Input
                       size="sm"
                       variant="underlined"
-                      {...register("churchName")}
-                      label="Church Name"
-                      name="churchName"
+                      {...register("churchname")}
+                      errorMessage={errors.churchname?.message}
+                      isInvalid={!!errors.churchname}
+                      label="Nome Chiesa"
                       placeholder="La mia chiesa "
-                      isRequired
-                      value={formData.churchName}
-                      onChange={handleChange}
                     />
                     <Input
                       size="sm"
                       variant="underlined"
-                      {...register("pastor")}
                       label="Pastor"
-                      name="pastor"
                       placeholder="Paolo "
-                      isRequired
-                      value={formData.pastor}
-                      onChange={handleChange}
+                      {...register("pastor")}
+                      errorMessage={errors.pastor?.message}
+                      isInvalid={!!errors.pastor}
                     />
                   </div>
                   <div className="flex flex-row flex-wrap items-center justify-center gap-4">
@@ -260,21 +222,19 @@ export default function CreateChurch() {
                       size="sm"
                       variant="underlined"
                       {...register("website")}
+                      errorMessage={errors.website?.message}
+                      isInvalid={!!errors.website}
                       label="Sito Web"
-                      name="website"
                       placeholder="www.lamiachiesa.it"
-                      value={formData.website}
-                      onChange={handleChange}
                     />
                     <Input
                       size="sm"
                       variant="underlined"
-                      {...register("igHandle")}
                       label="handle Instagram"
-                      name="igHandle"
                       placeholder="@my_church"
-                      value={formData.igHandle}
-                      onChange={handleChange}
+                      {...register("ighandle")}
+                      errorMessage={errors.ighandle?.message}
+                      isInvalid={!!errors.ighandle}
                     />
                   </div>
 
@@ -285,17 +245,19 @@ export default function CreateChurch() {
                       size="sm"
                       variant="underlined"
                       {...register("room_name")}
+                      errorMessage={errors.room_name?.message}
+                      isInvalid={!!errors.room_name}
                       label="Nome stanza"
                       name="room_name"
                       placeholder="Sala culto"
-                      value={formData.room_name}
-                      onChange={handleChange}
-                      isRequired
                     />
                   </div>
                   <div className="flex flex-row items-center justify-center gap-4">
                     <Autocomplete
                       size="sm"
+                      {...register("comune")}
+                      errorMessage={errors.comune?.message}
+                      isInvalid={!!errors.comune}
                       variant="underlined"
                       label="Comune"
                       selectedKey={selectedKey ?? undefined}
@@ -306,11 +268,10 @@ export default function CreateChurch() {
                         setSelectedKey(key as string);
                         setInputValue(selectedComune?.nome ?? "");
 
-                        // Sync with formData
-                        setFormData((prev) => ({
-                          ...prev,
-                          comune: selectedComune ? selectedComune.nome : "",
-                        }));
+                        if (selectedComune) {
+                          setValue("comune", selectedComune.nome); // Set comune field
+                          setValue("provincia", selectedComune.sigla); // Set provincia field
+                        }
                       }}
                       {...register("comune")}
                       inputValue={inputValue}
@@ -318,7 +279,6 @@ export default function CreateChurch() {
                       placeholder="Cerca un comune"
                       isClearable
                       className="max-w-[300px]"
-                      isRequired
                     >
                       {filteredComuni.map((comune) => (
                         <AutocompleteItem
@@ -330,32 +290,31 @@ export default function CreateChurch() {
                       ))}
                     </Autocomplete>
                     <Input
+                      {...register("provincia")}
+                      value={getValues("provincia")}
+                      type="hidden"
+                    />
+                    <Input
                       size="sm"
                       variant="underlined"
                       {...register("address")}
                       label="Indirizzo"
-                      name="address"
                       placeholder="Via XII Sett.."
-                      value={formData.address}
-                      onChange={handleChange}
+                      errorMessage={errors.address?.message}
+                      isInvalid={!!errors.address}
                     />
                   </div>
                 </motion.div>
               </AnimatePresence>
 
-              {error && (
-                <>
-                  <Alert color="danger" description={error}></Alert>
-                </>
-              )}
               <div className="flex justify-between items-center mt-4 gap-4">
                 <Button
-                  onPress={handleRegister}
                   disabled={sending}
                   fullWidth
+                  type="submit"
                   color="primary"
                   variant="solid"
-                  className="mb-4 bg-gradient-to-br from-[#474be1] to-[#0e117f] text-white"
+                  className="mb-4 bg-black text-white"
                 >
                   {sending ? "..." : "Iscriviti e Crea Chiesa"}
                 </Button>

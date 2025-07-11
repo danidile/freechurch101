@@ -114,7 +114,7 @@ export default function UserDataMenu() {
 
             <DropdownItem
               as={Link}
-              key="account"
+              key="editaccount"
               href="/protected/dashboard/account/completeAccount"
             >
               Aggiorna Account

@@ -15,8 +15,15 @@ const updateEventTypesAction = async (
       .select();
     if (error) {
       console.log("update", error.message);
+      return {
+        success: false,
+        error: error.message,
+      };
     } else {
       console.log("custom-event-types table row updated");
+      return {
+        success: true,
+      };
     }
   });
 };

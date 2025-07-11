@@ -7,9 +7,18 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@heroui/react";
 
 import { Input, Textarea } from "@heroui/input";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useRef, SetStateAction } from "react";
 import { toChordPro } from "@/utils/chordProFunctions/chordProFuncs";
 import { updateSong } from "./updateSongAction";
@@ -19,7 +28,7 @@ import { usePathname } from "next/navigation";
 import { updateItalianSongAction } from "@/app/italiansongs/[songId]/update/updateItalianSongAction";
 import { addItalianSong } from "@/app/italiansongs/additaliansong/addItalianSongAction";
 import { keys } from "@/constants";
-import { useChurchStore } from "@/store/useChurchStore";
+import ChordProViewComponent from "@/app/components/chordProViewComponent";
 
 export default function UpdateSongForm({
   songData,
@@ -32,10 +41,8 @@ export default function UpdateSongForm({
   artists?: artistsT[];
   albums?: albumsT[];
 }) {
-  const { loadingChurchData, tags } = useChurchStore();
-  const [selectedTags, setSelectedTags] = useState<string[]>(
-    songData?.tags ? songData.tags.split(",").map((tag) => tag.trim()) : []
-  );
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const pathname = usePathname(); // e.g. "/italiansongs/7784d9a0-2d3d..."
   const category = pathname.split("/")[1]; // "italiansongs"
   const [artistChosen, setArtistChosen] = useState("");
@@ -82,7 +89,6 @@ export default function UpdateSongForm({
   };
   const convertData = async (data: songSchema) => {
     data.lyrics = state;
-    console.log(data);
     if (category === "songs") {
       if (type === "add") {
         data.lyrics = state;
@@ -237,7 +243,7 @@ export default function UpdateSongForm({
           {/* META FOR SONGS PAGE */}
           {category === "songs" && (
             <>
-              <div className="flex flex-wrap  md:flex-nowrap gap-4 items-center">
+              <div className="flex gap-4 items-center">
                 <Input
                   {...register("song_title", {
                     required: "Song Title is required",
@@ -258,53 +264,28 @@ export default function UpdateSongForm({
                   size="sm"
                 />
               </div>
-              <div className="flex flex-wrap  md:flex-nowrap gap-4 items-center">
-                <Select
-                  variant="bordered"
-                  fullWidth
-                  label="Tonalità"
-                  size="sm"
-                  aria-label="tonalità"
-                  {...register("upload_key")}
-                  defaultSelectedKeys={
-                    new Set([
-                      keys.includes(songData.upload_key)
-                        ? songData.upload_key
-                        : keys[0],
-                    ])
-                  }
-                >
-                  {keys.map((key) => (
-                    <SelectItem id={key} key={key}>
-                      {key}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Input
-                  {...register("bpm")}
-                  label="BPM"
-                  variant="bordered"
-                  size="sm"
-                />
-                <Select
-                  variant="bordered"
-                  fullWidth
-                  label="Seleziona i tag"
-                  size="sm"
-                  aria-label="tags"
-                  {...register("tags")}
-                  selectionMode="multiple"
-                  placeholder="Scegli uno o più tag"
-                  selectedKeys={selectedTags}
-                  onSelectionChange={(keys) =>
-                    setSelectedTags(Array.from(keys as Set<string>))
-                  }
-                >
-                  {tags.map((tag) => (
-                    <SelectItem key={tag.name}>{tag.name}</SelectItem>
-                  ))}
-                </Select>
-              </div>
+
+              <Select
+                variant="bordered"
+                fullWidth
+                label="Tonalità"
+                size="sm"
+                {...register("upload_key")}
+                defaultSelectedKeys={
+                  new Set([
+                    keys.includes(songData.upload_key)
+                      ? songData.upload_key
+                      : keys[0],
+                  ])
+                }
+                aria-label="tonalità"
+              >
+                {keys.map((key) => (
+                  <SelectItem id={key} key={key}>
+                    {key}
+                  </SelectItem>
+                ))}
+              </Select>
 
               <Input
                 {...register("id", { required: "" })}

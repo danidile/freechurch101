@@ -4,7 +4,7 @@ import z from "zod";
 export type songSchema = {
   id: string;
   song_title: string;
-
+  tags?: string;
   author?: string;
   artist?: string;
   upload_key: string;
@@ -29,8 +29,22 @@ export type songType = {
   key?: string;
   order?: number;
   church?: string;
-  tags?: string[];
+  tags?: string;
   bpm?: string;
+};
+
+export type roomsType = {
+  name: string;
+  address: string;
+  comune: string;
+  church: string;
+  id: string;
+};
+export type TagWithDescription = {
+  id?: string;
+  tag?: string;
+  name?: string;
+  description?: string;
 };
 
 export type Comune = {
@@ -424,7 +438,7 @@ export type SongWithAlbum = {
   upload_key?: string;
   artist?: string;
   album?: AlbumReference | null; // joined album
-  tags?: string[];
+  tags?: string;
   bpm?: string;
 };
 

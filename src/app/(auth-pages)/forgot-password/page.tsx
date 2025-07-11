@@ -71,7 +71,13 @@ export default function ForgotPassword({
           <h1 className="text-2xl font-medium">Reset Password</h1>
           <div className="flex flex-col gap-5 [&>input]:mb-3 mt-8">
             <p>Inserisci la tua Email.</p>
-            <Input {...register("email")} label="Email" name="email" required />
+            <Input
+              variant="underlined"
+              {...register("email")}
+              label="Email"
+              name="email"
+              required
+            />
             {searchParams.message && (
               <FormMessage
                 message={{
@@ -90,13 +96,14 @@ export default function ForgotPassword({
               type="submit"
               disabled={sending}
               fullWidth
+              className=" bg-black"
             >
               {sending ? <Spinner color="white" /> : "Invia"}
             </Button>
           </div>
         </form>
-        <Link href="/login" className="underline text-blue-600">
-          Torna alla pagina di login
+        <Link href="/login" className="underline ">
+          <small>Torna alla pagina di login</small>
         </Link>
       </div>
     );

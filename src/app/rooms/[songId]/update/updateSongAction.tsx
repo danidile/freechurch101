@@ -13,8 +13,6 @@ export const updateSong = async (data: songSchema) => {
       song_title: data.song_title,
       lyrics: data.lyrics,
       upload_key: data.upload_key,
-      bpm: data.bpm,
-      tags: data.tags,
     })
     .eq("id", data.id)
     .select();
