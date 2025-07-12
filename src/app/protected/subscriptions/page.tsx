@@ -1,11 +1,8 @@
 "use client";
-import { useUserStore } from "@/store/useUserStore";
-import { Button } from "@heroui/button";
-import startCheckout from "./startCheckout";
-import ProCheckoutButton from "./ProCheckoutButton";
-import BasicCheckoutButton from "./BasicCheckoutButton";
-import FullCheckoutButton from "./FullCheckoutButton";
+
 import { FaCheck } from "react-icons/fa6";
+import { Button } from "@heroui/button";
+import CheckoutButton from "./CheckoutButton";
 
 export default function PricingPage() {
   const tiers = [
@@ -16,12 +13,11 @@ export default function PricingPage() {
       features: [
         "100 Canzoni",
         "10 Membri",
-        "2 Team",
+        "1 Team",
         "8 eventi per stanza",
         "1 stanza",
         "8 elementi per evento",
       ],
-      cta: <></>,
     },
     {
       name: "Basic",
@@ -32,10 +28,10 @@ export default function PricingPage() {
         "30 Membri",
         "5 Team",
         "Eventi illimitati per stanza",
-        "3 stanza",
+        "3 stanze",
         "20 elementi per evento",
       ],
-      cta: <BasicCheckoutButton />,
+      priceCode: "price_1RhSJPPiftofwQpL9u5gveG5",
     },
     {
       name: "Pro",
@@ -46,10 +42,10 @@ export default function PricingPage() {
         "80 Membri",
         "15 Team",
         "Eventi illimitati per stanza",
-        "7 stanza",
+        "15 stanze",
         "Elementi illimitati per evento",
       ],
-      cta: <ProCheckoutButton />,
+      priceCode: "price_1RhSKAPiftofwQpL9pyDiFxv",
     },
   ];
 
@@ -66,7 +62,11 @@ export default function PricingPage() {
       "1 stanza",
       "8 elementi per evento",
     ],
-    cta: <FullCheckoutButton />,
+    cta: (
+      <Button color="primary" variant="solid">
+        Chiedi più informazioni
+      </Button>
+    ),
   };
 
   return (
@@ -80,10 +80,7 @@ export default function PricingPage() {
         </p>
         <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3">
           {tiers.map((tier) => (
-            <div
-              key={tier.name}
-              className="rounded-2xl p-6 shadow-lg border"
-            >
+            <div key={tier.name} className="rounded-2xl p-6 shadow-lg border">
               <h3 className="text-2xl font-semibold text-gray-800">
                 {tier.name}
               </h3>
@@ -102,7 +99,9 @@ export default function PricingPage() {
                   </small>
                 ))}
               </div>
-              <div className="w-full">{tier.cta}</div>
+              <div className="w-full">
+                {tier.priceCode && <CheckoutButton price={tier.priceCode} />}
+              </div>
             </div>
           ))}
         </div>

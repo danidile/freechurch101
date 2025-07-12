@@ -8,8 +8,8 @@ export default function FullCheckoutButton() {
 
   return (
     <Button
-        variant="solid"
-    color="primary"
+      variant="solid"
+      color="primary"
       onPress={() =>
         startCheckout(
           "price_1RhSJPPiftofwQpL9u5gveG5",
@@ -19,7 +19,7 @@ export default function FullCheckoutButton() {
         )
       }
     >
-      Sceglia Piano
+      Scegli Piano
     </Button>
   );
 }

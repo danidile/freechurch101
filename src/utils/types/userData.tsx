@@ -21,6 +21,7 @@ export type basicUserData = {
   pending_church_confirmation?: boolean;
   fetched?: boolean;
   church_logo?: string;
+  teams?: string[];
 };
 
 export type calendarMonth = {

@@ -2,7 +2,11 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { churchMembersT, teamData } from "@/utils/types/types";
-
+const rolePriority = {
+  leader: 3,
+  editor: 2,
+  member: 1,
+};
 export const getTeamByIdFunction = async (teamId: string) => {
   const supabase = createClient();
   let { data: teamLeader, error: errorTeamLeader } = await supabase
@@ -17,7 +21,7 @@ export const getTeamByIdFunction = async (teamId: string) => {
 
   let { data: teamMembers, error: errorTeamMembers } = await supabase
     .from("team-members")
-    .select("id, roles, profile(id,name, lastname, email)")
+    .select("id, roles, profile(id,name, lastname, email),role")
     .eq("team_id", teamId);
   if (errorTeamMembers) {
     console.error("Error fetching teamMembers:", errorTeamMembers);
@@ -51,10 +55,15 @@ export const getTeamByIdFunction = async (teamId: string) => {
           email: profile.email,
           blockouts: blockouts || [],
           isLeader: leaderProfileIds.includes(profile.id),
+          role: member.role,
         };
       })
     )
-  ).sort((a, b) => (b.isLeader ? 1 : 0) - (a.isLeader ? 1 : 0));
+  ).sort(
+    (a, b) =>
+      (rolePriority[b.role as keyof typeof rolePriority] || 0) -
+      (rolePriority[a.role as keyof typeof rolePriority] || 0)
+  );
 
   return formattedTeamMembers;
 };

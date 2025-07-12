@@ -15,7 +15,7 @@ import {
 } from "@heroui/react";
 
 import ImageUploader from "../../dashboard/account/updateImage/ImageUploader";
-import CreateMultipleEventsForm from "@/app/setlist/addMultipleEvents/UpdateMultipleEventsForm";
+import CreateMultipleEventsForm from "@/app/protected/church/personalize/addmultipleevents/UpdateMultipleEventsForm";
 
 import Link from "next/link";
 
@@ -79,18 +79,22 @@ export default function PersonalizeChurchComponent() {
                 )}
               </td>
             </tr>
-            {/* <tr>
-              <td>Gestisci team</td>
+            
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
-                <button className="settings-action">Vai</button>
+                <p>Organizza i Team con ruoli e permessi</p>
               </td>
-            </tr> */}
-            {/* <tr>
-              <td>Organizza i membri con ruoli e permessi</td>
-              <td>
-                <button className="settings-action">Gestisci</button>
+              <td className="flex flex-col justify-center items-center">
+                <Link
+                  href="/protected/teams"
+                  className="flex-row flex gap-1 items-center"
+                >
+                  <AiOutlineLink size={14} />
+                  Gestisci
+                </Link>
               </td>
-            </tr> */}
+            </tr>
+
             <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Organizza gli spazi della tua chiesa:</p>
@@ -124,21 +128,20 @@ export default function PersonalizeChurchComponent() {
                 </Link>
               </td>
             </tr>
-            {/* <tr>
+            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Crea e pianifica eventi settimanali o mensili</p>
               </td>
-              <td>
-                <Button
-                  color="primary"
-                  size="md"
-                  variant="light"
-                  onPress={onOpenMultipleEventsModal}
+              <td className="flex flex-col justify-center items-center">
+                <Link
+                  className="flex-row flex gap-1 items-center"
+                  href="/protected/church/personalize/addmultipleevents"
                 >
-                  Aggiungi evento
-                </Button>
+                  <AiOutlineLink size={14} />
+                  Personalizza
+                </Link>
               </td>
-            </tr> */}
+            </tr>
             {/* <tr>
               <td>Imposta notifiche automatiche via email o app</td>
               <td>
@@ -189,18 +192,7 @@ export default function PersonalizeChurchComponent() {
                 </Link>
               </td>
             </tr>
-            {/* <tr>
-              <td>Configura le sale utilizzate nella tua chiesa</td>
-              <td>
-                <button className="settings-action">Configura</button>
-              </td>
-            </tr> */}
-            {/* <tr>
-              <td>Personalizza la pagina pubblica della tua chiesa</td>
-              <td>
-                <button className="settings-action">Modifica</button>
-              </td>
-            </tr> */}
+
             <tr className="flex flex-col w-full lg:table-row lg:w-auto">
               <td>
                 <p>Invita nuovi membri con un link dedicato</p>
