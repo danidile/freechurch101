@@ -17,8 +17,8 @@ import { Time } from "@internationalized/date";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { eventSchema, formValues } from "./types";
 import { useChurchStore } from "@/store/useChurchStore";
+import { eventSchema, formValues } from "./types";
 
 export const weekDays = [
   { key: "monday", label: "Lunedì" },

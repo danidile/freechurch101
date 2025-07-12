@@ -19,9 +19,10 @@ export default async function isTeamLeaderClient() {
 
   if (user) {
     const { data: teamLeader, error: teamLeaderError } = await supabase
-      .from("team-leaders")
+      .from("team-members")
       .select("*")
-      .eq("profile", user.id);
+      .eq("profile", user.id)
+      .eq("role", "leader");
 
     if (teamLeaderError) {
       console.error("Error fetching profile:", teamLeaderError.message);
@@ -30,7 +31,7 @@ export default async function isTeamLeaderClient() {
       if (teamLeader.length >= 1) {
         isLeader.isLeader = true;
         teamLeader.map((team) => {
-          isLeader.teams.push(team.team);
+          isLeader.teams.push(team.team_id);
         });
       }
     }

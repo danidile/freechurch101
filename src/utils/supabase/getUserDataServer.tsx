@@ -61,6 +61,17 @@ export default async function userDataServer() {
       console.error("Error fetching profile:", error.message);
       return userData;
     }
+
+    let { data: teams, error: teamError } = await supabase
+      .from("team-members")
+      .select("*")
+      .eq("profile", user.id);
+    if (error) {
+      console.error("Error fetching profile:", error.message);
+      return userData;
+    }
+    const ids = teams.map((team) => team.team_id);
+    userData.teams = ids;
   }
 
   return userData;

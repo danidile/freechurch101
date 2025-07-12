@@ -138,8 +138,8 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           </p>
           <p className="my-2">
             <b> Location: </b>
-            {setlistRoom.name}
-            {" - "} {setlistRoom.address}
+            {setlistRoom?.name}
+            {" - "} {setlistRoom?.address}
           </p>
           <div className="top-settings-bar">
             <CopyLinkButton />

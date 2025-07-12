@@ -1,4 +1,4 @@
-import { ChipColor } from "./utils/types/types";
+import { ChipColor, Permission } from "./utils/types/types";
 
 export const keys = [
   "A",
@@ -119,3 +119,34 @@ export const statusColorMap: Record<string, ChipColor> = {
   confirmed: "success",
   denied: "danger",
 };
+
+export const DEFAULT_ROLE_PERMISSIONS: Omit<Permission, "team_id">[] = [
+  // Leader può tutto
+  ...["setlists", "events","songs","scheduling"].flatMap((resource) =>
+    ["view", "edit", "delete", "create"].map((action) => ({
+      role: "leader",
+      resource,
+      action,
+      allowed: true,
+    }))
+  ),
+
+
+  // Editor può solo view + edit
+  ...["setlists", "events","songs","scheduling"].flatMap((resource) =>
+    ["view", "edit"].map((action) => ({
+      role: "editor",
+      resource,
+      action,
+      allowed: true,
+    }))
+  ),
+
+  // Member può solo view
+  ...["setlists", "events", "songs","scheduling"].map((resource) => ({
+    role: "member",
+    resource,
+    action: "view",
+    allowed: true,
+  })),
+];

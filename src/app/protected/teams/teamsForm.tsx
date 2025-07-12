@@ -12,11 +12,11 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Checkbox,
 } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { createTeam } from "./create-team/createTeamAction";
-import { updateTeam } from "./[teamsId]/update/updateTeam";
 import { SelectTeamMemberDrawer } from "./SelectTeamMemberDrawer";
 import { Chip } from "@heroui/react";
 import { AddRole } from "./AddRole";
@@ -108,8 +108,6 @@ export default function TeamsForm({
 
   // -------------------------------------------
 
-  // END MANAGE TEAM-MEMBERS
-
   const convertData = async () => {
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
     const churchTeamUpdated: teamData = {
@@ -118,16 +116,13 @@ export default function TeamsForm({
       is_worship: watchAllFields.is_worship,
       team_members: state,
     };
-
+    console.log("churchTeamUpdated", churchTeamUpdated);
     if (page === "create") {
       const response = await createTeam(churchTeamUpdated);
       if (response.success) {
         router.push(`/protected/teams/${response.data}`);
       }
     }
-    //  else if (page === "update") {
-    //   await updateTeam(churchTeamUpdated, churchTeamStart);
-    // }
   };
 
   return (
@@ -154,6 +149,12 @@ export default function TeamsForm({
                 placeholder="Worship Team"
               />
             </div>
+            <Checkbox {...register("is_worship")}>Team di adorazione</Checkbox>
+            <small>
+              Seleziona questa opzione se il team che stai creando è dedicato
+              all'adorazione. I membri di questo team avranno accesso a
+              funzionalità aggiuntive pensate per la gestione del culto.
+            </small>
             <h5 className="mt-6">Membri del Team</h5>
 
             {state.map((member, index) => {

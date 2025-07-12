@@ -5,7 +5,6 @@ import MoreDropdownTeams from "./MoreDropdownTeams";
 import { Button, Chip, Input } from "@heroui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdEditNote } from "react-icons/md";
-import { PiFlagBannerBold } from "react-icons/pi";
 
 import {
   Dropdown,
@@ -33,17 +32,11 @@ import { SelectTeamMemberDrawer } from "../SelectTeamMemberDrawer";
 import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import { addMemberToTeamAction } from "./addMemberToTeamAction";
 import { saveUpdatedSkillsAction } from "./saveUpdatedSkillsAction";
-import { saveNewLeadersAction } from "./saveNewLeadersAction";
-import { addNewLeadersAction } from "./addNewLeadersAction";
-import { removeLeadersAction } from "./removeLeadersAction";
+import { updateTeamMemberRoleAction } from "./updateTeamMemberRoleAction";
 
 export default function Page({ params }: { params: { teamsId: string } }) {
   const { userData, loading: isloading } = useUserStore();
-  const [selectedNewLeaders, setSelectedNewLeaders] = useState<
-    typeof churchTeam.team_members
-  >([]);
-  const [leadersToAdd, setLeadersToAdd] = useState<churchMembersT[]>([]);
-  const [leadersToRemove, setLeadersToRemove] = useState<churchMembersT[]>([]);
+
   const [width, setWidth] = useState(0);
   useEffect(() => {
     const updateWidth = () => setWidth(window.innerWidth);
@@ -52,15 +45,14 @@ export default function Page({ params }: { params: { teamsId: string } }) {
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
   const [refetchTrigger, setRefetchTrigger] = useState(false);
-
+  const [uneditedChurchTeam, setUneditedChurchTeam] = useState<teamData>();
   const [churchTeam, setChurchTeam] = useState<teamData>();
   const [isLeader, setIsLeader] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [leaderIds, setLeaderIds] = useState<string[]>([]);
   const [selectedMember, setSelectedMember] = useState<churchMembersT | null>(
     null
   );
-  const [defineLeaders, setDefineLeaders] = useState<boolean>(false);
+  const [defineRoles, setDefineRoles] = useState<boolean>(false);
   const [newSkills, setNewSkills] = useState<string[]>([]);
   const [churchMembers, setChurchMembers] = useState<churchMembersT[] | null>(
     []
@@ -82,41 +74,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
   const [memberToDelete, setMemberToDelete] = useState<churchMembersT | null>(
     null
   );
-  const toggleSelectionLeaders = (
-    member: (typeof churchTeam.team_members)[number]
-  ) => {
-    setSelectedNewLeaders((prev) => {
-      const exists = prev.some((m) => m.profile === member.profile);
-      const newSelected = exists
-        ? prev.filter((m) => m.profile !== member.profile)
-        : [...prev, member];
 
-      // Now calculate the new leaders to add/remove
-      const originallyLeaders = churchTeam.team_members.filter(
-        (m) => m.isLeader
-      );
-
-      const toAdd = newSelected.filter(
-        (m) =>
-          !m.isLeader && !originallyLeaders.some((o) => o.profile === m.profile)
-      );
-
-      const toRemove = originallyLeaders.filter(
-        (m) => !newSelected.some((s) => s.profile === m.profile)
-      );
-
-      setLeadersToAdd(toAdd);
-      setLeadersToRemove(toRemove);
-
-      return newSelected;
-    });
-  };
-
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
-  const toggleDropdown = (id: string) => {
-    setOpenDropdown((prev) => (prev === id ? null : id));
-  };
   const handleOpenModal = (member: churchMembersT) => {
     setSelectedMember(member);
     setNewSkills(member.roles);
@@ -128,7 +86,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
       setLoading(true);
       const team: teamData = await getChurchTeam(params.teamsId);
       setChurchTeam(team);
-
+      setUneditedChurchTeam(team);
       const leaderIds = team.team_members
         .filter((member) => member.isLeader)
         .map((member) => member.profile);
@@ -137,12 +95,6 @@ export default function Page({ params }: { params: { teamsId: string } }) {
       if (leaderIds.includes(userData?.id)) {
         setIsLeader(true);
       }
-
-      setLeaderIds(leaderIds);
-
-      // ✅ Initialize selectedNewLeaders with current leaders
-      const initialSelected = team.team_members.filter((m) => m.isLeader);
-      setSelectedNewLeaders(initialSelected);
 
       console.log(leaderIds);
       setLoading(false);
@@ -231,17 +183,28 @@ export default function Page({ params }: { params: { teamsId: string } }) {
     console.log("newSkills", newSkills);
   };
 
-  const saveNewLeaders = () => {
-    if (leadersToAdd.length >= 1) {
-      console.log("leadersToAdd", leadersToAdd);
-
-      addNewLeadersAction(leadersToAdd, params.teamsId);
+  const saveNewLeaders = async () => {
+    const editedRoleMembers =
+      churchTeam.team_members?.filter((member) => {
+        const original = uneditedChurchTeam.team_members?.find(
+          (m) => m.profile === member.profile
+        );
+        return original && member.role !== original.role;
+      }) || [];
+    if (editedRoleMembers.length > 0) {
+      console.log("Ruoli modificati:");
+      editedRoleMembers.forEach((m) => {
+        console.log(
+          `${m.name} ${m.lastname} da ${uneditedChurchTeam.team_members.find((x) => x.profile === m.profile)?.role} a ${m.role}`
+        );
+        console.log(m);
+      });
+      const response = await updateTeamMemberRoleAction(
+        editedRoleMembers,
+        params.teamsId
+      );
     }
-    if (leadersToRemove.length >= 1) {
-      console.log("leadersToRemove", leadersToRemove);
 
-      removeLeadersAction(leadersToRemove, params.teamsId);
-    }
     setRefetchTrigger((prev) => !prev);
   };
   if (churchTeam) {
@@ -252,17 +215,17 @@ export default function Page({ params }: { params: { teamsId: string } }) {
             <h3 className="font-medium">{churchTeam.team_name}</h3>{" "}
             {hasPermission(userData.role as Role, "update:teams") && (
               <>
-                {!defineLeaders && (
+                {!defineRoles && (
                   <>
                     {!churchTeam.team_members.some(
-                      (member) => member.isLeader
+                      (member) => member.role === "leader"
                     ) && (
                       <p className="text-red-500">
                         Questo team non ha un Leader.{" "}
                         <small
                           className="text-default-700 underline !cursor-pointer"
                           onClick={() => {
-                            setDefineLeaders(true);
+                            setDefineRoles(true);
                           }}
                         >
                           Clicca qui per aggiungere i leader
@@ -277,10 +240,10 @@ export default function Page({ params }: { params: { teamsId: string } }) {
           <div>
             {hasPermission(userData.role as Role, "update:teams") && (
               <>
-                {!defineLeaders && (
+                {!defineRoles && (
                   <>
                     <MoreDropdownTeams
-                      setDefineLeaders={setDefineLeaders}
+                      setDefineLeaders={setDefineRoles}
                       teamsId={params.teamsId}
                     />
                   </>
@@ -292,7 +255,6 @@ export default function Page({ params }: { params: { teamsId: string } }) {
         <table className="w-full max-w-[800px] table-auto border-collapse ntable">
           <thead>
             <tr className="bg-gray-100">
-              {defineLeaders && <th className="w-[30px] px-2 py-1"></th>}
               <th className="text-left px-2 py-1">Nome</th>
               {width >= 800 && (
                 <>
@@ -300,7 +262,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                 </>
               )}
 
-              {!defineLeaders &&
+              {!defineRoles &&
                 hasPermission(userData.role as Role, "update:teams") && (
                   <th className="text-center px-2 py-1 max-w-[50px] w-[50px]">
                     <MdEditNote size={20} className="mx-auto" />
@@ -310,31 +272,12 @@ export default function Page({ params }: { params: { teamsId: string } }) {
           </thead>
           <tbody>
             {churchTeam.team_members.map((item) => {
-              const isSelected = selectedNewLeaders.some(
-                (i) => i.profile === item.profile
-              );
-              console.log("item", item);
               return (
-                <tr
-                  key={item.profile}
-                  className={`even:bg-gray-50 border-t border-gray-200 ${
-                    defineLeaders && isSelected ? "bg-blue-100" : ""
-                  }`}
-                >
-                  {defineLeaders && (
-                    <td className="px-2 py-[2px]">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => toggleSelectionLeaders(item)}
-                        className="cursor-pointer"
-                      />
-                    </td>
-                  )}
+                <tr key={item.profile}>
                   <td className="px-2 py-[2px]">
                     <div className="px-2 py-[2px]">
                       <p
-                        className={` ${item.isLeader ? "font-bold underline" : ""}`}
+                        className={` ${item.role === "leader" ? "font-semibold" : ""}  ${item.role === "editor" ? "font-medium text-blue-500" : ""}`}
                       >
                         {item.name} {item.lastname}{" "}
                       </p>
@@ -345,20 +288,48 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                           </small>
                         </>
                       )}
+                      <small className="capitalize">
+                        {item.roles.join(", ")}
+                      </small>
                     </div>
                   </td>
                   {width >= 800 && (
-                    <>
-                      <td
-                        className="px-2 py-[2px] 
-"
-                      >
-                        {item.roles.join(", ")}
-                      </td>
-                    </>
+                    <td className="px-2 py-[2px]">
+                      {defineRoles ? (
+                        <select
+                          className="border rounded px-2 py-1 text-sm"
+                          value={item.role ?? "member"}
+                          onChange={(e) =>
+                            setChurchTeam((prev) => {
+                              if (!prev) return prev;
+                              return {
+                                ...prev,
+                                team_members: prev.team_members.map((m) =>
+                                  m.profile === item.profile
+                                    ? { ...m, role: e.target.value }
+                                    : m
+                                ),
+                              };
+                            })
+                          }
+                        >
+                          <option value="leader">Leader</option>
+                          <option value="editor">Editor</option>
+                          <option value="member">Membro</option>
+                        </select>
+                      ) : (
+                        <p className="capitalize">
+                          {item.role === "member" ? (
+                            <>membro</>
+                          ) : (
+                            <>{item.role}</>
+                          )}
+                        </p>
+                      )}
+                    </td>
                   )}
 
-                  {!defineLeaders &&
+                  {!defineRoles &&
                     hasPermission(userData.role as Role, "update:teams") && (
                       <td className="px-2 py-[2px] text-center max-w-[50px] w-[50px]">
                         {(isLeader ||
@@ -409,7 +380,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
         </table>
         <div className="w-full p-4 max-w-[800px] text-center ">
           <>
-            {!defineLeaders && (
+            {!defineRoles && (
               <>
                 {" "}
                 {(isLeader ||
@@ -423,34 +394,32 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                       section={null}
                     />
                     <div className="transpose-button-container">
-                      {defineLeaders && (
+                      {defineRoles && (
                         <Button
                           color="danger"
                           variant="flat"
-                          onPress={() => setDefineLeaders(false)}
+                          onPress={() => setDefineRoles(false)}
                         >
                           Annulla
                         </Button>
                       )}
-                      {defineLeaders &&
-                        (leadersToAdd.length >= 1 ||
-                          leadersToRemove.length >= 1) && (
-                          <>
-                            <Button
-                              color="primary"
-                              variant="solid"
-                              onPress={() => {
-                                setSaveLeadersModal(true);
-                                onLeaderOpen();
-                              }}
-                            >
-                              Salva Team Leader
-                            </Button>
-                          </>
-                        )}
                     </div>
                   </>
                 )}
+              </>
+            )}
+            {defineRoles && (
+              <>
+                <Button
+                  color="primary"
+                  variant="solid"
+                  onPress={() => {
+                    setSaveLeadersModal(true);
+                    onLeaderOpen();
+                  }}
+                >
+                  Salva Team Leader
+                </Button>
               </>
             )}
           </>
@@ -630,24 +599,6 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                   </ModalHeader>
                   <ModalBody>
                     <p>Confermi di voler aggiornare i Leader del team?</p>
-
-                    {leadersToAdd.map((person) => (
-                      <p
-                        key={person.profile}
-                        className="leading-none text-green-700 underline"
-                      >
-                        ✅ Aggiungerai: {person.name} {person.lastname}
-                      </p>
-                    ))}
-
-                    {leadersToRemove.map((person) => (
-                      <p
-                        key={person.profile}
-                        className="leading-none text-red-600 underline"
-                      >
-                        ❌ Rimuoverai: {person.name} {person.lastname}
-                      </p>
-                    ))}
                   </ModalBody>
                   <ModalFooter>
                     <Button
@@ -664,7 +615,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                       onPress={() => {
                         saveNewLeaders();
                         onClose();
-                        setDefineLeaders(false);
+                        setDefineRoles(false);
                       }}
                     >
                       Salva

@@ -2,18 +2,22 @@ import userDataServer from "@/utils/supabase/getUserDataServer";
 import UpdateSetlistComponent from "./updateSetlistComponent";
 import isTeamLeaderServer from "@/utils/supabase/isTeamLeaderServer";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { checkPermission } from "@/utils/supabase/permissions/checkPermission";
 export default async function songs({
   params,
 }: {
   params: { setListId: string };
 }) {
-  const isLeader = await isTeamLeaderServer();
   const userData = await userDataServer();
 
-  if (
-    isLeader.isLeader ||
-    hasPermission(userData.role as Role, "create:setlists")
-  ) {
+  const allowed = await checkPermission(
+    userData.teams,
+    "setlists",
+    "edit",
+    userData.id
+  );
+
+  if (allowed) {
     return (
       <div className="container-sub">
         <UpdateSetlistComponent setListId={params.setListId} />

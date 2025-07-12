@@ -497,3 +497,11 @@ export type ChipColor =
   | "default"
   | "primary"
   | "secondary";
+
+export type Permission = {
+  team_id: string;
+  role: string;
+  resource: string;
+  action: string;
+  allowed: boolean;
+};
