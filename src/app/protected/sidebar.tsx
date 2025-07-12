@@ -1,31 +1,20 @@
 "use client";
 import Link from "next/link";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaUserCircle,
   FaCalendarTimes,
   FaRegCalendarAlt,
-
 } from "react-icons/fa";
-import {
-  MdOutlineEventNote,
-  MdOutlineLibraryMusic,
-} from "react-icons/md";
+import { MdOutlineEventNote, MdOutlineLibraryMusic } from "react-icons/md";
 
 import { HiUserGroup } from "react-icons/hi2";
-import {
-  IoNotificationsSharp,
-
-} from "react-icons/io5";
+import { IoNotificationsSharp } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import logoutAction from "../components/logOutAction";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
-import {
-  PiChurch,
-  PiChurchFill,
-  PiPasswordBold,
-} from "react-icons/pi";
+import { PiChurch, PiChurchFill, PiPasswordBold } from "react-icons/pi";
 import {
   Dropdown,
   DropdownTrigger,
@@ -175,33 +164,32 @@ export default function Sidebar() {
                 </Link>
               </li>
             )}
-            {(hasPermission(userData.role as Role, "update:churchdetails") ||
+            {(hasPermission(userData.role as Role, "personalize:church") ||
               TeamLeader) && (
-              <>
-                <li className="sidebar-li">
-                  <Link
-                    className="sidebar-link"
-                    href="/protected/church/personalize"
-                  >
-                    <div className="sidebar-element">
-                      <PiChurchFill />
-                      <p> Personalizza Chiesa</p>
-                    </div>
-                  </Link>
-                </li>
-                <li className="sidebar-li">
-                  <Link
-                    className="sidebar-link"
-                    href="/protected/blockouts-calendar"
-                  >
-                    <div className="sidebar-element">
-                      <FaRegCalendarAlt />
-                      <p> Calendario Presenze</p>
-                    </div>
-                  </Link>
-                </li>
-              </>
+              <li className="sidebar-li">
+                <Link
+                  className="sidebar-link"
+                  href="/protected/church/personalize"
+                >
+                  <div className="sidebar-element">
+                    <PiChurchFill />
+                    <p> Personalizza Chiesa</p>
+                  </div>
+                </Link>
+              </li>
             )}
+            <li className="sidebar-li">
+              <Link
+                className="sidebar-link"
+                href="/protected/blockouts-calendar"
+              >
+                <div className="sidebar-element">
+                  <FaRegCalendarAlt />
+                  <p> Calendario Presenze</p>
+                </div>
+              </Link>
+            </li>
+
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/songs">
                 <div className="sidebar-element">

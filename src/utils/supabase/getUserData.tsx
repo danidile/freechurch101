@@ -4,7 +4,7 @@ import { basicUserData } from "@/utils/types/userData";
 type ProfileData = {
   name: string;
   lastname: string;
-  phone: string;
+  phone?: string;
   role?: { role_name: string }; // role is an object, not an array
   church: {
     logo: string | null;
@@ -75,6 +75,20 @@ export default async function fbasicUserData() {
         userData.pending_church_confirmation = churchpending;
       }
     }
+    let { data: teams, error: teamError } = await supabase
+      .from("team-members")
+      .select("*")
+      .eq("profile", user.id);
+    if (error) {
+      console.error("Error fetching profile:", error.message);
+      return userData;
+    }
+    const teamLead = teams
+      .filter((team) => team.role === "leader")
+      .map((team) => team.team_id);
+    const ids = teams.map((team) => team.team_id);
+    userData.teams = ids;
+    userData.leaderOf = teamLead;
   }
 
   return userData;
