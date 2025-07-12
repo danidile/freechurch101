@@ -275,22 +275,67 @@ export default function Page({ params }: { params: { teamsId: string } }) {
               return (
                 <tr key={item.profile}>
                   <td className="px-2 py-[2px]">
-                    <div className="px-2 py-[2px]">
+                    <div
+                      className={
+                        width < 800 && defineRoles
+                          ? "flex flex-row gap-4 items-center justify-between"
+                          : ""
+                      }
+                    >
                       <p
                         className={` ${item.role === "leader" ? "font-semibold" : ""}  ${item.role === "editor" ? "font-medium text-blue-500" : ""}`}
                       >
                         {item.name} {item.lastname}{" "}
                       </p>
-                      {width < 800 && (
+
+                      {width < 800 ? (
                         <>
-                          <small className="!no-underline">
-                            {item.roles.join(", ")}
+                          {item.role === "member" ? (
+                            <></>
+                          ) : (
+                            <>
+                              <small className="capitalize font-bold ">
+                                {item.role}
+                              </small>{" - "}
+                            </>
+                          )}
+                          {defineRoles ? (
+                            <select
+                              className="border rounded px-2 py-1 text-sm"
+                              value={item.role ?? "member"}
+                              onChange={(e) =>
+                                setChurchTeam((prev) => {
+                                  if (!prev) return prev;
+                                  return {
+                                    ...prev,
+                                    team_members: prev.team_members.map((m) =>
+                                      m.profile === item.profile
+                                        ? { ...m, role: e.target.value }
+                                        : m
+                                    ),
+                                  };
+                                })
+                              }
+                            >
+                              <option value="leader">Leader</option>
+                              <option value="editor">Editor</option>
+                              <option value="member">Membro</option>
+                            </select>
+                          ) : (
+                            <>
+                              <small className="capitalize">
+                                {item.roles.join(", ")}
+                              </small>
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <small className="capitalize  font-bold ">
+                            {item.role === "member" ? <></> : <>{item.role}</>}
                           </small>
                         </>
                       )}
-                      <small className="capitalize">
-                        {item.roles.join(", ")}
-                      </small>
                     </div>
                   </td>
                   {width >= 800 && (
@@ -318,12 +363,8 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                           <option value="member">Membro</option>
                         </select>
                       ) : (
-                        <p className="capitalize">
-                          {item.role === "member" ? (
-                            <>membro</>
-                          ) : (
-                            <>{item.role}</>
-                          )}
+                        <p className="first-letter:uppercase">
+                          {item.roles.join(", ")}
                         </p>
                       )}
                     </td>

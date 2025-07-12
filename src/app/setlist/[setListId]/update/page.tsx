@@ -9,7 +9,7 @@ export default async function songs({
   params: { setListId: string };
 }) {
   const userData = await userDataServer();
-
+  console.log("leaderOf", userData.leaderOf);
   const allowed = await checkPermission(
     userData.teams,
     "setlists",

@@ -10,7 +10,6 @@ type UserStore = {
   loading: boolean;
   error: string | null;
   notifications: GroupedNotificationsT;
-  isLeader: isLeaderT;
   fetchUser: () => Promise<void>;
 };
 
@@ -18,10 +17,7 @@ export const useUserStore = create<UserStore>((set) => ({
   userData: null,
   loading: false,
   error: null,
-  isLeader: {
-    isLeader: false,
-    teams: [],
-  },
+
   notifications: {},
   fetchUser: async () => {
     set({ loading: true, error: null });
@@ -30,8 +26,6 @@ export const useUserStore = create<UserStore>((set) => ({
       const data = await fbasicUserData();
       set({ userData: data });
       if (data.loggedIn) {
-        const leaderStatus = await isTeamLeaderClient();
-        set({ isLeader: leaderStatus, loading: false });
         const fetchedNotifications = await getNotificationsById(data.id);
         set({ notifications: fetchedNotifications });
       }

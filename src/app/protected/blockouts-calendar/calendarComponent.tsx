@@ -8,15 +8,14 @@ import BlockoutsCalendarTabs from "./CalendarTabsComponent";
 import { getBlockoutsByTeamId } from "@/hooks/GET/getBlockoutsByTeam";
 
 export default function BlockoutsCalendarComponent() {
-  const { userData, loading, isLeader } = useUserStore();
+  const { userData, loading } = useUserStore();
   const [setlists, setSetlists] = useState<any[] | null>(null);
   const [teams, setTeams] = useState<TeamWithBlockouts[]>([]); // ← array of teams
-  console.log("isLeader", isLeader);
   useEffect(() => {
     const fetchData = async () => {
       if (!loading && userData.loggedIn) {
         const teamsArray = [];
-        for (const team of isLeader.teams) {
+        for (const team of userData.leaderOf) {
           const teamMembers: TeamWithBlockouts =
             await getBlockoutsByTeamId(team);
           if (teamMembers) {

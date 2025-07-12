@@ -22,6 +22,7 @@ export type basicUserData = {
   fetched?: boolean;
   church_logo?: string;
   teams?: string[];
+  leaderOf?: string[];
 };
 
 export type calendarMonth = {

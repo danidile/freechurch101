@@ -21,7 +21,7 @@ const ROLES = {
     "create:setlists",
     "update:setlists",
     "delete:setlists",
-
+    "personalize:church",
     // TEAMS
     "create:team",
     "view:teams",
@@ -78,6 +78,7 @@ const ROLES = {
     // CHURCHMEMBERS
     "read:churchmembers",
     "insert:churchmembers",
+    "personalize:church",
 
     // ARTISTS
     "read:artists",

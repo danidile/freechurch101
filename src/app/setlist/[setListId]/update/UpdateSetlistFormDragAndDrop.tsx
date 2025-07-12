@@ -5,28 +5,15 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Chip,
   useDisclosure,
   TimeInput,
 } from "@heroui/react";
 import { I18nProvider } from "@react-aria/i18n";
-
-import {
-  DateValue,
-  CalendarDate,
-  Time,
-  parseTime,
-} from "@internationalized/date";
-
+import { DateValue, CalendarDate, parseTime } from "@internationalized/date";
 import { DatePicker } from "@heroui/react";
-import { parseDate, getLocalTimeZone } from "@internationalized/date";
-import { useDateFormatter } from "@react-aria/i18n";
-
+import { parseDate } from "@internationalized/date";
 import {
-  ChipColor,
-  ChurchMemberByTeam,
   churchMembersT,
-  eventSchema,
   roomsType,
   setListSongT,
   setListT,
@@ -40,10 +27,6 @@ import {
   TableRow,
   TableCell,
   Button,
-  Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Select,
   SelectItem,
   Dropdown,
@@ -52,25 +35,22 @@ import {
   DropdownItem,
   Tooltip,
 } from "@heroui/react";
-import { IoMdInformationCircleOutline } from "react-icons/io";
-import { TwitterPicker, ColorResult } from "react-color";
+import { ColorResult } from "react-color";
 import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { AnimatePresence, motion, Reorder } from "framer-motion";
-import { BiColorFill } from "react-icons/bi";
-import colors from "@/utils/eventsColors";
 import { FaPlus, FaRegCalendarAlt } from "react-icons/fa";
 import { ScheduleComponents } from "./ScheduleComponents";
 import { useChurchStore } from "@/store/useChurchStore";
 import { MdEditNote, MdOutlineTitle } from "react-icons/md";
 import { TbClockHour2, TbMusicPlus } from "react-icons/tb";
 import BlockoutsCalendarComponent from "@/app/protected/blockouts-calendar/calendarComponent";
+import { useUserStore } from "@/store/useUserStore";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -84,7 +64,8 @@ export default function UpdateSetlistForm({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
-
+    const { userData, loading } = useUserStore();
+  
   const { eventTypes, rooms } = useChurchStore();
   const [churchRooms, setChurchRooms] = useState<roomsType[]>([]);
   const date = new Date();
@@ -624,9 +605,10 @@ export default function UpdateSetlistForm({
                     teams
                       .filter(
                         (team) =>
+                          userData.leaderOf.includes(team.id) && // ✅ only show teams the user leads
                           !teamsState.some(
                             (el) => el.team_name === team.team_name
-                          )
+                          ) // exclude already added teams
                       )
                       .map((team: teamData) => (
                         <DropdownItem
