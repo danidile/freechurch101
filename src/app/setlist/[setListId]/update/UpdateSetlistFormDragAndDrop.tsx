@@ -64,8 +64,8 @@ export default function UpdateSetlistForm({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
-    const { userData, loading } = useUserStore();
-  
+  const { userData, loading } = useUserStore();
+
   const { eventTypes, rooms } = useChurchStore();
   const [churchRooms, setChurchRooms] = useState<roomsType[]>([]);
   const date = new Date();
@@ -335,10 +335,6 @@ export default function UpdateSetlistForm({
     } else if (page === "update") {
       updateSetlist(updatedSetlist, setlistData);
     }
-  };
-
-  const handleColorChange = (color: ColorResult) => {
-    setEventColor(color.hex);
   };
 
   //date modal change
@@ -730,16 +726,14 @@ export default function UpdateSetlistForm({
             </div>
 
             <br />
-            <Button
-              color="primary"
-              variant="shadow"
+            <button
+              className="button-style w-full"
               type="submit"
-              fullWidth
               disabled={isSubmitting}
             >
               {page === "create" && "Crea"}
               {page === "update" && "Aggiorna"} Evento
-            </Button>
+            </button>
           </form>
         </div>
         <Modal
