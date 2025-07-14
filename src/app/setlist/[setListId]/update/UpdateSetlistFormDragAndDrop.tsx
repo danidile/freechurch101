@@ -72,12 +72,12 @@ export default function UpdateSetlistForm({
   const [churchRooms, setChurchRooms] = useState<roomsType[]>([]);
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
-  const [eventDate, setEventDate] = useState<DateValue | null>(() => {
-    if (setlistData?.date) {
-      return parseDate(setlistData.date.split("T")[0]); // "2025-07-09"
-    }
-    return parseDate(todaysDate);
-  });
+  function parseSetlistDate(dateString?: string): DateValue {
+    return parseDate((dateString || todaysDate).split("T")[0]);
+  }
+  const [eventDate, setEventDate] = useState<DateValue>(() =>
+    parseSetlistDate(setlistData?.date)
+  );
 
   useEffect(() => {
     if (rooms) {
@@ -130,12 +130,10 @@ export default function UpdateSetlistForm({
       hour: setlistData?.hour || "21:00",
     },
   });
-
   const addTeam = (id: string) => {
-    setTeamsState([
-      ...teamsState,
-      teams[teams.findIndex((section) => section.id === id)],
-    ]);
+    if (teamsState.some((t) => t.id === id)) return;
+    const found = teams.find((t) => t.id === id);
+    if (found) setTeamsState((prev) => [...prev, found]);
   };
 
   const getUnavailableMembers = (newDate: string, teams: teamData[]) => {
@@ -376,7 +374,6 @@ export default function UpdateSetlistForm({
                 </h4>
               </div>
             </div>
-
             <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
               <div className="gap-1.5">
                 <Select
@@ -504,7 +501,7 @@ export default function UpdateSetlistForm({
             <div className="">
               <h5 className="p-4">Scaletta</h5>
               {schedule.length > 0 && (
-                <div className="ncard nborder !p-3">
+                <div className="ncard-responsive nborder-responsive ">
                   <Reorder.Group
                     values={schedule.map((s) => s.id)}
                     onReorder={(newOrderIds) => {
@@ -727,16 +724,27 @@ export default function UpdateSetlistForm({
                 })}
               </AnimatePresence>
             </div>
-
             <br />
-            <button
-              className="button-style w-full"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {page === "create" && "Crea"}
-              {page === "update" && "Aggiorna"} Evento
-            </button>
+            <div className="fixed standalone:bottom-[80px] browser:bottom-0 bg-gradient-to-b to-[#ffffff] from-[#ffffff00]  left-0 w-full p-2  shadow-md z-50 md:hidden">
+              <button
+                className="button-style w-full"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {page === "create" && "Crea"}
+                {page === "update" && "Aggiorna"} Evento
+              </button>
+            </div>{" "}
+            <div className="hidden  md:block">
+              <button
+                className="button-style w-full"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {page === "create" && "Crea"}
+                {page === "update" && "Aggiorna"} Evento
+              </button>
+            </div>
           </form>
         </div>
         <Modal

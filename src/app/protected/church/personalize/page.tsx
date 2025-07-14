@@ -22,9 +22,9 @@ import Link from "next/link";
 type Category = "personalizzazione" | "musica" | "membri";
 
 const categoryLabels: Record<Category, string> = {
-  personalizzazione: "🎨 Personalizzazione",
-  musica: "🎶 Musica",
-  membri: "👥 Membri e Team",
+  personalizzazione: "Personalizzazione",
+  musica: "Musica",
+  membri: "Membri e Team",
 };
 interface ChurchSettingsProps {
   userData: {
@@ -50,14 +50,14 @@ export default function PersonalizeChurchComponent() {
         <h5 className="font-bold ml-3 my-5">{userData.church_name}</h5>
       </div>
       <div>
-        <div className="max-w-4xl mx-auto p-4 space-y-6">
+        <div className="max-w-4xl mx-auto py-4 space-y-6">
           {/* Pulsanti categoria */}
-          <div className="flex flex-wrap gap-2 justify-center mb-6">
+          <div className="flex flex-wrap gap-0 sm:gap-4 justify-center mb-6">
             {Object.entries(categoryLabels).map(([key, label]) => (
               <button
                 key={key}
                 onClick={() => setSelectedCategory(key as Category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium border transition ${
+                className={`px-4 py-2 rounded-full text-[13px] sm:text-sm  font-medium border-none sm:border-solid sm:border-1 transition ${
                   selectedCategory === key
                     ? "bg-blue-600 text-white border-blue-600"
                     : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"

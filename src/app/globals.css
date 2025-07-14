@@ -57,6 +57,34 @@ main {
   margin: 20px auto;
   padding: 1rem;
 }
+
+.nborder-responsive {
+  background-color: white;
+  box-shadow:
+    rgba(0, 0, 0, 0.03) 0px 12px 32px,
+    rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  border-radius: 12px;
+}
+.ncard-responsive {
+  margin: 20px auto;
+  padding: 1rem;
+}
+
+@media only screen and (max-width: 850px) {
+  .nborder-responsive {
+  background-color: white;
+  box-shadow:
+    rgba(0, 0, 0, 0.00) 0px 12px 32px,
+    rgba(0, 0, 0, 0.00) 0px 0px 0px 1px;
+  border-radius: 12px;
+}
+.ncard-responsive {
+  margin: 20px auto;
+  padding: 0rem;
+}
+
+}
+
 button {
   margin: 0 auto;
   padding: 0;
@@ -388,7 +416,11 @@ Image {
   color: white;
   background-color: #111111;
   margin-right: 20px;
+  cursor: pointer;
   margin-left: auto;
+  z-index: 10;
+  position: relative;
+  touch-action: manipulation; /* improves responsiveness on mobile */
 }
 .button-transpose {
   padding: 10px 30px;
@@ -491,8 +523,8 @@ Image {
 .chord {
   color: rgb(130, 29, 29);
   font-weight: 800;
-  line-height: 0.9rem;
-  padding: 0px 2px;
+  line-height: 1.1rem;
+  padding: 1px 2px;
   margin: 0px;
   white-space: pre;
 }
@@ -672,10 +704,10 @@ tbody tr .tablecellnewteams {
   }
   .chord-sheet .lyrics {
     font-size: 0.8rem;
-    line-height: 0.9rem;
+    line-height: 1rem;
   }
   .chord-sheet .chord {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
   .chord-sheet .comment {
     font-weight: 800;
@@ -1516,7 +1548,6 @@ tbody tr .tablecellnewteams {
   flex-direction: column;
   margin: 20px auto;
   padding: 1.25rem;
-  
 }
 .auth-form-pwa {
   width: 100%;
