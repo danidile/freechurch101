@@ -11,6 +11,8 @@ import { roomsType } from "@/utils/types/types";
 import insertRoomsAction from "./insertRoomsAction";
 import updateRoomsAction from "./updateRoomsAction";
 import deleteRoomsAction from "./deleteRoomsAction";
+import { FiSave } from "react-icons/fi";
+import { MdOutlineEdit } from "react-icons/md";
 
 export default function PersonalizeRoomsModal() {
   const { loadingChurchData, rooms, fetchChurchData } = useChurchStore();
@@ -149,54 +151,57 @@ export default function PersonalizeRoomsModal() {
     <>
       <h2> Personalizza Stanze</h2>
 
-      <>
-        <div>
-          {personalizedRooms.map((room, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col gap-2 w-[500px] nborder ncard"
-            >
-              <div className="flex flex-row justify-between items-center gap-2 w-full">
-                {currentlyEditingIndex === idx ? (
-                  <Input
-                    size="sm"
-                    variant="bordered"
-                    radius="sm"
-                    placeholder="Sala principale..."
-                    className="w-full"
-                    value={room.name}
-                    onChange={(e) => {
-                      const newName = e.target.value;
-                      setPersonalizedRooms((prev) =>
-                        prev.map((t, i) =>
-                          i === idx ? { ...t, name: newName } : t
-                        )
-                      );
-                    }}
-                  />
-                ) : (
-                  <p className="text-sm font-medium text-gray-800">
-                    {room.name}
-                  </p>
-                )}
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    color={
-                      currentlyEditingIndex === idx ? "success" : "primary"
-                    }
-                    variant="light"
-                    isIconOnly
-                    onPress={() =>
-                      setCurrentlyEditingIndex((prev) =>
-                        prev === idx ? null : idx
+      {personalizedRooms.map((room, idx) => (
+        <div
+          key={idx}
+          className="w-full max-w-[600px] bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col gap-3"
+        >
+          {/* Header: nome stanza + azioni */}
+          <div className="flex justify-between items-start gap-4">
+            <div className="flex-1">
+              {currentlyEditingIndex === idx ? (
+                <Input
+                  size="sm"
+                  variant="bordered"
+                  radius="sm"
+                  placeholder="Sala principale..."
+                  value={room.name}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    setPersonalizedRooms((prev) =>
+                      prev.map((r, i) =>
+                        i === idx ? { ...r, name: newName } : r
                       )
-                    }
-                  >
-                    <FaPlus />
-                  </Button>
+                    );
+                  }}
+                />
+              ) : (
+                <p className="text-base font-semibold text-gray-800">
+                  {room.name}
+                </p>
+              )}
+            </div>
 
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                color="primary"
+                variant="light"
+                isIconOnly
+                onPress={() =>
+                  setCurrentlyEditingIndex((prev) =>
+                    prev === idx ? null : idx
+                  )
+                }
+              >
+                {currentlyEditingIndex === idx ? (
+                  <FiSave size={17} />
+                ) : (
+                  <MdOutlineEdit size={17} />
+                )}{" "}
+              </Button>
+              {currentlyEditingIndex !== idx && (
+                <>
                   <Button
                     size="sm"
                     color="danger"
@@ -206,75 +211,79 @@ export default function PersonalizeRoomsModal() {
                   >
                     <FaRegTrashAlt />
                   </Button>
-                </div>
-              </div>
-
-              <div className="flex flex-row gap-4 items-center justify-center w-full">
-                {currentlyEditingIndex === idx ? (
-                  <Textarea
-                    size="sm"
-                    variant="bordered"
-                    radius="sm"
-                    className="w-full"
-                    minRows={1}
-                    placeholder="Indirizzo: Es. Via XX Settembre, 9E"
-                    value={room.address}
-                    onChange={(e) => {
-                      const newDesc = e.target.value;
-                      setPersonalizedRooms((prev) =>
-                        prev.map((t, i) =>
-                          i === idx ? { ...t, address: newDesc } : t
-                        )
-                      );
-                    }}
-                  />
-                ) : (
-                  <p className="text-sm text-gray-700 w-full">
-                    {room.address || "—"}
-                  </p>
-                )}
-              </div>
+                </>
+              )}
             </div>
-          ))}
-
-          {duplicateError.status && (
-            <div className="flex nborder ncard max-w-[90vw] flex-col items-start gap-2 !bg-red-100 w-[500px] ">
-              <div className="flex flex-row gap-4 items-center justify-center w-full">
-                <small className="text-red-700">
-                  Non è possibile aggiungere due stanze con lo stesso nome.{" "}
-                  <strong>{duplicateError.name}</strong>
-                </small>
-              </div>
-            </div>
-          )}
-          <div className="songs-searchbar-form">
-            <Button
-              size="sm"
-              color="primary"
-              variant="ghost"
-              isIconOnly
-              onPress={() => {
-                addRoomFunction();
-                setCurrentlyEditingIndex(personalizedRooms.length);
-              }}
-            >
-              <FaPlus />
-            </Button>
           </div>
-          <br />
-        </div>
-      </>
 
-      {hasChanges && (
+          {/* Indirizzo */}
+          <div className="flex items-center gap-2">
+            {currentlyEditingIndex === idx ? (
+              <Textarea
+                size="sm"
+                variant="bordered"
+                radius="sm"
+                className="w-full"
+                minRows={1}
+                placeholder="Indirizzo: Es. Via XX Settembre, 9E"
+                value={room.address}
+                onChange={(e) => {
+                  const newAddress = e.target.value;
+                  setPersonalizedRooms((prev) =>
+                    prev.map((r, i) =>
+                      i === idx ? { ...r, address: newAddress } : r
+                    )
+                  );
+                }}
+              />
+            ) : (
+              <p className="text-sm text-gray-600">
+                {room.address || (
+                  <span className="italic text-gray-400">
+                    Indirizzo non specificato
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
+        </div>
+      ))}
+
+      {duplicateError.status && (
+        <div className="flex nborder ncard max-w-[90vw] flex-col items-start gap-2 !bg-red-100 w-[500px] ">
+          <div className="flex flex-row gap-4 items-center justify-center w-full">
+            <small className="text-red-700">
+              Non è possibile aggiungere due stanze con lo stesso nome.{" "}
+              <strong>{duplicateError.name}</strong>
+            </small>
+          </div>
+        </div>
+      )}
+      <div className="songs-searchbar-form">
         <Button
+          size="sm"
           color="primary"
+          variant="ghost"
+          
           onPress={() => {
-            saveRooms();
+            addRoomFunction();
+            setCurrentlyEditingIndex(personalizedRooms.length);
           }}
         >
-          Salva
+          <FaPlus /> Aggiungi stanza
         </Button>
-      )}
+        {hasChanges && (
+          <Button
+            color="primary"
+            onPress={() => {
+              saveRooms();
+            }}
+          >
+            Salva
+          </Button>
+        )}
+      </div>
+      <br />
     </>
   );
 }

@@ -10,7 +10,10 @@ import { TagWithDescription } from "@/utils/types/types";
 import insertTagsAction from "./insertTagsAction";
 import deleteTagsAction from "./deleteTagsAction";
 import updateTagsAction from "./updateTagsAction";
-import { RiEdit2Line } from "react-icons/ri";
+import { RiEdit2Line, RiEditLine } from "react-icons/ri";
+import { IoIosClose } from "react-icons/io";
+import { MdOutlineEdit, MdOutlineEditOff } from "react-icons/md";
+import { FiSave } from "react-icons/fi";
 
 export default function PersonalizeSongsTagsModal() {
   const { loadingChurchData, tags, fetchChurchData } = useChurchStore();
@@ -49,7 +52,8 @@ export default function PersonalizeSongsTagsModal() {
         const original = existingTagsMap.get(tag.id);
         if (
           original &&
-          (original.tag !== tag.tag || original.description !== tag.description)
+          (original.name !== tag.name ||
+            original.description !== tag.description)
         ) {
           toUpdate.push(tag); // Tag exists but has changed
         }
@@ -125,39 +129,13 @@ export default function PersonalizeSongsTagsModal() {
     }
     fetchChurchData(userData.church_id);
   };
-  const addTagsfunction = (tagsToAdd: string) => {
-    const newTags = tagsToAdd
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== "");
-
-    const duplicates: string[] = [];
-
-    const uniqueNewTags = newTags.filter((tag) => {
-      const isDuplicate = personalizedTags.some(
-        (t) => t.name?.toLowerCase() === tag.toLowerCase()
-      );
-      if (isDuplicate) {
-        duplicates.push(tag);
-        return false; // exclude from tags to be added
-      }
-      return true;
-    });
-
-    if (duplicates.length > 0) {
-      setDuplicateError({
-        status: true,
-        name: duplicates.join(", "),
-      });
-      return;
-    }
-
-    const tagObjects = uniqueNewTags.map((name) => ({
-      name,
+  const addTagsfunction = () => {
+    const newTag: TagWithDescription = {
+      name: "",
       description: "",
-    }));
+    };
 
-    setPersonalizedTags((prev) => [...prev, ...tagObjects]);
+    setPersonalizedTags((prev) => [...prev, newTag]);
     setDuplicateError({ status: false, name: "" }); // clear previous errors
   };
   const removeTag = (tagNameToRemove: string) => {
@@ -171,155 +149,132 @@ export default function PersonalizeSongsTagsModal() {
       <h2> Personalizza Tag Canzoni</h2>
 
       <>
-        <div>
-          {personalizedTags.map((tagObj, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col gap-2 w-[500px] nborder ncard"
-            >
-              <div className="flex flex-row justify-between items-center gap-2 w-full">
-                {currentlyEditingIndex === idx ? (
-                  <Input
-                    size="sm"
-                    variant="bordered"
-                    radius="sm"
-                    className="w-full"
-                    value={tagObj.name}
-                    onChange={(e) => {
-                      const newName = e.target.value;
-                      setPersonalizedTags((prev) =>
-                        prev.map((t, i) =>
-                          i === idx ? { ...t, name: newName } : t
-                        )
-                      );
-                    }}
-                  />
-                ) : (
-                  <p className="text-sm font-medium text-gray-800">
-                    {tagObj.name}
-                  </p>
-                )}
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    color={
-                      currentlyEditingIndex === idx ? "success" : "primary"
-                    }
-                    variant="light"
-                    isIconOnly
-                    onPress={() =>
-                      setCurrentlyEditingIndex((prev) =>
-                        prev === idx ? null : idx
+        {personalizedTags.map((tagObj, idx) => (
+          <div
+            key={idx}
+            className="w-full max-w-[600px] bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col gap-3"
+          >
+            <div className="flex flex-row justify-between items-center gap-2 w-full">
+              {currentlyEditingIndex === idx ? (
+                <Input
+                  size="sm"
+                  variant="bordered"
+                  radius="sm"
+                  className="w-full"
+                  value={tagObj.name}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    setPersonalizedTags((prev) =>
+                      prev.map((t, i) =>
+                        i === idx ? { ...t, name: newName } : t
                       )
-                    }
-                  >
-                    <FaPlus />
-                  </Button>
+                    );
+                  }}
+                />
+              ) : (
+                <p className="text-sm font-medium text-gray-800">
+                  {tagObj.name}
+                </p>
+              )}
 
-                  <Button
-                    size="sm"
-                    color="danger"
-                    variant="light"
-                    isIconOnly
-                    onPress={() => removeTag(tagObj.name ?? "")}
-                  >
-                    <FaRegTrashAlt />
-                  </Button>
-                </div>
-              </div>
-
-              <div className="flex flex-row gap-4 items-center justify-center w-full">
-                {currentlyEditingIndex === idx ? (
-                  <Textarea
-                    size="sm"
-                    variant="bordered"
-                    radius="sm"
-                    className="w-full"
-                    minRows={1}
-                    placeholder="Es. Canzoni energiche per la lode"
-                    value={tagObj.description}
-                    onChange={(e) => {
-                      const newDesc = e.target.value;
-                      setPersonalizedTags((prev) =>
-                        prev.map((t, i) =>
-                          i === idx ? { ...t, description: newDesc } : t
-                        )
-                      );
-                    }}
-                  />
-                ) : (
-                  <p className="text-sm text-gray-700 w-full">
-                    {tagObj.description || "—"}
-                  </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  color="primary"
+                  variant="light"
+                  isIconOnly
+                  onPress={() =>
+                    setCurrentlyEditingIndex((prev) =>
+                      prev === idx ? null : idx
+                    )
+                  }
+                >
+                  {currentlyEditingIndex === idx ? (
+                    <FiSave size={17} />
+                  ) : (
+                    <MdOutlineEdit size={17} />
+                  )}
+                </Button>
+                {currentlyEditingIndex !== idx && (
+                  <>
+                    {" "}
+                    <Button
+                      size="sm"
+                      color="danger"
+                      variant="light"
+                      isIconOnly
+                      onPress={() => removeTag(tagObj.name ?? "")}
+                    >
+                      <FaRegTrashAlt />
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
-          ))}
 
-          {duplicateError.status && (
-            <div className="flex nborder ncard max-w-[90vw] flex-col items-start gap-2 !bg-red-100 w-[500px] ">
-              <div className="flex flex-row gap-4 items-center justify-center w-full">
-                <small className="text-red-700">
-                  Non è possibile aggiungere due tag con lo stesso nome.{" "}
-                  <strong>{duplicateError.name}</strong>
-                </small>
-              </div>
+            <div className="flex flex-row gap-4 items-center justify-center w-full">
+              {currentlyEditingIndex === idx ? (
+                <Textarea
+                  size="sm"
+                  variant="bordered"
+                  radius="sm"
+                  className="w-full"
+                  minRows={1}
+                  placeholder="Es. Canzoni energiche per la lode"
+                  value={tagObj.description}
+                  onChange={(e) => {
+                    const newDesc = e.target.value;
+                    setPersonalizedTags((prev) =>
+                      prev.map((t, i) =>
+                        i === idx ? { ...t, description: newDesc } : t
+                      )
+                    );
+                  }}
+                />
+              ) : (
+                <p className="text-sm text-gray-700 w-full">
+                  {tagObj.description || "—"}
+                </p>
+              )}
             </div>
-          )}
-          <div className="songs-searchbar-form">
-            <Input
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              onBlur={() => {
-                if (searchText.trim() !== "") {
-                  addTagsfunction(searchText.trim());
-                  setSearchText("");
-                }
-              }}
-              size="sm"
-              type="text"
-              color="primary"
-              variant="bordered"
-              placeholder="Adorazione, Lode"
-              onKeyDown={(e: React.KeyboardEvent) => {
-                if (e.key === "Enter") {
-                  addTagsfunction(searchText.trim());
-                  setSearchText("");
-                }
-              }}
-            />
-            <Button
-              size="sm"
-              color="primary"
-              variant="ghost"
-              isIconOnly
-              onPress={() => {
-                if (searchText.trim() !== "") {
-                  // Prevent empty input submission
-                  addTagsfunction(searchText);
-                  setSearchText(""); // Clear input after adding
-                }
-              }}
-            >
-              <FaPlus />
-            </Button>
           </div>
-          <small>Per aggiungere più tag dividili con una virgola " , ".</small>
-          <br />
-        </div>
+        ))}
+
+        {duplicateError.status && (
+          <div className="flex nborder ncard max-w-[90vw] flex-col items-start gap-2 !bg-red-100 w-[500px] ">
+            <div className="flex flex-row gap-4 items-center justify-center w-full">
+              <small className="text-red-700">
+                Non è possibile aggiungere due tag con lo stesso nome.{" "}
+                <strong>{duplicateError.name}</strong>
+              </small>
+            </div>
+          </div>
+        )}
       </>
 
-      {hasChanges && (
+      <div className="songs-searchbar-form">
         <Button
+          size="sm"
           color="primary"
+          variant="ghost"
           onPress={() => {
-            saveTags();
+            addTagsfunction();
+            setCurrentlyEditingIndex(personalizedTags.length);
           }}
         >
-          Salva
+          <FaPlus /> Aggiungi stanza
         </Button>
-      )}
+        {hasChanges && (
+          <Button
+            color="primary"
+            onPress={() => {
+              saveTags();
+            }}
+          >
+            Salva
+          </Button>
+        )}
+      </div>
     </>
   );
 }

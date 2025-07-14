@@ -30,6 +30,7 @@ export default function PersonalizeEventsModal() {
   const { userData, loading } = useUserStore();
 
   const [refetchTrigger, setRefetchTrigger] = useState(false);
+  const [hasBeenEdited, setHasBeenEdited] = useState(false);
 
   useEffect(() => {
     if (!loadingChurchData) {
@@ -39,6 +40,7 @@ export default function PersonalizeEventsModal() {
   }, [loadingChurchData, eventTypes]);
 
   const handleInputChange = (key: string, value: string) => {
+    setHasBeenEdited(true);
     setPersonalizedEventTypes((prev) => {
       // Check if the key exists
       const existingIndex = prev.findIndex((item) => item.key === key);
@@ -143,15 +145,16 @@ export default function PersonalizeEventsModal() {
           );
         })}
       </div>
-
-      <Button
-        color="primary"
-        onPress={() => {
-          saveEventTypes();
-        }}
-      >
-        Salva
-      </Button>
+      {hasBeenEdited && (
+        <Button
+          color="primary"
+          onPress={() => {
+            saveEventTypes();
+          }}
+        >
+          Salva
+        </Button>
+      )}
     </>
   );
 }

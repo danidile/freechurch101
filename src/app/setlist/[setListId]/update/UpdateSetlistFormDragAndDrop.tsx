@@ -63,8 +63,10 @@ export default function UpdateSetlistForm({
   setlistData: setListT;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
-  const { userData, loading } = useUserStore();
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(
+    setlistData?.room ?? null
+  );
+  const { userData } = useUserStore();
 
   const { eventTypes, rooms } = useChurchStore();
   const [churchRooms, setChurchRooms] = useState<roomsType[]>([]);
@@ -301,7 +303,7 @@ export default function UpdateSetlistForm({
     });
   };
 
-  const convertData = async (data: formValues) => {
+  const convertData = async () => {
     console.log("schedule", schedule);
 
     console.log("teamsState", teamsState);
@@ -318,9 +320,9 @@ export default function UpdateSetlistForm({
     const updatedSetlist: setListT = {
       id: setlistData?.id || crypto.randomUUID(),
       event_title: watchAllFields.event_title,
-      event_type: data.event_type,
+      event_type: watchAllFields.event_type,
       date: eventDate.toString(),
-      private: data.private,
+      private: watchAllFields.private,
       room: selectedRoom,
       setListSongs: state,
       teams: teamsState,
@@ -409,6 +411,7 @@ export default function UpdateSetlistForm({
                     label="Seleziona la Location"
                     variant="underlined"
                     size="sm"
+                    defaultSelectedKeys={selectedRoom}
                     placeholder="Scegli una stanza"
                     selectedKeys={selectedRoom ? [selectedRoom] : []}
                     onSelectionChange={(keys) => {

@@ -19,219 +19,132 @@ import CreateMultipleEventsForm from "@/app/protected/church/personalize/addmult
 
 import Link from "next/link";
 
+type Category = "personalizzazione" | "musica" | "membri";
+
+const categoryLabels: Record<Category, string> = {
+  personalizzazione: "🎨 Personalizzazione",
+  musica: "🎶 Musica",
+  membri: "👥 Membri e Team",
+};
+interface ChurchSettingsProps {
+  userData: {
+    church_logo: string | null;
+  };
+  updateLogo: boolean;
+  setUpdateLogo: (value: boolean) => void;
+}
 export default function PersonalizeChurchComponent() {
-  const { userData, loading } = useUserStore();
+  const { userData } = useUserStore();
   const [updateLogo, setUpdateLogo] = useState(false);
-  const [refetchTrigger, setRefetchTrigger] = useState(false);
   const {
     isOpen: isOpenMultipleEventsModal,
     onOpen: onOpenMultipleEventsModal,
     onOpenChange: onOpenChangeMultipleEventsModal,
   } = useDisclosure();
+  const [selectedCategory, setSelectedCategory] =
+    useState<Category>("personalizzazione");
 
   return (
     <div className="p-0 sm:p-5">
       <div className="w-full">
         <h5 className="font-bold ml-3 my-5">{userData.church_name}</h5>
       </div>
-      <div className="table-container">
-        <table className="settings-table">
-          <thead>
-            <tr>
-              <th>Impostazioni</th>
-              <th className="text-center hidden lg:table-cell">Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Personalizza il logo della chiesa:</p>
-              </td>
-              <td>
-                {userData.church_logo && (
-                  <>
-                    {!updateLogo && (
-                      <>
-                        <div
-                          className="max-w-[225px] w-full max-h-[225px] h-full mx-auto my-4"
-                          style={{
-                            backgroundImage: `url(https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo})`,
-                            backgroundSize: "contain",
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                          }}
-                        >
-                          <div
-                            onClick={() => setUpdateLogo(true)}
-                            className="bg-[#f8f8f7] w-[250px] h-[80px] flex flex-col justify-center items-center opacity-0 hover:opacity-90 transition-opacity duration-300"
-                          >
-                            Aggiorna
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </>
-                )}
-                {(!userData.church_logo || updateLogo) && (
-                  <>
-                    <ImageUploader type="churchlogo" />
-                  </>
-                )}
-              </td>
-            </tr>
-            
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Organizza i Team con ruoli e permessi</p>
-              </td>
-              <td className="flex flex-col justify-center items-center">
-                <Link
-                  href="/protected/teams"
-                  className="flex-row flex gap-1 items-center"
-                >
-                  <AiOutlineLink size={14} />
-                  Gestisci
-                </Link>
-              </td>
-            </tr>
+      <div>
+        <div className="max-w-4xl mx-auto p-4 space-y-6">
+          {/* Pulsanti categoria */}
+          <div className="flex flex-wrap gap-2 justify-center mb-6">
+            {Object.entries(categoryLabels).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setSelectedCategory(key as Category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium border transition ${
+                  selectedCategory === key
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Organizza gli spazi della tua chiesa:</p>
-              </td>
-              <td className="flex flex-col justify-center items-center">
-                <Link
-                  href="/protected/church/personalize/rooms"
-                  className="flex-row flex gap-1 items-center"
-                >
-                  <AiOutlineLink size={14} />
-                  Personalizza
-                </Link>
-              </td>
-            </tr>
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Personalizza i tipi di evento per la tua chiesa:</p>
-                <small>
-                  Se non li personalizzi rimarranno comunque disponibili e
-                  selezionabili nella fase di creazione degli eventi.
-                </small>
-              </td>
-              <td className="flex flex-col justify-center items-center">
-                <Link
-                  className="flex-row flex gap-1 items-center"
-                  href="/protected/church/personalize/eventtypes
-                "
-                >
-                  <AiOutlineLink size={14} />
-                  Personalizza
-                </Link>
-              </td>
-            </tr>
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Crea e pianifica eventi settimanali o mensili</p>
-              </td>
-              <td className="flex flex-col justify-center items-center">
-                <Link
-                  className="flex-row flex gap-1 items-center"
-                  href="/protected/church/personalize/addmultipleevents"
-                >
-                  <AiOutlineLink size={14} />
-                  Personalizza
-                </Link>
-              </td>
-            </tr>
-            {/* <tr>
-              <td>Imposta notifiche automatiche via email o app</td>
-              <td>
-                <button className="settings-action">Configura</button>
-              </td>
-            </tr> */}
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Gestisci canzoni e accordi personalizzati</p>
-              </td>
-              <td className="flex flex-col justify-center items-center">
-                <Link
-                  className="flex-row flex gap-1 items-center"
-                  href="/protected/churchsongs"
-                >
-                  {" "}
-                  <AiOutlineLink size={14} />
-                  Lista Canzoni
-                </Link>
-              </td>
-            </tr>
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Importa canzoni da Planning Center</p>
-              </td>
-              <td className="flex flex-col justify-center items-center">
-                <Link
-                  className="flex-row flex gap-1 items-center"
-                  href="/importsongs"
-                >
-                  {" "}
-                  <AiOutlineLink size={14} />
-                  Importa Canzoni
-                </Link>
-              </td>
-            </tr>
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Definisci i tag da assegnare alle canzoni</p>
-              </td>
-              <td className="flex flex-col justify-center items-center">
-                <Link
-                  className="flex-row flex gap-1 items-center"
-                  href="/protected/church/personalize/tags"
-                >
-                  <AiOutlineLink size={14} />
-                  Personalizza
-                </Link>
-              </td>
-            </tr>
+          {/* Sezioni filtrate */}
+          {selectedCategory === "personalizzazione" && (
+            <div className="space-y-4">
+              <SectionCard
+                title="Logo della chiesa"
+                description="Carica il logo ufficiale della tua chiesa: verrà mostrato in tutta la piattaforma per una presenza visiva coerente e riconoscibile."
+              >
+                {userData.church_logo && !updateLogo ? (
+                  <div
+                    className="relative mx-auto my-2 w-full max-w-xs h-48 bg-center bg-contain bg-no-repeat group"
+                    style={{
+                      backgroundImage: `url(https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo})`,
+                    }}
+                  >
+                    <button
+                      onClick={() => setUpdateLogo(true)}
+                      className="absolute inset-0 bg-white/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                    >
+                      Aggiorna
+                    </button>
+                  </div>
+                ) : (
+                  <ImageUploader type="churchlogo" />
+                )}
+              </SectionCard>
 
-            <tr className="flex flex-col w-full lg:table-row lg:w-auto">
-              <td>
-                <p>Invita nuovi membri con un link dedicato</p>
-              </td>
-              <td className="flex flex-col justify-center items-center">
-                <Link
-                  className="flex-row flex gap-1 items-center"
-                  href="/protected/church/invitemembers"
-                >
-                  {" "}
-                  <AiOutlineLink size={14} />
-                  Invita
-                </Link>
-              </td>
-            </tr>
-            {/* <tr>
-              <td>Imposta approvazioni per le scalette</td>
-              <td>
-                <button className="settings-action">Imposta</button>
-              </td>
-            </tr> */}
-            {/* <tr>
-              <td>Visualizza statistiche su eventi e partecipazione</td>
-              <td>
-                <button className="settings-action">Visualizza</button>
-              </td>
-            </tr> */}
-            {/* <tr>
-              <td>
-                <p>Archivia eventi passati e setlist precedenti</p>
-              </td>
-              <td>
-                <Button color="primary" size="md" variant="light" disabled>
-                  Apri archivio
-                </Button>
-              </td>
-            </tr> */}
-          </tbody>
-        </table>
+              <SectionCard
+                title="Tipi di evento"
+                description="Personalizza le categorie di evento in base alla vita della tua chiesa (es. culto, preghiera, prove, ecc.) per rendere il calendario più chiaro e il linguaggio dell’app più vicino a quello che usate ogni giorno.
+
+"
+                href="/protected/church/personalize/eventtypes"
+              />
+
+              <SectionCard
+                title="Stanze della chiesa"
+                description="Aggiungi o modifica gli spazi fisici utilizzati per gli eventi, come l’auditorium principale, aule bambini, sale prove, ecc."
+                href="/protected/church/personalize/rooms"
+              />
+            </div>
+          )}
+
+          {selectedCategory === "musica" && (
+            <div className="space-y-4">
+              <SectionCard
+                title="Importa da Planning Center"
+                description="Sincronizza facilmente le tue canzoni da Planning Center per evitare l'inserimento manuale e risparmiare tempo."
+                href="/importsongs"
+              />
+              <SectionCard
+                title="Tag delle canzoni"
+                description="Crea e gestisci tag per organizzare meglio le canzoni (es. adorazione, celebrazione, lingua, stagione)."
+                href="/protected/church/personalize/tags"
+              />
+              <SectionCard
+                title="Lista Canzoni"
+                description="Visualizza e modifica tutte le canzoni caricate dalla tua chiesa"
+                href="/songs"
+              />
+            </div>
+          )}
+
+          {selectedCategory === "membri" && (
+            <div className="space-y-4">
+              <SectionCard
+                title="Invita nuovi membri"
+                description="Invita nuovi collaboratori, musicisti o volontari con un link dedicato per unirsi alla tua chiesa su questa piattaforma."
+                href="/protected/church/invitemembers"
+              />
+              <SectionCard
+                title="Gestione Team e Ruoli"
+                description="Crea team (come worship, accoglienza, produzione) e assegna ruoli e permessi specifici ai membri."
+                href="/protected/teams"
+              />
+            </div>
+          )}
+        </div>
       </div>
       <Modal
         placement="center"
@@ -267,3 +180,38 @@ export default function PersonalizeChurchComponent() {
     </div>
   );
 }
+
+// 🔹 Componente riutilizzabile per ogni card
+interface SectionCardProps {
+  title: string;
+  description?: string;
+  href?: string;
+  children?: React.ReactNode;
+}
+
+const SectionCard = ({
+  title,
+  description,
+  href,
+  children,
+}: SectionCardProps) => {
+  return (
+    <div className="bg-white rounded-xl shadow p-4">
+      <h3 className="text-base font-semibold">{title}</h3>
+      {description && (
+        <p className="text-sm text-gray-500 mb-2">{description}</p>
+      )}
+      {href ? (
+        <Link
+          href={href}
+          className="text-blue-600 inline-flex gap-1 items-center text-sm font-medium mt-1"
+        >
+          <AiOutlineLink size={14} />
+          Vai
+        </Link>
+      ) : (
+        children
+      )}
+    </div>
+  );
+};

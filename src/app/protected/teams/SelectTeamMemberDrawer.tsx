@@ -6,21 +6,17 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import {
   Button,
   Input,
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  DrawerFooter,
-  useDisclosure,
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
+  useDisclosure,
 } from "@heroui/react";
 import { FaPlus } from "react-icons/fa";
-
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState, KeyboardEvent } from "react";
+import { fadeInUp, transitionSpring } from "@/motion/motionVariants";
 
 export function SelectTeamMemberDrawer({
   state,
@@ -36,26 +32,36 @@ export function SelectTeamMemberDrawer({
   section: number;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [members, setmembers] = useState(churchMembers);
-  const [searchText, setSearchText] = useState(""); // Local state for search input
+  const [members, setMembers] = useState(churchMembers);
+  const [searchText, setSearchText] = useState("");
 
-  // just makes sure that when the state updates it updates also here.
+  // Sync members when prop changes
   useEffect(() => {
-    setmembers(churchMembers);
+    setMembers(churchMembers);
   }, [churchMembers]);
-  const aggiornaLista = () => {
-    // const filteredSongs = songsList.filter(
-    //   (song: songType) =>
-    //     song.song_title.toLowerCase().includes(searchText.toLowerCase()) ||
-    //     song.author.toLowerCase().includes(searchText.toLowerCase())
-    // );
-    // setSongs(filteredSongs);
-  };
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+
+  // Optional: handle Enter key to trigger search (you can customize this)
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      aggiornaLista(); // Trigger search on Enter key
+      aggiornaLista();
     }
   };
+
+  // Search/filter function: filters the members list based on searchText
+  function aggiornaLista() {
+    const filtered = churchMembers.filter((member) =>
+      `${member.name} ${member.lastname}`
+        .toLowerCase()
+        .includes(searchText.toLowerCase())
+    );
+    setMembers(filtered);
+  }
+
+  // Always update the filtered list when searchText changes
+  useEffect(() => {
+    aggiornaLista();
+  }, [searchText, churchMembers]);
+
   return (
     <>
       <Button
@@ -71,6 +77,7 @@ export function SelectTeamMemberDrawer({
       </Button>
 
       <Modal
+        className="h-[70vh]"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         scrollBehavior="inside"
@@ -79,59 +86,61 @@ export function SelectTeamMemberDrawer({
           {(onClose) => (
             <>
               <ModalHeader>
-                <div className="songs-header">
+                <div className="songs-header flex flex-col gap-2">
                   <h4>Lista Membri</h4>
-                  <div className="songs-searchbar-form">
+                  <div className="songs-searchbar-form flex gap-2 items-center">
                     <Input
                       value={searchText}
-                      onChange={(e) => setSearchText(e.target.value)} // Update local state
+                      onChange={(e) => setSearchText(e.target.value)}
                       color="primary"
                       type="text"
                       placeholder="Cerca membri"
                       className="song-searchbar"
-                      onKeyDown={handleKeyDown} // Listen for Enter key
+                      onKeyDown={handleKeyDown}
                     />
                     <Button
                       color="primary"
                       variant="ghost"
-                      onPress={() => aggiornaLista()} // Handle search
+                      onPress={aggiornaLista}
                     >
                       <ManageSearchIcon />
                     </Button>
                   </div>
                 </div>
               </ModalHeader>
+
               <ModalBody>
-                <>
-                  <div className="container-song-list">
+                <div className="container-song-list">
+                  <AnimatePresence>
                     {members
                       .filter(
                         (member) => !state.some((m) => m.profile === member.id)
                       )
-
-                      .map((member, index) => {
-                        return (
-                          <div
-                            className="song-card-searchBar"
-                            style={{ cursor: "pointer" }}
-                            key={member.profile}
-                            onClick={() => {
-                              addMemberToTeam(member, section);
-                            }}
-                          >
-                            <div className="song-card-searchBar">
-                              <p className="song-card-searchBar">
-                                {member.name + " " + member.lastname}
-                                <br />
-                                <small>{member.email}</small>
-                              </p>
-                            </div>
+                      .map((member, index) => (
+                        <motion.div
+                          key={member.profile}
+                          layout
+                          variants={fadeInUp}
+                          initial="initial"
+                          animate="animate"
+                          exit="exit"
+                          transition={transitionSpring(index * 0.02)}
+                          className="song-card-searchBar cursor-pointer"
+                          onClick={() => addMemberToTeam(member, section)}
+                        >
+                          <div className="song-card-searchBar">
+                            <p>
+                              {member.name} {member.lastname}
+                              <br />
+                              <small>{member.email}</small>
+                            </p>
                           </div>
-                        );
-                      })}
-                  </div>
-                </>
+                        </motion.div>
+                      ))}
+                  </AnimatePresence>
+                </div>
               </ModalBody>
+
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Chiudi

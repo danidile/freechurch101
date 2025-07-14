@@ -1,5 +1,6 @@
 "use client";
-import { churchMembersT, setListSongT, songType } from "@/utils/types/types";
+
+import { churchMembersT, setListSongT } from "@/utils/types/types";
 import {
   Button,
   Drawer,
@@ -13,14 +14,13 @@ import { FaPlus } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { DateValue } from "@internationalized/date";
+import { fadeInUp, transitionSpring } from "@/motion/motionVariants";
 
 export function SelectWorshipTeamMemberDrawer({
   teamId,
   state,
   teamMembers,
   addMemberToTeam,
-  type,
-  section,
   date,
 }: {
   teamId: string;
@@ -33,33 +33,11 @@ export function SelectWorshipTeamMemberDrawer({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [members, setmembers] = useState(teamMembers);
-  const [searchText, setSearchText] = useState(""); // Local state for search input
-
-  const aggiornaLista = () => {
-    // const filteredSongs = songsList.filter(
-    //   (song: songType) =>
-    //     song.song_title.toLowerCase().includes(searchText.toLowerCase()) ||
-    //     song.author.toLowerCase().includes(searchText.toLowerCase())
-    // );
-    // setSongs(filteredSongs);
-  };
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      aggiornaLista(); // Trigger search on Enter key
-    }
-  };
-
-  // END SEARCHBAR DATA
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <>
-      <Button
-        isIconOnly
-        color="primary"
-        size="lg"
-        className="mr-0"
-        onPress={onOpen}
-      >
+      <Button isIconOnly color="primary" size="lg" className="mr-0" onPress={onOpen}>
         <FaPlus />
       </Button>
 
@@ -69,16 +47,44 @@ export function SelectWorshipTeamMemberDrawer({
             <>
               <DrawerHeader className="flex flex-col gap-1"></DrawerHeader>
               <DrawerBody>
-                <>
-                  <div className="songs-header">
-                    <h4>Lista Membri</h4>
-                  </div>
-                  <div className="container-song-list">
-                    <AnimatePresence>
+                <div className="songs-header">
+                  <h4>Lista Membri</h4>
+                </div>
+
+                {/* Search bar */}
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    placeholder="Cerca per nome o cognome"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <AnimatePresence>
+                    <motion.div
+                      initial="hidden"
+                      animate="show"
+                      exit="hidden"
+                      variants={{
+                        hidden: {},
+                        show: {
+                          transition: {
+                            staggerChildren: 0.05,
+                          },
+                        },
+                      }}
+                      className="container-song-list"
+                    >
                       {members
                         .filter(
                           (member) =>
-                            !state.some((m) => m.profile === member.profile)
+                            !state.some((m) => m.profile === member.profile) &&
+                            `${member.name} ${member.lastname}`
+                              .toLowerCase()
+                              .includes(searchTerm.toLowerCase())
                         )
                         .map((member, index) => {
                           const isUnavailable =
@@ -91,37 +97,29 @@ export function SelectWorshipTeamMemberDrawer({
                                 date.month - 1,
                                 date.day
                               );
-
                               return target >= start && target <= end;
                             });
 
                           return (
                             <motion.div
-                              initial={{
-                                opacity: 0,
-                                y: 25,
-                              }}
-                              animate={{
-                                opacity: 1,
-                                y: 0,
-                              }}
-                              exit={{
-                                opacity: 0,
-                                x: 80,
-                              }}
-                              transition={{ duration: 0.3, delay: index * 0.1 }} // Aggiunge un ritardo progressivo
-                              layout
-                              className={`song-card-searchBar ${isUnavailable ? "opacity-50 !cursor-default" : ""}`}
-                              style={{ cursor: "pointer" }}
                               key={member.profile}
+                              layout
+                              variants={fadeInUp}
+                              initial="initial"
+                              animate="animate"
+                              exit="exit"
+                              transition={transitionSpring(index * 0.02)}
+                              className={`song-card-searchBar ${isUnavailable ? "opacity-50 !cursor-default" : ""}`}
+                              style={{
+                                cursor: isUnavailable ? "default" : "pointer",
+                              }}
                               onClick={() => {
-                                if (!isUnavailable)
+                                if (!isUnavailable) {
                                   addMemberToTeam(member, teamId);
+                                }
                               }}
                             >
-                              <div
-                                className={`song-card-searchBar ${isUnavailable ? "opacity-50 !cursor-default" : ""}`}
-                              >
+                              <div>
                                 <p className="song-card-searchBar">
                                   {member.name + " " + member.lastname}
                                   <br />
@@ -137,10 +135,10 @@ export function SelectWorshipTeamMemberDrawer({
                               </div>
                             </motion.div>
                           );
-                        })}{" "}
-                    </AnimatePresence>
-                  </div>
-                </>
+                        })}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
               </DrawerBody>
               <DrawerFooter>
                 <Button fullWidth color="primary" onPress={onClose}>
