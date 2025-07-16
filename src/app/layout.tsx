@@ -1,12 +1,9 @@
-import "./globals.css";
+import "@/app/globals.css";
 import MenuBar from "./components/navbar";
 import { Viewport } from "next";
-import PullToRefreshLayout from "./components/PullToRefreshLayout";
 import { ZustandProviders } from "./zustandProvider";
 import { ToastProvider } from "@heroui/toast";
-import UserDataMenu from "./components/userDataMenu";
 
-import Sidebar from "./protected/sidebar";
 import { SiderbarProvider } from "./SiderbarProvider";
 
 export const viewport: Viewport = {
@@ -54,39 +51,39 @@ export default function RootLayout({
       <body>
         <ZustandProviders>
           {/* <PullToRefreshLayout> */}
-            <main className="standalone:pb-[120px]">
-              <MenuBar />
-              <ToastProvider
-                placement="top-right"
-                toastProps={{
-                  radius: "sm",
-                  variant: "flat",
-                  timeout: 10000,
-                  hideIcon: true,
-                  classNames: {
-                    description: "text-gray-500 max-w-[280px]",
-                    closeButton:
-                      "opacity-100 absolute right-4 top-1/2 -translate-y-1/2 ml-5",
-                  },
-                  closeIcon: (
-                    <svg
-                      fill="none"
-                      height="32"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      width="32"
-                    >
-                      <path d="M18 6 6 18" />
-                      <path d="m6 6 12 12" />
-                    </svg>
-                  ),
-                }}
-              />
-              <SiderbarProvider> {children}</SiderbarProvider>
-            </main>
+          <main className="standalone:pb-[120px]">
+            <MenuBar />
+            <ToastProvider
+              placement="top-right"
+              toastProps={{
+                radius: "sm",
+                variant: "flat",
+                timeout: 10000,
+                hideIcon: true,
+                classNames: {
+                  description: "text-gray-500 max-w-[280px]",
+                  closeButton:
+                    "opacity-100 absolute right-4 top-1/2 -translate-y-1/2 ml-5",
+                },
+                closeIcon: (
+                  <svg
+                    fill="none"
+                    height="32"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    width="32"
+                  >
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                ),
+              }}
+            />
+            <SiderbarProvider> {children}</SiderbarProvider>
+          </main>
           {/* </PullToRefreshLayout> */}
         </ZustandProviders>
       </body>
