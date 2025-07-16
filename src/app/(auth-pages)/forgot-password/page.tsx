@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import Link from "next/link";
 import forgotPasswordAction from "./forgotPasswordAction";
-import { FaEnvelopeOpenText } from "react-icons/fa";
 
 export default function ForgotPassword({
   searchParams,
