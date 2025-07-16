@@ -4,9 +4,9 @@ frontend:
     preBuild:
       commands:
         - nvm install 18
-        - . ~/.nvm/nvm.sh && nvm use 18
+        # - . ~/.nvm/nvm.sh && nvm use 18
         - node -v
-        - rm -rf .next .next/cache node_modules .npm package-lock.json
+        # - rm -rf .next .next/cache node_modules .npm package-lock.json
         - npm install
     build:
       commands:
