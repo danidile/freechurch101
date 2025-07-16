@@ -112,7 +112,7 @@ console.log("songsByAlbum",songsByAlbum);
                           userData.role as Role,
                           "delete:setlists"
                         ) && (
-                          <td key="import" className="!text-center">
+                          <td key="import" className="text-center!">
                             <Tooltip content="Importa nella lista della tua chiesa">
                               <Button
                                 onPress={() => {

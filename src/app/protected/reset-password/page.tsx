@@ -1,6 +1,7 @@
 "use client";
 
 import { resetPasswordAction } from "@/app/actions";
+import { Input, Button, Alert } from "@heroui/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TresetPasswordSchema, resetPasswordSchema } from "@/utils/types/auth";
@@ -14,104 +15,58 @@ export default function ResetPasswordComponent() {
   } = useForm<TresetPasswordSchema>({
     resolver: zodResolver(resetPasswordSchema),
   });
-
-  const [passwordResetted, setPasswordReset] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
+  const [passwordResetted, setPasswordReset] = useState<boolean>(false);
   const convertData = async (data: TresetPasswordSchema) => {
-    setError(null);
-    try {
-      const result = await resetPasswordAction(data);
-      if (result?.success) {
-        setPasswordReset(true);
-      } else {
-        setError(result?.message || "Errore durante il reset della password.");
-      }
-    } catch {
-      setError("Errore durante il reset della password.");
-    }
+    console.log(data);
+    resetPasswordAction(data);
+    console.log(data);
+    setPasswordReset(true);
   };
 
   return (
     <form
       onSubmit={handleSubmit(convertData)}
-      style={{
-        maxWidth: "500px",
-        margin: "0 auto",
-        padding: "1rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.5rem",
-      }}
+      className="flex flex-col w-full max-w-md p-4 gap-2 [&>input]:mb-4"
     >
-      {passwordResetted ? (
-        <div
-          style={{
-            backgroundColor: "#d1fae5",
-            color: "#065f46",
-            padding: "1rem",
-            borderRadius: "0.375rem",
-            border: "1px solid #10b981",
-          }}
-          role="alert"
-        >
-          <strong>Password reimpostata.</strong>
-          <p>Da ora potrai accedere con la nuova password.</p>
-        </div>
-      ) : (
+      {passwordResetted && (
+        <Alert
+          title="Password reimpostata."
+          description="Da ora potrai accedere con la nuova password."
+          color="success"
+        />
+      )}
+      {!passwordResetted && (
         <>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 500 }}>
-            Reset password
-          </h1>
-          <p style={{ color: "#6b7280" }}>Inserisci la tua nuova password.</p>
+          <h1 className="text-2xl font-medium">Reset password</h1>
+          <p className="text-sm text-foreground/60">
+            Inserisci la tua nuova password.
+          </p>
 
-          {error && (
-            <div
-              role="alert"
-              style={{
-                backgroundColor: "#fee2e2",
-                color: "#b91c1c",
-                padding: "1rem",
-                borderRadius: "0.375rem",
-                border: "1px solid #ef4444",
-              }}
-            >
-              <strong>Errore</strong>
-              <p>{error}</p>
-            </div>
-          )}
-
-          <label htmlFor="password">New password</label>
-          <input
+          <Input
             {...register("password")}
+            label="New password"
             type="password"
-            id="password"
             name="password"
             placeholder="Nuova password"
             required
-            minLength={8}
-            className="cinput"
           />
-
-          <label htmlFor="confirmPassword">Confirm password</label>
-          <input
+          <Input
             {...register("confirmPassword")}
+            label="Confirm password"
             type="password"
-            id="confirmPassword"
             name="confirmPassword"
             placeholder="Conferma password"
             required
-            minLength={8}
-            className="cinput"
           />
 
-          <button
+          <Button
+            color="primary"
+            variant="shadow"
             type="submit"
             disabled={isSubmitting}
-            className="csubmit"
           >
-            {isSubmitting ? "Caricamento..." : "Reset password"}
-          </button>
+            Reset password
+          </Button>
         </>
       )}
     </form>

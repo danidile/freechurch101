@@ -51,13 +51,13 @@ export default function SetListTabs({
               <>
                 {newMonth && (
                   <div className=" mt-3">
-                    <h6 className="capitalize !font-semibold ml-0">
+                    <h6 className="capitalize font-semibold! ml-0">
                       {setlistmonth}
                     </h6>
                   </div>
                 )}
                 <TransitionLink
-                  className="setlist-list-link    !max-w-full"
+                  className="setlist-list-link    max-w-full!"
                   href={`/setlist/${setlist.id}`}
                 >
                   <div className="setlist-list" key={setlist.id}>

@@ -57,7 +57,7 @@ export default function BlockoutsCalendarTabs({
         classNames={{
           tabList:
             "gap-4 w-full relative overflow-x-auto overflow-y-hidden scrollbar-hide",
-          tab: "flex-shrink-0 w-[31%] data-[selected=true]:bg-black data-[selected=true]:text-white rounded-lg", // Fixed selected state styling
+          tab: "shrink-0 w-[31%] data-[selected=true]:bg-black data-[selected=true]:text-white rounded-lg", // Fixed selected state styling
           base: "w-full overflow-x-auto",
           cursor: "bg-transparent", // Remove default selected indicator
           tabContent: "data-[selected=true]:text-white", // Fixed selected text color
@@ -99,10 +99,10 @@ export default function BlockoutsCalendarTabs({
                   return (
                     <div
                       key={dateKey}
-                      className={`calendar-date overflow-y-auto ${isToday ? "!bg-gray-100" : ""} ${isPast ? "opacity-65 select-none" : ""}`}
+                      className={`calendar-date overflow-y-auto ${isToday ? "bg-gray-100!" : ""} ${isPast ? "opacity-65 select-none" : ""}`}
                     >
                       <p
-                        className={`calendar-number ${isToday ? "!font-bold !text-black" : ""}`}
+                        className={`calendar-number ${isToday ? "font-bold! text-black!" : ""}`}
                       >
                         {day}
                       </p>

@@ -70,7 +70,7 @@ export default function PersonalizeChurchComponent() {
 
           {/* Sezioni filtrate */}
           {selectedCategory === "personalizzazione" && (
-            <div className="space-y-4">
+            <div className="space-y-2">
               <SectionCard
                 title="Logo della chiesa"
                 description="Carica il logo ufficiale della tua chiesa: verrà mostrato in tutta la piattaforma per una presenza visiva coerente e riconoscibile."
@@ -111,7 +111,7 @@ export default function PersonalizeChurchComponent() {
           )}
 
           {selectedCategory === "musica" && (
-            <div className="space-y-4">
+            <div className="space-y-2">
               <SectionCard
                 title="Importa da Planning Center"
                 description="Sincronizza facilmente le tue canzoni da Planning Center per evitare l'inserimento manuale e risparmiare tempo."
@@ -131,7 +131,7 @@ export default function PersonalizeChurchComponent() {
           )}
 
           {selectedCategory === "membri" && (
-            <div className="space-y-4">
+            <div className="space-y-2">
               <SectionCard
                 title="Invita nuovi membri"
                 description="Invita nuovi collaboratori, musicisti o volontari con un link dedicato per unirsi alla tua chiesa su questa piattaforma."
@@ -196,7 +196,7 @@ const SectionCard = ({
   children,
 }: SectionCardProps) => {
   return (
-    <div className="bg-white rounded-xl shadow p-4">
+    <div className=" p-2">
       <h3 className="text-base font-semibold">{title}</h3>
       {description && (
         <p className="text-sm text-gray-500 mb-2">{description}</p>

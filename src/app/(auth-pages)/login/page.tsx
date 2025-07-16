@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function LoginPage() {
   return (
     <div className="flex flex-row h-[calc(100vh-75px)] w-full ">
-      <div className="relative  h-screen bg-gradient-to-br from-[#474be1] to-[#0e117f] overflow-hidden w-full hidden lg:block">
+      <div className="relative  h-screen bg-linear-to-br from-[#474be1] to-[#0e117f] overflow-hidden w-full hidden lg:block">
         {/* Grain overlay */}
         <div className="pointer-events-none absolute inset-0 z-10 bg-[url('/images/noise1.webp')] opacity-20 mix-blend-overlay"></div>
 

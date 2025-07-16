@@ -9,6 +9,7 @@ import { PiCirclesThreeBold } from "react-icons/pi";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
 import { Button } from "@heroui/button";
+import { FaPlus } from "react-icons/fa";
 
 export default function TeamsPageComponent() {
   const { userData, fetchUser, loading } = useUserStore();
@@ -23,36 +24,32 @@ export default function TeamsPageComponent() {
   }, [loading, userData]);
 
   return (
-    <div className="container-sub">
-      <h5 className="text-center m-5">Teams</h5>
-      {churchTeams &&
-        churchTeams.map((team) => {
-          return (
-            <Link
-              key={team.id}
-              className="team-list nborder"
-              href={`/protected/teams/${team.id}`}
-            >
-              <div className="setlist-date-avatar">
-                <p
-                  className={`setlist-day 
-                  }`}
-                >
-                  <PiCirclesThreeBold />
-                </p>
-              </div>
-              <div className="setlist-list" key={team.id}>
-                <p>
-                  <b>{team.team_name}</b>
-                </p>
-              </div>
-            </Link>
-          );
-        })}
+    <div className="container-sub max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <h5 className="text-2xl font-semibold text-center">Teams</h5>
+
+      <div className="grid gap-2 my-8">
+        {churchTeams?.map((team) => (
+          <Link key={team.id} href={`/protected/teams/${team.id}`}>
+            <p className="text-lg text-center font-medium text-gray-800">
+              {team.team_name}
+            </p>
+          </Link>
+        ))}
+      </div>
+
       {hasPermission(userData.role as Role, "create:team") && (
-        <Button color="primary" className="m-5">
-          <Link href="/protected/teams/create-team">Crea nuovo team</Link>
-        </Button>
+        <div className="text-center">
+          <Link href="/protected/teams/create-team">
+            <button
+              className="
+            inline-flex items-center gap-2 px-4 py-2 bg-black text-white
+            rounded-md hover:bg-gray-800 transition-colors duration-150
+          "
+            >
+              <FaPlus /> Crea nuovo team
+            </button>
+          </Link>
+        </div>
       )}
     </div>
   );

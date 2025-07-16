@@ -28,7 +28,7 @@ export default function ModalLyrics({ songData }: { songData: any }) {
         size="3xl"
         classNames={{
           backdrop:
-            "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
+            "bg-linear-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
         }}
         motionProps={{
           variants: {

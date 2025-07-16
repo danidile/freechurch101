@@ -252,19 +252,19 @@ export default function Page({ params }: { params: { teamsId: string } }) {
             )}
           </div>
         </div>
-        <table className="w-full max-w-[800px] table-auto border-collapse ntable">
+        <table className="w-full max-w-[800px] atable">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="text-left px-2 py-1">Nome</th>
+            <tr>
+              <th>Nome</th>
               {width >= 800 && (
                 <>
-                  <th className="text-left px-2 py-1 ">Ruolo</th>
+                  <th>Abilità</th>
                 </>
               )}
 
               {!defineRoles &&
                 hasPermission(userData.role as Role, "update:teams") && (
-                  <th className="text-center px-2 py-1 max-w-[50px] w-[50px]">
+                  <th className=" w-[50px]">
                     <MdEditNote size={20} className="mx-auto" />
                   </th>
                 )}
@@ -274,7 +274,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
             {churchTeam.team_members.map((item) => {
               return (
                 <tr key={item.profile}>
-                  <td className="px-2 py-[2px]">
+                  <td>
                     <div
                       className={
                         width < 800 && defineRoles
@@ -294,14 +294,21 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                             <></>
                           ) : (
                             <>
-                              <small className="capitalize font-bold ">
-                                {item.role}
-                              </small>{" - "}
+                              {defineRoles ? (
+                                <></>
+                              ) : (
+                                <>
+                                  <small className="capitalize font-bold ">
+                                    {item.role}
+                                  </small>
+                                  {" - "}
+                                </>
+                              )}
                             </>
                           )}
                           {defineRoles ? (
                             <select
-                              className="border rounded px-2 py-1 text-sm"
+                              className="aselect"
                               value={item.role ?? "member"}
                               onChange={(e) =>
                                 setChurchTeam((prev) => {
@@ -339,10 +346,10 @@ export default function Page({ params }: { params: { teamsId: string } }) {
                     </div>
                   </td>
                   {width >= 800 && (
-                    <td className="px-2 py-[2px]">
+                    <td>
                       {defineRoles ? (
                         <select
-                          className="border rounded px-2 py-1 text-sm"
+                          className="aselect"
                           value={item.role ?? "member"}
                           onChange={(e) =>
                             setChurchTeam((prev) => {
@@ -372,7 +379,7 @@ export default function Page({ params }: { params: { teamsId: string } }) {
 
                   {!defineRoles &&
                     hasPermission(userData.role as Role, "update:teams") && (
-                      <td className="px-2 py-[2px] text-center max-w-[50px] w-[50px]">
+                      <td className="w-[50px]">
                         {(isLeader ||
                           hasPermission(
                             userData.role as Role,

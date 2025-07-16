@@ -22,7 +22,7 @@ export default function LoadingBlockoutsPage() {
   return (
     <I18nProvider locale="it-IT-u-ca-gregory">
       <Card className="max-w-[500px]" shadow="none">
-        <CardHeader className="flex-col border-b-1 px-5 py-5 ">
+        <CardHeader className="flex-col border-b px-5 py-5 ">
           <h3>Blocca date</h3>
           <p className="text-center">
             Inserisci durante quali date non sarai disponibile per le

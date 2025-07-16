@@ -72,18 +72,18 @@ export default function Sidebar() {
             </h4>
           </div>
         </li>
-        <li className=" !mt-6 border-b-1 ">
+        <li className=" mt-6! border-b ">
           <span className="sidebar-link">
             <div className="sidebar-element sidebar-title">
               <h6>Area personale</h6>
             </div>
           </span>
         </li>
-        <li className=" border-b-1 ">
+        <li className=" border-b ">
           <Dropdown placement="bottom">
             <DropdownTrigger>
               <span className="">
-                <div className="sidebar-element sidebar-title !justify-between"></div>
+                <div className="sidebar-element sidebar-title justify-between!"></div>
               </span>
             </DropdownTrigger>
             <DropdownMenu aria-label="Static Actions">
@@ -142,7 +142,7 @@ export default function Sidebar() {
           </Link>
         </li>
         {userData.church_id && (
-          <li className=" !mt-6 border-b-1 ">
+          <li className=" mt-6! border-b ">
             <span className="sidebar-link">
               <div className="sidebar-element sidebar-title">
                 <h6>La mia Chiesa</h6>
@@ -218,10 +218,10 @@ export default function Sidebar() {
           </>
         )}
 
-        <li className="sidebar-li !mt-6 border-b-1 "></li>
+        <li className="sidebar-li mt-6! border-b "></li>
         <li className="sidebar-li">
           <button
-            className="sidebar-link !justify-center logoutcolors"
+            className="sidebar-link justify-center! logoutcolors"
             onClick={logouter}
           >
             <MdOutlineLogout />

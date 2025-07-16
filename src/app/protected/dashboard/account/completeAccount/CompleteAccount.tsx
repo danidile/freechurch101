@@ -77,7 +77,7 @@ export default function CompleteAccount() {
             <>
               <div
                 onClick={() => setUploadPicture(true)}
-                className="flex flex-row gap-4 items-center justify-center !cursor-pointer"
+                className="flex flex-row gap-4 items-center justify-center cursor-pointer!"
               >
                 <Avatar
                   size="lg"
@@ -154,7 +154,7 @@ export default function CompleteAccount() {
             disabled
             placeholder={userData.email}
             endContent={
-              <FaLock className="text-l text-default-500 pointer-events-none flex-shrink-0 my-auto" />
+              <FaLock className="text-l text-default-500 pointer-events-none shrink-0 my-auto" />
             }
           />
           <Input

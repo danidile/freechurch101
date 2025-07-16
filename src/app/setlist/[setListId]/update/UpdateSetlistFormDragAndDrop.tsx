@@ -365,7 +365,7 @@ export default function UpdateSetlistForm({
     <div className="container-sub">
       <I18nProvider locale="it-IT-u-ca-gregory">
         <div className=" crea-setlist-container">
-          <form onSubmit={handleSubmit(convertData)}>
+          <form>
             <div className="flex items-center">
               <div className="flex items-center gap-2">
                 <h4>
@@ -472,30 +472,6 @@ export default function UpdateSetlistForm({
                     }
                   }}
                 />
-
-                {/* <Input
-                type="date"
-                // {...register("date")}
-                label="Event Date"
-                variant="bordered"
-                size="sm"
-                value={eventDate || ""} // controlled input
-                onChange={(e) => {
-                  const newDate = e.target.value;
-                  const unavailable = getUnavailableMembers(
-                    newDate,
-                    teamsState
-                  );
-                  console.log(eventDate);
-                  if (unavailable.length > 0) {
-                    setPreviousEventDate(eventDate);
-                    setIsDateConflictModalOpen(true);
-                    setPendingDate(newDate);
-                  } else {
-                    setEventDate(newDate);
-                  }
-                }}
-              /> */}
               </div>
             </div>
             <div className="">
@@ -617,134 +593,126 @@ export default function UpdateSetlistForm({
                 </DropdownMenu>
               </Dropdown>
               <AnimatePresence>
-                {teamsState.map((section, index) => {
-                  return (
-                    <>
-                      <Table
-                        key={section.id}
-                        aria-label="Team members table"
-                        topContent={
-                          <h6 className="font-bold">{section.team_name}</h6>
-                        }
-                        bottomContent={
-                          <div className="team-title-container">
-                            <SelectWorshipTeamMemberDrawer
-                              state={section.selected}
-                              type="add"
-                              teamMembers={section.team_members}
-                              addMemberToTeam={addMemberToTeam} // Pass function correctly
-                              section={null}
-                              teamId={section.id}
-                              date={eventDate}
-                            />
-                          </div>
-                        }
-                      >
-                        <TableHeader>
-                          <TableColumn>Nome</TableColumn>
-                          <TableColumn>Ruolo</TableColumn>
-                          <TableColumn>Azioni</TableColumn>
-                        </TableHeader>
-                        <TableBody
-                          items={
-                            section.selected?.map((member) => ({
-                              ...member,
-                              teamId: section.id,
-                              teamName: section.team_name,
-                              roles:
-                                getRolesFromTeamMembers(
-                                  section.id,
-                                  member.profile
-                                ) || [],
-                              isUnavailable:
-                                member.blockouts?.some((b) => {
-                                  const start = new Date(b.start);
-                                  const end = new Date(b.end);
-                                  const target = new Date(
-                                    eventDate.year,
-                                    eventDate.month - 1,
-                                    eventDate.day
-                                  );
-                                  return target >= start && target <= end;
-                                }) ?? false,
-                            })) || []
-                          }
-                        >
-                          {(item) => (
-                            <TableRow key={item.profile + section.id}>
-                              <TableCell>
-                                {item.name} {item.lastname}
-                              </TableCell>
-                              <TableCell>
-                                {item.roles.length >= 1 && (
-                                  <Select
-                                    aria-label="Select roles"
-                                    className="max-w-[150px]"
-                                    size="sm"
-                                    placeholder="Seleziona Ruolo"
-                                    defaultSelectedKeys={
-                                      item.roles.includes(item.selected_roles)
-                                        ? new Set([item.selected_roles])
-                                        : undefined
-                                    }
-                                    onSelectionChange={(e) =>
-                                      addRoleToMemberTeam(
-                                        item.profile,
-                                        item.teamId,
-                                        e.currentKey as string
+                {teamsState.map((section) => (
+                  <div key={section.id} className="mt-4">
+                    <div className="flex flex-row flex-wrap items-center gap-3 my-2.5">
+                      <h4 className="font-medium">{section.team_name}</h4>
+                      <SelectWorshipTeamMemberDrawer
+                        state={section.selected}
+                        type="add"
+                        teamMembers={section.team_members}
+                        addMemberToTeam={addMemberToTeam} // Pass function correctly
+                        section={null}
+                        teamId={section.id}
+                        date={eventDate}
+                      />
+                    </div>
+                    {section.selected?.length >= 1 && (
+                      <table className="w-full text-left border border-gray-200 rounded-md overflow-hidden text-sm atable">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th> Nome</th>
+<th>                              Ruolo
+                            </th>
+                            <th className=" w-[40px]"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {section.selected?.map((member) => {
+                            const roles =
+                              getRolesFromTeamMembers(
+                                section.id,
+                                member.profile
+                              ) || [];
+
+                            const isUnavailable =
+                              member.blockouts?.some((b) => {
+                                const start = new Date(b.start);
+                                const end = new Date(b.end);
+                                const target = new Date(
+                                  eventDate.year,
+                                  eventDate.month - 1,
+                                  eventDate.day
+                                );
+                                return target >= start && target <= end;
+                              }) ?? false;
+
+                            return (
+                              <tr
+                                key={member.profile + section.id}
+                              >
+                                <td>
+                                  {member.name} {member.lastname}{" "}
+                                  {isUnavailable && (
+                                    <span className="text-xs text-red-500 font-semibold ml-2">
+                                      Non disponibile
+                                    </span>
+                                  )}
+                                </td>
+                                <td>
+                                  {roles.length >= 1 && (
+                                    <select
+                                      className="aselect"
+                                      defaultValue={
+                                        roles.includes(member.selected_roles)
+                                          ? member.selected_roles
+                                          : ""
+                                      }
+                                      onChange={(e) =>
+                                        addRoleToMemberTeam(
+                                          member.profile,
+                                          section.id,
+                                          e.target.value
+                                        )
+                                      }
+                                    >
+                                      <option value="" disabled>
+                                        Seleziona ruolo
+                                      </option>
+                                      {roles.map((role) => (
+                                        <option key={role} value={role}>
+                                          {role}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  )}
+                                </td>
+                                <td>
+                                  <button
+                                    onClick={() =>
+                                      removeMemberToTeam(
+                                        member.profile,
+                                        section.id
                                       )
                                     }
+                                    className=" text-red-500 hover:text-red-700"
                                   >
-                                    {item.roles.map((role) => (
-                                      <SelectItem key={role}>{role}</SelectItem>
-                                    ))}
-                                  </Select>
-                                )}
-                              </TableCell>
-
-                              <TableCell>
-                                <Button
-                                  size="sm"
-                                  isIconOnly
-                                  color="danger"
-                                  variant="light"
-                                  onPress={() =>
-                                    removeMemberToTeam(item.profile, section.id)
-                                  }
-                                >
-                                  <RiDeleteBinLine size={20} />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </>
-                  );
-                })}
+                                    <RiDeleteBinLine size={18} />
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                ))}
               </AnimatePresence>
             </div>
+
             <br />
-            <div className="fixed standalone:bottom-[80px] browser:bottom-0 bg-gradient-to-b to-[#ffffff] from-[#ffffff00]  left-0 w-full p-2  shadow-md z-50 md:hidden">
-              <button
-                className="button-style w-full"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                {page === "create" && "Crea"}
-                {page === "update" && "Aggiorna"} Evento
-              </button>
-            </div>{" "}
-            <div className="hidden  md:block">
-              <button
-                className="button-style w-full"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                {page === "create" && "Crea"}
-                {page === "update" && "Aggiorna"} Evento
-              </button>
-            </div>
+
+            <button
+              className="button-style w-full"
+              onClick={(e) => {
+                e.preventDefault();
+                convertData();
+              }}
+            >
+              {page === "create" && "Crea"}
+              {page === "update" && "Aggiorna"} Evento
+            </button>
           </form>
         </div>
         <Modal

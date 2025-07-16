@@ -1,31 +1,40 @@
 "use client";
+import LoadingSongsPage from "@/app/songs/loading";
 import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
 import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
 import { useUserStore } from "@/store/useUserStore";
 import { profileSetlistsT } from "@/utils/types/types";
-
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Spinner,
+} from "@heroui/react";
 import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
+import { Alert } from "@heroui/alert";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
-import {
-  FaExclamationTriangle,
-  FaExternalLinkAlt,
-  FaInfoCircle,
-} from "react-icons/fa";
+import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useChurchStore } from "@/store/useChurchStore";
 import { FaLink } from "react-icons/fa6";
 import { FiPlus } from "react-icons/fi";
 import Link from "next/link";
-import ChurchLabLoader from "@/app/components/churchLabSpinner";
-import AccountSettingsDropdown from "./AccountSettingsDropdown";
+import { IoSettingsOutline } from "react-icons/io5";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
-  const { churchMembers } = useChurchStore();
+  const { churchMembers, loadingChurchData } = useChurchStore();
   const [setlists, setSetlists] = useState<any[] | null>([]);
   const [teams, setTeams] = useState<any[] | null>([]);
   const [pendingRequests, setPendingRequests] = useState(false);
+  const [fetchedData, setFetchedData] = useState(false);
   const { eventTypes } = useChurchStore();
 
   useEffect(() => {
@@ -38,6 +47,7 @@ export default function AccountComponent() {
         ]);
         setSetlists(fetchedProfileSetLists);
         setTeams(fetchedTeams);
+        setFetchedData(true);
 
         if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
           const pendingChurchMembershipRequests =
@@ -58,7 +68,12 @@ export default function AccountComponent() {
     fetchData();
   }, [userData, loading]);
 
-  if (loading || !userData) return <ChurchLabLoader />;
+  if (loading || !userData)
+    return (
+      <div className="container-sub">
+        <Spinner size="lg" />
+      </div>
+    );
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
@@ -75,7 +90,39 @@ export default function AccountComponent() {
             {userData.lastname && userData.lastname}
           </h4>
 
-          <AccountSettingsDropdown />
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                size="sm"
+                className="ml-0"
+                color="default"
+                isIconOnly
+                variant="flat"
+              >
+                <IoSettingsOutline size={20} />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Static Actions">
+              <DropdownItem
+                as={Link}
+                href="/protected/dashboard/account/completeAccount"
+                key="add"
+                color="primary"
+                variant="flat"
+              >
+                Aggiorna Account
+              </DropdownItem>
+              <DropdownItem
+                as={Link}
+                href="/protected/reset-password"
+                key="import"
+                color="primary"
+                variant="flat"
+              >
+                Reimposta Password
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
 
         <p>{userData?.email}</p>
@@ -102,49 +149,26 @@ export default function AccountComponent() {
               <div className="flex flex-row justify-start items-center gap-3">
                 <FaLink size={25} />
                 <h5>Link veloci</h5>
-              </div>
+              </div>{" "}
               {userData.pending_church_confirmation && (
-                <div className="flex items-start space-x-3 rounded-lg border border-blue-300 bg-blue-50 p-4 text-blue-900">
-                  <FaInfoCircle
-                    className="mt-1 flex-shrink-0 text-blue-500"
-                    size={20}
-                  />
-                  <div>
-                    <h4 className="font-semibold text-base leading-tight">
-                      In attesa di conferma
-                    </h4>
-                    <p className="mt-1 text-sm leading-relaxed">
-                      Attendi che i responsabili della tua chiesa confermino il
-                      tuo account.
-                    </p>
-                  </div>
-                </div>
+                <Alert
+                  className="my-5"
+                  color="primary"
+                  description="Attendi che i responsabili della tua chiesa confermino il tuo account."
+                  title="In attesa di conferma"
+                />
               )}
               {pendingRequests && (
                 <Link
+                  className="dashboard-list !p-0"
                   href="/protected/church/confirm-members"
-                  className="block"
                 >
-                  <div className="flex items-center justify-between rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-900 hover:bg-yellow-100 transition cursor-pointer">
-                    <div className="flex items-start space-x-3">
-                      <FaExclamationTriangle
-                        className="mt-1 flex-shrink-0 text-yellow-500"
-                        size={20}
-                      />
-                      <div>
-                        <h4 className="font-semibold text-base leading-tight">
-                          In attesa di conferma
-                        </h4>
-                        <p className="mt-1 text-sm leading-relaxed">
-                          Alcuni account sono in attesa della tua conferma.
-                        </p>
-                      </div>
-                    </div>
-                    <FaExternalLinkAlt
-                      className="ml-4 shrink-0 text-yellow-600"
-                      size={18}
-                    />
-                  </div>
+                  <Alert
+                    endContent={<FaExternalLinkAlt />}
+                    color="warning"
+                    description="Alcuni account sono in attesa della tua conferma."
+                    title="In attesa di conferma"
+                  />
                 </Link>
               )}
               {hasPermission(userData.role as Role, "read:churchmembers") && (
@@ -152,17 +176,27 @@ export default function AccountComponent() {
                   {churchMembers?.length <= 5 && (
                     <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between n-card nborder p-4 !border-blue-300 border-1">
                       <p>Invita nuovi membri nella tua chiesa!</p>
-                      <Link href="/protected/church/invitemembers">
+                      <Button
+                        color="primary"
+                        as={Link}
+                        href="/protected/church/invitemembers"
+                      >
                         {" "}
                         Invita nuovi membri!
-                      </Link>
+                      </Button>
                     </div>
                   )}
                 </>
               )}
               <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between n-card nborder p-4 !border-red-200 border-1">
                 <p>Blocca le date in cui non sei disponibile.</p>
-                <Link href="/protected/blockouts">Blocca Date</Link>
+                <Button
+                  className="bg-[#ea685c] text-white"
+                  as={Link}
+                  href="/protected/blockouts"
+                >
+                  Blocca Date
+                </Button>
               </div>
             </div>
             <div className="nborder ncard flex flex-col flex-wrap gap-4 w-full !border-slate-300 border-1 ">
@@ -199,13 +233,19 @@ export default function AccountComponent() {
                               </p>
                               <>
                                 {setlist.status === "pending" && (
-                                  <small color="warning">In Attesa</small>
+                                  <Chip variant="flat" color="warning">
+                                    In Attesa
+                                  </Chip>
                                 )}
                                 {setlist.status === "confirmed" && (
-                                  <small color="success">Confermato</small>
+                                  <Chip variant="flat" color="success">
+                                    Confermato
+                                  </Chip>
                                 )}
                                 {setlist.status === "denied" && (
-                                  <small color="danger">Rifiutato</small>
+                                  <Chip variant="flat" color="danger">
+                                    Rifiutato
+                                  </Chip>
                                 )}
                               </>
                             </div>

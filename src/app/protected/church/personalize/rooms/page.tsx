@@ -148,16 +148,16 @@ export default function PersonalizeRoomsModal() {
   };
 
   return (
-    <>
+    <div className="w-full max-w-[500px]">
       <h2> Personalizza Stanze</h2>
 
       {personalizedRooms.map((room, idx) => (
         <div
           key={idx}
-          className="w-full max-w-[600px] bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col gap-3"
+          className="w-full max-w-[600px] bg-white  p-3 flex flex-col gap-1"
         >
           {/* Header: nome stanza + azioni */}
-          <div className="flex justify-between items-start gap-4">
+          <div className="flex justify-between items-center gap-4">
             <div className="flex-1">
               {currentlyEditingIndex === idx ? (
                 <Input
@@ -259,21 +259,28 @@ export default function PersonalizeRoomsModal() {
           </div>
         </div>
       )}
-      <div className="songs-searchbar-form">
-        <Button
-          size="sm"
-          color="primary"
-          variant="ghost"
-          
-          onPress={() => {
-            addRoomFunction();
-            setCurrentlyEditingIndex(personalizedRooms.length);
-          }}
-        >
-          <FaPlus /> Aggiungi stanza
-        </Button>
+      <div className="flex flex-row gap-4 max-w-[300px] mx-auto ">
+        {!currentlyEditingIndex && (
+          <>
+            <Button
+              size="sm"
+              color="primary"
+              variant="ghost"
+              fullWidth
+              onPress={() => {
+                addRoomFunction();
+                setCurrentlyEditingIndex(personalizedRooms.length);
+              }}
+            >
+              <FaPlus /> Aggiungi stanza
+            </Button>
+          </>
+        )}
+
         {hasChanges && (
           <Button
+            size="sm"
+            fullWidth
             color="primary"
             onPress={() => {
               saveRooms();
@@ -284,6 +291,6 @@ export default function PersonalizeRoomsModal() {
         )}
       </div>
       <br />
-    </>
+    </div>
   );
 }

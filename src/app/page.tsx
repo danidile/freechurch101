@@ -18,13 +18,13 @@ export default function Home() {
             height={400}
           />
         </div>
-        <div className="py-8 px-2 max-w-screen-lg lg:py-16 lg:px-12 ">
+        <div className="py-8 px-2 max-w-(--breakpoint-lg) lg:py-16 lg:px-12 ">
           <h1 className="text-4xl md:text-7xl font-extrabold mb-6">
             La Tua Chiesa,
             <br /> Sempre Organizzata.
           </h1>
           <div className="">
-            <p className="text-lg mb-8 max-w-screen-sm">
+            <p className="text-lg mb-8 max-w-(--breakpoint-sm)">
               Una piattaforma completa per pianificare servizi, gestire team,
               archiviare canti e coordinare i volontari, tutto in cloud!
             </p>
@@ -54,7 +54,7 @@ export default function Home() {
             className="object-cover h-[400px]"
             src={"images/sdvworship.webp"}
           />
-          <CardFooter className="justify-around before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+          <CardFooter className="justify-around before:bg-white/10 border-white/20 border overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%-8px)] shadow-small ml-1 z-10">
             <p className="text-tiny text-white/80  ">SDV Worship.</p>
             <Button
               className="text-tiny text-white bg-black/20 mr-0"
@@ -74,7 +74,7 @@ export default function Home() {
             className="object-cover h-[400px]"
             src={"images/mirkoegiorgia.webp"}
           />
-          <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+          <CardFooter className="justify-between before:bg-white/10 border-white/20 border overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%-8px)] shadow-small ml-1 z-10">
             <p className="text-tiny text-white/80">Mirko & Giorgia.</p>
             <Button
               className="text-tiny text-white bg-black/20 mr-0"
@@ -94,7 +94,7 @@ export default function Home() {
             className="object-cover h-[400px]"
             src={"images/soundsmusicitalia.webp"}
           />
-          <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+          <CardFooter className="justify-between before:bg-white/10 border-white/20 border overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%-8px)] shadow-small ml-1 z-10">
             <p className="text-tiny text-white/80">Sounds Music Italia.</p>
             <Button
               className="text-tiny text-white bg-black/20 mr-0"
@@ -117,7 +117,7 @@ export default function Home() {
             className="object-cover h-[400px]"
             src={"images/nicobattaglia.webp"}
           />
-          <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+          <CardFooter className="justify-between before:bg-white/10 border-white/20 border overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%-8px)] shadow-small ml-1 z-10">
             <p className="text-tiny text-white/80">Nico Battaglia.</p>
             <Button
               className="text-tiny text-white bg-black/20 mr-0"
@@ -140,7 +140,7 @@ export default function Home() {
             className="object-cover h-[400px]"
             src={"images/truedevotion.webp"}
           />
-          <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+          <CardFooter className="justify-between before:bg-white/10 border-white/20 border overflow-hidden py-1 pr-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%-8px)] shadow-small ml-1 z-10">
             <p className="text-tiny text-white/80">True Devotion.</p>
             <Button
               className="text-tiny text-white bg-black/20 mr-0"

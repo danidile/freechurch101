@@ -53,7 +53,7 @@ export default function PWADashboard({
       </div>
       {userData.pending_church_confirmation && (
         <Link
-          className="dashboard-list !p-0"
+          className="dashboard-list p-0!"
           href="/protected/church/confirm-members"
         >
           <Alert
@@ -66,7 +66,7 @@ export default function PWADashboard({
 
       {pendingRequests && pendingRequests.length > 0 && (
         <Link
-          className="dashboard-list !p-0"
+          className="dashboard-list p-0!"
           href="/protected/church/confirm-members"
         >
           <Alert
@@ -128,7 +128,7 @@ export default function PWADashboard({
         fullWidth
         color="danger"
         variant="flat"
-        className="!py-7 !bg-red-100 dashboard-list"
+        className="py-7! bg-red-100! dashboard-list"
         onPress={logouter}
       >
         Sign out

@@ -1,16 +1,13 @@
 "use client";
 import { getSetList } from "@/hooks/GET/getSetList";
-import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
 import {
-  FaCircle,
   FaExclamation,
   FaRegCheckCircle,
   FaRegClock,
   FaWhatsapp,
 } from "react-icons/fa";
-import ModalLyrics from "./modalLyrics";
 import CopyLinkButton from "@/app/components/CopyLinkButton";
-import { addToast, Card, Tooltip } from "@heroui/react";
+import { addToast } from "@heroui/react";
 import { Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 
 import { ChipColor, GroupedMembers, setListT } from "@/utils/types/types";
@@ -28,24 +25,12 @@ import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
 import Link from "next/link";
 import { Button } from "@heroui/button";
 import { useUserStore } from "@/store/useUserStore";
-import { useState, useEffect, useCallback } from "react";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Chip,
-  Alert,
-} from "@heroui/react";
+import { useState, useEffect } from "react";
+import { Chip, Alert } from "@heroui/react";
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
-import { RiSettings4Fill } from "react-icons/ri";
-import { MdModeEdit } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
-import ContactTeamModal from "./contactTeamModal";
 import ChurchLabLoader from "@/app/components/churchLabSpinner";
-import { IoCloseCircleSharp, IoMailOutline } from "react-icons/io5";
+import { IoMailOutline } from "react-icons/io5";
 import eventReminderEmail from "./eventReminderEmail";
 import LoginForm from "@/app/(auth-pages)/login/loginForm";
 import updateLastReminderSupabase from "./updateLastReminderSupabase";
@@ -129,7 +114,20 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     <div className="container-sub ">
       <div className="song-presentation-container">
         <div className="team-show">
-          <h2> {matched?.alt || matched?.label || "Evento sconosciuto"}</h2>
+          <div className="flex flex-wrap justify-between">
+            <h2> {matched?.alt || matched?.label || "Evento sconosciuto"}</h2>
+            <div className="top-settings-bar">
+              <CopyLinkButton />
+              {userData &&
+                (hasPermission(userData.role as Role, "create:setlists") ||
+                  TeamLeader) && (
+                  <MoreDropdownSetlist
+                    userData={userData}
+                    setlistId={setListId}
+                  />
+                )}
+            </div>{" "}
+          </div>
 
           <p className="capitalize my-2">
             {" "}
@@ -141,17 +139,6 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
             {setlistRoom?.name}
             {" - "} {setlistRoom?.address}
           </p>
-          <div className="top-settings-bar">
-            <CopyLinkButton />
-            {userData &&
-              (hasPermission(userData.role as Role, "create:setlists") ||
-                TeamLeader) && (
-                <MoreDropdownSetlist
-                  userData={userData}
-                  setlistId={setListId}
-                />
-              )}
-          </div>
         </div>
 
         {setlistSchedule && setlistSchedule.length > 0 && (
@@ -170,284 +157,173 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
         )}
 
         {setlistTeams &&
-          Object.entries(setlistTeams).map((team) => {
+          Object.entries(setlistTeams).map(([teamName, members]) => {
             const showEmail = hasPermission(
               userData.role as Role,
               "send:emails"
             );
 
-            if (contactMode) {
-              return (
-                <>
-                  <div className="team-show" key={team[0]}>
-                    <Table
-                      aria-label="Example table with dynamic content"
-                      topContent={
-                        <div className="flex flex-row justify-between">
-                          <h5 className="font-medium">{team[0]}</h5>
-                          {hasPermission(
-                            userData.role as Role,
-                            "send:emails"
-                          ) && (
-                            <Button
-                              className="mr-0"
-                              isIconOnly
-                              onPress={() =>
-                                setContactMode((prevState) => {
-                                  return !prevState;
-                                })
-                              }
-                            >
-                              <FiSend />
-                            </Button>
-                          )}
-                        </div>
-                      }
-                      classNames={{
-                        td: "p-[2px] truncate text-center ",
-                        th: "text-center",
-                      }}
+            return (
+              <div className="team-show mb-6" key={teamName}>
+                {/* ——— Top bar with title + toggle */}
+                <div className="flex justify-between items-center mb-2">
+                  <h5 className="font-medium">{teamName}</h5>
+                  {showEmail && (
+                    <button
+                      className="text-gray-600 hover:text-gray-800"
+                      onClick={() => setContactMode((prev) => !prev)}
                     >
-                      <TableHeader>
-                        <TableColumn className="!text-left !h-2 !bg-white">
-                          Nome
-                        </TableColumn>
-                        <TableColumn className=" !h-2 !bg-white">
-                          Ruolo
-                        </TableColumn>
-                        <TableColumn className=" !h-2 !bg-white">
-                          Stato
-                        </TableColumn>
-                        <TableColumn className=" !h-2 !bg-white">
-                          <IoMailOutline size={20} />
-                        </TableColumn>
-                        <TableColumn className=" !h-2 !bg-white"> </TableColumn>
-                      </TableHeader>
-                      <TableBody items={team[1]}>
-                        {(item) => {
-                          const status = statusMap[item.status] ?? {
-                            label: "Sconosciuto",
-                            color: "text-gray-500",
-                          };
-                          const lastEmailDate = new Date(item.last_email); // assuming ISO string like "2025-06-17T10:00:00Z"
-                          const formattedDate =
-                            lastEmailDate.toLocaleDateString("it-IT", {
-                              day: "numeric",
-                              month: "long",
-                            });
-                          const now = new Date();
+                      <FiSend size={20} />
+                    </button>
+                  )}
+                </div>
+                <div className="atable-container">
+                  <table className="atable">
+                    <thead>
+                      <tr>
+                        <th>Nome</th>
+                        <th>Ruolo</th>
+                        <th className="center">Stato</th>
+                        {contactMode && <th className="center">Email</th>}
+                        {contactMode && <th className="center">WhatsApp</th>}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {members.map((item) => {
+                        // — Status logic
+                        const status = statusMap[item.status] ?? {
+                          label: "Sconosciuto",
+                          color: "text-gray-500",
+                        };
+                        const colorChip: ChipColor =
+                          statusColorMap[item.status] ?? "default";
 
-                          const timeDiff =
-                            now.getTime() - lastEmailDate.getTime();
-                          const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+                        // — Recent email?
+                        const lastEmailDate = new Date(item.last_email);
+                        const daysDiff =
+                          (Date.now() - lastEmailDate.getTime()) /
+                          (1000 * 60 * 60 * 24);
+                        const recentlyEmailed = daysDiff < 2;
 
-                          const recentlyEmailed = daysDiff < 2;
-                          const colorChip: ChipColor =
-                            statusColorMap[item.status] ?? "default";
-                          let whatsappURL = "";
-                          if (item.phone) {
-                            const message = `Ciao ${item.name}! 
-Volevo ricordarti che sei di turno con il *${team[0]} ${readableDate}* 
+                        // — WhatsApp URL
+                        let whatsappURL = "";
+                        if (item.phone) {
+                          const message = `Ciao ${item.name}! 
+Volevo ricordarti che sei di turno con il *${teamName} ${readableDate}* 
 Se non hai ancora confermato la tua presenza su ChurchLab, ti chiedo gentilmente di farlo ora.
 Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
+                          whatsappURL = `https://wa.me/${item.phone.replace(
+                            /\s+/g,
+                            ""
+                          )}?text=${encodeURIComponent(message)}`;
+                        }
 
-                            const encodedMessage = encodeURIComponent(message);
-                            whatsappURL = `https://wa.me/${item.phone.replace(/\s+/g, "")}?text=${encodedMessage}`;
-                          }
+                        return (
+                          <tr key={item.profile}>
+                            <td className="truncate">
+                              {item.name} {item.lastname}
+                            </td>
+                            <td>{item.selected_roles}</td>
+                            <td className="center">
+                              <div className="sm-hide">
+                                <Chip
+                                  className="capitalize text-center"
+                                  color={colorChip}
+                                  size="sm"
+                                  variant="flat"
+                                >
+                                  <span className={status.color}>
+                                    {status.label}
+                                  </span>
+                                </Chip>
+                              </div>
+                              <div className="md-hide">
+                                {item.status === "confirmed" && (
+                                  <FaRegCheckCircle color={status.color} />
+                                )}
+                                {item.status === "pending" && (
+                                  <FaRegClock color={status.color} />
+                                )}
+                                {item.status === "denied" && (
+                                  <FaRegCircleXmark color={status.color} />
+                                )}
+                              </div>
+                            </td>
 
-                          return (
-                            <TableRow key={item.profile}>
-                              <TableCell>
-                                <p className="flex flex-row gap-2 items-center truncate">
-                                  {item.name} {item.lastname}
-                                </p>
-                              </TableCell>
-                              <TableCell>
-                                <p>{item.selected_roles}</p>
-                              </TableCell>
-                              <TableCell>
-                                <div className="sm:block hidden">
-                                  <Chip
-                                    className="capitalize text-center"
-                                    color={colorChip}
-                                    size="sm"
-                                    variant="flat"
-                                  >
-                                    <span className={status.color}>
-                                      {status.label}
-                                    </span>
-                                  </Chip>
-                                </div>
-                                <div className="sm:hidden  w-full flex flex-row items-center justify-center">
-                                  <FaCircle color={status.color} />
-                                </div>
-                              </TableCell>
-                              <TableCell>
+                            {/* Email column (only in contactMode) */}
+                            {contactMode && (
+                              <td className="actions center">
+                                {" "}
                                 {recentlyEmailed ? (
                                   <Popover placement="right">
                                     <PopoverTrigger>
-                                      <Button
-                                        isIconOnly
-                                        size="sm"
-                                        variant="light"
-                                        color="danger"
-                                      >
-                                        <FaExclamation />
-                                      </Button>
+                                      <button className="p-1">
+                                        <FaExclamation
+                                          size={16}
+                                          className="text-red-500"
+                                        />
+                                      </button>
                                     </PopoverTrigger>
                                     <PopoverContent>
-                                      <div className="px-1 py-2">
-                                        <div className="text-small font-bold">
+                                      <div className="p-2 text-sm">
+                                        <strong>
                                           Email inviata di recente
-                                        </div>
-                                        <div className="text-tiny">
+                                        </strong>
+                                        <p>
                                           Puoi inviare un nuovo promemoria solo
                                           dopo 2 giorni.
                                           <br />
-                                          <span className="capitalize underline">
-                                            Ultima Email {formattedDate}
+                                          <span className="underline">
+                                            Ultima Email{" "}
+                                            {lastEmailDate.toLocaleDateString(
+                                              "it-IT",
+                                              {
+                                                day: "numeric",
+                                                month: "long",
+                                              }
+                                            )}
                                           </span>
-                                        </div>
+                                        </p>
                                       </div>
                                     </PopoverContent>
                                   </Popover>
                                 ) : (
-                                  <Button
-                                    variant="light"
-                                    isIconOnly
-                                    onPress={() => {
+                                  <button
+                                    onClick={() => {
                                       setEmailPerson(item);
-                                      setEmailTeam(team[0]);
+                                      setEmailTeam(teamName);
                                       onOpen();
                                     }}
+                                    className="p-1"
                                   >
-                                    <IoMailOutline size={24} />
-                                  </Button>
+                                    <IoMailOutline size={20} />
+                                  </button>
                                 )}
-                              </TableCell>
+                              </td>
+                            )}
 
-                              <TableCell>
+                            {/* WhatsApp column (only in contactMode) */}
+                            {contactMode && (
+                              <td className="actions center">
+                                {" "}
                                 {item.phone && (
-                                  <Button
-                                    as={Link}
-                                    href={whatsappURL}
-                                    variant="light"
-                                    isIconOnly
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="whatsapp-button"
-                                  >
-                                    <FaWhatsapp size={24} />
-                                  </Button>
+                                  <a className="icon-btn" href={whatsappURL}>
+                                    <FaWhatsapp
+                                      size={20}
+                                      className="text-green-500"
+                                    />
+                                  </a>
                                 )}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        }}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </>
-              );
-            } else {
-              return (
-                <>
-                  <div className="team-show" key={team[0]}>
-                    <Table
-                      aria-label="Example table with dynamic content"
-                      topContent={
-                        <div className="flex flex-row justify-between">
-                          <h5 className="font-medium">{team[0]}</h5>
-                          {hasPermission(
-                            userData.role as Role,
-                            "send:emails"
-                          ) && (
-                            <Button
-                              className="mr-0"
-                              isIconOnly
-                              onPress={() =>
-                                setContactMode((prevState) => {
-                                  return !prevState;
-                                })
-                              }
-                            >
-                              <FiSend />
-                            </Button>
-                          )}
-                        </div>
-                      }
-                      classNames={{
-                        td: "p-[2px] truncate text-center ",
-                        th: " text-center",
-                      }}
-                    >
-                      <TableHeader>
-                        <TableColumn className="!text-left !h-2 !bg-white">
-                          Nome
-                        </TableColumn>
-                        <TableColumn className=" !h-2 !bg-white">
-                          Ruolo
-                        </TableColumn>
-                        <TableColumn className=" !h-2 !bg-white">
-                          Stato
-                        </TableColumn>
-                      </TableHeader>
-                      <TableBody items={team[1]}>
-                        {(item) => {
-                          const status = statusMap[item.status] ?? {
-                            label: "Sconosciuto",
-                            color: "text-gray-500",
-                          };
-
-                          const colorChip: ChipColor =
-                            statusColorMap[item.status] ?? "default";
-                          let whatsappURL = "";
-
-                          return (
-                            <TableRow key={item.profile}>
-                              <TableCell>
-                                <p className="flex flex-row gap-2 items-center truncate">
-                                  {item.name} {item.lastname}
-                                </p>
-                              </TableCell>
-                              <TableCell>
-                                <p>{item.selected_roles}</p>
-                              </TableCell>
-                              <TableCell>
-                                <div className="sm:block hidden">
-                                  <Chip
-                                    className="capitalize text-center"
-                                    color={colorChip}
-                                    size="sm"
-                                    variant="flat"
-                                  >
-                                    <span className={status.color}>
-                                      {status.label}
-                                    </span>
-                                  </Chip>
-                                </div>
-
-                                <div className="sm:hidden  w-full flex flex-row items-center justify-center">
-                                  {item.status === "confirmed" && (
-                                    <FaRegCheckCircle color={status.color} />
-                                  )}
-                                  {item.status === "pending" && (
-                                    <FaRegClock color={status.color} />
-                                  )}
-                                  {item.status === "denied" && (
-                                    <FaRegCircleXmark color={status.color} />
-                                  )}
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        }}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </>
-              );
-            }
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
           })}
       </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">

@@ -23,7 +23,7 @@ export default function LoadingSongsPage() {
       <div className="container-song-list">
         {Array.from({ length: 70 }).map((_, i) => (
           <div key={i} className="songlist-link opacity-30">
-            <div className="song-list flex gap-2 flex-col p-3 !items-start">
+            <div className="song-list flex gap-2 flex-col p-3 items-start!">
               <Skeleton className="w-4/5 rounded-lg">
                 <div className="h-3 w-full rounded-lg bg-secondary-300" />
               </Skeleton>

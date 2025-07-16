@@ -109,7 +109,7 @@ export function SelectWorshipTeamMemberDrawer({
                               animate="animate"
                               exit="exit"
                               transition={transitionSpring(index * 0.02)}
-                              className={`song-card-searchBar ${isUnavailable ? "opacity-50 !cursor-default" : ""}`}
+                              className={`song-card-searchBar ${isUnavailable ? "opacity-50 cursor-default!" : ""}`}
                               style={{
                                 cursor: isUnavailable ? "default" : "pointer",
                               }}

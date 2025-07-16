@@ -22,14 +22,12 @@ export default function PersonalizeSongsTagsModal() {
   >(null);
 
   const { userData } = useUserStore();
-  const [searchText, setSearchText] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
 
   const [personalizedTags, setPersonalizedTags] = useState<
     TagWithDescription[]
   >([]);
 
-  const [refetchTrigger, setRefetchTrigger] = useState(false);
   const [duplicateError, setDuplicateError] = useState({
     status: false,
     name: "",

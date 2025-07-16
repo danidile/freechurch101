@@ -168,7 +168,7 @@ export default function InviteUsersModalComponent() {
                 const colorChip: ChipColor =
                   statusColorMap[member.status] ?? "default";
                 return (
-                  <tr key={index} className="border-b-1 ">
+                  <tr key={index} className="border-b ">
                     <td className="p-2">
                       <p>{member.name + " " + member.lastname}</p>
                       <small>{member.email}</small>
@@ -254,7 +254,7 @@ export default function InviteUsersModalComponent() {
         <tbody>
           {members.map((member, index) => {
             return (
-              <tr key={index} className="border-b-1">
+              <tr key={index} className="border-b">
                 <td className="">
                   <input
                     required
@@ -264,7 +264,7 @@ export default function InviteUsersModalComponent() {
                       handleMembersInputChange(index, "name", e.target.value)
                     }
                     placeholder="Alberto..."
-                    className="w-full !rounded-none px-2 py-1 border-0 border-gray-300 text-sm font-normal "
+                    className="w-full rounded-none! px-2 py-1 border-0 border-gray-300 text-sm font-normal "
                   />
                 </td>
                 <td>
@@ -349,15 +349,15 @@ export default function InviteUsersModalComponent() {
                     {checkedMembers.map((member) => {
                       return (
                         <div
-                          className={`p-4 nborder w-full ${member?.error ? "!bg-red-100" : ""}`}
+                          className={`p-4 nborder w-full ${member?.error ? "bg-red-100!" : ""}`}
                         >
                           <p
-                            className={`${member?.error ? "!text-red-700" : ""}`}
+                            className={`${member?.error ? "text-red-700!" : ""}`}
                           >
                             {member.name + " " + member.lastname}
                           </p>
                           <small
-                            className={`${member?.error ? "!text-red-500" : ""}`}
+                            className={`${member?.error ? "text-red-500!" : ""}`}
                           >
                             {member?.error && member?.error}
                             {!member?.error && member?.email}

@@ -42,7 +42,7 @@ export default function SetListListComponent() {
 
   return (
     <>
-      <div className="container-sub !max-w-96">
+      <div className="container-sub max-w-96!">
         <h5 className="text-center m-2">Prossimi eventi</h5>
         <div className="flex flex-row justify-center items-center gap-5">
           <p>Modalità visualizzazione:</p>

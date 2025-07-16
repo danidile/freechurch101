@@ -81,7 +81,7 @@ export default function NotificationElement({
         onClick={onOpen}
       >
         <div
-          className="setlist-list !rounded-xl !border-slate-300 !my-1 "
+          className="setlist-list rounded-xl! border-slate-300! my-1! "
           key={notification.id}
         >
           <div className="setlist-date-avatar">

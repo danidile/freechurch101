@@ -101,7 +101,7 @@ export default function PeopleIdComponent({
                 });
                 if (date > currentDate) {
                   return (
-                    <div className="border-1 rounded-lg border-slate-300 my-1  !max-w-full p-3">
+                    <div className="border rounded-lg border-slate-300 my-1  max-w-full! p-3">
                       <div className="flex gap-3 relative">
                         <div className="flex flex-col w-full max-w-full">
                           <div
