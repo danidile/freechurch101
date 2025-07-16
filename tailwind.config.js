@@ -91,11 +91,6 @@ module.exports = {
   },
   darkMode: ["class", "class"],
   plugins: [
-    plugin(({ addVariant }) => {
-      addVariant("browser", ".browser &");
-      addVariant("standalone", ".standalone &");
-      addVariant("fullscreen", ".fullscreen &");
-    }),
     heroui(),
     require("tailwindcss-animate"),
     require("tailwindcss-displaymodes"),
