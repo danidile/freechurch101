@@ -6,7 +6,7 @@ frontend:
         - nvm install 18
         - nvm use 18
         - rm -rf .next .next/cache node_modules .npm package-lock.json
-        - npm install --legacy-peer-deps
+        - npm install
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
