@@ -3,8 +3,8 @@ frontend:
   phases:
     preBuild:
       commands:
-        - nvm install 18
-        - . ~/.nvm/nvm.sh && nvm use 18
+        - nvm install 20
+        - . ~/.nvm/nvm.sh && nvm use 20
         - node -v
         - rm -rf .next .next/cache node_modules .npm package-lock.json
         - npm install
@@ -17,7 +17,7 @@ frontend:
         - echo "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY" >> .env
         - echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" >> .env
         - echo "STRIPE_WEBHOOK_SECRET=$STRIPE_WEBHOOK_SECRET" >> .env
-        - . ~/.nvm/nvm.sh && nvm use 18
+        - . ~/.nvm/nvm.sh && nvm use 20
         - node -v
         - NODE_OPTIONS="--max-old-space-size=4096" npm run build
   artifacts:
