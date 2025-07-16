@@ -26,7 +26,7 @@ export default function Home() {
           <div className="">
             <p className="text-lg mb-8 max-w-screen-sm">
               Una piattaforma completa per pianificare servizi, gestire team,
-              archiviare canti e coordinare i volontari, tutto in cloud.
+              archiviare canti e coordinare i volontari, tutto in cloud!
             </p>
           </div>
 
