@@ -6,8 +6,8 @@ frontend:
         - nvm install 18
         - . ~/.nvm/nvm.sh && nvm use 18
         - node -v
-        - rm -rf .next .next/cache node_modules .npm package-lock.json
-        - npm install
+        - rm -rf .next .next/cache
+        - npm ci
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
@@ -26,4 +26,5 @@ frontend:
       - "**/*"
   cache:
     paths:
+      - "node_modules/**/*"
       - ".npm/**/*"
