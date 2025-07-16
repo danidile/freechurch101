@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+import path from "path";
 
 const isProd = process.env.NODE_ENV !== "development";
 
@@ -48,6 +49,10 @@ worker-src blob: 'self';
         ],
       },
     ];
+  },
+  webpack(config) {
+    config.resolve.alias["@"] = path.resolve(__dirname, "src");
+    return config;
   },
 };
 
