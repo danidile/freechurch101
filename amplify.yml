@@ -5,10 +5,8 @@ frontend:
       commands:
         - nvm install 18
         - nvm use 18
-        # Pulisci eventuali file/cache residue
         - rm -rf .next .next/cache node_modules .npm package-lock.json
-        # Installa da zero e genera un nuovo package-lock.json
-        - npm install
+        - npm install --legacy-peer-deps
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
