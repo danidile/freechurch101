@@ -2,10 +2,13 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
-import { registrationData, ServerActionResponse } from "@/utils/types/types";
+import {
+  loginData,
+  ServerActionResponse,
+} from "@/utils/types/types";
 
 export const loginAction = async (
-  formData: registrationData
+  formData: loginData
 ): Promise<ServerActionResponse<{ user: any; session: any }>> => {
   const { email, password } = formData;
 

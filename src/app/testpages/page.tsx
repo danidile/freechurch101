@@ -1,18 +1,19 @@
-import userDataServer from "@/utils/supabase/getUserDataServer";
-import EmailSenderC from "./sendemails/EmailSenderC";
-import { checkPermission } from "@/utils/supabase/permissions/checkPermission";
+'use client';
 
-export default async function Page() {
-  const userData = await userDataServer();
-  const allowed = await checkPermission(
-    userData.teams,
-    "setlists",
-    "edit",
-    userData.id
-  );
+import React from 'react';
+import Dropdown from './CDropdown';
+
+const options = [
+  { label: 'A', value: 'a' },
+  { label: 'B', value: 'b' },
+];
+
+export default function DropdownWrapper() {
+  const handleSelect = (option: { label: string; value: string }) => {
+    console.log('Selected:', option);
+  };
+
   return (
-    <>
-      {allowed ? <p>Allowed</p> : <p>Not Allowed</p>}
-    </>
+    <Dropdown options={options} onSelect={handleSelect} placeholder="Choose" />
   );
 }

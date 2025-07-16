@@ -47,10 +47,17 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
 
   if (!password || !confirmPassword) {
     console.log("password o confirm password mancanti");
+    return {
+      success: false,
+      message: "password o confirma password mancanti",
+    };
   }
 
   if (password !== confirmPassword) {
-    console.log("password o confirm password non uguali");
+        return {
+      success: false,
+      message: "Le password devono essere uguali.",
+    };
   }
 
   const { error } = await supabase.auth.updateUser({
@@ -59,12 +66,12 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
 
   if (error) {
     return {
-      sucess: false,
+      success: false,
       message: error.message,
     };
   }
   return {
-    sucess: true,
+    success: true,
     message: "password aggiornata con successo",
   };
 };

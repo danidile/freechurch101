@@ -72,17 +72,16 @@ main {
 
 @media only screen and (max-width: 850px) {
   .nborder-responsive {
-  background-color: white;
-  box-shadow:
-    rgba(0, 0, 0, 0.00) 0px 12px 32px,
-    rgba(0, 0, 0, 0.00) 0px 0px 0px 1px;
-  border-radius: 12px;
-}
-.ncard-responsive {
-  margin: 20px auto;
-  padding: 0rem;
-}
-
+    background-color: white;
+    box-shadow:
+      rgba(0, 0, 0, 0) 0px 12px 32px,
+      rgba(0, 0, 0, 0) 0px 0px 0px 1px;
+    border-radius: 12px;
+  }
+  .ncard-responsive {
+    margin: 20px auto;
+    padding: 0rem;
+  }
 }
 
 button {
@@ -1864,4 +1863,56 @@ tbody tr .tablecellnewteams {
 
 .settings-action:hover {
   color: #005999;
+}
+.dropdown-enter {
+  opacity: 0;
+  transform: translateY(-5px);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.cinput {
+  @apply mt-1
+    block
+    w-full
+    px-3
+    py-2
+    border
+    border-gray-300
+    rounded-md
+    shadow-sm
+    transition-all
+    duration-200
+    ease-in-out
+    hover:border-black
+    focus:outline-none
+    focus:ring-1
+    focus:ring-black
+    focus:border-black;
+}
+label {
+  font-size: 14px;
+}
+.csubmit {
+  width: 100%;
+  padding: 0.5rem 1rem; /* py-2 px-4 */
+  color: white;
+  border-radius: 0.375rem; /* rounded-md */
+  background-color: black;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.csubmit:hover:not(:disabled) {
+  background-color: #2d2d2d; /* a dark gray for hover */
+}
+
+.csubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

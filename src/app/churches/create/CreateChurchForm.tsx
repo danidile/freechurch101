@@ -1,32 +1,23 @@
 "use client";
-import {
-  Input,
-  Button,
-  Autocomplete,
-  AutocompleteItem,
-  Alert,
-  Link,
-  addToast,
-} from "@heroui/react";
-import { authSchema, TauthSchema } from "@/utils/types/auth";
-import { useForm } from "react-hook-form";
+
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { authSchema, TauthSchema } from "@/utils/types/auth";
 import { useEffect, useState } from "react";
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa6";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useUserStore } from "@/store/useUserStore";
 import { useRouter } from "next/navigation";
-
 import { AnimatePresence, motion } from "framer-motion";
-
-import { Comune, registrationData } from "@/utils/types/types";
+import { Comune } from "@/utils/types/types";
 import { regristrationAction } from "./regristrationAction";
-import registrationEmail from "./registrationEmail";
+import { addToast } from "@heroui/react"; // If you want native toast, you can replace this
+import { AutocompleteInput } from "./AutocompleteInput";
+import { GrCircleAlert } from "react-icons/gr";
 
 export default function CreateChurch() {
   const router = useRouter();
-
   const { userData, loading, fetchUser } = useUserStore();
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!loading && userData.loggedIn && userData.fetched) {
@@ -39,38 +30,27 @@ export default function CreateChurch() {
     handleSubmit,
     setValue,
     getValues,
+    control,
     formState: { errors },
   } = useForm<TauthSchema>({
     resolver: zodResolver(authSchema),
   });
 
   const [isVisible, setIsVisible] = useState(false);
+  const toggleVisibility = () => setIsVisible((v) => !v);
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
-
-  // REGISTER DATA
-
-  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward (optional)
+  const [direction] = useState(1);
   const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleRegister = async (data: TauthSchema) => {
-    setSending(true);
     const response = await regristrationAction(data);
     if (response.success) {
       router.push("/protected/dashboard/account");
-
-      setSending(false);
-    } else {
-      addToast({
-        title: `Errore durante il login:`,
-        description: response.error,
-        color: "danger",
-      });
-
       await fetchUser();
+    } else {
+      setError(response.error);
     }
-    setSuccess(true);
   };
 
   const variants = {
@@ -78,26 +58,24 @@ export default function CreateChurch() {
       x: direction > 0 ? 300 : -300,
       opacity: 0,
     }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
+    center: { x: 0, opacity: 1 },
     exit: (direction: number) => ({
       x: direction < 0 ? 300 : -300,
       opacity: 0,
     }),
   };
+
   const [comuni, setComuni] = useState<Comune[]>([]);
   const [filteredComuni, setFilteredComuni] = useState<Comune[]>([]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    const fetchComuni = async () => {
+    async function fetchComuni() {
       const res = await fetch("/data/comuni.json");
       const data = await res.json();
       setComuni(data);
-    };
+    }
     fetchComuni();
   }, []);
 
@@ -113,217 +91,349 @@ export default function CreateChurch() {
       setFilteredComuni([]);
     }
   }, [inputValue, comuni]);
+
   return (
-    <div className="container-sub">
-      <div className="flex flex-col">
-        <h2 className="font-regular my-12"> Crea una nuova chiesa</h2>
+    <div className="container-sub px-4">
+      <div className="flex flex-col max-w-4xl mx-auto">
+        <h2 className="font-regular my-12 text-3xl text-center">
+          Crea una nuova chiesa
+        </h2>
 
-        <form onSubmit={handleSubmit(handleRegister)}>
-          {success ? (
-            <Alert color="success">Utente registrato con successo!</Alert>
-          ) : (
-            <>
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  custom={direction}
-                  variants={variants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className="flex flex-col gap-4"
-                  transition={{ duration: 0.4 }}
-                >
-                  <small>Informazioni personali</small>
-                  <div className="border-b-1 border-b- "></div>
-                  <div className="flex flex-row flex-wrap items-center justify-center gap-4">
-                    <Input
-                      {...register("firstname")}
-                      errorMessage={errors.firstname?.message}
-                      size="sm"
-                      variant="underlined"
-                      isInvalid={!!errors.firstname}
-                      label="Nome"
-                      placeholder="Marco"
-                    />
+        <form onSubmit={handleSubmit(handleRegister)} noValidate>
+          {success && (
+            <div className="mb-6 p-4 bg-green-100 text-green-800 rounded-md text-center">
+              Utente registrato con successo!
+            </div>
+          )}
 
-                    <Input
-                      size="sm"
-                      variant="underlined"
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key="form-step"
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.4 }}
+              className="flex flex-col gap-6"
+            >
+              {/* Personal Info */}
+              <section>
+                <small className="text-gray-600">Informazioni personali</small>
+                <hr className="border-gray-300 my-2" />
+                <div className="flex flex-wrap gap-6 justify-center">
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="firstname" className="  font-medium">
+                      Nome
+                    </label>
+                    <input
+                      id="firstname"
                       type="text"
-                      label="Cognome"
+                      placeholder="Marco"
+                      {...register("firstname")}
+                      className={`cinput ${errors.firstname ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.firstname}
+                      aria-describedby="firstname-error"
+                    />
+                    {errors.firstname && (
+                      <p
+                        id="firstname-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.firstname.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="lastname" className="  font-medium">
+                      Cognome
+                    </label>
+                    <input
+                      id="lastname"
+                      type="text"
                       placeholder="Rossi"
-                      isInvalid={!!errors.lastname}
-                      errorMessage={errors.lastname?.message}
                       {...register("lastname")}
+                      className={`cinput ${errors.lastname ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.lastname}
+                      aria-describedby="lastname-error"
                     />
+                    {errors.lastname && (
+                      <p
+                        id="lastname-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.lastname.message}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex flex-row flex-wrap items-center justify-center gap-4">
-                    <Input
-                      size="sm"
-                      variant="underlined"
-                      {...register("email")}
-                      errorMessage={errors.email?.message}
-                      isInvalid={!!errors.email}
-                      label="Email"
-                      placeholder="email..."
+                </div>
+
+                <div className="flex flex-wrap gap-6 justify-center mt-4">
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="email" className="  font-medium">
+                      Email
+                    </label>
+                    <input
+                      id="email"
                       type="email"
+                      placeholder="email..."
+                      {...register("email")}
+                      className={`cinput ${errors.email ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.email}
+                      aria-describedby="email-error"
                     />
-                    <Input
-                      {...register("password")}
-                      errorMessage={errors.password?.message}
-                      isInvalid={!!errors.password}
-                      size="sm"
-                      variant="underlined"
-                      label="Password"
-                      placeholder="Inserisci la password"
+                    {errors.email && (
+                      <p id="email-error" className="text-red-600 text-sm mt-1">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col w-full sm:w-72 relative">
+                    <label htmlFor="password" className="  font-medium">
+                      Password
+                    </label>
+                    <input
+                      id="password"
                       type={isVisible ? "text" : "password"}
+                      placeholder="Inserisci la password"
+                      {...register("password")}
                       minLength={8}
-                      endContent={
-                        <button
-                          type="button"
-                          onClick={toggleVisibility}
-                          aria-label="Toggle password visibility"
-                          className="focus:outline-none"
-                        >
-                          {isVisible ? (
-                            <FaEyeSlash className="text-xl text-default-400 pointer-events-none" />
-                          ) : (
-                            <FaEye className="text-xl text-default-400 pointer-events-none" />
-                          )}
-                        </button>
-                      }
+                      className={`cinput pr-10 ${errors.password ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.password}
+                      aria-describedby="password-error"
                     />
+                    <button
+                      type="button"
+                      onClick={toggleVisibility}
+                      aria-label="Toggle password visibility"
+                      className="absolute right-2 top-8 text-gray-500 focus:outline-none"
+                      tabIndex={-1}
+                    >
+                      {isVisible ? (
+                        <FaEyeSlash className="text-xl pointer-events-none" />
+                      ) : (
+                        <FaEye className="text-xl pointer-events-none" />
+                      )}
+                    </button>
+                    {errors.password && (
+                      <p
+                        id="password-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.password.message}
+                      </p>
+                    )}
                   </div>
-                  <small>Informazioni chiesa</small>
-                  <div className="border-b-1 border-b- "></div>
-                  <div className="flex flex-row flex-wrap items-center justify-center gap-4">
-                    <Input
-                      size="sm"
-                      variant="underlined"
+                </div>
+              </section>
+
+              {/* Church Info */}
+              <section>
+                <small className="text-gray-600">Informazioni chiesa</small>
+                <hr className="border-gray-300 my-2" />
+                <div className="flex flex-wrap gap-6 justify-center">
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="churchname" className="  font-medium">
+                      Nome Chiesa
+                    </label>
+                    <input
+                      id="churchname"
+                      type="text"
+                      placeholder="La mia chiesa"
                       {...register("churchname")}
-                      errorMessage={errors.churchname?.message}
-                      isInvalid={!!errors.churchname}
-                      label="Nome Chiesa"
-                      placeholder="La mia chiesa "
+                      className={`cinput ${errors.churchname ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.churchname}
+                      aria-describedby="churchname-error"
                     />
-                    <Input
-                      size="sm"
-                      variant="underlined"
-                      label="Pastor"
-                      placeholder="Paolo "
-                      {...register("pastor")}
-                      errorMessage={errors.pastor?.message}
-                      isInvalid={!!errors.pastor}
-                    />
+                    {errors.churchname && (
+                      <p
+                        id="churchname-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.churchname.message}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex flex-row flex-wrap items-center justify-center gap-4">
-                    <Input
-                      size="sm"
-                      variant="underlined"
-                      {...register("website")}
-                      errorMessage={errors.website?.message}
-                      isInvalid={!!errors.website}
-                      label="Sito Web"
-                      placeholder="www.lamiachiesa.it"
+
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="pastor" className="  font-medium">
+                      Pastor
+                    </label>
+                    <input
+                      id="pastor"
+                      type="text"
+                      placeholder="Paolo"
+                      {...register("pastor")}
+                      className={`cinput ${errors.pastor ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.pastor}
+                      aria-describedby="pastor-error"
                     />
-                    <Input
-                      size="sm"
-                      variant="underlined"
-                      label="handle Instagram"
+                    {errors.pastor && (
+                      <p
+                        id="pastor-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.pastor.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-6 justify-center mt-4">
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="website" className="  font-medium">
+                      Sito Web
+                    </label>
+                    <input
+                      id="website"
+                      type="text"
+                      placeholder="www.lamiachiesa.it"
+                      {...register("website")}
+                      className={`cinput ${errors.website ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.website}
+                      aria-describedby="website-error"
+                    />
+                    {errors.website && (
+                      <p
+                        id="website-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.website.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="ighandle" className="  font-medium">
+                      handle Instagram
+                    </label>
+                    <input
+                      id="ighandle"
+                      type="text"
                       placeholder="@my_church"
                       {...register("ighandle")}
-                      errorMessage={errors.ighandle?.message}
-                      isInvalid={!!errors.ighandle}
+                      className={`cinput ${errors.ighandle ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.ighandle}
+                      aria-describedby="ighandle-error"
                     />
+                    {errors.ighandle && (
+                      <p
+                        id="ighandle-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.ighandle.message}
+                      </p>
+                    )}
                   </div>
+                </div>
+              </section>
 
-                  <small>Crea sala</small>
-                  <div className="border-b-1 border-b- "></div>
-                  <div className="flex flex-row items-center justify-center gap-4">
-                    <Input
-                      size="sm"
-                      variant="underlined"
-                      {...register("room_name")}
-                      errorMessage={errors.room_name?.message}
-                      isInvalid={!!errors.room_name}
-                      label="Nome stanza"
-                      name="room_name"
+              {/* Room Info */}
+              <section>
+                <small className="text-gray-600">Crea sala</small>
+                <hr className="border-gray-300 my-2" />
+                <div className="flex flex-wrap gap-6 justify-center">
+                  <div className="flex flex-col w-full">
+                    <label htmlFor="room_name" className=" font-medium">
+                      Nome stanza
+                    </label>
+                    <input
+                      id="room_name"
+                      type="text"
                       placeholder="Sala culto"
+                      {...register("room_name")}
+                      className={`cinput ${errors.room_name ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.room_name}
+                      aria-describedby="room_name-error"
+                    />
+                    {errors.room_name && (
+                      <p
+                        id="room_name-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.room_name.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-6 justify-center mt-2">
+                  <div className="flex flex-col w-full sm:w-72 relative">
+                    <Controller
+                      name="comune"
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <AutocompleteInput
+                          label="Comune"
+                          options={comuni}
+                          value={field.value}
+                          onChange={(val) => field.onChange(val)}
+                          onSelect={(selected) => {
+                            field.onChange(selected.nome);
+                            setValue("provincia", selected.sigla); // Set provincia too
+                          }}
+                          error={errors.comune?.message}
+                        />
+                      )}
                     />
                   </div>
-                  <div className="flex flex-row items-center justify-center gap-4">
-                    <Autocomplete
-                      size="sm"
-                      errorMessage={errors.comune?.message}
-                      isInvalid={!!errors.comune}
-                      variant="underlined"
-                      label="Comune"
-                      selectedKey={selectedKey ?? undefined}
-                      onSelectionChange={(key) => {
-                        if (!key) return; // Don't react if it's just typing
 
-                        const selectedComune = filteredComuni.find(
-                          (c) => c.codice === key
-                        );
+                  <input
+                    type="hidden"
+                    {...register("provincia")}
+                    value={getValues("provincia")}
+                  />
 
-                        if (selectedComune) {
-                          setInputValue(selectedComune.nome); // <--- only set if user selects
-                          setSelectedKey(key as string);
-                          setValue("comune", selectedComune.nome);
-                          setValue("provincia", selectedComune.sigla);
-                        }
-                      }}
-                      inputValue={inputValue}
-                      onInputChange={(value) => {
-                        setInputValue(value);
-                        setValue("comune", value); // keep form in sync
-                      }}
-                      placeholder="Cerca un comune"
-                      isClearable
-                      className="max-w-[300px]"
-                    >
-                      {filteredComuni.map((comune) => (
-                        <AutocompleteItem
-                          key={comune.codice}
-                          textValue={comune.nome}
-                        >
-                          {comune.nome} ({comune.sigla})
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-
-                    <Input
-                      {...register("provincia")}
-                      value={getValues("provincia")}
-                      type="hidden"
-                    />
-                    <Input
-                      size="sm"
-                      variant="underlined"
-                      {...register("address")}
-                      label="Indirizzo"
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="address" className=" font-medium">
+                      Indirizzo
+                    </label>
+                    <input
+                      id="address"
+                      type="text"
                       placeholder="Via XII Sett.."
-                      errorMessage={errors.address?.message}
-                      isInvalid={!!errors.address}
+                      {...register("address")}
+                      className={`cinput ${errors.address ? "border-red-500" : "border-gray-300"}`}
+                      aria-invalid={!!errors.address}
+                      aria-describedby="address-error"
                     />
+                    {errors.address && (
+                      <p
+                        id="address-error"
+                        className="text-red-600 text-sm mt-1"
+                      >
+                        {errors.address.message}
+                      </p>
+                    )}
                   </div>
-                </motion.div>
-              </AnimatePresence>
+                </div>
+              </section>
+            </motion.div>
+          </AnimatePresence>
+          {error && (
+            <div className="flex items-center gap-4 my-4 rounded-md bg-red-100 p-3 text-sm text-red-800 border border-red-300">
+              <GrCircleAlert size={23} />
 
-              <div className="flex justify-between items-center mt-4 gap-4">
-                <Button
-                  disabled={sending}
-                  fullWidth
-                  type="submit"
-                  color="primary"
-                  variant="solid"
-                  className="mb-4 bg-black text-white"
-                >
-                  {sending ? "..." : "Iscriviti e Crea Chiesa"}
-                </Button>
-              </div>
-            </>
+              <p>
+                <span className="font-medium">Errore durante la creazione della chiesa:</span>
+                <br />
+                <>{error}</>
+              </p>
+            </div>
           )}
+
+          <div className="flex justify-center mt-4">
+            <button
+              type="submit"
+              disabled={sending}
+              className="w-full max-w-xs bg-black text-white py-3 rounded-md hover:bg-gray-900 transition-colors"
+            >
+              {sending ? "..." : "Iscriviti e Crea Chiesa"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

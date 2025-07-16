@@ -20,6 +20,12 @@ export const authSchema = z.object({
 });
 export type TauthSchema = z.infer<typeof authSchema>;
 
+export const loginSchema = z.object({
+  email: z.string().email("Email non valida"),
+  password: z.string().min(8, "La password deve avere almeno 8 caratteri"),
+});
+export type TloginSchema = z.infer<typeof authSchema>;
+
 export const lostPasswordSchema = z.object({
   email: z.string().email(),
 });

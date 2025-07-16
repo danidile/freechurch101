@@ -484,6 +484,11 @@ export type registrationData = {
   comune?: string;
 };
 
+export type loginData = {
+  email?: string;
+  password?: string;
+};
+
 export type ServerActionResponse<T> = {
   success: boolean;
   data?: T;
