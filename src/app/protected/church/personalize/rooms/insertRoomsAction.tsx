@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { roomsType, TagWithDescription } from "@/utils/types/types";
 
 const insertRoomsAction = async (rooms: roomsType[], churchId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const formattedRooms = rooms.map((room) => {
     return {
       church: churchId,

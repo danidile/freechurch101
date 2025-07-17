@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getTempProfilesByChurch = async (churchId: unknown) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: tempProfiles } = await supabase
     .from("temp-profiles")
     .select("*")

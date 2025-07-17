@@ -352,7 +352,7 @@ export const updateSetlist = async (
   setlistData: setListT
 ) => {
   // check if generic data has changed
-  const supabase = createClient();
+  const supabase = await createClient();
 
   updateSetlistData(updatedSetlist, setlistData, supabase);
   updateSetlistSchedule(updatedSetlist, setlistData, supabase);

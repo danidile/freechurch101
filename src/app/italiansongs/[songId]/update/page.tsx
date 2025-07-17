@@ -5,8 +5,10 @@ import { getArtistsGlobal } from "@/hooks/GET/getArtistsGlobal";
 import { getAlbumsGlobal } from "@/hooks/GET/getAlbumsGlobal";
 import UpdateSongForm from "@/app/songs/[songId]/update/updateSongForm";
 
-export default async function Page({ params }: { params: { songId: string } }) {
-  const songData: songSchema = await getItalianSongById(params.songId);
+export default async function Page({ params }: { params: Promise<any> }) {
+  const awaitedParams = await params;
+
+  const songData: songSchema = await getItalianSongById(awaitedParams.songId);
   const Artists: artistsT[] = await getArtistsGlobal();
   const albums: albumsT[] = await getAlbumsGlobal();
 

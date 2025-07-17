@@ -8,7 +8,7 @@ const rolePriority = {
   member: 1,
 };
 export const getTeamByIdFunction = async (teamId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   let { data: teamLeader, error: errorTeamLeader } = await supabase
     .from("team-leaders")
     .select("*")
@@ -69,7 +69,7 @@ export const getTeamByIdFunction = async (teamId: string) => {
 };
 
 export const getChurchTeam = async (teamId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   let { data: churchTeam, error } = await supabase
     .from("church-teams")
     .select("id,team_name,is_worship")

@@ -7,7 +7,7 @@ export const addBlockoutAction = async ({
   blockedDates: RangeValueString;
 }) => {
   console.log("blockedDates", blockedDates);
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError,

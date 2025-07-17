@@ -4,9 +4,11 @@ import { getSongsByShareCode } from "@/hooks/GET/getSongsByShareCode";
 export default async function App({
   searchParams,
 }: {
-  searchParams: { success?: string };
+  searchParams: Promise<any>;
 }) {
-  const songs = await getSongsByShareCode(searchParams.success);
+  const awaitedParams = await searchParams;
+
+  const songs = await getSongsByShareCode(awaitedParams.success);
   return (
     <div className="container-sub">
       <ViewChurchSongsShareList songsList={songs} />

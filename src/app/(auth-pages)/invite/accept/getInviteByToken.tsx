@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getInviteByToken = async (token: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("pending_invites")
     .select("*, church(id, church_name,logo)")

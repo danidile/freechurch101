@@ -259,6 +259,11 @@ export default function PersonalizeRoomsModal() {
           </div>
         </div>
       )}
+      {hasChanges && (
+        <div className="text-center my-2 text-red-900">
+          <small>Per salvare le tue modifiche clicca sul pulsante SALVA.</small>
+        </div>
+      )}
       <div className="flex flex-row gap-4 max-w-[300px] mx-auto ">
         {!currentlyEditingIndex && (
           <>

@@ -2,8 +2,10 @@ import { getSongById } from "@/hooks/GET/getSongById";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import CustomizeWidget from "@/app/components/CustomizeWidget";
 
-export default async function Page({ params }: { params: { songId: string } }) {
-  const songData = await getSongById(params.songId);
+export default async function Page({ params }: { params: Promise<any> }) {
+  const awaitedParams = await params;
+
+  const songData = await getSongById(awaitedParams.songId);
 
   if (songData) {
     return (

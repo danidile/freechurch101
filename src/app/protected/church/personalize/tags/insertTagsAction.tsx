@@ -6,7 +6,7 @@ const insertTagsAction = async (
   tags: TagWithDescription[],
   churchId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const formattedTags = tags.map((tag) => {
     return {
       church: churchId,

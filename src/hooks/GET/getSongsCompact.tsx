@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getSongsCompact = async (churchId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: songs, error } = await supabase
     .from("songs")
     .select("id,song_title,author")

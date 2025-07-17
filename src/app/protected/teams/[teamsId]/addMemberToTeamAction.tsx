@@ -7,16 +7,18 @@ export const addMemberToTeamAction = async (
   memberId: string,
   teamId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   console.log(memberId);
   console.log(teamId);
 
   const { error: teamMemberDelete } = await supabase
     .from("team-members")
-    .insert([{
-      team_id: teamId,
-      profile: memberId
-    }])
+    .insert([
+      {
+        team_id: teamId,
+        profile: memberId,
+      },
+    ])
     .select();
 
   if (teamMemberDelete) {

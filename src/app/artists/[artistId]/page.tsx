@@ -4,18 +4,18 @@ import { getSongsByArtist } from "../../../hooks/GET/getSongsByArtist";
 import { albumT, GroupedSongsByAlbum, songType } from "@/utils/types/types";
 import AlbumsListComponent from "./albumsListComponent";
 
-export default async function Page({
-  params,
-}: {
-  params: { artistId: string };
-}) {
-  const songsByAlbum: GroupedSongsByAlbum = await getAlbum(params.artistId);
+export default async function Page({ params }: { params: Promise<any> }) {
+  const awaitedParams = await params;
+
+  const songsByAlbum: GroupedSongsByAlbum = await getAlbum(
+    awaitedParams.artistId
+  );
   if (songsByAlbum) {
     return (
       <div className="container-sub">
         <AlbumsListComponent
           songsByAlbum={songsByAlbum}
-          artist={params.artistId}
+          artist={awaitedParams.artistId}
         />
       </div>
     );

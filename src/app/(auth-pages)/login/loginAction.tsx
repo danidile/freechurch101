@@ -2,10 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
-import {
-  loginData,
-  ServerActionResponse,
-} from "@/utils/types/types";
+import { loginData, ServerActionResponse } from "@/utils/types/types";
 
 export const loginAction = async (
   formData: loginData
@@ -19,7 +16,7 @@ export const loginAction = async (
     };
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,

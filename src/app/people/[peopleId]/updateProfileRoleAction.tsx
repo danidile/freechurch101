@@ -24,7 +24,7 @@ export const updateProfileRole = async (profile: profileT, newRole: string) => {
     fetched: true,
   };
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError,

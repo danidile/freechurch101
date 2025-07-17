@@ -5,7 +5,7 @@ export default async function fchurchMembers({
 }: {
   churchId: string;
 }) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: churchMembers, error: profileError } = await supabase
     .from("profiles")

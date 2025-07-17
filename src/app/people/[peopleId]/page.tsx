@@ -1,10 +1,11 @@
-
 import PeopleIdComponent from "./peopleIdComponent";
 
 export default async function Page({
   params,
 }: {
-  params: { peopleId: string };
+  params: Promise<any>;
 }) {
-  return <PeopleIdComponent params={params} />;
+  const awaitedParams = await params;
+
+  return <PeopleIdComponent params={awaitedParams} />;
 }

@@ -4,7 +4,7 @@ import { TagWithDescription } from "@/utils/types/types";
 export default async function getChurchTags(
   churchId: string
 ): Promise<TagWithDescription[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("tags")

@@ -8,7 +8,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@heroui/react";
-import { useParams, usePathname } from "next/navigation";
+import {  usePathname } from "next/navigation";
 
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { MdDelete, MdModeEdit, MdMoreVert } from "react-icons/md";
@@ -19,9 +19,8 @@ import {
   DropdownItem,
 } from "@heroui/react";
 import ChordSheetJS from "chordsheetjs";
-import { FaRegTrashAlt } from "react-icons/fa";
 
-import { useEffect, useMemo, useState } from "react";
+import { JSX, useEffect, useMemo, useState } from "react";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 import { parseChordSheet } from "../songs/[songId]/parseChordSheet";
 import { setListSongT } from "@/utils/types/types";
@@ -30,8 +29,6 @@ import isChordProFormat from "./isChordProFormat";
 import { useUserStore } from "@/store/useUserStore";
 import { deleteSong } from "../songs/[songId]/deleteSongAction";
 import Link from "next/link";
-import CopyLinkButton from "./CopyLinkButton";
-import CopyLinkButtonWithText from "./CopyLinkButtonWithText";
 
 export default function ChordProViewComponent({
   setListSong,

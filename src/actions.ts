@@ -8,9 +8,9 @@ import { redirect } from "next/navigation";
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
-  const supabase = createClient();
-  const origin = headers().get("origin");
-
+  const supabase = await createClient();
+  const headersList = await headers(); // <-- await qui
+  const origin = headersList.get("origin"); // poi chiami get
   if (!email || !password) {
     return { error: "Email and password are required" };
   }
@@ -38,7 +38,7 @@ export const signUpAction = async (formData: FormData) => {
 export const signInAction = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -54,8 +54,9 @@ export const signInAction = async (formData: FormData) => {
 
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
-  const supabase = createClient();
-  const origin = headers().get("origin");
+  const supabase = await createClient();
+  const headersList = await headers(); // <-- await qui
+  const origin = headersList.get("origin"); // poi chiami get
   const callbackUrl = formData.get("callbackUrl")?.toString();
 
   if (!email) {
@@ -87,7 +88,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
 };
 
 export const resetPasswordAction = async (formData: FormData) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
@@ -125,13 +126,13 @@ export const resetPasswordAction = async (formData: FormData) => {
 
 export const signOutAction = async () => {
   console.log("Logginf out");
-  const supabase = createClient();
+  const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
 
 export default async function userData() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
@@ -143,7 +144,7 @@ export default async function userData() {
 
 export async function logout() {
   console.log("working till here");
-  const supabase = createClient();
+  const supabase = await createClient();
 
   await supabase.auth.signOut();
 
@@ -151,7 +152,7 @@ export async function logout() {
 }
 
 export async function signInWithGoogle() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {

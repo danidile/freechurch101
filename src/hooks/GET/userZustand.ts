@@ -15,7 +15,7 @@ type SupabaseResponse = {
   error: Error | null; // Add error here
 };
 export async function fetchUserFromServer() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError,

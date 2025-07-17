@@ -260,7 +260,7 @@ export default function PersonalizeSongsTagsModal() {
             setCurrentlyEditingIndex(personalizedTags.length);
           }}
         >
-          <FaPlus /> Aggiungi stanza
+          <FaPlus /> Aggiungi Tag
         </Button>
         {hasChanges && (
           <Button

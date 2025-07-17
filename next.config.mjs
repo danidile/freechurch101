@@ -56,6 +56,9 @@ worker-src blob: 'self';
     config.resolve.alias["@"] = path.resolve(__dirname, "src");
     return config;
   },
+  turbopack: {
+    root: path.join(__dirname, ".."),
+  },
 };
 
 export default nextConfig;

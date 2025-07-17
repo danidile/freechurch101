@@ -91,7 +91,7 @@ export default function PeopleIdComponent({
               <h6>Prossimi eventi </h6>
             </CardHeader>
             <CardBody>
-              {profileSetlist.map((setlist: profileSetlistsT) => {
+              {profileSetlist.map((setlist: profileSetlistsT, index) => {
                 const date = new Date(setlist.date);
                 const readableDate = date.toLocaleString("it-IT", {
                   weekday: "long", // "Sunday"
@@ -101,7 +101,10 @@ export default function PeopleIdComponent({
                 });
                 if (date > currentDate) {
                   return (
-                    <div className="border rounded-lg border-slate-300 my-1  max-w-full! p-3">
+                    <div
+                      key={index}
+                      className="border rounded-lg border-slate-300 my-1  max-w-full! p-3"
+                    >
                       <div className="flex gap-3 relative">
                         <div className="flex flex-col w-full max-w-full">
                           <div

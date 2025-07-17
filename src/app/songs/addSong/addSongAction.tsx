@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { songSchema } from "@/utils/types/types";
 
 export const addSong = async (data: songSchema) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

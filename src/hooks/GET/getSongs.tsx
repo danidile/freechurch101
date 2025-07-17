@@ -6,7 +6,7 @@ import { basicUserData } from "@/utils/types/userData";
 import { useUserStore } from "@/store/useUserStore";
 
 export const getSongs = async (userData: basicUserData) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   if (userData.loggedIn && userData.church_id) {
     const { data: songs, error } = await supabase

@@ -6,7 +6,7 @@ export const getSelectedChurchTeams = async (
   churchId?: string,
   setListId?: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: teams, error } = await supabase
     .from("church-teams")
     .select("id,team_name")

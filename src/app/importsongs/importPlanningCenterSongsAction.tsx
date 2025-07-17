@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { songType } from "@/utils/types/types";
 
 export const importPlanningCenterSongsAction = async (data: songType[]) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase.from("songs").insert(data).select();
   if (error) {
     console.error("Error importing songs:", error);

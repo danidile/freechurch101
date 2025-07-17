@@ -9,7 +9,7 @@ const forgotPasswordAction = async (
   data: TlostPasswordSchema
 ): Promise<ServerActionResponse<null>> => {
   const email = data.email;
-  const supabase = createClient();
+  const supabase = await createClient();
 
   if (!email) {
     return {

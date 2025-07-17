@@ -17,7 +17,7 @@ export const updateSetlist = async (
   ) {
     hasChanged = true;
   }
-  const supabase = createClient();
+  const supabase = await createClient();
   if (hasChanged) {
     const { data, error } = await supabase
       .from("church-teams")

@@ -130,9 +130,9 @@ export default function AccountComponent() {
           {teams && teams.length >= 1 && (
             <div className=" w-full">
               Team di {userData.name}
-              {teams.map((team) => {
+              {teams.map((team, index) => {
                 return (
-                  <div key={team.id} className="flex gap-1">
+                  <div key={team.id ?? index} className="flex gap-1">
                     <p className="font-bold">{team.team_name}</p>
                     {team.roles && team.roles.length >= 1 && (
                       <p className="italic">

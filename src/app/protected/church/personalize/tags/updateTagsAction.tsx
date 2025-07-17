@@ -6,7 +6,7 @@ const updateTagsAction = async (
   tags: TagWithDescription[],
   churchId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   for (const tag of tags) {
     if (!tag.id) continue; // Skip tags without an ID

@@ -96,7 +96,7 @@ export default function ModalRoleUpdate({
           variant="flat"
           className="mx-auto my-4"
           endContent={
-            <>
+            <div>
               {userData &&
                 userData.id !== peopleId &&
                 hasPermission(userData.role as Role, "update:role") && (
@@ -104,7 +104,7 @@ export default function ModalRoleUpdate({
                     <IoSettingsSharp size={14} />
                   </div>
                 )}
-            </>
+            </div>
           }
         >
           {roles.find((r) => r.key === profile.role)?.label}

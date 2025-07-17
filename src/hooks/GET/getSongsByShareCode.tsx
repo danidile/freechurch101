@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getSongsByShareCode = async (shareCode: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: shareCodeChurch } = await supabase
     .from("church-share-code")
     .select("church")

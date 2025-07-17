@@ -6,7 +6,7 @@ const deleteTagsAction = async (
   tags: TagWithDescription[],
   churchId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Extract IDs from the tags to delete
   const idsToDelete = tags.map((tag) => tag.id).filter(Boolean);

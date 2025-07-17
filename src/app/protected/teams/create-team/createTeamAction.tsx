@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { churchMembersT, teamData } from "@/utils/types/types";
 
 export const createTeam = async (formData: teamData) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

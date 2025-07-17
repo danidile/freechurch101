@@ -1,14 +1,10 @@
-import { getSongById } from "@/hooks/GET/getSongById";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
-import fbasicUserData from "@/utils/supabase/getUserData";
-import { basicUserData } from "@/utils/types/userData";
 import { getItalianSongById } from "@/hooks/GET/getGlobalSongById";
 
-export default async function Page({ params }: { params: { songId: string } }) {
-  const songData = await getItalianSongById(params.songId);
-    const userData: basicUserData = await fbasicUserData();
-  
-  console.log(songData);
+export default async function Page({ params }: { params: Promise<any> }) {
+  const awaitedParams = await params;
+  const songData = await getItalianSongById(awaitedParams.songId);
+
   if (songData) {
     return (
       <div className="container-sub">

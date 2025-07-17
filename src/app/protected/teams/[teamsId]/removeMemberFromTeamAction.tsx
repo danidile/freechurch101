@@ -7,7 +7,7 @@ export const removeMemberFromTeamAction = async (
   memberId: string,
   teamId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   console.log(memberId);
   console.log(teamId);
 

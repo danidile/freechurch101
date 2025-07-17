@@ -6,7 +6,7 @@ import SongsListSearch from "../components/songslistSearchComponent";
 import { getSongs } from "@/hooks/GET/getSongs";
 
 export default async function Page() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: albums, error } = await supabase.from("albums").select("*");
   if (error) {
     console.error("Errore durante il fetch:", error);

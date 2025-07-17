@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server"; // Adjust path if needed
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://churchlab.it";
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: italianSongs, error } = await supabase
     .from("italian-songs")

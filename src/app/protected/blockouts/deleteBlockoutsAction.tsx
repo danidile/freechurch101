@@ -5,7 +5,7 @@ export const deleteBlockoutAction = async ({
 }: {
   blockId: string;
 }) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.from("blockouts").delete().eq("id", blockId);
 

@@ -6,7 +6,7 @@ const removeEventTypesAction = async (
   eventTypes: eventType[],
   churchId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const toDelete = eventTypes.map((event) => event.id);
 
   if (toDelete.length > 0) {

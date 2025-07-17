@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getInvitesByChurch = async (churchId: unknown) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: eventTypes, error } = await supabase
     .from("pending_invites")
     .select("*")

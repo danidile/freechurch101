@@ -8,7 +8,7 @@ export const regristrationAction = async (
   formData: registrationData,
   isCreatingChurch: boolean
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { email, password, firstName, lastName, church } = formData;
 
@@ -104,7 +104,9 @@ export const regristrationAction = async (
 
       if (profileDataErrorUpdate) {
         console.error(profileDataErrorUpdate);
-        return { error: "Errore nell'aggiornamento del profilo con la nuova chiesa." };
+        return {
+          error: "Errore nell'aggiornamento del profilo con la nuova chiesa.",
+        };
       }
 
       return { success: true };

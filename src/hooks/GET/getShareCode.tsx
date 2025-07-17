@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { basicUserData } from "@/utils/types/userData";
 
 export const getShareCode = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const userData: basicUserData = await fbasicUserData();
   console.log("userData");
   console.log(userData.church_id);

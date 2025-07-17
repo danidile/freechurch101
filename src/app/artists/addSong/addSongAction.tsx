@@ -5,7 +5,7 @@ import { songSchema } from "@/utils/types/types";
 
 export const addSong = async (data: songSchema) => {
   console.log(data.id);
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from("italian-songs")
     .insert({

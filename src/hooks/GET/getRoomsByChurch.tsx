@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/client";
 
 export const getRoomsByChurch = async (churchId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: rooms, error } = await supabase
     .from("rooms")

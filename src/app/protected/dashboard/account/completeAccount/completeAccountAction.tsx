@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 export const completeAccountAction = async function completeAccountAction(
   data: basicUserData
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const updateData: { name?: string; lastname?: string; phone?: string } = {};
 

@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 
 export const deleteSong = async (song: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   console.log("delete song: ", song);
   const { error: SongError } = await supabase
     .from("songs")

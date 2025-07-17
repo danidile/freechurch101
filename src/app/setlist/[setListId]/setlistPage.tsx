@@ -144,8 +144,12 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
         {setlistSchedule && setlistSchedule.length > 0 && (
           <>
             <div className="ncard nborder mb-2 px-3 py-4">
-              {setlistSchedule.map((element) => {
-                return <ScheduleViewComponents element={element} />;
+              {setlistSchedule.map((element, index) => {
+                return (
+                  <div key={index}>
+                    <ScheduleViewComponents element={element} />
+                  </div>
+                );
               })}
             </div>
             <div className="center- gap-3 mt-5 mb-5">

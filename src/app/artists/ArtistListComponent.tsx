@@ -65,6 +65,7 @@ export default function ArtistListComponent({
         {artistsList.map((artist) => {
           return (
             <Link
+              key={artist.username}
               className="songlist-link "
               href={`/artists/${artist.username}`}
             >

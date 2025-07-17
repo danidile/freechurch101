@@ -6,7 +6,7 @@ import { TauthSchema } from "@/utils/types/auth";
 import { registrationData } from "@/utils/types/types";
 
 export const regristrationAction = async (formData: TauthSchema) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { email, password, firstname, lastname } = formData;
 

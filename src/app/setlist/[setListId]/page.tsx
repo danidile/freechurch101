@@ -1,10 +1,10 @@
-
 import SetlistPage from "./setlistPage";
 
-export default async function Page({
+export default async function page({
   params,
 }: {
-  params: { setListId: string };
+  params: Promise<{ setListId: string }>;
 }) {
-  return <SetlistPage  setListId={params.setListId} />;
+  const awaitedParams = await params;
+  return <SetlistPage setListId={awaitedParams.setListId} />;
 }

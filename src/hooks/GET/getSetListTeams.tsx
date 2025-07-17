@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { GroupedMembers } from "@/utils/types/types";
 
 export const getSetListTeams = async (setlistId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("event-team")
     .select(

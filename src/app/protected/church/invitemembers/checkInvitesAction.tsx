@@ -8,7 +8,7 @@ const checkInvitesAction = async (
   formattedNewMembers: newMemberWithError[],
   churchId: string
 ): Promise<newMemberWithError[]> => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const results = await Promise.all(
     formattedNewMembers.map(async (member): Promise<newMemberWithError> => {

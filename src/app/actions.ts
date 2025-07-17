@@ -11,7 +11,7 @@ import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError"
 export const signUpAction = async (data: TauthSchema) => {
   const email = data.email;
   const password = data.password;
-  const supabase = createClient();
+  const supabase = await createClient();
 
   if (!email || !password) {
     return { error: "Email and password are required" };
@@ -40,7 +40,7 @@ export const signUpAction = async (data: TauthSchema) => {
 };
 
 export const resetPasswordAction = async (data: TresetPasswordSchema) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const password = data.password;
   const confirmPassword = data.confirmPassword;
@@ -54,7 +54,7 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
   }
 
   if (password !== confirmPassword) {
-        return {
+    return {
       success: false,
       message: "Le password devono essere uguali.",
     };
@@ -77,13 +77,13 @@ export const resetPasswordAction = async (data: TresetPasswordSchema) => {
 };
 
 export const signOutAction = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
 
 export default async function userData() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
@@ -95,7 +95,7 @@ export default async function userData() {
 
 export async function logout() {
   console.log("working till here");
-  const supabase = createClient();
+  const supabase = await createClient();
 
   await supabase.auth.signOut();
 

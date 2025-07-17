@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { expandedTeamT, setListT, teamData } from "@/utils/types/types";
 
 export const addSetlist = async (formData: setListT) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 export const retriveShareFormAction = async function viewChurchSongsShareList(
   shareCode: string
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   let { data: churchShareCode, error } = await supabase
     .from("church-share-code")

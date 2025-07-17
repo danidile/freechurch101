@@ -6,7 +6,7 @@ export default async function isTeamLeaderClient() {
     teams: [],
   };
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError,

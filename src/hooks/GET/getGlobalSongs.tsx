@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getItalianSongs = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: italianSongs, error } = await supabase
     .from("italian-songs")

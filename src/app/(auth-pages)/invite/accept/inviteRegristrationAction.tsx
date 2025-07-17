@@ -7,7 +7,7 @@ import { registrationData, ServerActionResponse } from "@/utils/types/types";
 export const inviteRegristrationAction = async (
   formData: registrationData
 ): Promise<ServerActionResponse<{ user: any; session: any }>> => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { email, password, firstName, lastName, church } = formData;
 

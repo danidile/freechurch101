@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { roomsType, TagWithDescription } from "@/utils/types/types";
 
 const deleteRoomsAction = async (rooms: roomsType[], churchId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Extract IDs from the tags to delete
   const idsToDelete = rooms.map((room) => room.id).filter(Boolean);

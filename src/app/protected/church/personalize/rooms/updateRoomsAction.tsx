@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { roomsType } from "@/utils/types/types";
 
 const updateRoomsAction = async (rooms: roomsType[], churchId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   for (const room of rooms) {
     if (!room.id) continue;

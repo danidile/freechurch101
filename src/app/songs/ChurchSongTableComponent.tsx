@@ -75,9 +75,11 @@ export default function ChurchSongTableComponent({
           className="w-full table-fixed border-collapse ntable"
         >
           <thead>
-            <th className="w-6/12 min-w-[200px]">Title</th>
-            <th className="w-3/12">Autore</th>
-            <th className="w-3/12">Tag</th>
+            <tr>
+              <th className="w-6/12 min-w-[200px]">Title</th>
+              <th className="w-3/12">Autore</th>
+              <th className="w-3/12">Tag</th>
+            </tr>
           </thead>
           <tbody>
             {songList.map((song) => (

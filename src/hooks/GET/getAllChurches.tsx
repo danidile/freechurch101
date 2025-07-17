@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getAllChurches = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: churches } = await supabase
     .from("churches")
     .select("id , church_name");

@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 
 export const deleteTeamAction = async (teamId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   console.log(teamId);
   // const { error: setlistError } = await supabase
   //   .from("team-members")
@@ -15,8 +15,8 @@ export const deleteTeamAction = async (teamId: string) => {
     .delete()
     .eq("id", teamId);
 
-  if (setlistSongsError ) {
-    console.error("Error deleting rows:", setlistSongsError );
+  if (setlistSongsError) {
+    console.error("Error deleting rows:", setlistSongsError);
   } else {
     console.log("Rows deleted successfully");
     // return encodedRedirect(

@@ -118,7 +118,7 @@ export function SelectTeamMemberDrawer({
                       )
                       .map((member, index) => (
                         <motion.div
-                          key={member.profile}
+                          key={index}
                           layout
                           variants={fadeInUp}
                           initial="initial"

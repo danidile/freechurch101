@@ -1,13 +1,14 @@
 import userDataServer from "@/utils/supabase/getUserDataServer";
 import UpdateSetlistComponent from "./updateSetlistComponent";
-import isTeamLeaderServer from "@/utils/supabase/isTeamLeaderServer";
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+
 import { checkPermission } from "@/utils/supabase/permissions/checkPermission";
 export default async function songs({
   params,
 }: {
-  params: { setListId: string };
+  params: Promise<{ setListId: string }>;
 }) {
+  const awaitedParams = await params;
+
   const userData = await userDataServer();
   console.log("leaderOf", userData.leaderOf);
   const allowed = await checkPermission(
@@ -20,7 +21,7 @@ export default async function songs({
   if (allowed) {
     return (
       <div className="container-sub">
-        <UpdateSetlistComponent setListId={params.setListId} />
+        <UpdateSetlistComponent setListId={awaitedParams.setListId} />
       </div>
     );
   } else {

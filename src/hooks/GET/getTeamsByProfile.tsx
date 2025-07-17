@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { profileT, profileTeamsT, TeamMemberRaw } from "@/utils/types/types";
 
 export const getTeamsByProfile = async (profileId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   let { data: teams, error } = await supabase
     .from("team-members")
     .select("team_id(team_name),roles")

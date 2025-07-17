@@ -1,3 +1,5 @@
+"use client";
+
 export default async function convertImageToWebpWithMaxHeight(
   file: File
 ): Promise<Blob> {

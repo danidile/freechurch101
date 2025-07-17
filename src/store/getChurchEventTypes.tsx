@@ -2,7 +2,7 @@ import { defaultEventTypes } from "@/constants";
 import { createClient } from "@/utils/supabase/client";
 
 export default async function getChurchEventTypes(churchId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: eventTypes } = await supabase
     .from("custom-event-types")

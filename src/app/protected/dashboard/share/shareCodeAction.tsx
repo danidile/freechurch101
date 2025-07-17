@@ -7,7 +7,7 @@ import { basicUserData } from "@/utils/types/userData";
 export const saveShareCodeAction = async function saveShareCodeAction(
   shareCode: string
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const userData: basicUserData = await fbasicUserData();
 
   const { data, error } = await supabase

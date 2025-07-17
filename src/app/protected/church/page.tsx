@@ -97,14 +97,16 @@ export default function ChurchComponent() {
         <h5 className="font-bold">Membri di chiesa:</h5>
         <table className="ntable max-w-[800px] ">
           <thead>
-            <th>Nome</th>
-            <th className="hidden sm:table-cell">Email</th>
-            <th className="max-w-[50px] w-[50px] py-[2px]">Azioni</th>
+            <tr>
+              <th>Nome</th>
+              <th className="hidden sm:table-cell">Email</th>
+              <th className="max-w-[50px] w-[50px] py-[2px]">Azioni</th>
+            </tr>
           </thead>
           <tbody>
-            {profiles.map((item) => {
+            {profiles.map((item, index) => {
               return (
-                <tr key={item.profile}>
+                <tr key={index}>
                   <td className="py-[2px]">
                     {" "}
                     {item.name} {item.lastname}

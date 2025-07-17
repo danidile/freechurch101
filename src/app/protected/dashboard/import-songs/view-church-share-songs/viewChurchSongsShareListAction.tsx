@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 export const viewChurchSongsShareList = async function viewChurchSongsShareList(
   shareCode: string
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   let { data: churchShareCode, error } = await supabase
     .from("church-share-code")
@@ -14,7 +14,11 @@ export const viewChurchSongsShareList = async function viewChurchSongsShareList(
 
   if (error) {
     console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/protected/dashboard/import-songs", "Codice errato" );
+    return encodedRedirect(
+      "error",
+      "/protected/dashboard/import-songs",
+      "Codice errato"
+    );
   } else {
     return encodedRedirect("success", `/protected/dashboard`, "Success!");
   }

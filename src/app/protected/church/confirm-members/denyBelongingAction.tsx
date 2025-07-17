@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 
 export const denyBelongingAction = async (profileId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error: errorDelete } = await supabase
     .from("church-membership-request")

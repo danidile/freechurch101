@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { setListSongT } from "@/utils/types/types";
 
 export const getSetlistSchedule = async (setlistId: unknown) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: setlistSongs, error: songsError } = await supabase
     .from("setlist-songs")
     .select("id, song(id, song_title, author),key,order")

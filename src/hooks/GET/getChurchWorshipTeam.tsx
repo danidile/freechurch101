@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getChurchWorshipTeam = async (churchId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: teamId, error } = await supabase
     .from("church-teams")
     .select("id")

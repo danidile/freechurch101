@@ -3,13 +3,11 @@ import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
 import { Divider } from "@heroui/react";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import { setListSongT, setListT } from "@/utils/types/types";
-export default async function Page({
-  params,
-}: {
-  params: { setListId: string };
-}) {
-  const setlistData: setListT = await getSetList(params.setListId);
-  const setlistsongs: setListSongT[] = await getSetListSongs(params.setListId);
+export default async function Page({ params }: { params: Promise<any> }) {
+  const awaitedParams = await params;
+
+  const setlistData: setListT = await getSetList(awaitedParams.setListId);
+  const setlistsongs: setListSongT[] = await getSetListSongs(awaitedParams.setListId);
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"

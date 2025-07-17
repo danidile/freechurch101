@@ -6,10 +6,14 @@ import { setListSongT, setListT } from "@/utils/types/types";
 export default async function Page({
   params,
 }: {
-  params: { setListId: string };
+  params: Promise<{ setListId: string }>;
 }) {
-  const setlistData: setListT = await getSetList(params.setListId);
-  const setlistsongs: setListSongT[] = await getSetListSongs(params.setListId);
+  const awaitedParams = await params;
+
+  const setlistData: setListT = await getSetList(awaitedParams.setListId);
+  const setlistsongs: setListSongT[] = await getSetListSongs(
+    awaitedParams.setListId
+  );
   const date = new Date(setlistData.date);
   const readableDate = date.toLocaleString("it-IT", {
     weekday: "long", // "Sunday"

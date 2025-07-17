@@ -5,9 +5,11 @@ import UpdatePeopleForm from "./updatePeople";
 export default async function songs({
   params,
 }: {
-  params: { peopleId: string };
+  params: Promise<any>;
 }) {
-  const profile: profileT = await getProfileById(params.peopleId);
+    const awaitedParams = await params;
+
+  const profile: profileT = await getProfileById(awaitedParams.peopleId);
 
   return (
     <div className="container-sub">

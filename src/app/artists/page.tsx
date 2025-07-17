@@ -4,7 +4,7 @@ import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "../../utils/supabase/getUserData";
 
 export default async function Page() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: artists, error } = await supabase.from("artists").select("*");
   if (error) {
     console.error("Errore durante il fetch:", error);

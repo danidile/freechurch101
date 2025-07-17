@@ -2,7 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const getProfileSetList = async (prodileId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("event-team")
     .select("id,setlist(id,date,event_title,event_type),team(team_name),status")

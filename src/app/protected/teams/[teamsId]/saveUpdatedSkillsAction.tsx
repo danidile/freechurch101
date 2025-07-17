@@ -8,7 +8,7 @@ export const saveUpdatedSkillsAction = async (
   newSkills: string[],
   teamId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   console.log("memberId", memberId);
   console.log("newSkills", newSkills);
   console.log("teamId", teamId);

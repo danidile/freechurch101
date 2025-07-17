@@ -105,27 +105,29 @@ export default function NotificationList() {
         fullWidth
       >
         {Object.entries(notificationState).map(
-          ([status, notificationsByType]) => {
+          ([status, notificationsByType], index) => {
             if (!notificationsByType.notifications) return null;
             if (notificationsByType.notifications.length > 0) {
               return (
                 <Tab
                   className="w-full"
-                  key={notificationsByType.details.title}
+                  key={index}
                   title={notificationsByType.details.title}
                 >
                   <AnimatePresence>
                     {notificationsByType.notifications &&
                       notificationsByType.notifications.map(
-                        (notification: notificationT) => {
+                        (notification: notificationT, index) => {
                           return (
-                            <NotificationElement
-                              details={notificationsByType.details}
-                              type={status}
-                              notification={notification}
-                              nextDate={nextDate}
-                              moveFromList={moveFromList}
-                            />
+                            <div key={index}>
+                              <NotificationElement
+                                details={notificationsByType.details}
+                                type={status}
+                                notification={notification}
+                                nextDate={nextDate}
+                                moveFromList={moveFromList}
+                              />
+                            </div>
                           );
                         }
                       )}

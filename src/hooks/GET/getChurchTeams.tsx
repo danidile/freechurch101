@@ -5,7 +5,7 @@ import { churchMembersT, teamData } from "@/utils/types/types";
 import { getTeamByIdFunction } from "./getChurchTeam";
 
 export const getChurchTeams = async (churchId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: teams, error } = await supabase
     .from("church-teams")
     .select("id,team_name")

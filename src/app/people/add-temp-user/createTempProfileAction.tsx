@@ -6,7 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 export const createTempProfile = async function createTempProfile(
   data: basicUserData
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
   if (!data) {
     return { error: "Email and password are required" };
   }

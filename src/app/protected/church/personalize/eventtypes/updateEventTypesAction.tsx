@@ -6,7 +6,7 @@ const updateEventTypesAction = async (
   eventTypes: eventType[],
   churchId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   eventTypes.map(async (event) => {
     const { data, error } = await supabase
       .from("custom-event-types")

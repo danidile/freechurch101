@@ -8,7 +8,7 @@ export const updateBlockoutsAction = async ({
   blockedDates: RangeValueString[];
   preBlockedDates: RangeValueString[];
 }) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error: userError,

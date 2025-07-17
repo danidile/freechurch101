@@ -5,7 +5,7 @@ import { GroupedMembers } from "@/utils/types/types";
 import { getSetListTeams } from "./getSetListTeams";
 
 export const getSetListsByChurch = async (churchId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   let setlistsFull;
   const { data: setlist, error } = await supabase
     .from("setlist")

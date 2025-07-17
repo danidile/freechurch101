@@ -6,7 +6,7 @@ export const updateTeamMemberRoleAction = async (
   userToUpdate: churchMembersT[],
   teamId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   userToUpdate.map(async (user) => {
     const { error: teamMemberUpdateRoleError } = await supabase
       .from("team-members")

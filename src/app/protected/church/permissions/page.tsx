@@ -6,7 +6,7 @@ import { DEFAULT_ROLE_PERMISSIONS } from "@/constants";
 import { Permission } from "@/utils/types/types";
 
 export default async function TeamPermissionsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const userData = await userDataServer();
 
   // Carica i team

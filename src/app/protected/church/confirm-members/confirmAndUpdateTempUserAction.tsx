@@ -8,7 +8,7 @@ export const confirmAndUpdateTempUserAction = async (
   profileId: string,
   tempProfile: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const userData: basicUserData = await fbasicUserData();
   // Confirm church to profile
   const { data } = await supabase

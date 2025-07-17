@@ -6,7 +6,7 @@ const addEventTypesAction = async (
   eventTypes: eventType[],
   churchId: string
 ) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const formattedEventTypes = eventTypes.map((event) => {
     return {
       key: event.key,

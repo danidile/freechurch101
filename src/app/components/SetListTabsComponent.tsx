@@ -48,7 +48,7 @@ export default function SetListTabs({
             );
             const date = new Date(setlist.hour);
             return (
-              <>
+              <div key={index}>
                 {newMonth && (
                   <div className=" mt-3">
                     <h6 className="capitalize font-semibold! ml-0">
@@ -102,9 +102,10 @@ export default function SetListTabs({
                           1 && <small className="font-semibold">Team: </small>}
                         {Object.values(setlist.setlistTeams)
                           .flat()
-                          .map((team) => {
+                          .map((team, index) => {
                             return (
                               <small
+                                key={index}
                                 className={`${
                                   team.profile === userData.id
                                     ? "font-bold"
@@ -123,7 +124,7 @@ export default function SetListTabs({
                     </div>
                   </div>
                 </TransitionLink>
-              </>
+              </div>
             );
           }
         })}

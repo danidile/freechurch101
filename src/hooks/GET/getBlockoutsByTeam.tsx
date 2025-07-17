@@ -18,7 +18,7 @@ type SupabaseResponse = {
 };
 
 export const getBlockoutsByTeamId = async (teamId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   if (teamId) {
     const { data: teamMembers, error: teamError } = (await supabase
       .from("team-members")

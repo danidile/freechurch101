@@ -4,10 +4,11 @@ frontend:
     preBuild:
       commands:
         - nvm install 18
-        - . ~/.nvm/nvm.sh && nvm use 18
-        - node -v
-        - rm -rf .next .next/cache
-        - npm ci
+        - nvm use 18
+        # Pulisci eventuali file/cache residue
+        - rm -rf .next .next/cache node_modules .npm package-lock.json
+        # Installa da zero e genera un nuovo package-lock.json
+        - npm install
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
@@ -17,8 +18,6 @@ frontend:
         - echo "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY" >> .env
         - echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" >> .env
         - echo "STRIPE_WEBHOOK_SECRET=$STRIPE_WEBHOOK_SECRET" >> .env
-        - . ~/.nvm/nvm.sh && nvm use 18
-        - node -v
         - NODE_OPTIONS="--max-old-space-size=4096" npm run build
   artifacts:
     baseDirectory: .next
@@ -26,5 +25,4 @@ frontend:
       - "**/*"
   cache:
     paths:
-      - "node_modules/**/*"
       - ".npm/**/*"

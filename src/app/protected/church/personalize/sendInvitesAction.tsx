@@ -4,7 +4,7 @@ import { newMember } from "@/utils/types/types";
 import sendInviteEmail from "./sendInviteEmail";
 
 const sendInvitesAction = async (formattedNewMembers: newMember[]) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const results = await Promise.all(
     formattedNewMembers.map(async (newMember) => {

@@ -12,7 +12,7 @@ export default async function updateLastReminderSupabase(
 ) {
   const today = new Date();
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("event-team")
     .update({ last_email: today })

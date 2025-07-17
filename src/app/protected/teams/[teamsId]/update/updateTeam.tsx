@@ -13,7 +13,7 @@ const updateTeamData = async (
     console.log("\x1b[41m Team Name has been changed \x1b[0m");
     console.log(churchTeamStart.id);
   }
-  const supabase = createClient();
+  const supabase = await createClient();
   if (hasChanged) {
     const { data, error } = await supabase
       .from("church-teams")
@@ -70,7 +70,7 @@ const upsertTeam = async (
   console.log("newTeam");
   console.log(newTeam);
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("team-members")

@@ -9,7 +9,7 @@ export async function checkPermission(
   action: string,
   userId: string
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // 1. Prendi i ruoli dell’utente in tutti i team richiesti
   const { data: memberships, error: membershipError } = await supabase
