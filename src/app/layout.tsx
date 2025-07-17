@@ -51,7 +51,7 @@ export default function RootLayout({
       <body>
         <ZustandProviders>
           {/* <PullToRefreshLayout> */}
-          <main className="standalone:pb-[120px]">
+          <main className="pb-[120px]">
             <MenuBar />
             <ToastProvider
               placement="top-right"

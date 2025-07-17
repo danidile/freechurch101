@@ -38,7 +38,7 @@ export default function MenuBarComponent({
           display: userData.loggedIn ? "none" : "block",
         }}
         onMenuOpenChange={setIsMenuOpen}
-        className="menu-desktop standalone:!hidden"
+        className="menu-desktop "
       >
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}

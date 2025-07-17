@@ -74,7 +74,7 @@ export default function LoginForm() {
           handleSubmit(loginFunction)(e);
         }}
         noValidate
-        className="mt-8 space-y-4"
+        className="mt-8 flex flex-col gap-4 space-y-4"
       >
         <div>
           <label htmlFor="email" className="block text-sm font-medium">
@@ -116,7 +116,7 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={toggleVisibility}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+              className="absolute right-2 my-2 top-1/2 -translate-y-1/2 text-gray-500"
               aria-label="toggle password visibility"
             >
               {isVisible ? <FaEyeSlash /> : <FaEye />}

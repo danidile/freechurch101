@@ -35,7 +35,7 @@ export default function MenuBarComponentSecondary() {
       <Navbar
         onMenuOpenChange={setIsMenuOpen}
         isMenuOpen={isMenuOpen}
-        className="standalone:!hidden  h-[75px] bg-[#ffffff0] relative z-30"
+        className="h-[75px] bg-[#ffffff0] relative z-30"
       >
         <NavbarContent>
           <NavbarMenuToggle

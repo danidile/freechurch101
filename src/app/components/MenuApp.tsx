@@ -18,14 +18,9 @@ import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
 import { basicUserData } from "@/utils/types/userData";
-import { FaRegCompass } from "react-icons/fa";
 import { BiCompass, BiSolidCompass } from "react-icons/bi";
 import { LuBell, LuBellRing } from "react-icons/lu";
-import {
-  BsCalendar2Week,
-  BsCalendar2WeekFill,
-  BsCalendarWeek,
-} from "react-icons/bs";
+
 import { FaRegCalendarDays } from "react-icons/fa6";
 
 export default function MenuApp({
@@ -45,7 +40,7 @@ export default function MenuApp({
   }, [pathname]); // Depend on pathname to re-run when it changes
 
   return (
-    <div className="appmenucontainer browser:!hidden">
+    <div className="block md:hidden">
       <IconContext.Provider
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >
