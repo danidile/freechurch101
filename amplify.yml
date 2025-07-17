@@ -6,7 +6,7 @@ frontend:
         - nvm install 18
         - nvm use 18
         # Pulisci eventuali file/cache residue
-        - rm -rf .next .next/cache node_modules .npm package-lock.json
+        - rm -rf .next .next/cache node_modules .npm 
         # Installa da zero e genera un nuovo package-lock.json
         - npm ci
     build:
