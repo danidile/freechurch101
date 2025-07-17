@@ -1,26 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { setListT } from "@/utils/types/types";
 import { calendarMonth } from "@/utils/types/userData";
 import {
-  Tabs,
-  Tab,
-  Button,
   Modal,
   ModalContent,
   ModalBody,
-  ModalHeader,
   ModalFooter,
+  ModalHeader,
+  Button,
 } from "@heroui/react";
-import { useState } from "react";
 import SetlistPage from "../setlist/[setListId]/setlistPage";
 import { useChurchStore } from "@/store/useChurchStore";
-import {
-  IoChevronBackCircleOutline,
-  IoChevronForwardCircleOutline,
-} from "react-icons/io5";
+import clsx from "clsx";
 
-export default function CalendarTabs({
+export default function CalendarView({
   months,
   eventsByDate,
 }: {
@@ -28,102 +23,101 @@ export default function CalendarTabs({
   eventsByDate: Map<string, setListT[]>;
 }) {
   const { eventTypes } = useChurchStore();
-
   const [selectedEvent, setSelectedEvent] = useState<setListT | null>(null);
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
 
-  const currentMonth = months[currentMonthIndex];
-
-  const goPrev = () => {
-    setCurrentMonthIndex((prev) => (prev > 0 ? prev - 1 : prev));
-  };
-
-  const goNext = () => {
-    setCurrentMonthIndex((prev) =>
-      prev < months.length - 1 ? prev + 1 : prev
-    );
-  };
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
 
   return (
-    <div className="flex w-full flex-col max-w-[1300px] mx-auto">
-      {/* Navigation */}
-      <div className="flex justify-between">
-        <Button
-          onPress={goPrev}
-          isIconOnly
-          radius="full"
-          variant="light"
-          disabled={currentMonthIndex === 0}
-        >
-          <IoChevronBackCircleOutline size={26} />
-        </Button>
-        <h2 className="text-xl font-bold capitalize">{currentMonth.name}</h2>
-        <Button
-          isIconOnly
-          radius="full"
-          variant="light"
-          onPress={goNext}
-          disabled={currentMonthIndex === months.length - 1}
-        >
-          <IoChevronForwardCircleOutline size={26} />
-        </Button>
-      </div>
+    <div className="w-full max-w-[1100px] mx-auto">
+      {months.map((month) => {
+        const totalCells = month.emptySpaces + month.days.length;
+        const rows = Math.ceil(totalCells / 7);
 
-      {/* Calendar Grid */}
-      <div className="grid grid-cols-7">
-        {/* Empty placeholders for aligning the first day */}
-        {Array.from({ length: currentMonth.emptySpaces }).map((_, index) => (
-          <div key={`empty-${index}`} className="calendar-date">
-            <div className="calendar-date-empty"></div>
-          </div>
-        ))}
-
-        {/* Days */}
-        {currentMonth.days.map((day) => {
-          const dateKey = `${currentMonth.year}-${currentMonth.month}-${day}`;
-          const events = eventsByDate.get(dateKey) || [];
-
-          return (
-            <div key={dateKey} className="calendar-date">
-              <small className="calendar-number">{day}</small>
-              {events.length > 0 && (
-                <>
-                  {events.map((event, index) => {
-                    const matched = eventTypes?.find(
-                      (el) => el.key === event.event_type
-                    );
-                    return (
-                      <div
-                        key={index}
-                        className="calendar-event"
-                        style={{
-                          backgroundColor: matched?.color + "35" || "#efbebe",
-                        }}
-                        onClick={() => setSelectedEvent(event)}
-                      >
-                        <div
-                          style={{
-                            left: "0px",
-                            height: "100%",
-                            width: "2px",
-                            backgroundColor: matched?.color,
-                            position: "absolute",
-                          }}
-                        ></div>
-                        <small className="calendar-event-title">
-                          {matched?.alt ||
-                            matched?.label ||
-                            "Evento sconosciuto"}
-                        </small>
-                      </div>
-                    );
-                  })}
-                </>
-              )}
+        return (
+          <section key={`${month.year}-${month.month}`} className="mb-6">
+            {/* Sticky Month Header */}
+            <div className="sticky top-0 bg-white z-10 px-4 py-4 ">
+              <h2 className="text-[32px] font-semibold text-gray-900 capitalize">
+                {month.name} <span className="font-normal">{month.year}</span>
+              </h2>
             </div>
-          );
-        })}
-      </div>
+
+            {/* Weekday labels */}
+            <div className="grid grid-cols-7 text-center text-xs text-gray-500 capitalize pb-1 px-1">
+              {["lun", "mar", "mer", "gio", "ven", "sab", "dom"].map((d) => (
+                <div key={d}>{d}</div>
+              ))}
+            </div>
+
+            {/* Grid layout for days */}
+            <div className="grid grid-cols-7 text-sm border-t border-gray-50">
+              {/* Empty leading days */}
+              {Array.from({ length: month.emptySpaces }).map((_, i) => (
+                <div
+                  key={`empty-${i}`}
+                  className="min-h-[80px] border border-gray-50 bg-white"
+                />
+              ))}
+
+              {/* Month days */}
+              {month.days.map((day, i) => {
+                const colIndex = (month.emptySpaces + i) % 7;
+                const isWeekend = colIndex === 5 || colIndex === 6;
+                const dateKey = `${month.year}-${month.month}-${day}`;
+                const events = eventsByDate.get(dateKey) || [];
+                const isToday = dateKey === todayStr;
+
+                return (
+                  <div
+                    key={dateKey}
+                    className={clsx(
+                      "min-h-[100px] border-[0.5px] border-gray-100 p-1 relative align-top",
+                      isWeekend ? "bg-gray-50" : "bg-white"
+                    )}
+                  >
+                    <div className="text-xs font-medium text-gray-700 absolute top-1 left-1">
+                      <span
+                        className={clsx(
+                          "px-1.5 py-0.5 rounded-full",
+                          isToday ? "bg-red-500 text-white" : "text-gray-800"
+                        )}
+                      >
+                        {day}
+                      </span>
+                    </div>
+
+                    <div className="mt-6 flex flex-col gap-1 overflow-hidden">
+                      {events.map((event, idx) => {
+                        const matched = eventTypes?.find(
+                          (el) => el.key === event.event_type
+                        );
+                        const color = matched?.color || "#999";
+
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => setSelectedEvent(event)}
+                            className="text-[11px] truncate text-left px-2 py-0.5 rounded-full"
+                            style={{
+                              backgroundColor: color + "22",
+                              color,
+                            }}
+                          >
+                            {matched?.alt || matched?.label || "Evento"}
+                          </button>
+                        );
+                      })}
+
+                      
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
 
       {/* Modal */}
       {selectedEvent && (

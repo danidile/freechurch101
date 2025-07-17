@@ -33,7 +33,7 @@ export default async function userDataServer() {
   } = await supabase.auth.getUser();
 
   if (userError) {
-    console.error("Not logged in:", userError.message);
+    console.log("Not logged in:", userError.message);
     return userData;
   }
 

@@ -40,7 +40,7 @@ export default function CDropdown({
 
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKeyDown);
-    
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
@@ -61,13 +61,12 @@ export default function CDropdown({
         className={clsx(
           "bg-white cursor-pointer select-none rounded-md text-left flex items-center justify-center transition-all duration-200 hover:bg-gray-100  border-gray-300",
           isIconOnly ? "w-10 h-10 p-2" : "min-w-[150px] px-3 py-2"
-        
         )}
         aria-haspopup="listbox"
         aria-expanded={open}
         type="button"
       >
-        { placeholder}
+        {placeholder}
       </button>
 
       <div
@@ -79,9 +78,9 @@ export default function CDropdown({
             ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 -translate-y-4 scale-95 pointer-events-none"
         )}
-        style={{ 
+        style={{
           minWidth: 200,
-          transformOrigin: 'top center'
+          transformOrigin: "top center",
         }}
       >
         {options.map((option) =>
@@ -93,7 +92,9 @@ export default function CDropdown({
               tabIndex={0}
               className={clsx(
                 "transition-colors block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-sm",
-                selected?.value === option.value ? "bg-blue-50 text-blue-700" : "text-gray-700"
+                selected?.value === option.value
+                  ? "bg-blue-50 text-blue-700"
+                  : "text-gray-700"
               )}
               onClick={() => handleSelect(option)}
               onKeyDown={(e) => {
@@ -112,7 +113,9 @@ export default function CDropdown({
               tabIndex={0}
               className={clsx(
                 "px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-sm transition-colors",
-                selected?.value === option.value ? "bg-blue-50 text-blue-700" : "text-gray-700"
+                selected?.value === option.value
+                  ? "bg-blue-50 text-blue-700"
+                  : "text-gray-700"
               )}
               onClick={() => handleSelect(option)}
               onKeyDown={(e) => {

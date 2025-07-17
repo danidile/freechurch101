@@ -36,7 +36,7 @@ export default function CalendarComponent() {
   }
 
   // Loop for the next 3 months
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 12; i++) {
     const currentMonth = new Date(today.getFullYear(), today.getMonth() + i, 1);
     const monthName = currentMonth.toLocaleString("default", { month: "long" });
     const year = currentMonth.getFullYear();

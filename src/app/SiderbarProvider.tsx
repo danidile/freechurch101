@@ -8,6 +8,7 @@ import UserDataMenu from "./components/userDataMenu";
 
 export function SiderbarProvider({ children }: { children: React.ReactNode }) {
   const { userData } = useUserStore();
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
 
   if (userData.loggedIn) {
     return (
@@ -16,9 +17,11 @@ export function SiderbarProvider({ children }: { children: React.ReactNode }) {
           <Sidebar />
         </div>
         <div className="dashboard-container">
-          <div className="w-full max-w-[1300px] mx-auto block">
-            <UserDataMenu />
-          </div>
+          {!isStandalone && (
+            <div className="w-full max-w-[1300px] mx-auto block">
+              <UserDataMenu />
+            </div>
+          )}
           {children}
         </div>
       </div>

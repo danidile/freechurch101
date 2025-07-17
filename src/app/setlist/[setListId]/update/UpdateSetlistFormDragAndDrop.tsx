@@ -456,6 +456,7 @@ export default function UpdateSetlistForm({
                   variant="underlined"
                   showMonthAndYearPickers
                   value={eventDate}
+                  disableAnimation
                   onChange={(newDate) => {
                     const newDateStr = dateValueToString(newDate); // ← conversione qui
                     const unavailable = getUnavailableMembers(
@@ -612,8 +613,7 @@ export default function UpdateSetlistForm({
                         <thead className="bg-gray-50">
                           <tr>
                             <th> Nome</th>
-<th>                              Ruolo
-                            </th>
+                            <th> Ruolo</th>
                             <th className=" w-[40px]"></th>
                           </tr>
                         </thead>
@@ -638,9 +638,7 @@ export default function UpdateSetlistForm({
                               }) ?? false;
 
                             return (
-                              <tr
-                                key={member.profile + section.id}
-                              >
+                              <tr key={member.profile + section.id}>
                                 <td>
                                   {member.name} {member.lastname}{" "}
                                   {isUnavailable && (

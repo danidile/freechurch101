@@ -30,6 +30,7 @@ export default function MenuApp({
   userdata: basicUserData;
   notifications: number;
 }) {
+
   const pathname = usePathname(); // Get the full pathname
   const [parameter, setParameter] = useState(pathname.split("/")[1] || ""); // Initialize state based on the pathname
 
