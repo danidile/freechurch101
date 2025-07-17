@@ -9,13 +9,14 @@ frontend:
         - rm -rf .next .next/cache node_modules .npm package-lock.json
         # Installa da zero e genera un nuovo package-lock.json
         - npm install --save-dev typescript @types/react @types/node
-        - npm install   
+        - npm install
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
         - echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY" >> .env
         - echo "SMTP_USER=$SMTP_USER" >> .env
         - echo "SMTP_PASS=$SMTP_PASS" >> .env
+        - echo "NODE_ENV=$NODE_ENV" >> .env
         - echo "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY" >> .env
         - echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" >> .env
         - echo "STRIPE_WEBHOOK_SECRET=$STRIPE_WEBHOOK_SECRET" >> .env
