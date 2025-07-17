@@ -8,7 +8,8 @@ frontend:
         # Pulisci eventuali file/cache residue
         - rm -rf .next .next/cache node_modules .npm 
         # Installa da zero e genera un nuovo package-lock.json
-        - npm ci
+        - npm install --save-dev typescript @types/react @types/node
+        - npm install
     build:
       commands:
         - echo "NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL" >> .env
