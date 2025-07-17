@@ -116,7 +116,7 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={toggleVisibility}
-              className="absolute right-2 my-2 top-1/2 -translate-y-1/2 text-gray-500"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
               aria-label="toggle password visibility"
             >
               {isVisible ? <FaEyeSlash /> : <FaEye />}

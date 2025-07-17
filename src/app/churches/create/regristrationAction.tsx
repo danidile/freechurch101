@@ -1,9 +1,9 @@
 "use server";
 
+import { logEvent } from "@/utils/supabase/log";
 import { createClient } from "@/utils/supabase/server";
 import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
 import { TauthSchema } from "@/utils/types/auth";
-import { registrationData } from "@/utils/types/types";
 
 export const regristrationAction = async (formData: TauthSchema) => {
   const supabase = await createClient();
@@ -27,6 +27,11 @@ export const regristrationAction = async (formData: TauthSchema) => {
 
   if (error) {
     console.error(error);
+    await logEvent({
+      event: "registration_error",
+      level: "error",
+      meta: { email, message: error.message, status: error.status },
+    });
     const errorMessage = translateSupabaseError(error.message);
     return { success: false, error: errorMessage };
   }
@@ -53,6 +58,15 @@ export const regristrationAction = async (formData: TauthSchema) => {
 
     if (newChurchError) {
       console.error("Error in creating new church", newChurchError);
+      await logEvent({
+        event: "registration_error",
+        level: "error",
+        meta: {
+          email,
+          message: "Errore nella creazione della nuova chiesa",
+          error: newChurchError.message || newChurchError,
+        },
+      });
       return {
         success: false,
         error: "Errore nella creazione della nuova chiesa.",
@@ -73,6 +87,15 @@ export const regristrationAction = async (formData: TauthSchema) => {
 
     if (profileDataError) {
       console.error(profileDataError);
+      await logEvent({
+        event: "registration_error",
+        level: "error",
+        meta: {
+          email,
+          message: "Errore nell'aggiornamento del profilo",
+          error: profileDataError.message || profileDataError,
+        },
+      });
       return {
         success: false,
         error: "Errore nell'aggiornamento del profilo.",
@@ -90,15 +113,35 @@ export const regristrationAction = async (formData: TauthSchema) => {
 
     if (errorRoom) {
       console.error(errorRoom);
+      await logEvent({
+        event: "registration_error",
+        level: "error",
+        meta: {
+          email,
+          message: "Errore nella creazione della stanza",
+          error: errorRoom.message || errorRoom,
+        },
+      });
       return {
         success: false,
         error: "Errore nella creazione della stanza.",
       };
     }
 
+    await logEvent({
+      event: "registration_success",
+      level: "info",
+      meta: { email, user_id: data.user.id },
+    });
+
     return { success: true };
   } else {
     console.warn("USER NOT CREATED.");
+    await logEvent({
+      event: "registration_error",
+      level: "warn",
+      meta: { email, message: "Utente non creato" },
+    });
     return { success: false, error: "Utente non creato." };
   }
 };

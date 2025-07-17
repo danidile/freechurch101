@@ -1,5 +1,6 @@
 "use server";
 
+import { logEvent } from "@/utils/supabase/log";
 import { createClient } from "@/utils/supabase/server";
 import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
 import { TlostPasswordSchema } from "@/utils/types/auth";
@@ -17,6 +18,7 @@ const forgotPasswordAction = async (
       error: "Errore: Email richiesta.",
     };
   }
+
   const redirectTo =
     process.env.NODE_ENV !== "development"
       ? "https://churchlab.it/reset-password"
@@ -25,13 +27,30 @@ const forgotPasswordAction = async (
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo,
   });
+
   if (error) {
     console.log(error);
+    await logEvent({
+      event: "forgot_password_error",
+      level: "error",
+      meta: {
+        email,
+        message: error.message,
+        status: error.status,
+      },
+    });
+
     return {
       success: false,
       error: translateSupabaseError(error.message),
     };
   }
+
+  await logEvent({
+    event: "forgot_password_success",
+    level: "info",
+    meta: { email },
+  });
 
   return {
     success: true,

@@ -1,5 +1,6 @@
 "use client";
 
+import { logEventClient } from "@/utils/supabase/logClient";
 import NextError from "next/error";
 import { useEffect } from "react";
 
@@ -8,6 +9,27 @@ export default function GlobalError({
 }: {
   error: Error & { digest?: string };
 }) {
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      // Skip logging in development
+      return;
+    }
+
+    // Log the error
+    logEventClient({
+      event: "global_error",
+      level: "error",
+      meta: {
+        message: error.message,
+        stack: error.stack,
+        path: window.location.pathname,
+      },
+    });
+
+    // Optionally, you can reset or redirect after a delay
+    // setTimeout(() => reset(), 5000);
+  }, [error]);
+
   return (
     <html>
       <body>

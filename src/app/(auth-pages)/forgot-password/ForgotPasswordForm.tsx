@@ -9,7 +9,7 @@ import { useState } from "react";
 import Link from "next/link";
 import forgotPasswordAction from "./forgotPasswordAction";
 
-export default async function ForgotPasswordForm({
+export default function ForgotPasswordForm({
   searchParams,
 }: {
   searchParams: TalertMessage;

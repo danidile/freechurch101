@@ -25,10 +25,21 @@ export function AutocompleteInput({
 }: AutocompleteInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [selectedComune, setSelectedComune] = useState<Comune | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
+  useEffect(() => {
+    // Sync selectedComune with value prop in case of external resets
+    if (value === "") {
+      setSelectedComune(null);
+    } else if (selectedComune?.nome !== value) {
+      // Try to find Comune matching current value
+      const match = options.find((c) => c.nome === value);
+      setSelectedComune(match || null);
+    }
+  }, [value, options, selectedComune]);
+
   useEffect(() => {
     function onClickOutside(event: MouseEvent) {
       if (
@@ -43,20 +54,20 @@ export function AutocompleteInput({
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
-  // Keyboard navigation
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!isOpen) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setHighlightedIndex((i) => (i < options.length - 1 ? i + 1 : 0));
+      setHighlightedIndex((i) => (i < filteredOptions.length - 1 ? i + 1 : 0));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setHighlightedIndex((i) => (i > 0 ? i - 1 : options.length - 1));
+      setHighlightedIndex((i) => (i > 0 ? i - 1 : filteredOptions.length - 1));
     } else if (e.key === "Enter") {
       e.preventDefault();
-      if (highlightedIndex >= 0 && highlightedIndex < options.length) {
-        const selected = options[highlightedIndex];
+      if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+        const selected = filteredOptions[highlightedIndex];
         onSelect(selected);
+        setSelectedComune(selected);
         setIsOpen(false);
         setHighlightedIndex(-1);
       }
@@ -66,12 +77,21 @@ export function AutocompleteInput({
     }
   }
 
-  // Filter options based on value (case-insensitive)
-  const filteredOptions = value.length > 1
-    ? options.filter((o) =>
-        o.nome.toLowerCase().startsWith(value.toLowerCase())
-      ).slice(0, 10)
-    : [];
+  const filteredOptions =
+    value.length > 1
+      ? options
+          .filter((o) => o.nome.toLowerCase().startsWith(value.toLowerCase()))
+          .slice(0, 10)
+      : [];
+
+  const noResults = value.length > 1 && filteredOptions.length === 0;
+
+  // Clear selected comune handler
+  const clearSelection = () => {
+    setSelectedComune(null);
+    onChange("");
+    setIsOpen(false);
+  };
 
   return (
     <div className="relative w-full max-w-sm" ref={containerRef}>
@@ -81,17 +101,17 @@ export function AutocompleteInput({
       >
         {label}
       </label>
+
       <input
         id="autocomplete-input"
         type="text"
-        className={`cinput w-full ${
-          error ? "border-red-500" : "border-gray-300"
-        }`}
+        className={`cinput w-full ${error ? "border-red-500" : "border-gray-300"}`}
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
           setIsOpen(true);
           setHighlightedIndex(-1);
+          setSelectedComune(null); // clear selection if user types
         }}
         onFocus={() => setIsOpen(true)}
         onKeyDown={onKeyDown}
@@ -105,7 +125,6 @@ export function AutocompleteInput({
         autoComplete="off"
       />
       {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
-
       {isOpen && filteredOptions.length > 0 && (
         <ul
           id="autocomplete-listbox"
@@ -124,8 +143,9 @@ export function AutocompleteInput({
                   : "text-gray-900"
               }`}
               onMouseDown={(e) => {
-                e.preventDefault(); // prevent blur before click
+                e.preventDefault();
                 onSelect(option);
+                setSelectedComune(option);
                 setIsOpen(false);
                 setHighlightedIndex(-1);
               }}
@@ -135,6 +155,21 @@ export function AutocompleteInput({
             </li>
           ))}
         </ul>
+      )}
+      {selectedComune && (
+        <div className="mt-2 inline-flex items-center gap-3  px-4 py-1.5 text-sm font-semibold select-none">
+          <span>
+            Selezionato:{" "}
+            <span className="font-medium">{selectedComune.nome}</span> (
+            {selectedComune.sigla})
+          </span>
+        </div>
+      )}
+
+      {noResults && (
+        <p className="mt-2 rounded-md bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-800 shadow-inner select-none">
+          Nessun comune trovato.
+        </p>
       )}
     </div>
   );

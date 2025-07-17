@@ -115,7 +115,7 @@ export default function CreateChurch() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.4 }}
-              className="flex flex-col gap-6"
+              className="flex flex-col gap-2"
             >
               {/* Personal Info */}
               <section>
@@ -169,7 +169,7 @@ export default function CreateChurch() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-6 justify-center mt-4">
+                <div className="flex flex-wrap gap-6 justify-center mt-0">
                   <div className="flex flex-col w-full sm:w-72">
                     <label htmlFor="email" className="  font-medium">
                       Email
@@ -190,33 +190,38 @@ export default function CreateChurch() {
                     )}
                   </div>
 
-                  <div className="flex flex-col w-full sm:w-72 relative">
-                    <label htmlFor="password" className="  font-medium">
+                  <div className="flex flex-col w-full sm:w-72">
+                    <label htmlFor="password" className="font-medium">
                       Password
                     </label>
-                    <input
-                      id="password"
-                      type={isVisible ? "text" : "password"}
-                      placeholder="Inserisci la password"
-                      {...register("password")}
-                      minLength={8}
-                      className={`cinput pr-10 ${errors.password ? "border-red-500" : "border-gray-300"}`}
-                      aria-invalid={!!errors.password}
-                      aria-describedby="password-error"
-                    />
-                    <button
-                      type="button"
-                      onClick={toggleVisibility}
-                      aria-label="Toggle password visibility"
-                      className="absolute right-2 top-8 text-gray-500 focus:outline-none"
-                      tabIndex={-1}
-                    >
-                      {isVisible ? (
-                        <FaEyeSlash className="text-xl pointer-events-none" />
-                      ) : (
-                        <FaEye className="text-xl pointer-events-none" />
-                      )}
-                    </button>
+
+                    {/* wrapper relative to input height */}
+                    <div className="relative mt-1">
+                      <input
+                        id="password"
+                        type={isVisible ? "text" : "password"}
+                        placeholder="Inserisci la password"
+                        {...register("password")}
+                        minLength={8}
+                        className={`cinput pr-10 ${errors.password ? "border-red-500" : "border-gray-300"}`}
+                        aria-invalid={!!errors.password}
+                        aria-describedby="password-error"
+                      />
+                      <button
+                        type="button"
+                        onClick={toggleVisibility}
+                        aria-label="Toggle password visibility"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+                        tabIndex={-1}
+                      >
+                        {isVisible ? (
+                          <FaEyeSlash className="text-xl pointer-events-none" />
+                        ) : (
+                          <FaEye className="text-xl pointer-events-none" />
+                        )}
+                      </button>
+                    </div>
+
                     {errors.password && (
                       <p
                         id="password-error"
@@ -230,9 +235,9 @@ export default function CreateChurch() {
               </section>
 
               {/* Church Info */}
-              <section>
+              <section className="mt-4">
                 <small className="text-gray-600">Informazioni chiesa</small>
-                <hr className="border-gray-300 my-2" />
+                <hr className="border-gray-300 " />
                 <div className="flex flex-wrap gap-6 justify-center">
                   <div className="flex flex-col w-full sm:w-72">
                     <label htmlFor="churchname" className="  font-medium">
@@ -281,7 +286,7 @@ export default function CreateChurch() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-6 justify-center mt-4">
+                <div className="flex flex-wrap gap-6 justify-center">
                   <div className="flex flex-col w-full sm:w-72">
                     <label htmlFor="website" className="  font-medium">
                       Sito Web
@@ -307,7 +312,7 @@ export default function CreateChurch() {
 
                   <div className="flex flex-col w-full sm:w-72">
                     <label htmlFor="ighandle" className="  font-medium">
-                      handle Instagram
+                      Handle Instagram
                     </label>
                     <input
                       id="ighandle"
@@ -331,9 +336,9 @@ export default function CreateChurch() {
               </section>
 
               {/* Room Info */}
-              <section>
+              <section className=" mt-4">
                 <small className="text-gray-600">Crea sala</small>
-                <hr className="border-gray-300 my-2" />
+                <hr className="border-gray-300" />
                 <div className="flex flex-wrap gap-6 justify-center">
                   <div className="flex flex-col w-full">
                     <label htmlFor="room_name" className=" font-medium">
@@ -359,7 +364,7 @@ export default function CreateChurch() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-6 justify-center mt-2">
+                <div className="flex flex-wrap gap-6 justify-center">
                   <div className="flex flex-col w-full sm:w-72 relative">
                     <Controller
                       name="comune"
@@ -381,11 +386,7 @@ export default function CreateChurch() {
                     />
                   </div>
 
-                  <input
-                    type="hidden"
-                    {...register("provincia")}
-                    value={getValues("provincia")}
-                  />
+                  <input type="hidden" {...register("provincia")} />
 
                   <div className="flex flex-col w-full sm:w-72">
                     <label htmlFor="address" className=" font-medium">
@@ -418,7 +419,9 @@ export default function CreateChurch() {
               <GrCircleAlert size={23} />
 
               <p>
-                <span className="font-medium">Errore durante la creazione della chiesa:</span>
+                <span className="font-medium">
+                  Errore durante la creazione della chiesa:
+                </span>
                 <br />
                 <>{error}</>
               </p>

@@ -27,6 +27,9 @@ import { FaLink } from "react-icons/fa6";
 import { FiPlus } from "react-icons/fi";
 import Link from "next/link";
 import { IoSettingsOutline } from "react-icons/io5";
+import router from "next/router";
+import CDropdown from "@/app/components/CDropdown";
+import { useRouter } from "next/navigation";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
@@ -80,6 +83,18 @@ export default function AccountComponent() {
   const upcomingSetlists = setlists?.filter(
     (setlist: profileSetlistsT) => new Date(setlist.date) > currentDate
   );
+  const dropdownOptions = [
+    {
+      label: "Aggiorna Account",
+      value: "/protected/dashboard/account/completeAccount",
+      href: "/protected/dashboard/account/completeAccount",
+    },
+    {
+      label: "Reimposta Password",
+      value: "/protected/reset-password",
+      href: "/protected/reset-password",
+    },
+  ];
 
   return (
     <div className=" w-full">
@@ -89,40 +104,14 @@ export default function AccountComponent() {
             Benvenuto {userData?.name + " "}
             {userData.lastname && userData.lastname}
           </h4>
-
-          <Dropdown>
-            <DropdownTrigger>
-              <Button
-                size="sm"
-                className="ml-0"
-                color="default"
-                isIconOnly
-                variant="flat"
-              >
+          <CDropdown
+            options={dropdownOptions}
+            placeholder={
+              <span>
                 <IoSettingsOutline size={20} />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions">
-              <DropdownItem
-                as={Link}
-                href="/protected/dashboard/account/completeAccount"
-                key="add"
-                color="primary"
-                variant="flat"
-              >
-                Aggiorna Account
-              </DropdownItem>
-              <DropdownItem
-                as={Link}
-                href="/protected/reset-password"
-                key="import"
-                color="primary"
-                variant="flat"
-              >
-                Reimposta Password
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+              </span>
+            }
+          />
         </div>
 
         <p>{userData?.email}</p>
