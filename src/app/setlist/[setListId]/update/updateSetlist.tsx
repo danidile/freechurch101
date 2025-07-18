@@ -118,36 +118,9 @@ export const updateSetlistData = async (
       });
     } else {
       console.log("\x1b[42m Success in setlist Data Update \x1b[0m");
-
-      await logEvent({
-        event: "update_setlist_data_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "setlist data update",
-          setlist_id: setlistData.id,
-          changes: {
-            date: updatedSetlist.date,
-            room: updatedSetlist.room,
-            hour: updatedSetlist.hour,
-            event_type: updatedSetlist.event_type,
-            private: updatedSetlist.private,
-          },
-        },
-      });
     }
   } else {
     console.log("\x1b[42m Setlist Data was not changed \x1b[0m");
-
-    await logEvent({
-      event: "update_setlist_data_no_changes",
-      level: "info",
-      user_id: user_id ?? null,
-      meta: {
-        context: "setlist data update",
-        setlist_id: setlistData.id,
-      },
-    });
   }
 };
 
@@ -194,18 +167,6 @@ export const updateSetlistSchedule = async (
       });
     } else {
       console.log("🗑️ Deleted Songs successfully", songsIdsToDelete);
-
-      await logEvent({
-        event: "delete_setlist_songs_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "setlist-songs delete",
-          setlist_id: setlistData.id,
-          deleted_count: songsIdsToDelete.length,
-          song_ids: songsIdsToDelete,
-        },
-      });
     }
   }
 
@@ -244,19 +205,6 @@ export const updateSetlistSchedule = async (
       });
     } else {
       console.log("✅ songs upserted successfully:", data);
-
-      await logEvent({
-        event: "upsert_setlist_songs_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "setlist-songs upsert",
-          setlist_id: setlistData.id,
-          upserted_count: songsToUpsert.length,
-          inserted_count: diff.songs.inserted.length,
-          updated_count: diff.songs.updated.length,
-        },
-      });
     }
   }
 
@@ -291,17 +239,6 @@ export const updateSetlistSchedule = async (
       });
     } else {
       console.log("🗑️ Deleted Notes successfully", notesIdsToDelete);
-
-      await logEvent({
-        event: "delete_setlist_notes_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "setlist-notes delete",
-          setlist_id: setlistData.id,
-          deleted_count: notesIdsToDelete.length,
-        },
-      });
     }
   }
 
@@ -338,19 +275,6 @@ export const updateSetlistSchedule = async (
       });
     } else {
       console.log("✅ Notes upserted successfully:", data);
-
-      await logEvent({
-        event: "upsert_setlist_notes_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "setlist-notes upsert",
-          setlist_id: setlistData.id,
-          upserted_count: notesToUpsert.length,
-          inserted_count: diff.notes.inserted.length,
-          updated_count: diff.notes.updated.length,
-        },
-      });
     }
   }
 
@@ -385,17 +309,6 @@ export const updateSetlistSchedule = async (
       });
     } else {
       console.log("🗑️ Deleted titles successfully", titlesIdsToDelete);
-
-      await logEvent({
-        event: "delete_setlist_titles_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "setlist-titles delete",
-          setlist_id: setlistData.id,
-          deleted_count: titlesIdsToDelete.length,
-        },
-      });
     }
   }
 
@@ -432,19 +345,6 @@ export const updateSetlistSchedule = async (
       });
     } else {
       console.log("✅ Titles upserted successfully:", data);
-
-      await logEvent({
-        event: "upsert_setlist_titles_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "setlist-titles upsert",
-          setlist_id: setlistData.id,
-          upserted_count: titlesToUpsert.length,
-          inserted_count: diff.titles.inserted.length,
-          updated_count: diff.titles.updated.length,
-        },
-      });
     }
   }
 };
@@ -527,17 +427,6 @@ export const updateSetlistTeam = async (
       });
     } else {
       console.log("🗑️ Deleted team members successfully", teamMemberstoDelete);
-
-      await logEvent({
-        event: "delete_setlist_team_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "event-team delete",
-          setlist_id: setlistData.id,
-          deleted_count: teamMemberstoDelete.length,
-        },
-      });
     }
   }
 
@@ -567,17 +456,6 @@ export const updateSetlistTeam = async (
       });
     } else {
       console.log("✅ TeamMembers Inserted successfully", inserted);
-
-      await logEvent({
-        event: "insert_setlist_team_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "event-team insert",
-          setlist_id: setlistData.id,
-          inserted_count: inserted.length,
-        },
-      });
     }
   }
 
@@ -613,17 +491,6 @@ export const updateSetlistTeam = async (
       });
     } else {
       console.log("✅ Team members updated successfully");
-
-      await logEvent({
-        event: "update_setlist_team_success",
-        level: "info",
-        user_id: user_id ?? null,
-        meta: {
-          context: "event-team update",
-          setlist_id: setlistData.id,
-          updated_count: updated.length,
-        },
-      });
     }
   }
 };

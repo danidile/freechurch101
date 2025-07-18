@@ -3,19 +3,17 @@
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { profileT } from "@/utils/types/types";
 import { basicUserData } from "@/utils/types/userData";
-import { IoReturnDownForwardSharp } from "react-icons/io5";
-import { Button, Chip, Select, SelectItem } from "@heroui/react";
+import { IoReturnDownForwardSharp, IoSettingsSharp } from "react-icons/io5";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { IoSettingsSharp } from "react-icons/io5";
 import { updateProfileRole } from "./updateProfileRoleAction";
 
 const roles = [
   { key: 1, label: "Fondatore Chiesa", slug: "churchfounder" },
   { key: 2, label: "Admin Chiesa", slug: "churchadmin" },
-  // { key: 3, label: "Team Leader", slug: "teamleader" },
   { key: 8, label: "Membro Chiesa", slug: "churchmember" },
 ];
+
 export default function ModalRoleUpdate({
   peopleId,
   profile,
@@ -26,89 +24,80 @@ export default function ModalRoleUpdate({
   userData: basicUserData;
 }) {
   const [showSelect, setShowSelect] = useState<boolean>(false);
+
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<{ role: string }>({
     defaultValues: {
-      role: String(profile.role), // converti il numero in stringa
+      role: String(profile.role), // ensure current role is default selected
     },
   });
 
   const convertData = async (data: { role: string }) => {
-    console.log("Sent!");
-    updateProfileRole(profile, data.role.toString());
+    await updateProfileRole(profile, data.role);
+    setShowSelect(false); // close select after submit
   };
 
   return (
     <>
       {showSelect && hasPermission(userData.role as Role, "update:role") && (
         <form onSubmit={handleSubmit(convertData)}>
-          <div className="w-72 flex   gap-4 my-4">
+          <div className="w-72 flex gap-4 my-4 items-center">
             <Controller
               control={control}
               name="role"
               render={({ field }) => (
-                <Select
+                <select
                   {...field}
-                  label="Seleziona nuovo ruolo"
-                  size="sm"
-                  onSelectionChange={(keys) =>
-                    field.onChange(Number(Array.from(keys)[0]))
-                  }
+                  className="w-full border border-gray-300 rounded px-2 py-1 text-sm disabled:bg-gray-100"
+                  onChange={(e) => field.onChange(e.target.value)}
+                  disabled={isSubmitting}
                 >
                   {roles.map((role) => {
-                    if (
-                      role.label.length < 1 ||
-                      role.key === 9 ||
-                      role.key <= 1 ||
-                      role.key ===
-                        roles.find((r) => r.key === profile.role)?.key ||
-                      role.key <=
-                        roles.find((r) => r.slug === userData.role)?.key
-                    )
-                      return null;
-                    return <SelectItem key={role.key}>{role.label}</SelectItem>;
+                    return (
+                      <option key={role.key} value={String(role.key)}>
+                        {role.label}
+                      </option>
+                    );
                   })}
-                </Select>
+                </select>
               )}
             />
-
-            <Button
-              color="primary"
-              variant="shadow"
-              isIconOnly
+            <button
               type="submit"
-              size="lg"
               disabled={isSubmitting}
-              radius="sm"
+              className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              title="Aggiorna ruolo"
             >
               <IoReturnDownForwardSharp />
-            </Button>
+            </button>
           </div>
+          {isSubmitting && (
+            <p className="text-sm text-gray-600 italic">
+              Sto aggiornando il ruolo...
+            </p>
+          )}
         </form>
       )}
+
       {!showSelect && (
-        <Chip
-          radius="sm"
-          color="primary"
-          variant="flat"
-          className="mx-auto my-4"
-          endContent={
-            <div>
-              {userData &&
-                userData.id !== peopleId &&
-                hasPermission(userData.role as Role, "update:role") && (
-                  <div className="ml-3" onClick={() => setShowSelect(true)}>
-                    <IoSettingsSharp size={14} />
-                  </div>
-                )}
-            </div>
-          }
-        >
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-blue-100 text-blue-800 text-sm font-medium mx-auto my-4">
           {roles.find((r) => r.key === profile.role)?.label}
-        </Chip>
+          {userData &&
+            userData.id !== peopleId &&
+            hasPermission(userData.role as Role, "update:role") && (
+              <button
+                type="button"
+                onClick={() => setShowSelect(true)}
+                className="ml-2 text-blue-600 hover:text-blue-800"
+                aria-label="Modifica ruolo"
+              >
+                <IoSettingsSharp size={14} />
+              </button>
+            )}
+        </div>
       )}
     </>
   );

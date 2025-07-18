@@ -36,6 +36,7 @@ export default function BlockDatesComponent({}: {}) {
   const { userData, loading } = useUserStore();
 
   const [blockedDates, setBlockedDates] = useState<RangeValue[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
   useEffect(() => {
     const fetchEverything = async () => {
       // Now wait until user is definitely available
@@ -53,7 +54,7 @@ export default function BlockDatesComponent({}: {}) {
     };
 
     fetchEverything();
-  }, [userData.loggedIn, loading]);
+  }, [userData.loggedIn, loading, refreshKey]);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [value, setValue] = useState<RangeValue | null>({
@@ -92,7 +93,7 @@ export default function BlockDatesComponent({}: {}) {
 
   const deleteBlock = async (blockId: string) => {
     await deleteBlockoutAction({ blockId });
-
+    setRefreshKey((prev) => prev + 1); // increment to force refetch
     setBlockedDates((prev) => prev.filter((date) => date.id !== blockId));
   };
 

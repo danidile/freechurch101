@@ -108,8 +108,10 @@ export default function ChurchComponent() {
               return (
                 <tr key={index}>
                   <td className="py-[2px]">
-                    {" "}
-                    {item.name} {item.lastname}
+                    {item.name} {item.lastname}{" "}
+                    {item.role <= 2 && (
+                      <small className="font-bold">Admin</small>
+                    )}
                   </td>
                   <td className="py-[2px] hidden sm:table-cell">
                     {item.email}{" "}

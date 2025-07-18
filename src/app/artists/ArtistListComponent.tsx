@@ -6,6 +6,7 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { basicUserData } from "@/utils/types/userData";
+import Image from "next/image";
 
 type searchBar = {
   text: string;
@@ -70,9 +71,12 @@ export default function ArtistListComponent({
               href={`/artists/${artist.username}`}
             >
               <div className="artist-list" key={artist.username}>
-                <img
+                <Image
+                  src={`/images/${artist.username}.webp`}
+                  alt={artist.artist_name}
+                  width={64}
+                  height={64}
                   className="cover-artist-list"
-                  src={`images/${artist.username}.webp`}
                 />
 
                 <p className="font-medium" key={artist.username}>

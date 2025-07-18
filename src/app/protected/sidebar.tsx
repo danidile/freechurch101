@@ -135,23 +135,7 @@ export default function Sidebar() {
             </div>
           </Link>
         </li>
-        <li className="sidebar-li">
-          <Link className="sidebar-link" href="/artists">
-            <div className="sidebar-element">
-              <FaCompass />
-              <p>Esplora</p>
-            </div>
-          </Link>
-        </li>
-        {userData.church_id && (
-          <li className=" mt-6! border-b ">
-            <span className="sidebar-link">
-              <div className="sidebar-element sidebar-title">
-                <h6>La mia Chiesa</h6>
-              </div>
-            </span>
-          </li>
-        )}
+
         {userData.church_id && (
           <>
             {(hasPermission(userData.role as Role, "read:churchmembers") ||
@@ -181,33 +165,26 @@ export default function Sidebar() {
               </li>
             )}
             <li className="sidebar-li">
-              <Link
-                className="sidebar-link"
-                href="/protected/blockouts-calendar"
-              >
-                <div className="sidebar-element">
-                  <FaRegCalendarAlt />
-                  <p> Calendario Presenze</p>
-                </div>
-              </Link>
-            </li>
-
-            <li className="sidebar-li">
-              <Link className="sidebar-link" href="/songs">
-                <div className="sidebar-element">
-                  <MdOutlineLibraryMusic />
-                  <p>Canzoni</p>
-                </div>
-              </Link>
-            </li>
-            <li className="sidebar-li">
               <Link className="sidebar-link" href="/setlist">
                 <div className="sidebar-element">
-                  <MdOutlineEventNote />
+                  <FaRegCalendarAlt />
                   <p>Eventi</p>
                 </div>
               </Link>
             </li>
+            {userData.leaderOf.length >= 1 && (
+              <li className="sidebar-li">
+                <Link
+                  className="sidebar-link"
+                  href="/protected/blockouts-calendar"
+                >
+                  <div className="sidebar-element">
+                    <FaRegCalendarAlt />
+                    <p> Calendario Presenze</p>
+                  </div>
+                </Link>
+              </li>
+            )}
 
             <li className="sidebar-li">
               <Link className="sidebar-link" href="/protected/teams">
@@ -229,8 +206,15 @@ export default function Sidebar() {
             </Link>
           </li>
         )}
-
-        <li className="sidebar-li mt-6! border-b "></li>
+        <li className="sidebar-li">
+          <Link className="sidebar-link" href="/artists">
+            <div className="sidebar-element">
+              <FaCompass />
+              <p>Esplora</p>
+            </div>
+          </Link>
+        </li>
+        <li className="sidebar-li mt-10! "></li>
         <li className="sidebar-li">
           <button
             className="sidebar-link justify-center! logoutcolors"

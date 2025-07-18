@@ -115,6 +115,7 @@ const ROLES = {
     // CHURCHMEMBERS
     "read:churchmembers",
     "insert:churchmembers",
+    "personalize:church",
 
     // ARTISTS
     "read:artists",
