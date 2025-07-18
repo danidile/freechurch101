@@ -7,15 +7,18 @@ import { basicUserData } from "@/utils/types/userData";
 export default function SetListTabs({
   setlists,
   userData,
+  viewMode,
 }: {
   setlists: setListT[];
   userData: basicUserData;
+  viewMode?: string;
 }) {
   const { eventTypes } = useChurchStore();
   console.log(eventTypes);
   const currentDate = new Date();
-  const nextDate = new Date(currentDate);
+  let nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
+
   let month = "ve";
 
   return (
@@ -37,7 +40,10 @@ export default function SetListTabs({
             isSunday = true;
           }
 
-          if (nextDate <= date) {
+          const isFutureOrToday =
+            date >= new Date(new Date().setHours(0, 0, 0, 0));
+
+          if (isFutureOrToday || viewMode === "calendar") {
             let newMonth = false;
             if (setlistmonth !== month) {
               month = setlistmonth;
@@ -46,7 +52,6 @@ export default function SetListTabs({
             const matched = eventTypes?.find(
               (event) => event.key === setlist.event_type
             );
-            const date = new Date(setlist.hour);
             return (
               <div key={index}>
                 {newMonth && (

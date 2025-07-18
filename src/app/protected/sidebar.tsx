@@ -24,6 +24,8 @@ import {
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { FaCompass } from "react-icons/fa6";
+import LogsComponent from "../admin/logs/LogsComponent";
+import { LuLogs } from "react-icons/lu";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -216,6 +218,16 @@ export default function Sidebar() {
               </Link>
             </li>
           </>
+        )}
+        {userData.email === "danidile94@gmail.com" && (
+          <li className="sidebar-li">
+            <Link className="sidebar-link" href="/admin/logs">
+              <div className="sidebar-element">
+                <LuLogs className="dashboard-icon" />
+                <p>Logs</p>
+              </div>
+            </Link>
+          </li>
         )}
 
         <li className="sidebar-li mt-6! border-b "></li>

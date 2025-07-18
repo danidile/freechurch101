@@ -3,23 +3,30 @@ import React, { useState, useRef, useEffect } from "react";
 import { clsx } from "clsx";
 import Link from "next/link";
 
-type Option = {
+export type CDropdownOption = {
   label: string;
   value: string;
   href?: string;
+  color?: string;
 };
 
 type DropdownProps = {
-  options: Option[];
+  options: CDropdownOption[];
   placeholder?: React.ReactNode;
+  radius?: string;
+  onSelect?: (option: CDropdownOption) => void;
+  buttonPadding?: string;
 };
 
 export default function CDropdown({
   options,
   placeholder = "Select...",
+  radius,
+  onSelect,
+  buttonPadding,
 }: DropdownProps) {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Option | null>(null);
+  const [selected, setSelected] = useState<CDropdownOption | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,9 +54,10 @@ export default function CDropdown({
     };
   }, []);
 
-  const handleSelect = (option: Option) => {
+  const handleSelect = (option: CDropdownOption) => {
     setSelected(option);
     setOpen(false);
+    onSelect?.(option);
   };
 
   const isIconOnly = typeof placeholder !== "string";
@@ -59,7 +67,12 @@ export default function CDropdown({
       <button
         onClick={() => setOpen(!open)}
         className={clsx(
-          "bg-white cursor-pointer select-none rounded-md text-left flex items-center justify-center transition-all duration-200 hover:bg-gray-100  border-gray-300",
+          {
+            " !p-0": buttonPadding === "sm",
+            "bg-white": !isIconOnly,
+            "bg-gray-100": isIconOnly,
+            "bg-white cursor-pointer select-none rounded-md text-left flex items-center justify-center transition-all duration-200   ": true,
+          },
           isIconOnly ? "w-10 h-10 p-2" : "min-w-[150px] px-3 py-2"
         )}
         aria-haspopup="listbox"
@@ -73,10 +86,12 @@ export default function CDropdown({
         role="listbox"
         tabIndex={-1}
         className={clsx(
-          "absolute p-2 top-full left-1/2 mt-1 rounded-md border border-gray-200 bg-white shadow-lg overflow-hidden z-50 transition-all duration-300 ease-out transform -translate-x-1/2",
+          "absolute p-2 top-full mt-1 rounded-md border border-gray-200 bg-white shadow-sm overflow-hidden z-50 transition-all duration-300 ease-out transform",
           open
             ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 -translate-y-4 scale-95 pointer-events-none"
+            : "opacity-0 -translate-y-4 scale-95 pointer-events-none",
+          // Alignment behavior
+          "max-sm:right-0 max-sm:left-auto sm:left-1/2 sm:-translate-x-1/2"
         )}
         style={{
           minWidth: 200,
@@ -91,9 +106,9 @@ export default function CDropdown({
               role="option"
               tabIndex={0}
               className={clsx(
-                "transition-colors block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-sm",
+                "transition-all duration-150 block px-3 py-1 my-1 rounded hover:bg-gray-50 hover:text-gray-500 cursor-pointer text-sm",
                 selected?.value === option.value
-                  ? "bg-blue-50 text-blue-700"
+                  ? "bg-blue-50 text-blue-900"
                   : "text-gray-700"
               )}
               onClick={() => handleSelect(option)}
@@ -112,10 +127,9 @@ export default function CDropdown({
               role="option"
               tabIndex={0}
               className={clsx(
-                "px-3 py-2 rounded hover:bg-gray-100 cursor-pointer text-sm transition-colors",
-                selected?.value === option.value
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-700"
+                "transition-all duration-150 px-3 py-1 my-1 rounded text-sm ",
+                option.color === "danger" &&
+                  "bg-white hover:bg-red-50 text-red-600 cursor-pointer"
               )}
               onClick={() => handleSelect(option)}
               onKeyDown={(e) => {

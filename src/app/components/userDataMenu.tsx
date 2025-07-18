@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 import Link from "next/link";
 import { FaInbox } from "react-icons/fa";
+import CDropdown, { CDropdownOption } from "./CDropdown";
 
 export default function UserDataMenu() {
   const router = useRouter();
@@ -46,9 +47,78 @@ export default function UserDataMenu() {
       img.src = imageUrl;
     }
   }, [userData?.id]);
+
+  const options = [
+    {
+      label: userData.email,
+      value: "email",
+    },
+    {
+      label: "Account",
+      value: "account",
+      href: "/protected/dashboard/account",
+    },
+    {
+      label: "Esplora",
+      value: "explore",
+      href: "/",
+    },
+    ...(hasPermission(userData.role as Role, "view:teams")
+      ? [
+          {
+            label: "Chiesa",
+            value: "church",
+            href: "/protected/church",
+          },
+          {
+            label: "Teams",
+            value: "teams",
+            href: "/protected/teams",
+          },
+        ]
+      : []),
+    {
+      label: "Eventi",
+      value: "events",
+      href: "/setlist",
+    },
+    {
+      label: "Canzoni",
+      value: "songs",
+      href: "/songs",
+    },
+    {
+      label: "Aggiorna Account",
+      value: "editaccount",
+      href: "/protected/dashboard/account/completeAccount",
+    },
+    {
+      label: "Esci",
+      value: "logout",
+      color: "danger",
+    },
+  ];
+
   if (userData.loggedIn) {
     return (
       <div className="w-[100px] flex flex-row justify-end items-center gap-5 ml-auto mr-9">
+        <CDropdown
+          options={options}
+          buttonPadding="sm"
+          placeholder={
+            <img
+              src={avatarUrl}
+              className="w-full h-full object-cover rounded-full"
+            />
+          }
+          onSelect={(option) => {
+            if (option.value === "logout") {
+              logouter();
+            } else {
+              console.log("Selected:", option);
+            }
+          }}
+        />
         <Badge
           size="md"
           color="danger"
@@ -65,7 +135,7 @@ export default function UserDataMenu() {
             <FaInbox size={21} />
           </Button>
         </Badge>
-        <Dropdown placement="bottom-end">
+        {/* <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Avatar
               as="button"
@@ -129,7 +199,7 @@ export default function UserDataMenu() {
               Esci
             </DropdownItem>
           </DropdownMenu>
-        </Dropdown>
+        </Dropdown> */}
       </div>
     );
   }

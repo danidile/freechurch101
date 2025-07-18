@@ -8,6 +8,7 @@ import {
   songType,
   teamData,
 } from "@/utils/types/types";
+import { logEvent } from "@/utils/supabase/log";
 
 export const addSetlist = async (formData: setListT) => {
   const supabase = await createClient();
@@ -40,6 +41,17 @@ export const addSetlist = async (formData: setListT) => {
     .single();
   if (error) {
     console.log("error in setlist insert", error);
+    await logEvent({
+      event: "add_setlist_error",
+      level: "error",
+      user_id: user?.id ?? null,
+      meta: {
+        message: error.message,
+        code: error.code,
+        church: church,
+        context: "setlist insert",
+      },
+    });
     return;
   }
   // Take the id of the setlist just created
@@ -69,6 +81,17 @@ export const addSetlist = async (formData: setListT) => {
     .select();
   if (errorTeam) {
     console.error("errorTeam", errorTeam);
+    await logEvent({
+      event: "add_setlist_error_event_team",
+      level: "error",
+      user_id: user?.id ?? null,
+      meta: {
+        message: errorTeam.message,
+        code: errorTeam.code,
+        church: church,
+        context: "setlist event-team insert",
+      },
+    });
   }
 
   // Separate by type
@@ -100,6 +123,16 @@ export const addSetlist = async (formData: setListT) => {
       .select();
     if (error) {
       console.error(error);
+      await logEvent({
+        event: "add_setlist_error",
+        level: "error",
+        user_id: user?.id ?? null,
+        meta: {
+          message: error.message,
+          code: error.code,
+          context: "setlist-songs insert",
+        },
+      });
     } else {
       console.log("✅ Songs updated Successfully");
     }
@@ -119,6 +152,16 @@ export const addSetlist = async (formData: setListT) => {
       .select();
     if (error) {
       console.error(error);
+      await logEvent({
+        event: "add_setlist_error",
+        level: "error",
+        user_id: user?.id ?? null,
+        meta: {
+          message: error.message,
+          code: error.code,
+          context: "setlist-notes insert",
+        },
+      });
     } else {
       console.log("✅ Notes updated Successfully");
     }
@@ -140,6 +183,16 @@ export const addSetlist = async (formData: setListT) => {
       .select();
     if (error) {
       console.error(error);
+      await logEvent({
+        event: "add_setlist_error",
+        level: "error",
+        user_id: user?.id ?? null,
+        meta: {
+          message: error.message,
+          code: error.code,
+          context: "setlist-titles insert",
+        },
+      });
     } else {
       console.log("✅ Titles updated Successfully");
     }

@@ -388,6 +388,7 @@ export type GroupedNotificationsT = {
   pending?: NotificationsT;
   confirmed?: NotificationsT;
   denied?: NotificationsT;
+  info?: NotificationsT;
 };
 
 export type expandedTeamT = {

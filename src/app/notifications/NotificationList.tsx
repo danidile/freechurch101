@@ -1,143 +1,142 @@
 "use client";
 
-import {
-  GroupedNotificationsT,
-  NotificationsT,
-  notificationT,
-} from "@/utils/types/types";
+import { GroupedNotificationsT, notificationT } from "@/utils/types/types";
 import { useEffect, useState } from "react";
 import NotificationElement from "./Notification";
-import { Tabs, Tab, Spinner } from "@heroui/react";
-import { AnimatePresence } from "framer-motion";
-import { getSongs } from "@/hooks/GET/getSongs";
-import { useUserStore } from "@/store/useUserStore";
-import LoadingSongsPage from "../songs/loading";
+import { Spinner } from "@heroui/react";
+import { AnimatePresence, motion } from "framer-motion";
 import { getNotificationsById } from "@/hooks/GET/getNotificationsById";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function NotificationList() {
   const { userData, fetchUser, loading } = useUserStore();
-  const [loadingNotifications, setLoadingNotifications] = useState(true);
-  const [notificationState, setNotificationState] =
-    useState<GroupedNotificationsT>();
+  const [notifications, setNotifications] = useState<GroupedNotificationsT>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [expandedNotificationId, setExpandedNotificationId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
-    const fetchEverything = async () => {
+    const fetchData = async () => {
       if (!userData.loggedIn && !loading) {
         await fetchUser();
       }
 
-      // Now wait until user is definitely available
       if (userData.loggedIn && !loading) {
-        const fetchedNotifications = await getNotificationsById(userData.id);
-        setNotificationState(fetchedNotifications);
-        setLoadingNotifications(false);
+        const fetched = await getNotificationsById(userData.id);
+        setNotifications(fetched);
+        setIsLoading(false);
       }
     };
 
-    fetchEverything();
-  }, [userData.loggedIn, loading]);
+    fetchData();
+  }, [userData.loggedIn, loading, fetchUser]);
 
-  if (loading || loadingNotifications || !userData.loggedIn)
-    return (
-      <div className="container-sub">
-        <Spinner size="lg" />
-      </div>
-    );
-
-  const currentDate = new Date();
-  const nextDate = new Date(currentDate);
-  nextDate.setDate(currentDate.getDate() - 1);
-
-  const moveFromList = (
-    NotificationId: string,
+  const moveNotification = (
+    id: string,
     onClose: () => void,
-    destinationType: string
+    destination: keyof GroupedNotificationsT
   ) => {
-    setNotificationState((prevState: GroupedNotificationsT) => {
-      let movedNotification: notificationT | undefined;
+    setNotifications((prev) => {
+      if (!prev) return prev;
 
-      // Create a new state object while extracting the notification to be moved
-      const newState = Object.keys(prevState).reduce((acc, key) => {
-        const typedKey = key as keyof GroupedNotificationsT;
+      let moved: notificationT | undefined;
 
-        const filteredNotifications = prevState[typedKey].notifications.filter(
-          (notification) => {
-            if (notification.id === NotificationId) {
-              movedNotification = notification; // Capture the notification to move
-              return false;
-            }
-            return true;
+      const updated = Object.entries(prev).reduce((acc, [key, value]) => {
+        const filtered = value.notifications.filter((n) => {
+          if (n.id === id) {
+            moved = n;
+            return false;
           }
-        );
+          return true;
+        });
 
-        acc[typedKey] = {
-          ...prevState[typedKey],
-          notifications: filteredNotifications,
+        acc[key as keyof GroupedNotificationsT] = {
+          ...value,
+          notifications: filtered,
         };
         return acc;
       }, {} as GroupedNotificationsT);
 
-      // If the notification was found, add it to the destination group
-      if (movedNotification) {
-        const typedDestinationKey =
-          destinationType as keyof GroupedNotificationsT;
-        newState[typedDestinationKey] = {
-          ...prevState[typedDestinationKey],
-          notifications: [
-            ...prevState[typedDestinationKey].notifications,
-            movedNotification,
-          ],
+      if (moved) {
+        updated[destination] = {
+          ...updated[destination],
+          notifications: [...updated[destination].notifications, moved],
         };
       }
 
-      return newState;
+      return updated;
     });
 
     onClose();
   };
 
+  if (isLoading || loading || !userData.loggedIn) {
+    return (
+      <div className="flex items-center justify-center w-full h-40">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (
+    !notifications ||
+    Object.values(notifications).every(
+      (group) => group.notifications.length === 0
+    )
+  ) {
+    return (
+      <div className="text-center text-gray-500 py-10">
+        Nessuna notifica al momento.
+      </div>
+    );
+  }
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
   return (
-    <div className=" max-w-[500px] w-full">
-      <Tabs
-        key="underlined"
-        aria-label="Tabs variants"
-        variant="underlined"
-        fullWidth
-      >
-        {Object.entries(notificationState).map(
-          ([status, notificationsByType], index) => {
-            if (!notificationsByType.notifications) return null;
-            if (notificationsByType.notifications.length > 0) {
-              return (
-                <Tab
-                  className="w-full"
-                  key={index}
-                  title={notificationsByType.details.title}
-                >
-                  <AnimatePresence>
-                    {notificationsByType.notifications &&
-                      notificationsByType.notifications.map(
-                        (notification: notificationT, index) => {
-                          return (
-                            <div key={index}>
-                              <NotificationElement
-                                details={notificationsByType.details}
-                                type={status}
-                                notification={notification}
-                                nextDate={nextDate}
-                                moveFromList={moveFromList}
-                              />
-                            </div>
-                          );
-                        }
-                      )}
-                  </AnimatePresence>
-                </Tab>
-              );
-            }
-          }
-        )}
-      </Tabs>
+    <div className="w-full max-w-md space-y-10 px-4 py-2">
+      {Object.entries(notifications).map(([key, group]) => {
+        if (group.notifications.length === 0) return null;
+
+        return (
+          <div key={key}>
+            <div className="sticky top-0 z-10 bg-white/80 backdrop-blur py-2 mb-2">
+              <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                {group.details.title}
+              </h2>
+            </div>
+            <div className="space-y-4">
+              <AnimatePresence>
+                {group.notifications.map((n) => (
+                  <motion.div
+                    key={n.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <NotificationElement
+                      type={key as keyof GroupedNotificationsT}
+                      notification={n}
+                      details={group.details}
+                      nextDate={yesterday}
+                      moveFromList={moveNotification}
+                      isExpanded={expandedNotificationId === n.id} // <-- new prop
+                      setExpanded={(id: string) =>
+                        setExpandedNotificationId((currentId) =>
+                          currentId === id ? null : id
+                        )
+                      } // <-- new prop
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

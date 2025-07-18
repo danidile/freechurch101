@@ -1,7 +1,9 @@
 "use server";
+
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { songSchema } from "@/utils/types/types";
+import { logEvent } from "@/utils/supabase/log"; // correct path
 
 export const addSong = async (data: songSchema) => {
   const supabase = await createClient();
@@ -15,7 +17,8 @@ export const addSong = async (data: songSchema) => {
     .select("*")
     .eq("id", user?.id)
     .single();
-  const church: string = profile.church;
+
+  const church: string = profile?.church;
 
   if (profile) {
     const { error } = await supabase
@@ -30,8 +33,22 @@ export const addSong = async (data: songSchema) => {
         church: church,
       })
       .select();
+
     if (error) {
       console.error(error.code + " " + error.message);
+
+      await logEvent({
+        event: "add_song_error",
+        level: "error",
+        user_id: user?.id || null,
+        meta: {
+          message: error.message,
+          code: error.code,
+          church: church,
+          song_title: data.song_title,
+        },
+      });
+
       return encodedRedirect("error", "/songs", error.message);
     } else {
       return encodedRedirect(
@@ -40,5 +57,16 @@ export const addSong = async (data: songSchema) => {
         "Grazie per aver aggiunto la canzone!"
       );
     }
+  } else {
+    await logEvent({
+      event: "add_song_error",
+      level: "error",
+      user_id: user?.id || null,
+      meta: {
+        message: "Profilo non trovato.",
+      },
+    });
+
+    return encodedRedirect("error", "/songs", "Profilo non trovato.");
   }
 };

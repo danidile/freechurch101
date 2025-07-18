@@ -10,7 +10,7 @@ import {
 export const getNotificationsById = async (
   userId: string
 ): Promise<GroupedNotificationsT> => {
-  const supabase = await createClient();
+  const supabase = createClient();
   const today = new Date().toISOString().split("T")[0]; // Get today's date in "YYYY-MM-DD"
 
   let { data: notifications, error } = await supabase

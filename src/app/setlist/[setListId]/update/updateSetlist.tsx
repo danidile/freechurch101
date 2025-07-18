@@ -4,6 +4,8 @@ import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 import { encodedRedirect } from "@/utils/utils";
+import { logEvent } from "@/utils/supabase/log";
+// 🔥 NEW: Added logging import
 
 function diffById<T extends { id?: string }>(
   newItems: T[],
@@ -69,7 +71,8 @@ function prepareScheduleDiff(
 export const updateSetlistData = async (
   updatedSetlist: setListT,
   setlistData: setListT,
-  supabase: SupabaseClient<any, any, any>
+  supabase: SupabaseClient<any, any, any>,
+  user_id?: string
 ) => {
   let hasChanged: boolean = false;
 
@@ -84,7 +87,7 @@ export const updateSetlistData = async (
     hasChanged = true;
   }
 
-  //If data ahs changed update it
+  //If data has changed update it
   if (hasChanged) {
     const { data: setlistSuccess, error: setlistError } = await supabase
       .from("setlist")
@@ -101,18 +104,58 @@ export const updateSetlistData = async (
     if (setlistError) {
       console.log("\x1b[41m Error in setlist Data Update \x1b[0m");
       console.log(setlistError);
+
+      await logEvent({
+        event: "update_setlist_data_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: setlistError.message,
+          code: setlistError.code,
+          context: "setlist data update",
+          setlist_id: setlistData.id,
+        },
+      });
     } else {
       console.log("\x1b[42m Success in setlist Data Update \x1b[0m");
+
+      await logEvent({
+        event: "update_setlist_data_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "setlist data update",
+          setlist_id: setlistData.id,
+          changes: {
+            date: updatedSetlist.date,
+            room: updatedSetlist.room,
+            hour: updatedSetlist.hour,
+            event_type: updatedSetlist.event_type,
+            private: updatedSetlist.private,
+          },
+        },
+      });
     }
   } else {
     console.log("\x1b[42m Setlist Data was not changed \x1b[0m");
+
+    await logEvent({
+      event: "update_setlist_data_no_changes",
+      level: "info",
+      user_id: user_id ?? null,
+      meta: {
+        context: "setlist data update",
+        setlist_id: setlistData.id,
+      },
+    });
   }
 };
 
 export const updateSetlistSchedule = async (
   updatedSetlist: setListT,
   setlistData: setListT,
-  supabase: SupabaseClient<any, any, any>
+  supabase: SupabaseClient<any, any, any>,
+  user_id?: string
 ) => {
   const diff = prepareScheduleDiff(
     updatedSetlist.schedule,
@@ -122,6 +165,8 @@ export const updateSetlistSchedule = async (
   console.log("Songs to insert:", diff.songs.inserted);
   console.log("Songs to update:", diff.songs.updated);
   console.log("Songs to delete:", diff.songs.deleted);
+
+  // Delete songs
   const songsIdsToDelete = diff.songs.deleted
     .map((item) => item.id)
     .filter(Boolean);
@@ -133,11 +178,38 @@ export const updateSetlistSchedule = async (
       .in("id", songsIdsToDelete);
 
     if (deleteError) {
-      console.error("🔥 Error deleting removed setlist-songs", deleteError);
+      console.log("🔥 Error deleting removed setlist-songs", deleteError);
+
+      await logEvent({
+        event: "delete_setlist_songs_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: deleteError.message,
+          code: deleteError.code,
+          context: "setlist-songs delete",
+          setlist_id: setlistData.id,
+          song_ids: songsIdsToDelete,
+        },
+      });
     } else {
       console.log("🗑️ Deleted Songs successfully", songsIdsToDelete);
+
+      await logEvent({
+        event: "delete_setlist_songs_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "setlist-songs delete",
+          setlist_id: setlistData.id,
+          deleted_count: songsIdsToDelete.length,
+          song_ids: songsIdsToDelete,
+        },
+      });
     }
   }
+
+  // Upsert songs
   const songsToUpsert = diff.songs.inserted
     .concat(diff.songs.updated)
     .map((item, index) => {
@@ -156,12 +228,39 @@ export const updateSetlistSchedule = async (
       .upsert(songsToUpsert, { onConflict: "id" });
 
     if (error) {
-      console.error("❌ Error upserting songs:", error);
+      console.log("❌ Error upserting songs:", error);
+
+      await logEvent({
+        event: "upsert_setlist_songs_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: error.message,
+          code: error.code,
+          context: "setlist-songs upsert",
+          setlist_id: setlistData.id,
+          songs_count: songsToUpsert.length,
+        },
+      });
     } else {
       console.log("✅ songs upserted successfully:", data);
+
+      await logEvent({
+        event: "upsert_setlist_songs_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "setlist-songs upsert",
+          setlist_id: setlistData.id,
+          upserted_count: songsToUpsert.length,
+          inserted_count: diff.songs.inserted.length,
+          updated_count: diff.songs.updated.length,
+        },
+      });
     }
   }
 
+  // Delete notes
   console.log("Notes to insert:", diff.notes.inserted);
   console.log("Notes to update:", diff.notes.updated);
   console.log("Notes to delete:", diff.notes.deleted);
@@ -176,11 +275,37 @@ export const updateSetlistSchedule = async (
       .in("id", notesIdsToDelete);
 
     if (deleteError) {
-      console.error("🔥 Error deleting removed setlist-notes", deleteError);
+      console.log("🔥 Error deleting removed setlist-notes", deleteError);
+
+      await logEvent({
+        event: "delete_setlist_notes_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: deleteError.message,
+          code: deleteError.code,
+          context: "setlist-notes delete",
+          setlist_id: setlistData.id,
+          note_ids: notesIdsToDelete,
+        },
+      });
     } else {
       console.log("🗑️ Deleted Notes successfully", notesIdsToDelete);
+
+      await logEvent({
+        event: "delete_setlist_notes_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "setlist-notes delete",
+          setlist_id: setlistData.id,
+          deleted_count: notesIdsToDelete.length,
+        },
+      });
     }
   }
+
+  // Upsert notes
   const notesToUpsert = diff.notes.inserted
     .concat(diff.notes.updated)
     .map((item, index) => {
@@ -197,12 +322,39 @@ export const updateSetlistSchedule = async (
       .upsert(notesToUpsert, { onConflict: "id" });
 
     if (error) {
-      console.error("❌ Error upserting notes:", error);
+      console.log("❌ Error upserting notes:", error);
+
+      await logEvent({
+        event: "upsert_setlist_notes_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: error.message,
+          code: error.code,
+          context: "setlist-notes upsert",
+          setlist_id: setlistData.id,
+          notes_count: notesToUpsert.length,
+        },
+      });
     } else {
       console.log("✅ Notes upserted successfully:", data);
+
+      await logEvent({
+        event: "upsert_setlist_notes_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "setlist-notes upsert",
+          setlist_id: setlistData.id,
+          upserted_count: notesToUpsert.length,
+          inserted_count: diff.notes.inserted.length,
+          updated_count: diff.notes.updated.length,
+        },
+      });
     }
   }
 
+  // Delete titles
   console.log("Titles to insert:", diff.titles.inserted);
   console.log("Titles to update:", diff.titles.updated);
   console.log("Titles to delete:", diff.titles.deleted);
@@ -217,11 +369,37 @@ export const updateSetlistSchedule = async (
       .in("id", titlesIdsToDelete);
 
     if (deleteError) {
-      console.error("🔥 Error deleting removed setlist-titles", deleteError);
+      console.log("🔥 Error deleting removed setlist-titles", deleteError);
+
+      await logEvent({
+        event: "delete_setlist_titles_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: deleteError.message,
+          code: deleteError.code,
+          context: "setlist-titles delete",
+          setlist_id: setlistData.id,
+          title_ids: titlesIdsToDelete,
+        },
+      });
     } else {
       console.log("🗑️ Deleted titles successfully", titlesIdsToDelete);
+
+      await logEvent({
+        event: "delete_setlist_titles_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "setlist-titles delete",
+          setlist_id: setlistData.id,
+          deleted_count: titlesIdsToDelete.length,
+        },
+      });
     }
   }
+
+  // Upsert titles
   const titlesToUpsert = diff.titles.inserted
     .concat(diff.titles.updated)
     .map((item, index) => {
@@ -238,9 +416,35 @@ export const updateSetlistSchedule = async (
       .upsert(titlesToUpsert, { onConflict: "id" });
 
     if (error) {
-      console.error("❌ Error upserting titles:", error);
+      console.log("❌ Error upserting titles:", error);
+
+      await logEvent({
+        event: "upsert_setlist_titles_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: error.message,
+          code: error.code,
+          context: "setlist-titles upsert",
+          setlist_id: setlistData.id,
+          titles_count: titlesToUpsert.length,
+        },
+      });
     } else {
       console.log("✅ Titles upserted successfully:", data);
+
+      await logEvent({
+        event: "upsert_setlist_titles_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "setlist-titles upsert",
+          setlist_id: setlistData.id,
+          upserted_count: titlesToUpsert.length,
+          inserted_count: diff.titles.inserted.length,
+          updated_count: diff.titles.updated.length,
+        },
+      });
     }
   }
 };
@@ -253,6 +457,7 @@ type FlattenedMember = {
   roles: string;
   status: string;
 };
+
 function flattenTeams(setlist: setListT): FlattenedMember[] {
   return (
     setlist.teams?.flatMap(
@@ -280,7 +485,8 @@ function compareTeamMembers(a: FlattenedMember, b: FlattenedMember) {
 export const updateSetlistTeam = async (
   updatedSetlist: setListT,
   setlistData: setListT,
-  supabase: SupabaseClient<any, any, any>
+  supabase: SupabaseClient<any, any, any>,
+  user_id?: string
 ) => {
   const newMembers = flattenTeams(updatedSetlist);
   const oldMembers = flattenTeams(setlistData);
@@ -291,13 +497,12 @@ export const updateSetlistTeam = async (
     compareTeamMembers
   );
 
-  // if (!setlistData.id) return;
-
   console.log("⚙️ Team Members inserted", inserted);
   console.log("⚙️ Team Members deleted", deleted);
   console.log("⚙️ Team Members updated", updated);
-  const teamMemberstoDelete = deleted.map((item) => item.id).filter(Boolean);
 
+  // Delete team members
+  const teamMemberstoDelete = deleted.map((item) => item.id).filter(Boolean);
   console.log("🗑️ Ids teamMembers to delete:", teamMemberstoDelete);
   if (teamMemberstoDelete.length > 0) {
     const { error: deleteError } = await supabase
@@ -306,11 +511,37 @@ export const updateSetlistTeam = async (
       .in("id", teamMemberstoDelete);
 
     if (deleteError) {
-      console.error("🔥 Error deleting removed setlist-titles", deleteError);
+      console.log("🔥 Error deleting removed event-team", deleteError);
+
+      await logEvent({
+        event: "delete_setlist_team_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: deleteError.message,
+          code: deleteError.code,
+          context: "event-team delete",
+          setlist_id: setlistData.id,
+          member_ids: teamMemberstoDelete,
+        },
+      });
     } else {
-      console.log("🗑️ Deleted titles successfully", teamMemberstoDelete);
+      console.log("🗑️ Deleted team members successfully", teamMemberstoDelete);
+
+      await logEvent({
+        event: "delete_setlist_team_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "event-team delete",
+          setlist_id: setlistData.id,
+          deleted_count: teamMemberstoDelete.length,
+        },
+      });
     }
   }
+
+  // Insert team members
   if (inserted.length > 0) {
     const insertedWithoutIds = inserted.map(({ id, ...rest }) => rest);
 
@@ -320,11 +551,37 @@ export const updateSetlistTeam = async (
       .select();
 
     if (insertError) {
-      console.error("🔥 Error Inserting new TeamMembers", insertError);
+      console.log("🔥 Error Inserting new TeamMembers", insertError);
+
+      await logEvent({
+        event: "insert_setlist_team_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: insertError.message,
+          code: insertError.code,
+          context: "event-team insert",
+          setlist_id: setlistData.id,
+          members_count: inserted.length,
+        },
+      });
     } else {
-      console.log("🗑️ TeamMembers Inserted successfully", inserted);
+      console.log("✅ TeamMembers Inserted successfully", inserted);
+
+      await logEvent({
+        event: "insert_setlist_team_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "event-team insert",
+          setlist_id: setlistData.id,
+          inserted_count: inserted.length,
+        },
+      });
     }
   }
+
+  // Update team members
   if (updated.length > 0) {
     const updateResults = await Promise.all(
       updated.map(({ id, ...data }) => {
@@ -340,23 +597,47 @@ export const updateSetlistTeam = async (
 
     const errors = updateResults.filter((r) => r.error);
     if (errors.length > 0) {
-      console.error("🔥 Errors updating members:", errors);
+      console.log("🔥 Errors updating members:", errors);
+
+      await logEvent({
+        event: "update_setlist_team_error",
+        level: "error",
+        user_id: user_id ?? null,
+        meta: {
+          message: "Multiple update errors",
+          context: "event-team update",
+          setlist_id: setlistData.id,
+          errors: errors.map((e) => e.error),
+          attempted_updates: updated.length,
+        },
+      });
     } else {
       console.log("✅ Team members updated successfully");
+
+      await logEvent({
+        event: "update_setlist_team_success",
+        level: "info",
+        user_id: user_id ?? null,
+        meta: {
+          context: "event-team update",
+          setlist_id: setlistData.id,
+          updated_count: updated.length,
+        },
+      });
     }
   }
 };
 
 export const updateSetlist = async (
   updatedSetlist: setListT,
-  setlistData: setListT
+  setlistData: setListT,
+  user_id?: string
 ) => {
-  // check if generic data has changed
   const supabase = await createClient();
 
-  updateSetlistData(updatedSetlist, setlistData, supabase);
-  updateSetlistSchedule(updatedSetlist, setlistData, supabase);
-  updateSetlistTeam(updatedSetlist, setlistData, supabase);
+  await updateSetlistData(updatedSetlist, setlistData, supabase, user_id);
+  await updateSetlistSchedule(updatedSetlist, setlistData, supabase, user_id);
+  await updateSetlistTeam(updatedSetlist, setlistData, supabase, user_id);
 
   return encodedRedirect(
     "success",
