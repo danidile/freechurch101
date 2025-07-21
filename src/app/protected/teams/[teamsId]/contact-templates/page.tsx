@@ -25,7 +25,7 @@ type EmailTemplate = {
   text_template: string;
 };
 
-export function parseTemplate(template: string, data: Record<string, string>) {
+function parseTemplate(template: string, data: Record<string, string>) {
   return template.replace(
     /{{(.*?)}}/g,
     (_, key) => data[key.trim()] || `{{${key.trim()}}}`
