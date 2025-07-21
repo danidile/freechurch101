@@ -47,6 +47,7 @@ export const inviteRegristrationAction = async (
         },
         level: "warn",
       });
+      return null;
     } else {
       console.log("Invite found:", pending_invites);
       const { data, error } = await supabase.auth.signUp({

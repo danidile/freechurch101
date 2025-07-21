@@ -3,7 +3,7 @@ import LoadingSongsPage from "@/app/songs/loading";
 import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
 import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
 import { useUserStore } from "@/store/useUserStore";
-import { profileSetlistsT } from "@/utils/types/types";
+import { ChipColor, profileSetlistsT } from "@/utils/types/types";
 import {
   Button,
   Card,
@@ -20,16 +20,17 @@ import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
 import { Alert } from "@heroui/alert";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
-import { FaExternalLinkAlt, FaPlus } from "react-icons/fa";
+import { FaExternalLinkAlt, FaPlus, FaRegCheckCircle, FaRegClock } from "react-icons/fa";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useChurchStore } from "@/store/useChurchStore";
-import { FaLink } from "react-icons/fa6";
+import { FaLink, FaRegCircleXmark } from "react-icons/fa6";
 import { FiPlus } from "react-icons/fi";
 import Link from "next/link";
 import { IoSettingsOutline } from "react-icons/io5";
 import router from "next/router";
 import CDropdown from "@/app/components/CDropdown";
 import { useRouter } from "next/navigation";
+import { statusColorMap, statusMap } from "@/constants";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
@@ -115,26 +116,9 @@ export default function AccountComponent() {
         </div>
 
         <p>{userData?.email}</p>
-        <div className=" ncard">
-          {teams && teams.length >= 1 && (
-            <div className=" w-full">
-              Team di {userData.name}
-              {teams.map((team, index) => {
-                return (
-                  <div key={team.id ?? index} className="flex gap-1">
-                    <p className="font-bold">{team.team_name}</p>
-                    {team.roles && team.roles.length >= 1 && (
-                      <p className="italic">
-                        {" (" + team.roles.join(", ") + ")"}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-          <div className=" grid w-full gap-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))] sm:[grid-template-columns:repeat(auto-fit,minmax(350px,1fr))]">
-            <div className="nborder ncard flex flex-col flex-wrap gap-4 w-full ">
+        <div>
+          <div className=" grid w-full gap-2 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))] sm:[grid-template-columns:repeat(auto-fit,minmax(350px,1fr))]">
+            <div className="ncard !py-1 !my-4 flex flex-col flex-wrap gap-4 w-full ">
               <div className="flex flex-row justify-start items-center gap-3">
                 <FaLink size={25} />
                 <h5>Link veloci</h5>
@@ -163,7 +147,7 @@ export default function AccountComponent() {
               {hasPermission(userData.role as Role, "read:churchmembers") && (
                 <>
                   {churchMembers?.length <= 5 && (
-                    <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between n-card nborder p-4 !border-blue-300 border-1">
+                    <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between nborder p-4 !border-blue-300 border-1">
                       <p>Invita nuovi membri nella tua chiesa!</p>
                       <Button
                         color="primary"
@@ -177,7 +161,7 @@ export default function AccountComponent() {
                   )}
                 </>
               )}
-              <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between n-card nborder p-4 !border-red-200 border-1">
+              <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between rounded-lg p-4 !border-red-200 border-1">
                 <p>Blocca le date in cui non sei disponibile.</p>
                 <Button
                   className="bg-[#ea685c] text-white"
@@ -188,12 +172,11 @@ export default function AccountComponent() {
                 </Button>
               </div>
             </div>
-            <div className="nborder ncard flex flex-col flex-wrap gap-4 w-full !border-slate-300 border-1 ">
+            <div className="ncard !py-1 !my-4 flex flex-col flex-wrap gap-4 w-full ">
               <div className="flex flex-row justify-start items-center gap-3">
                 <MdEvent size={25} />
                 <h5>Prossimi eventi</h5>
               </div>
-
               {upcomingSetlists && upcomingSetlists.length > 0 && (
                 <>
                   {upcomingSetlists.map((setlist: profileSetlistsT) => {
@@ -207,35 +190,46 @@ export default function AccountComponent() {
                     const matched = eventTypes?.find(
                       (event) => event.key === setlist.event_type
                     );
+                    const status = statusMap[setlist.status] ?? {
+                      label: "Sconosciuto",
+                      color: "text-gray-500",
+                    };
+                    const colorChip: ChipColor =
+                      statusColorMap[setlist.status] ?? "default";
                     return (
-                      <div
-                        key={setlist.id}
-                        className="border-1 rounded-lg border-slate-300 my-1 !max-w-full p-3"
-                      >
+                      <div key={setlist.id} className="!max-w-full p-2">
                         <div className="flex gap-3 relative">
                           <div className="flex flex-col w-full max-w-full">
                             <div className="flex justify-between max-w-full">
-                              <p className="text-md">
+                              <p className="text-md font-medium">
                                 {matched?.alt ||
                                   matched?.label ||
                                   "Evento sconosciuto"}
                               </p>
                               <>
-                                {setlist.status === "pending" && (
-                                  <Chip variant="flat" color="warning">
-                                    In Attesa
+                                <div className="sm-hide">
+                                  <Chip
+                                    className="capitalize text-center"
+                                    color={colorChip}
+                                    size="sm"
+                                    variant="flat"
+                                  >
+                                    <span className={status.color}>
+                                      {status.label}
+                                    </span>
                                   </Chip>
-                                )}
-                                {setlist.status === "confirmed" && (
-                                  <Chip variant="flat" color="success">
-                                    Confermato
-                                  </Chip>
-                                )}
-                                {setlist.status === "denied" && (
-                                  <Chip variant="flat" color="danger">
-                                    Rifiutato
-                                  </Chip>
-                                )}
+                                </div>
+                                <div className="md-hide">
+                                  {setlist.status === "confirmed" && (
+                                    <FaRegCheckCircle color={status.color} />
+                                  )}
+                                  {setlist.status === "pending" && (
+                                    <FaRegClock color={status.color} />
+                                  )}
+                                  {setlist.status === "denied" && (
+                                    <FaRegCircleXmark color={status.color} />
+                                  )}
+                                </div>
                               </>
                             </div>
 
@@ -245,11 +239,11 @@ export default function AccountComponent() {
                           </div>
                         </div>
 
-                        <p className="text-small text-default-800 capitalize">
-                          Team: {setlist.team_name}.
-                        </p>
-                        <div className="flex justify-end">
-                          <Link href={`/setlist/${setlist.setlist_id}`}>
+                        <div className="flex justify-between">
+                          <Link
+                            className="text-sm  underline"
+                            href={`/setlist/${setlist.setlist_id}`}
+                          >
                             Pagina evento
                           </Link>
                         </div>

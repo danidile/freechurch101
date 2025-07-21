@@ -116,6 +116,8 @@ export default function NotificationList() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
+
+                    className="border-b-1"
                   >
                     <NotificationElement
                       type={key as keyof GroupedNotificationsT}

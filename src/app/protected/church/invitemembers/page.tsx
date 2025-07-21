@@ -37,6 +37,8 @@ export default function InviteUsersModalComponent() {
   const [invitesSent, setInvitesSent] = useState<newMember[]>([]);
   const [emailPerson, setEmailPerson] = useState(null);
   const [refetchTrigger, setRefetchTrigger] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | "all">("all");
 
   useEffect(() => {
     if (!loading && userData.loggedIn) {
@@ -76,7 +78,7 @@ export default function InviteUsersModalComponent() {
       );
 
       setRefetchTrigger((prev) => !prev);
-      setMembers([ { name: "", lastname: "", email: "" }]);
+      setMembers([{ name: "", lastname: "", email: "" }]);
     }
   };
 
@@ -128,26 +130,56 @@ export default function InviteUsersModalComponent() {
       setCheckedMembers(invitesChecked);
     }
   };
+  const filteredInvites = invitesSent.filter((member) => {
+    const fullName = `${member.name} ${member.lastname}`.toLowerCase();
+    const email = member.email.toLowerCase();
+    const matchesSearch =
+      fullName.includes(searchTerm.toLowerCase()) ||
+      email.includes(searchTerm.toLowerCase());
 
+    const matchesStatus =
+      statusFilter === "all" || member.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
   return (
     <div className="nborder ncard ">
       {invitesSent.length >= 1 && (
         <>
           <h3 className="my-4">Inviti già inviati</h3>
-          <table className="w-full max-w-6xl border-0 border-gray-300 text-sm max-h-[600px]">
+          <div className="flex flex-col sm:flex-row items-start  sm:items-center justify-between gap-2 mb-4">
+            <p className="min-w-[40px]">Filtri:</p>
+            <input
+              type="text"
+              placeholder="Cerca per nome o email..."
+              className="px-3 py-2 border rounded-md text-sm w-full"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <select
+              className="px-3 py-2 border w-full rounded-md text-sm"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">Tutti gli stati</option>
+              <option value="pending">In attesa</option>
+              <option value="confirmed">Accettato</option>
+            </select>
+          </div>
+
+          <table className="btable">
             <thead>
-              <tr className="bg-gray-100">
-                <th className=" px-1 py-2 text-center">Nome</th>
-                <th className=" px-1 py-2 text-center">Ultima Email</th>
-                <th className=" px-1 py-2 text-center">Stato</th>
-                <th className=" px-1 py-2 text-center">Invia email</th>
+              <tr>
+                <th>Nome</th>
+                <th>Ultima Email</th>
+                <th>Stato</th>
+                <th>Invia email</th>
               </tr>
             </thead>
             <tbody>
-              {/* Table with the INVITES  already sent*/}
-
-              {invitesSent.map((member, index) => {
-                const lastEmailDate = new Date(member.last_email); // assuming ISO string like "2025-06-17T10:00:00Z"
+              {filteredInvites.map((member, index) => {
+                const lastEmailDate = new Date(member.last_email);
                 const formattedDate = lastEmailDate.toLocaleDateString(
                   "it-IT",
                   {
@@ -156,10 +188,8 @@ export default function InviteUsersModalComponent() {
                   }
                 );
                 const now = new Date();
-
                 const timeDiff = now.getTime() - lastEmailDate.getTime();
                 const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-
                 const recentlyEmailed = daysDiff < 2;
                 const status = statusMap[member.status] ?? {
                   label: "Sconosciuto",
@@ -167,15 +197,16 @@ export default function InviteUsersModalComponent() {
                 };
                 const colorChip: ChipColor =
                   statusColorMap[member.status] ?? "default";
+
                 return (
-                  <tr key={index} className="border-b ">
-                    <td className="p-2">
+                  <tr key={index}>
+                    <td className="btable-name">
                       <p>{member.name + " " + member.lastname}</p>
                       <small>{member.email}</small>
                     </td>
-                    <td className=" text-center capitalize">{formattedDate}</td>
-                    <td className=" text-center">
-                      <div className="sm:block hidden">
+                    <td className="capitalize">{formattedDate}</td>
+                    <td>
+                      <div className="btable-chip-container">
                         <Chip
                           className="capitalize text-center"
                           color={colorChip}
@@ -185,51 +216,53 @@ export default function InviteUsersModalComponent() {
                           <span className={status.color}>{status.label}</span>
                         </Chip>
                       </div>
-                      <div className="sm:hidden  w-full flex flex-row items-center justify-center">
+                      <div className="btable-chip-icon">
                         <FaCircle color={status.color} />
                       </div>
                     </td>
-
-                    <td className=" text-center">
-                      {" "}
-                      {recentlyEmailed ? (
-                        <Popover placement="right">
-                          <PopoverTrigger>
+                    <td className="btable-mail-button">
+                      {member.status !== "confirmed" && (
+                        <>
+                          {recentlyEmailed ? (
+                            <Popover placement="right">
+                              <PopoverTrigger>
+                                <Button
+                                  isIconOnly
+                                  size="sm"
+                                  variant="light"
+                                  color="danger"
+                                >
+                                  <FaExclamation />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent>
+                                <div className="px-1 py-2">
+                                  <div className="text-small font-bold">
+                                    Email inviata di recente
+                                  </div>
+                                  <div className="text-tiny">
+                                    Puoi inviare un nuovo promemoria solo dopo 2
+                                    giorni.
+                                    <br />
+                                    <span className="capitalize underline">
+                                      Ultima Email {formattedDate}
+                                    </span>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          ) : (
                             <Button
-                              isIconOnly
-                              size="sm"
                               variant="light"
-                              color="danger"
+                              isIconOnly
+                              onPress={() => {
+                                setEmailPerson(member);
+                              }}
                             >
-                              <FaExclamation />
+                              <IoMailOutline size={24} />
                             </Button>
-                          </PopoverTrigger>
-                          <PopoverContent>
-                            <div className="px-1 py-2">
-                              <div className="text-small font-bold">
-                                Email inviata di recente
-                              </div>
-                              <div className="text-tiny">
-                                Puoi inviare un nuovo promemoria solo dopo 2
-                                giorni.
-                                <br />
-                                <span className="capitalize underline">
-                                  Ultima Email {formattedDate}
-                                </span>
-                              </div>
-                            </div>
-                          </PopoverContent>
-                        </Popover>
-                      ) : (
-                        <Button
-                          variant="light"
-                          isIconOnly
-                          onPress={() => {
-                            setEmailPerson(member);
-                          }}
-                        >
-                          <IoMailOutline size={24} />
-                        </Button>
+                          )}
+                        </>
                       )}
                     </td>
                   </tr>
@@ -346,9 +379,10 @@ export default function InviteUsersModalComponent() {
                 </small>
                 {checkedMembers.length >= 1 && (
                   <div className="flex flex-col  gap-2">
-                    {checkedMembers.map((member) => {
+                    {checkedMembers.map((member, index) => {
                       return (
                         <div
+                          key={index}
                           className={`p-4 nborder w-full ${member?.error ? "bg-red-100!" : ""}`}
                         >
                           <p

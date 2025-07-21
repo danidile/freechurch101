@@ -47,6 +47,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
   const [setlistTeams, setSetlistTeams] = useState<GroupedMembers | null>(null);
   const [loadingSetlist, setLoadingSetlist] = useState(true);
   const [contactMode, setContactMode] = useState<boolean>(false);
+  const [emailSending, setEmailSending] = useState<boolean>(false);
   const [emailPerson, setEmailPerson] = useState(null);
   const [emailTeam, setEmailTeam] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -229,6 +230,7 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                             </td>
                             <td>{item.selected_roles}</td>
                             <td className="center">
+                              
                               <div className="sm-hide">
                                 <Chip
                                   className="capitalize text-center"
@@ -355,8 +357,11 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                   Chiudi
                 </Button>
                 <Button
+                  disabled={emailSending}
                   color="primary"
+                  className={`${emailSending ? "opacity-50 cursor-not-allowed" : ""}`}
                   onPress={async () => {
+                    setEmailSending(true);
                     const response = await eventReminderEmail(
                       emailPerson,
                       emailTeam,
@@ -388,9 +393,21 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
                     setEmailPerson(null);
 
                     onClose();
+                    setEmailSending(false);
+                    getSetListTeams(setListId).then((fetchedSetLists) => {
+                      setSetlistTeams(fetchedSetLists);
+                      setLoadingSetlist(false);
+                    });
                   }}
                 >
-                  Invia
+                  {emailSending ? (
+                    <div
+                      className="h-6 mx-auto w-6 animate-spin rounded-full border-4 border-[#ffffff00] border-t-gray-200"
+                      aria-label="Loading..."
+                    />
+                  ) : (
+                    <> Invia</>
+                  )}
                 </Button>
               </ModalFooter>
             </>

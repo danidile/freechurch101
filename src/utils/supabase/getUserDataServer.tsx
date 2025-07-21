@@ -58,7 +58,7 @@ export default async function userDataServer() {
       church_logo: data?.church?.logo || null,
     };
     if (error) {
-      console.error("Error fetching profile:", error.message);
+      console.log("Error fetching profile:", error.message);
       return userData;
     }
     let churchpending: boolean = false;
@@ -79,7 +79,7 @@ export default async function userDataServer() {
       .select("*")
       .eq("profile", user.id);
     if (error) {
-      console.error("Error fetching profile:", error.message);
+      console.log("Error fetching profile:", error.message);
       return userData;
     }
     const teamLead = teams

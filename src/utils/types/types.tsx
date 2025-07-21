@@ -132,24 +132,41 @@ export interface TsongNameAuthor {
   type?: string;
 }
 
-export type formValues = {
-  event_type?: string;
-  church?: string;
-  event_title?: string;
-  date?: string;
-  private?: boolean;
-  hour?: string;
-  sections?: {
-    id?: string;
-    song_title?: string;
-    sectionType: string;
-    duration?: string;
-    description?: string;
-    songId?: string;
-    song?: string;
-    key?: string;
-  }[];
-};
+// Section schema with validations
+const eventSectionSchema = z.object({
+  id: z.string().optional(),
+  song_title: z
+    .string()
+    .min(1, "Il titolo della canzone è obbligatorio")
+    .optional(),
+  sectionType: z.string().min(1, "Il tipo di sezione è obbligatorio"),
+  duration: z.string().optional(),
+  description: z.string().optional(),
+  songId: z.string().optional(),
+  song: z.string().optional(),
+  key: z.string().optional(),
+});
+
+// Main form schema with validations
+export const eventFormSchema = z.object({
+  event_type: z.string().min(1, "Devi selezionare un tipo di evento"),
+  church: z.string().min(1, "Devi indicare la chiesa"),
+  date: z.string().optional(),
+  room_id: z.string(),
+  eventDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Formato data non valido (YYYY-MM-DD)")
+    .min(1, "La data dell'evento è obbligatoria"),
+  private: z.boolean().optional(),
+  hour: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Inserisci un orario valido (HH:mm)")
+    .min(1, "L'orario è obbligatorio"),
+  sections: z.array(eventSectionSchema).optional(),
+});
+
+// Optional: infer the TypeScript type automatically
+export type formValues = z.infer<typeof eventFormSchema>;
 
 export type eventType = {
   id?: string;
@@ -207,6 +224,8 @@ export type Team = {
   id: string;
   team_name: string;
   teamMembers?: TeamMember[];
+  leaders?: string[];
+  member_count?: number;
 };
 
 export type eventPlanner = {

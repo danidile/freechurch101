@@ -419,7 +419,7 @@
     padding: 7px 15px;
     border-radius: 0.5rem;
     color: white;
-    background-color: #111111;
+    background-color: #000000;
     margin-right: 20px;
     cursor: pointer;
     margin-left: auto;
@@ -2028,4 +2028,75 @@ label {
   outline: none;
   border-color: #dddddd; /* focus:border-[#dddddd] */
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05); /* focus:ring-1 focus:ring-black/5 */
+}
+
+.btable {
+  width: 100%;
+  max-width: 72rem; /* Tailwind's max-w-6xl */
+  border: 0;
+  border-color: #d1d5db; /* Tailwind's gray-300 */
+  font-size: 0.875rem; /* text-sm */
+  max-height: 600px;
+}
+
+.btable thead tr {
+  background-color: #f3f4f6;
+  border-radius: 1rem;
+}
+
+.btable th {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  text-align: center;
+}
+
+.btable td {
+  text-align: center;
+  padding: 0.3rem 0px;
+}
+
+.btable tr {
+  border-bottom: 1px solid #e5e7eb; /* Tailwind's default border color */
+}
+
+.btable-name {
+  padding: 0.5rem;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .btable-name {
+    max-width: 300px;
+  }
+
+  .btable-chip-container {
+    display: block;
+  }
+
+  .btable-chip-icon {
+    display: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .btable-chip-container {
+    display: none;
+  }
+
+  .btable-chip-icon {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.btable-mail-button {
+  text-align: center;
 }

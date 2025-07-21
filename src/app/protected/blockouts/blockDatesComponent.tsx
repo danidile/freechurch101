@@ -1,7 +1,5 @@
 "use client";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
-import { DateValue, parseDate } from "@internationalized/date";
-import { useRouter } from "next/navigation";
+import { parseDate } from "@internationalized/date";
 
 import {
   Modal,
@@ -23,12 +21,10 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import { useEffect, useState } from "react";
 import { I18nProvider } from "@react-aria/i18n";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { updateBlockoutsAction } from "./updateBlockoutsAction";
 import { RangeValue, RangeValueString } from "@/utils/types/types";
 import { useUserStore } from "@/store/useUserStore";
 import { addBlockoutAction } from "./addBlockoutsAction";
 import { deleteBlockoutAction } from "./deleteBlockoutsAction";
-import LoadingBlockoutsPage from "./loading";
 import { getBlockoutsByUserId } from "@/hooks/GET/getBlockoutsByUserId";
 import { FaPlus } from "react-icons/fa6";
 
@@ -66,7 +62,6 @@ export default function BlockDatesComponent({}: {}) {
     weekday: "short",
     day: "2-digit",
     month: "long",
-    // year: "numeric",
   });
 
   const addBlock = async (onClose: () => void) => {
@@ -87,7 +82,9 @@ export default function BlockDatesComponent({}: {}) {
         start: newBlock.start.toString(),
         end: newBlock.end.toString(),
       };
+
       await addBlockoutAction({ blockedDates: sanitized });
+      setRefreshKey((prev) => prev + 1); // increment to force refetch
     }
   };
 
@@ -105,73 +102,48 @@ export default function BlockDatesComponent({}: {}) {
           Inserisci durante quali date non sarai disponibile per le turnazioni.
         </p>
       </div>
-      {/* <div className="mx-auto flex-col relative">
-            <RangeCalendar
-              color="danger"
-              className="calendar-heroui"
-              aria-label="Date (Uncontrolled)"
-              onChange={setValue}
-              minValue={today(getLocalTimeZone()).add({ days: 1 })}
-              allowsNonContiguousRanges
-              isReadOnly
-              isDateUnavailable={(date) =>
-                blockedDates.some(
-                  (range) =>
-                    date.compare(range.start) >= 0 &&
-                    date.compare(range.end) <= 0
-                )
-              }
-              firstDayOfWeek="mon"
-            />
-          </div> */}
       <div className="flex flex-col items-center justify-center">
-        <Table
-          key="Songs-table"
-          className="w-full min-w-[300px] max-w-[600px] my-4"
-          aria-label="Team members table"
-          bottomContent={
-            <Button
-              isIconOnly
-              color="primary"
-              size="lg"
-              className="ml-auto mr-0"
-              onPress={onOpen}
-            >
-              <FaPlus />
-            </Button>
-          }
-        >
-          <TableHeader>
-            <TableColumn>Inizio</TableColumn>
-            <TableColumn>Fine</TableColumn>
-            <TableColumn>Azioni</TableColumn>
-          </TableHeader>
-          <TableBody items={blockedDates}>
-            {(date) => (
-              <TableRow key={date.id} className="capitalize">
-                <TableCell>
-                  {formatter.format(date.start.toDate(getLocalTimeZone()))}
-                </TableCell>
-                <TableCell>
-                  {formatter.format(date.end.toDate(getLocalTimeZone()))}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    variant="flat"
-                    color="danger"
-                    onPress={() => {
-                      deleteBlock(date.id);
-                    }}
-                  >
-                    <FaRegTrashAlt />
-                  </Button>{" "}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        <div className=" w-[500px] max-w-[95vw] my-4 relative">
+          <table className="btable">
+            <thead>
+              <tr>
+                <th className="!text-center">Inizio</th>
+                <th className="!text-center">Fine</th>
+                <th className="!text-center">Azioni</th>
+              </tr>
+            </thead>
+            <tbody>
+              {blockedDates.map((date) => (
+                <tr key={date.id} className="capitalize">
+                  <td>
+                    {formatter.format(date.start.toDate(getLocalTimeZone()))}
+                  </td>
+                  <td>
+                    {formatter.format(date.end.toDate(getLocalTimeZone()))}
+                  </td>
+                  <td>
+                    <button
+                      className="text-red-600 hover:text-red-400 mx-auto"
+                      onClick={() => deleteBlock(date.id)}
+                      title="Elimina blocco"
+                    >
+                      <FaRegTrashAlt />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Floating Button */}
+          <button
+            className=" mt-4  bg-[#2f6de6] hover:bg-[#2f6ce6e2] transition text-white p-3 rounded-full shadow-md"
+            onClick={onOpen}
+            title="Aggiungi blocco"
+          >
+            <FaPlus />
+          </button>
+        </div>
 
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
           <ModalContent>

@@ -58,7 +58,7 @@ export default async function fbasicUserData() {
     };
     // Now, TypeScript knows that 'error' exists in the response object
     if (error) {
-      console.error("Error fetching profile:", error.message);
+      console.log("Error fetching profile:", error.message);
       return userData;
     }
 
@@ -80,7 +80,7 @@ export default async function fbasicUserData() {
       .select("*")
       .eq("profile", user.id);
     if (error) {
-      console.error("Error fetching profile:", error.message);
+      console.log("Error fetching profile:", error.message);
       return userData;
     }
     const teamLead = teams

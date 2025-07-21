@@ -9,7 +9,13 @@ import {
   TimeInput,
 } from "@heroui/react";
 import { I18nProvider } from "@react-aria/i18n";
-import { DateValue, CalendarDate, parseTime } from "@internationalized/date";
+import {
+  DateValue,
+  CalendarDate,
+  parseTime,
+  getLocalTimeZone,
+  today,
+} from "@internationalized/date";
 import { DatePicker } from "@heroui/react";
 import { parseDate } from "@internationalized/date";
 import {
@@ -20,12 +26,6 @@ import {
   teamData,
 } from "@/utils/types/types";
 import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
   Select,
   SelectItem,
@@ -35,7 +35,6 @@ import {
   DropdownItem,
   Tooltip,
 } from "@heroui/react";
-import { ColorResult } from "react-color";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
@@ -119,15 +118,21 @@ export default function UpdateSetlistForm({
   useEffect(() => {
     setEventDetails(setlistData);
   }, [setlistData]);
+  const [alreadySubmitting, setAlreadySubmitting] = useState<boolean>(false);
+
   const {
     handleSubmit,
     register,
     control,
     watch,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<formValues>({
     defaultValues: {
-      hour: setlistData?.hour || "21:00",
+      hour: setlistData?.hour || "20:00",
+      event_type: setlistData?.event_type || "",
+      eventDate: setlistData?.date
+        ? setlistData.date.split("T")[0] // just the "YYYY-MM-DD" string
+        : "",
     },
   });
   const addTeam = (id: string) => {
@@ -302,12 +307,10 @@ export default function UpdateSetlistForm({
   };
 
   const convertData = async () => {
-    console.log("schedule", schedule);
+    if (alreadySubmitting) return;
+    setAlreadySubmitting(true);
+    console.log("AlreadySubmitting", alreadySubmitting);
 
-    console.log("teamsState", teamsState);
-    console.log("selectedRoom", selectedRoom);
-
-    console.log("teams", teams);
     const newTeam: any = [];
     team.map((member) => {
       newTeam.push({ profile: member.profile });
@@ -317,9 +320,8 @@ export default function UpdateSetlistForm({
     const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
     const updatedSetlist: setListT = {
       id: setlistData?.id || crypto.randomUUID(),
-      event_title: watchAllFields.event_title,
       event_type: watchAllFields.event_type,
-      date: eventDate.toString(),
+      date: watchAllFields.eventDate.toString(),
       private: watchAllFields.private,
       room: selectedRoom,
       setListSongs: state,
@@ -331,9 +333,9 @@ export default function UpdateSetlistForm({
     console.log("updatedSetlist");
     console.log(updatedSetlist);
     if (page === "create") {
-      addSetlist(updatedSetlist);
+      await addSetlist(updatedSetlist);
     } else if (page === "update") {
-      updateSetlist(updatedSetlist, setlistData);
+      await updateSetlist(updatedSetlist, setlistData);
     }
   };
 
@@ -365,7 +367,7 @@ export default function UpdateSetlistForm({
     <div className="container-sub">
       <I18nProvider locale="it-IT-u-ca-gregory">
         <div className=" crea-setlist-container">
-          <form>
+          <form onSubmit={handleSubmit(convertData)}>
             <div className="flex items-center">
               <div className="flex items-center gap-2">
                 <h4>
@@ -374,26 +376,44 @@ export default function UpdateSetlistForm({
                 </h4>
               </div>
             </div>
-            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+            <div className="flex flex-col gap-2 mt-8">
+              {/* EVENT TYPE */}
               <div className="gap-1.5">
-                <Select
-                  {...register("event_type")}
-                  fullWidth
-                  defaultSelectedKeys={
-                    new Set([setlistData?.event_type]) || null
-                  }
-                  items={eventTypes}
-                  label="Tipo di evento"
-                  variant="underlined"
-                  placeholder="Seleziona il tipo di evento"
-                >
-                  {(type) => (
-                    <SelectItem key={type.key}>
-                      {type.alt ? type.alt : type.label}
-                    </SelectItem>
+                <Controller
+                  name="event_type"
+                  control={control}
+                  rules={{ required: "Tipo evento obbligatorio" }}
+                  defaultValue={setlistData?.event_type || ""}
+                  render={({ field, fieldState }) => (
+                    <>
+                      <Select
+                        {...field}
+                        fullWidth
+                        items={eventTypes}
+                        label="Tipo di evento"
+                        variant="underlined"
+                        placeholder="Seleziona il tipo di evento"
+                        selectedKeys={
+                          field.value ? new Set([field.value]) : new Set()
+                        }
+                        onSelectionChange={(keys) => {
+                          const value = Array.from(keys)[0] || "";
+                          field.onChange(value);
+                        }}
+                        isInvalid={!!fieldState.error}
+                        errorMessage={fieldState.error?.message}
+                      >
+                        {(type) => (
+                          <SelectItem key={type.key}>
+                            {type.alt ? type.alt : type.label}
+                          </SelectItem>
+                        )}
+                      </Select>
+                    </>
                   )}
-                </Select>
+                />
               </div>
+
               {churchRooms && churchRooms.length === 1 ? (
                 <p>
                   Location:{" "}
@@ -403,40 +423,52 @@ export default function UpdateSetlistForm({
                   </span>
                 </p>
               ) : (
-                <div className="flex flex-col gap-2">
-                  <Select
-                    label="Seleziona la Location"
-                    variant="underlined"
-                    size="sm"
-                    defaultSelectedKeys={selectedRoom}
-                    placeholder="Scegli una stanza"
-                    selectedKeys={selectedRoom ? [selectedRoom] : []}
-                    onSelectionChange={(keys) => {
-                      const selectedId = Array.from(keys)[0];
-                      setSelectedRoom(selectedId as string); // You must define this state
-                    }}
-                  >
-                    {churchRooms.map((room) => (
-                      <SelectItem key={room.id} textValue={room.name}>
-                        <div>
-                          <p className="font-regular">{room.name}</p>
-                          <small className="text-default-500">
-                            {room.address}, {room.comune}
-                          </small>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
+                <Controller
+                  name="room_id" // define this in your formValues
+                  control={control}
+                  rules={{ required: "Devi selezionare una location" }}
+                  defaultValue={selectedRoom || ""}
+                  render={({ field, fieldState }) => (
+                    <Select
+                      label="Seleziona la Location"
+                      variant="underlined"
+                      size="sm"
+                      placeholder="Scegli una stanza"
+                      selectedKeys={
+                        field.value ? new Set([field.value]) : new Set()
+                      }
+                      onSelectionChange={(keys) => {
+                        const selectedId = Array.from(keys)[0] || "";
+                        field.onChange(selectedId);
+                        setSelectedRoom(String(selectedId));
+                      }}
+                      isInvalid={!!fieldState.error}
+                      errorMessage={fieldState.error?.message}
+                    >
+                      {churchRooms.map((room) => (
+                        <SelectItem key={room.id} textValue={room.name}>
+                          <div>
+                            <p className="font-regular">{room.name}</p>
+                            <small className="text-default-500">
+                              {room.address}, {room.comune}
+                            </small>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  )}
+                />
               )}
 
+              {/* HOUR + DATE */}
               <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                {/* HOUR */}
                 <Controller
                   name="hour"
                   control={control}
+                  rules={{ required: "Ora obbligatoria" }}
                   render={({ field }) => {
-                    const timeValue = parseTime(field.value); // string → Time
-
+                    const timeValue = parseTime(field.value);
                     return (
                       <TimeInput
                         label="Ora"
@@ -444,33 +476,55 @@ export default function UpdateSetlistForm({
                         startContent={<TbClockHour2 />}
                         value={timeValue}
                         onChange={(newTime) => {
-                          const hourStr = newTime.toString(); // Time → string "HH:mm"
+                          const hourStr = newTime.toString();
                           field.onChange(hourStr);
                         }}
+                        isInvalid={!!errors.hour}
+                        errorMessage={errors.hour?.message}
                       />
                     );
                   }}
                 />
-                <DatePicker
-                  label="Data"
-                  variant="underlined"
-                  showMonthAndYearPickers
-                  value={eventDate}
-                  disableAnimation
-                  onChange={(newDate) => {
-                    const newDateStr = dateValueToString(newDate); // ← conversione qui
-                    const unavailable = getUnavailableMembers(
-                      newDateStr,
-                      teamsState
-                    );
 
-                    if (unavailable.length > 0) {
-                      setPreviousEventDate(eventDate);
-                      setIsDateConflictModalOpen(true);
-                      setPendingDate(newDate);
-                    } else {
-                      setEventDate(newDate);
-                    }
+                {/* DATE */}
+                <Controller
+                  name="eventDate"
+                  control={control}
+                  rules={{ required: "Data obbligatoria" }}
+                  render={({ field }) => {
+                    // Convert string (field.value) to DateValue for DatePicker, or null if empty
+                    const dateValue: DateValue | null = field.value
+                      ? parseDate(field.value)
+                      : null;
+
+                    return (
+                      <DatePicker
+                        label="Data"
+                        variant="underlined"
+                        showMonthAndYearPickers
+                        value={dateValue}
+                        minValue={today(getLocalTimeZone())}
+                        onChange={(newDate) => {
+                          const newDateStr = newDate.toString(); // DateValue → "YYYY-MM-DD"
+
+                          const unavailable = getUnavailableMembers(
+                            newDateStr,
+                            teamsState
+                          );
+
+                          if (unavailable.length > 0) {
+                            setPreviousEventDate(dateValue);
+                            setIsDateConflictModalOpen(true);
+                            setPendingDate(newDate);
+                          } else {
+                            field.onChange(newDateStr);
+                          }
+                        }}
+                        disableAnimation
+                        isInvalid={!!errors.eventDate}
+                        errorMessage={errors.eventDate?.message}
+                      />
+                    );
                   }}
                 />
               </div>
@@ -549,12 +603,6 @@ export default function UpdateSetlistForm({
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
-                {/* <SelectSongsDrawer
-              type="add"
-              songsList={songsList}
-              addOrUpdatefunction={addSongtoSetlist} // Pass function correctly
-              section={null}
-            /> */}
               </div>
             </div>
             <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
@@ -618,7 +666,7 @@ export default function UpdateSetlistForm({
                           </tr>
                         </thead>
                         <tbody>
-                          {section.selected?.map((member) => {
+                          {section.selected?.map((member, index) => {
                             const roles =
                               getRolesFromTeamMembers(
                                 section.id,
@@ -638,7 +686,7 @@ export default function UpdateSetlistForm({
                               }) ?? false;
 
                             return (
-                              <tr key={member.profile + section.id}>
+                              <tr key={index}>
                                 <td>
                                   {member.name} {member.lastname}{" "}
                                   {isUnavailable && (
@@ -677,12 +725,13 @@ export default function UpdateSetlistForm({
                                 </td>
                                 <td>
                                   <button
-                                    onClick={() =>
+                                    type="button"
+                                    onClick={() => {
                                       removeMemberToTeam(
                                         member.profile,
                                         section.id
-                                      )
-                                    }
+                                      );
+                                    }}
                                     className=" text-red-500 hover:text-red-700"
                                   >
                                     <RiDeleteBinLine size={18} />
@@ -702,14 +751,18 @@ export default function UpdateSetlistForm({
             <br />
 
             <button
-              className="button-style w-full"
-              onClick={(e) => {
-                e.preventDefault();
-                convertData();
-              }}
+              type="submit"
+              className={`button-style w-full ${alreadySubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+              disabled={alreadySubmitting}
             >
-              {page === "create" && "Crea"}
-              {page === "update" && "Aggiorna"} Evento
+              {alreadySubmitting ? (
+                <div
+                  className="h-6 mx-auto w-6 animate-spin rounded-full border-4 border-black border-t-gray-200"
+                  aria-label="Loading..."
+                />
+              ) : (
+                <> {page === "create" ? "Crea" : "Aggiorna"} Evento</>
+              )}
             </button>
           </form>
         </div>
