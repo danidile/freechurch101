@@ -17,7 +17,7 @@ import Link from "next/link";
 export default function SetListListComponent() {
   const { userData, loading } = useUserStore();
 
-  const [viewMode, setViewMode] = useState<string>("list");
+  const [viewMode, setViewMode] = useState<string>("calendar");
   const [setlists, setSetlists] = useState<any[] | null>(null);
   useEffect(() => {
     if (!loading && userData.loggedIn) {

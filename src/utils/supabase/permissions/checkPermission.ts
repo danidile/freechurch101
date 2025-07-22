@@ -13,7 +13,7 @@ export async function checkPermission(
 ) {
   const supabase = await createClient();
 
-  if (roles.find((role) => role.slug === userRole).key <= 1) {
+  if (userRole && roles.find((role) => role.slug === userRole).key <= 1) {
     return true;
   }
   // 1. Prendi i ruoli dell’utente in tutti i team richiesti
