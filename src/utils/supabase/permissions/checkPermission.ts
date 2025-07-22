@@ -13,7 +13,7 @@ export async function checkPermission(
 ) {
   const supabase = await createClient();
   console.log("userRole:", userRole);
-  if (roles.find((role) => role.slug === userRole).key <= 2) {
+  if (userRole && roles.find((role) => role.slug === userRole)?.key <= 2) {
     console.log("Admin or super admin, permission granted", userRole);
     return true;
   }
