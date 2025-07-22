@@ -20,7 +20,7 @@ export async function prepareImageUpload(
   }
 
   const isPng = file.type === "image/png";
-  const finalBlob = isPng ? file : await convertImageToWebpWithMaxHeight(file);
+  const finalBlob = await convertImageToWebpWithMaxHeight(file);
   return {
     type,
     main: finalBlob,
