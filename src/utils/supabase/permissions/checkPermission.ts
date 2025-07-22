@@ -9,11 +9,12 @@ export async function checkPermission(
   resource: string,
   action: string,
   userId: string,
-  userRole?: string
+  userRole: string
 ) {
   const supabase = await createClient();
-
-  if (userRole && roles.find((role) => role.slug === userRole).key <= 1) {
+  console.log("userRole:", userRole);
+  if (roles.find((role) => role.slug === userRole).key <= 2) {
+    console.log("Admin or super admin, permission granted", userRole);
     return true;
   }
   // 1. Prendi i ruoli dell’utente in tutti i team richiesti

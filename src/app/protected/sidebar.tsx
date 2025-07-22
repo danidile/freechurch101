@@ -172,6 +172,14 @@ export default function Sidebar() {
                 </div>
               </Link>
             </li>
+            <li className="sidebar-li">
+              <Link className="sidebar-link" href="/songs">
+                <div className="sidebar-element">
+                  <MdOutlineLibraryMusic />
+                  <p>Canzoni</p>
+                </div>
+              </Link>
+            </li>
             {userData.leaderOf.length >= 1 && (
               <li className="sidebar-li">
                 <Link

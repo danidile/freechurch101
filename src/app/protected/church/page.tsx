@@ -89,7 +89,7 @@ export default function ChurchComponent() {
   };
 
   return (
-    <div className="p-0 sm:p-5">
+    <div className="p-2 sm:p-5">
       <div className="w-full">
         <h5 className="font-bold ml-3 my-5">{userData.church_name}</h5>
       </div>

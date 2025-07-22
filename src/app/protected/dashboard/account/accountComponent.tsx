@@ -99,7 +99,7 @@ export default function AccountComponent() {
 
   return (
     <div className=" w-full">
-      <div className="p-0 sm:p-12">
+      <div className="p-2 sm:p-12">
         <div className="flex flex-row items-center  gap-5">
           <h4>
             Benvenuto {userData?.name + " "}
