@@ -30,9 +30,9 @@ export default function MenuApp({
   userdata: basicUserData;
   notifications: number;
 }) {
-
   const pathname = usePathname(); // Get the full pathname
   const [parameter, setParameter] = useState(pathname.split("/")[1] || ""); // Initialize state based on the pathname
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
 
   useEffect(() => {
     // Update the parameter state when the pathname changes
@@ -46,14 +46,31 @@ export default function MenuApp({
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >
         <div className="app-menu">
-          <TransitionLink href="/songs" className="pwaiconsmenu">
-            {parameter === "songs" ? (
-              <MdLibraryMusic />
-            ) : (
-              <MdOutlineLibraryMusic />
-            )}
-            <small>Canzoni</small>
-          </TransitionLink>
+          {userdata.loggedIn && (
+            <>
+              <TransitionLink href="/songs" className="pwaiconsmenu">
+                {parameter === "songs" ? (
+                  <MdLibraryMusic />
+                ) : (
+                  <MdOutlineLibraryMusic />
+                )}
+                <small>Canzoni</small>
+              </TransitionLink>
+            </>
+          )}
+
+          {!userdata.loggedIn && (
+            <>
+              <TransitionLink href="/italiansongs" className="pwaiconsmenu">
+                {parameter === "italiansongs" ? (
+                  <MdLibraryMusic />
+                ) : (
+                  <MdOutlineLibraryMusic />
+                )}
+                <small>Canzoni</small>
+              </TransitionLink>
+            </>
+          )}
           {userdata.loggedIn && (
             <TransitionLink href="/setlist" className="pwaiconsmenu">
               {parameter === "setlist" ? (

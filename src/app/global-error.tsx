@@ -21,6 +21,7 @@ export default function GlobalError({
       event: "global_error",
       level: "error",
       meta: {
+        error: error,
         message: error.message,
         stack: error.stack,
         path: window.location.pathname,
