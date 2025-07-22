@@ -207,8 +207,7 @@ export default function CalendarView({
                     <div
                       key={dateKey}
                       className={clsx(
-                        "min-h-[100px] border-[0.5px] border-gray-100 p-1 relative align-top cursor-pointer hover:bg-gray-50 transition-colors",
-                        isWeekend ? "bg-gray-50" : "bg-white"
+                        "min-h-[100px] border-[0.5px] border-gray-100 p-1 relative align-top cursor-pointer hover:bg-gray-50 transition-colors"
                       )}
                       onClick={() => handleDateClick(dateKey, day, month)}
                     >
@@ -233,13 +232,24 @@ export default function CalendarView({
                           return (
                             <div
                               key={idx}
-                              className="text-[11px] truncate text-left cursor-pointer px-2 py-0.5 rounded-full hover:opacity-80 transition-opacity"
+                              className="relative text-[11px] text-left cursor-pointer px-2 py-0.5 rounded hover:opacity-80 transition-opacity whitespace-nowrap overflow-hidden max-w-[120px]"
                               style={{
                                 backgroundColor: color + "22",
                                 color,
                               }}
                             >
-                              {matched?.alt || matched?.label || "Evento"}
+                              <span className="pr-6">
+                                {matched?.alt || matched?.label || "Evento"}
+                              </span>
+
+                              {/* gradient fade overlay */}
+                              <div
+                                className="absolute right-0 top-0 h-full w-6 pointer-events-none"
+                                style={{
+                                  background:
+                                    "linear-gradient(to left, white, rgba(255,255,255,0))",
+                                }}
+                              />
                             </div>
                           );
                         })}
