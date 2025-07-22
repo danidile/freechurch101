@@ -26,6 +26,9 @@ const updateEventTypesAction = async (
       };
     }
   });
+  return {
+    success: true,
+  };
 };
 
 export default updateEventTypesAction;

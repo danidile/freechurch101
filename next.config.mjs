@@ -25,7 +25,7 @@ script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gst
 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 font-src https://fonts.gstatic.com;
 img-src 'self' data: blob: https://kadorwmjhklzakafowpu.supabase.co https://*.stripe.com;
-connect-src 'self' https://kadorwmjhklzakafowpu.supabase.co https://api.stripe.com;
+connect-src 'self' https://kadorwmjhklzakafowpu.supabase.co https://api.stripe.com https://churchlab.it;
 frame-src https://js.stripe.com https://hooks.stripe.com;
 worker-src blob: 'self';
 `.replace(/\n/g, ""),

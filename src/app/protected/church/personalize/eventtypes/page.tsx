@@ -14,6 +14,7 @@ import {
   Input,
   addToast,
 } from "@heroui/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
 import updateEventTypesAction from "./updateEventTypesAction";
@@ -31,6 +32,8 @@ export default function PersonalizeEventsModal() {
 
   const [refetchTrigger, setRefetchTrigger] = useState(false);
   const [hasBeenEdited, setHasBeenEdited] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loadingChurchData) {
@@ -88,6 +91,11 @@ export default function PersonalizeEventsModal() {
     console.log("🗑️ Deleted Event Types (cleared inputs):", deleted);
     if (inserted.length >= 1) {
       const response = await addEventTypesAction(inserted, userData.church_id);
+      if (!response.success) {
+        setErrorMessage("Errore durante la creazione del tipo evento");
+      } else {
+        setSuccessMessage("Tipo evento creato con successo");
+      }
     }
     if (deleted.length >= 1) {
       const response = await removeEventTypesAction(
@@ -95,15 +103,18 @@ export default function PersonalizeEventsModal() {
         userData.church_id
       );
       if (!response.success) {
-        addToast({
-          title: `Errore durante l'eliminazione del tipo di evento`,
-          description: response.error,
-          color: "danger",
-        });
+        setErrorMessage("Errore durante l'eliminazione del tipo evento");
+      } else {
+        setSuccessMessage("Tipo evento eliminato con successo");
       }
     }
     if (edited.length >= 1) {
       const response = await updateEventTypesAction(edited, userData.church_id);
+      if (!response.success) {
+        setErrorMessage("Errore durante l'aggiornamento del tipo evento");
+      } else {
+        setSuccessMessage("Tipo evento aggiornato con successo");
+      }
     }
 
     setRefetchTrigger(!refetchTrigger);
@@ -112,7 +123,31 @@ export default function PersonalizeEventsModal() {
   return (
     <>
       <h2>Personalizza tipi evento</h2>
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 rounded-lg bg-green-50 p-4 border border-green-600 text-green-800 text-sm"
+          >
+            ✅ {successMessage}
+          </motion.div>
+        )}
 
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 rounded-lg bg-red-50 p-4 border border-red-600 text-red-800 text-sm"
+          >
+            ❌ {errorMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="flex flex-col gap-3 ">
         {defaultEventTypes.map((eventTypeKey) => {
           const matchingEvent = personalizedEventTypes.find(

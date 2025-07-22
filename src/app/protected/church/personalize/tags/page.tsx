@@ -14,12 +14,15 @@ import { RiEdit2Line, RiEditLine } from "react-icons/ri";
 import { IoIosClose } from "react-icons/io";
 import { MdOutlineEdit, MdOutlineEditOff } from "react-icons/md";
 import { FiSave } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PersonalizeSongsTagsModal() {
   const { loadingChurchData, tags, fetchChurchData } = useChurchStore();
   const [currentlyEditingIndex, setCurrentlyEditingIndex] = useState<
     number | null
   >(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { userData } = useUserStore();
   const [hasChanges, setHasChanges] = useState(false);
@@ -95,11 +98,9 @@ export default function PersonalizeSongsTagsModal() {
     if (toDelete.length >= 1) {
       const response = await deleteTagsAction(toDelete, userData.church_id);
       if (!response.success) {
-        addToast({
-          title: `Errore durante l'eliminazione del Tag`,
-          description: response.error,
-          color: "danger",
-        });
+        setErrorMessage("Errore durante l'eliminazione del Tag");
+      } else {
+        setSuccessMessage("Tag eliminato con successo");
       }
     }
     if (toUpdate.length >= 1) {
@@ -108,21 +109,17 @@ export default function PersonalizeSongsTagsModal() {
         userData.church_id
       );
       if (!response.success) {
-        addToast({
-          title: `Errore durante l'aggiornamento del Tag`,
-          description: response.error,
-          color: "danger",
-        });
+        setErrorMessage("Errore durante l'aggiornamento del Tag");
+      } else {
+        setSuccessMessage("Tag aggiornato con successo");
       }
     }
     if (toInsert.length >= 1) {
       const response = await insertTagsAction(toInsert, userData.church_id);
       if (!response.success) {
-        addToast({
-          title: `Errore durante creazione del Tag`,
-          description: response.error,
-          color: "danger",
-        });
+        setErrorMessage("Errore durante la creazione del Tag");
+      } else {
+        setSuccessMessage("Tag creato con successo");
       }
     }
     fetchChurchData(userData.church_id);
@@ -145,36 +142,61 @@ export default function PersonalizeSongsTagsModal() {
   return (
     <>
       <h2> Personalizza Tag Canzoni</h2>
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 rounded-lg bg-green-50 p-4 border border-green-600 text-green-800 text-sm"
+          >
+            ✅ {successMessage}
+          </motion.div>
+        )}
 
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 rounded-lg bg-red-50 p-4 border border-red-600 text-red-800 text-sm"
+          >
+            ❌ {errorMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
       <>
         {personalizedTags.map((tagObj, idx) => (
           <div
             key={idx}
-            className="w-full max-w-[600px] bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col gap-3"
+            className="w-full max-w-[400px] bg-white  p-3 flex flex-col gap-1 border-b-1 "
           >
-            <div className="flex flex-row justify-between items-center gap-2 w-full">
-              {currentlyEditingIndex === idx ? (
-                <Input
-                  size="sm"
-                  variant="bordered"
-                  radius="sm"
-                  className="w-full"
-                  value={tagObj.name}
-                  onChange={(e) => {
-                    const newName = e.target.value;
-                    setPersonalizedTags((prev) =>
-                      prev.map((t, i) =>
-                        i === idx ? { ...t, name: newName } : t
-                      )
-                    );
-                  }}
-                />
-              ) : (
-                <p className="text-sm font-medium text-gray-800">
-                  {tagObj.name}
-                </p>
-              )}
-
+            <div className="flex justify-between items-center gap-4">
+              <div className="flex-1">
+                {currentlyEditingIndex === idx ? (
+                  <Input
+                    size="sm"
+                    variant="bordered"
+                    radius="sm"
+                    className="w-full"
+                    value={tagObj.name}
+                    onChange={(e) => {
+                      const newName = e.target.value;
+                      setPersonalizedTags((prev) =>
+                        prev.map((t, i) =>
+                          i === idx ? { ...t, name: newName } : t
+                        )
+                      );
+                    }}
+                  />
+                ) : (
+                  <p className="text-sm font-medium text-gray-800">
+                    {tagObj.name}
+                  </p>
+                )}
+              </div>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"

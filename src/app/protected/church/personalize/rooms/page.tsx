@@ -13,6 +13,7 @@ import updateRoomsAction from "./updateRoomsAction";
 import deleteRoomsAction from "./deleteRoomsAction";
 import { FiSave } from "react-icons/fi";
 import { MdOutlineEdit } from "react-icons/md";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function PersonalizeRoomsModal() {
   const { loadingChurchData, rooms, fetchChurchData } = useChurchStore();
@@ -24,6 +25,8 @@ export default function PersonalizeRoomsModal() {
   const [hasChanges, setHasChanges] = useState(false);
 
   const [personalizedRooms, setPersonalizedRooms] = useState<roomsType[]>([]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [duplicateError, setDuplicateError] = useState({
     status: false,
@@ -95,11 +98,9 @@ export default function PersonalizeRoomsModal() {
     if (toDelete.length >= 1) {
       const response = await deleteRoomsAction(toDelete, userData.church_id);
       if (!response.success) {
-        addToast({
-          title: `Errore durante l'eliminazione della stanza`,
-          description: response.error,
-          color: "danger",
-        });
+        setErrorMessage("Errore durante l'eliminazione della stanza");
+      } else {
+        setSuccessMessage("Stanze eliminate con successo");
       }
     }
     if (toUpdate.length >= 1) {
@@ -108,21 +109,17 @@ export default function PersonalizeRoomsModal() {
         userData.church_id
       );
       if (!response.success) {
-        addToast({
-          title: `Errore durante l'aggiornamento della stanza`,
-          description: response.error,
-          color: "danger",
-        });
+        setErrorMessage("Errore durante l'aggiornamento della stanza");
+      } else {
+        setSuccessMessage("Stanze aggiornate con successo");
       }
     }
     if (toInsert.length >= 1) {
       const response = await insertRoomsAction(toInsert, userData.church_id);
       if (!response.success) {
-        addToast({
-          title: `Errore durante creazione della stanza`,
-          description: response.error,
-          color: "danger",
-        });
+        setErrorMessage("Errore durante la creazione della stanza");
+      } else {
+        setSuccessMessage("Stanze create con successo");
       }
     }
     setCurrentlyEditingIndex(null);
@@ -149,12 +146,39 @@ export default function PersonalizeRoomsModal() {
 
   return (
     <div className="w-full max-w-[500px]">
-      <h2> Personalizza Stanze</h2>
+      <h2 className="text-center"> Personalizza Stanze</h2>
+      <p className="text-sm text-gray-600 text-center">
+        Qui puoi gestire le stanze della tua chiesa.
+      </p>
+      <AnimatePresence>
+        {successMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 rounded-lg bg-green-50 p-4 border border-green-600 text-green-800 text-sm"
+          >
+            ✅ {successMessage}
+          </motion.div>
+        )}
 
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 rounded-lg bg-red-50 p-4 border border-red-600 text-red-800 text-sm"
+          >
+            ❌ {errorMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
       {personalizedRooms.map((room, idx) => (
         <div
           key={idx}
-          className="w-full max-w-[600px] bg-white  p-3 flex flex-col gap-1"
+          className="w-full max-w-[600px] bg-white  p-3 flex flex-col gap-1 border-b-1 "
         >
           {/* Header: nome stanza + azioni */}
           <div className="flex justify-between items-center gap-4">
@@ -264,7 +288,7 @@ export default function PersonalizeRoomsModal() {
           <small>Per salvare le tue modifiche clicca sul pulsante SALVA.</small>
         </div>
       )}
-      <div className="flex flex-row gap-4 max-w-[300px] mx-auto ">
+      <div className="flex flex-row gap-4 max-w-[300px] mx-auto my-4">
         {!currentlyEditingIndex && (
           <>
             <Button
