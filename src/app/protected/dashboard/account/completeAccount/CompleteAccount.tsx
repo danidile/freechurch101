@@ -19,23 +19,7 @@ export default function CompleteAccount() {
   const [uploadPicture, setUploadPicture] = useState<boolean>(false);
   const [churchesList, setChurchesList] = useState<any[] | null>([]);
   const { userData, fetchUser, loading } = useUserStore();
-  const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
-  useEffect(() => {
-    if (userData?.id) {
-      const imageUrl = `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`;
-      const img = new Image();
 
-      img.onload = () => {
-        setAvatarUrl(imageUrl); // Image exists and loaded
-      };
-
-      img.onerror = () => {
-        setAvatarUrl("/images/userAvatarDefault.jpg"); // Fallback
-      };
-
-      img.src = imageUrl;
-    }
-  }, [userData?.id]);
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
     if (!loading && userData.loggedIn) {
@@ -67,35 +51,38 @@ export default function CompleteAccount() {
   };
   return (
     <>
-      <form onSubmit={handleSubmit(convertData)}>
-        <h4>Completa il tuo Profilo</h4>
-        <Link href={"/protected/reset-password"} className="underline">
-          <small> Clicca qui per modificare la tua password.</small>
-        </Link>
-        <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          {!uploadPicture && (
-            <>
-              <div
-                onClick={() => setUploadPicture(true)}
-                className="flex flex-row gap-4 items-center justify-center cursor-pointer!"
-              >
-                <Avatar
-                  size="lg"
-                  className="transition-transform "
-                  src={avatarUrl}
-                  onError={() => {
-                    setAvatarUrl("/images/userAvatarDefault.jpg"); // your default image path
-                  }}
-                />
-                <p>Aggiorna immagine profilo.</p>
-              </div>
-            </>
-          )}
-          {uploadPicture && (
-            <>
-              <ImageUploader type="profilepicture" />
-            </>
-          )}
+      <h4>Completa il tuo Profilo</h4>
+      <Link href={"/protected/reset-password"} className="underline">
+        <small> Clicca qui per modificare la tua password.</small>
+      </Link>
+      <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+        {!uploadPicture && (
+          <>
+            <div
+              onClick={() => setUploadPicture(true)}
+              className="flex flex-row gap-4 items-center justify-center cursor-pointer!"
+            >
+              <Avatar
+                size="lg"
+                className="transition-transform "
+                src={
+                  `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}` ||
+                  "/images/userAvatarDefault.jpg"
+                }
+              />
+              <p>Aggiorna immagine profilo.</p>
+            </div>
+          </>
+        )}
+        {uploadPicture && (
+          <>
+            <ImageUploader
+              closeState={setUploadPicture}
+              type="profilepicture"
+            />
+          </>
+        )}{" "}
+        <form onSubmit={handleSubmit(convertData)}>
           <div className="flex gap-4 items-center">
             <Input
               {...register("name")}
@@ -183,8 +170,8 @@ export default function CompleteAccount() {
           >
             Aggiorna profilo
           </Button>
-        </div>
-      </form>
+        </form>
+      </div>
     </>
   );
 }

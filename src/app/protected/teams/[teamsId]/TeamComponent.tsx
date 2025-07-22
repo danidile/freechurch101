@@ -34,8 +34,12 @@ import { addMemberToTeamAction } from "./addMemberToTeamAction";
 import { saveUpdatedSkillsAction } from "./saveUpdatedSkillsAction";
 import { updateTeamMemberRoleAction } from "./updateTeamMemberRoleAction";
 
-export default function TeamIdComponent({ params }: { params: { teamsId: string } }) {
-  const { userData, loading: isloading } = useUserStore();
+export default function TeamIdComponent({
+  params,
+}: {
+  params: { teamsId: string };
+}) {
+  const { userData, loading: isloading, fetchUser } = useUserStore();
 
   const [width, setWidth] = useState(0);
   useEffect(() => {
@@ -206,6 +210,7 @@ export default function TeamIdComponent({ params }: { params: { teamsId: string 
     }
 
     setRefetchTrigger((prev) => !prev);
+    fetchUser();
   };
   if (churchTeam) {
     return (

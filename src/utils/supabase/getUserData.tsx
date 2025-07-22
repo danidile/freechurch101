@@ -11,6 +11,7 @@ type ProfileData = {
     id: string | null;
     church_name: string | null;
   };
+  avatar_url: string;
 };
 
 type SupabaseResponse = {
@@ -40,7 +41,7 @@ export default async function fbasicUserData() {
     const { data, error } = (await supabase
       .from("profiles")
       .select(
-        "name, lastname, role(role_name), church(id,church_name,logo),phone"
+        "name, lastname,avatar_url, role(role_name), church(id,church_name,logo),phone"
       )
       .eq("id", user.id) // Filter by the user's id
       .single()) as unknown as SupabaseResponse; // Use the full SupabaseResponse type
@@ -55,6 +56,7 @@ export default async function fbasicUserData() {
       church_id: data?.church?.id || null,
       church_name: data?.church?.church_name || null,
       church_logo: data?.church?.logo || null,
+      avatar_url: data?.avatar_url || null,
     };
     // Now, TypeScript knows that 'error' exists in the response object
     if (error) {

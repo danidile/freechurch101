@@ -1,80 +1,113 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 import { useUserStore } from "@/store/useUserStore";
 import { uploadImageAction } from "./uploadImageAction";
-import { prepareImageUpload } from "./uploadImageClient";
 
 export default function ImageUploader({
+  closeState,
   type,
 }: {
   type?: "profilepicture" | "churchlogo";
+  closeState?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const { userData, fetchUser, loading } = useUserStore();
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState("");
+  const { userData, fetchUser } = useUserStore();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileRef = useRef<File | null>(null);
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const selectedFile = acceptedFiles[0];
       if (!selectedFile) return;
-      setFile(selectedFile);
 
-      // Revoke old URL to avoid memory leaks or confusion
       if (previewUrl) URL.revokeObjectURL(previewUrl);
-
       setPreviewUrl(URL.createObjectURL(selectedFile));
-      setError("");
+      fileRef.current = selectedFile;
     },
     [previewUrl]
   );
-
-  const handleUpload = async (): Promise<void> => {
-    if (!type) {
-      setError("Tipo di upload non specificato.");
-      return;
-    }
-    if (file) {
-      const processed = await prepareImageUpload(file, type);
-
-      await uploadImageAction(processed, userData.id);
-      setPreviewUrl(null);
-      setFile(null);
-      fetchUser();
-    }
-  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { "image/*": [] },
     maxFiles: 1,
   });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (!type || !userData?.id) {
+        setError("Dati mancanti.");
+        return;
+      }
+
+      if (!fileRef.current) {
+        setError("Seleziona un file prima di caricare.");
+        return;
+      }
+
+      const file = fileRef.current;
+
+      const formData = new FormData();
+      formData.append("userId", userData.id);
+      formData.append("type", type);
+      formData.append("file", file);
+
+      const result = await uploadImageAction(formData);
+
+      if (result.success) {
+        closeState?.(false);
+        fetchUser();
+      } else {
+        setError("Errore durante l'upload.");
+      }
+    } catch (err) {
+      setError("Errore imprevisto: " + (err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!type || !userData?.id) {
+    return <p className="text-red-500">Errore: dati mancanti.</p>;
+  }
 
   return (
-    <div>
+    <form onSubmit={handleSubmit} className="relative">
+      <button
+        type="button"
+        onClick={() => closeState?.(false)}
+        className="absolute top-1 right-1 text-red-500 hover:text-red-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-300 rounded-full p-1 transition"
+        aria-label="Chiudi"
+      >
+        ✕
+      </button>
+
       {!previewUrl && (
-        <>
-          <div
-            {...getRootProps()}
-            className="p-6 border-2 border-dashed rounded-xl text-center cursor-pointer hover:border-blue-400 transition"
-          >
-            <input {...getInputProps()} />
-            {isDragActive ? (
-              <p>Rilascia immagine qui</p>
-            ) : (
-              <p>
-                Seleziona e trascina, oppure clicca e seleziona.
-                <br />
-                <small>
-                  Dimensione massima 2MB. Formati accettati JPG e PNG
-                </small>
-              </p>
-            )}
-          </div>
-        </>
+        <div
+          {...getRootProps()}
+          className="p-6 border-2 border-dashed rounded-xl text-center cursor-pointer hover:border-blue-400 transition"
+        >
+          <input {...getInputProps()} />
+          {isDragActive ? (
+            <p>Rilascia immagine qui</p>
+          ) : (
+            <p>
+              Seleziona e trascina, oppure clicca e seleziona.
+              <br />
+              <small>
+                Dimensione massima 2MB. Formati accettati .Jpg, .Png, .WebP
+              </small>
+            </p>
+          )}
+        </div>
       )}
 
       {previewUrl && (
@@ -85,17 +118,15 @@ export default function ImageUploader({
         />
       )}
 
-      {file && (
-        <button
-          onClick={handleUpload}
-          disabled={uploading}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {uploading ? "Uploading..." : "Carica Immagine"}
-        </button>
-      )}
+      {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
 
-      {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
-    </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="mt-4 mx-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-60"
+      >
+        {loading ? "Caricamento..." : "Carica Immagine"}
+      </button>
+    </form>
   );
 }

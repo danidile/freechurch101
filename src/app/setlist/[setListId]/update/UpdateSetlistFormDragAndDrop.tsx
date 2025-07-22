@@ -423,9 +423,11 @@ export default function UpdateSetlistForm({
                         <SelectItem key={room.id} textValue={room.name}>
                           <div>
                             <p className="font-regular">{room.name}</p>
-                            <small className="text-default-500">
-                              {room.address}, {room.comune}
-                            </small>
+                            {room.address && (
+                              <small className="text-default-500">
+                                {room.address}, {room.comune}
+                              </small>
+                            )}
                           </div>
                         </SelectItem>
                       ))}

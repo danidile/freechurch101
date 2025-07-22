@@ -1,38 +1,36 @@
 "use server";
+
 import { createClient } from "@/utils/supabase/server";
 import { logEvent } from "@/utils/supabase/log";
 
-type UploadPayload =
-  | {
-      type: "profilepicture";
-      main: Blob;
-      thumb: Blob;
-      extension: string;
-      contentType: string;
-    }
-  | {
-      type: "churchlogo";
-      main: Blob;
-      extension: string;
-      contentType: string;
-    };
-
-export async function uploadImageAction(
-  processed: UploadPayload,
-  userId: string
-) {
+export async function uploadImageAction(formData: FormData) {
   const supabase = await createClient();
 
+  const userId = formData.get("userId") as string;
+  const type = formData.get("type") as "profilepicture" | "churchlogo";
+  const file = formData.get("file") as File;
+  console.log("Uploading image:", { userId, type, file });
+  if (!userId || !file || !type) {
+    await logEvent({
+      event: "upload_image_action_missing_fields",
+      level: "error",
+      meta: { userId, type },
+    });
+    return { success: false };
+  }
+
+  const extension = file.name.split(".").pop() ?? "jpg";
+  const contentType = file.type;
+
   try {
-    if (processed.type === "profilepicture") {
-      const avatarPath = `${userId}/avatar.${processed.extension}`;
-      const thumbPath = `${userId}/avatar_thumb.${processed.extension}`;
+    if (type === "profilepicture") {
+      const avatarPath = `${userId}/avatar.${extension}`;
 
       const { error: avatarErr } = await supabase.storage
         .from("avatars")
-        .upload(avatarPath, processed.main, {
+        .upload(avatarPath, file, {
           upsert: true,
-          contentType: processed.contentType,
+          contentType,
           cacheControl: "no-cache",
         });
 
@@ -45,37 +43,30 @@ export async function uploadImageAction(
         throw new Error(`Upload error (avatar): ${avatarErr.message}`);
       }
 
-      const { error: thumbErr } = await supabase.storage
-        .from("avatars")
-        .upload(thumbPath, processed.thumb, {
-          upsert: true,
-          contentType: processed.contentType,
-          cacheControl: "no-cache",
-        });
-
-      if (thumbErr) {
-        await logEvent({
-          event: "upload_profilepicture_thumb_failed",
-          level: "error",
-          meta: { userId, thumbPath, message: thumbErr.message },
-        });
-        throw new Error(`Upload error (thumbnail): ${thumbErr.message}`);
-      }
-
       await logEvent({
         event: "upload_profilepicture_success",
         level: "info",
-        meta: { userId, avatarPath, thumbPath },
+        meta: { userId, avatarPath },
       });
+
       const { error: dbErr } = await supabase
         .from("profiles")
         .update({ avatar_url: avatarPath })
         .eq("id", userId);
 
+      if (dbErr) {
+        await logEvent({
+          event: "upload_profilepicture_db_update_failed",
+          level: "error",
+          meta: { userId, message: dbErr.message },
+        });
+        throw new Error(`DB update error: ${dbErr.message}`);
+      }
+
       return { success: true };
     }
 
-    if (processed.type === "churchlogo") {
+    if (type === "churchlogo") {
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("church")
@@ -91,13 +82,13 @@ export async function uploadImageAction(
         throw new Error("Profile or church not found");
       }
 
-      const logoPath = `${profile.church}/logo.${processed.extension}`;
+      const logoPath = `${profile.church}/logo.${extension}`;
 
       const { error: uploadErr } = await supabase.storage
         .from("churchlogo")
-        .upload(logoPath, processed.main, {
+        .upload(logoPath, file, {
           upsert: true,
-          contentType: processed.contentType,
+          contentType,
           cacheControl: "no-cache",
         });
 
@@ -140,7 +131,7 @@ export async function uploadImageAction(
     await logEvent({
       event: "upload_invalid_type",
       level: "error",
-      meta: { userId, type: processed },
+      meta: { userId, type },
     });
     throw new Error("Unsupported upload type");
   } catch (err) {
@@ -149,6 +140,6 @@ export async function uploadImageAction(
       level: "error",
       meta: { userId, error: (err as Error).message },
     });
-    throw err;
+    return { success: false };
   }
 }

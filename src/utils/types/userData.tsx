@@ -23,6 +23,7 @@ export type basicUserData = {
   church_logo?: string;
   teams?: string[];
   leaderOf?: string[];
+  avatar_url?: string;
 };
 
 export type calendarMonth = {

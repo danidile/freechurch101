@@ -30,23 +30,6 @@ export default function UserDataMenu() {
     await fetchUser(); // client refetch
     router.push("/protected/dashboard/account"); // redirect AFTER store is up-to-date
   }
-  const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
-  useEffect(() => {
-    if (userData?.id) {
-      const imageUrl = `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`;
-      const img = new Image();
-
-      img.onload = () => {
-        setAvatarUrl(imageUrl); // Image exists and loaded
-      };
-
-      img.onerror = () => {
-        setAvatarUrl("/images/userAvatarDefault.jpg"); // Fallback
-      };
-
-      img.src = imageUrl;
-    }
-  }, [userData?.id]);
 
   const options = [
     {
@@ -107,7 +90,10 @@ export default function UserDataMenu() {
           buttonPadding="sm"
           placeholder={
             <img
-              src={avatarUrl}
+              src={
+                `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}` ||
+                "/images/userAvatarDefault.jpg"
+              }
               className="w-full h-full object-cover rounded-full"
             />
           }
