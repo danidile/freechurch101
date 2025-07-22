@@ -68,7 +68,7 @@ export default function CompleteAccount() {
   return (
     <>
       <form onSubmit={handleSubmit(convertData)}>
-        <h1 className="text-2xl font-medium">Completa il tuo Profilo</h1>
+        <h4>Completa il tuo Profilo</h4>
         <Link href={"/protected/reset-password"} className="underline">
           <small> Clicca qui per modificare la tua password.</small>
         </Link>

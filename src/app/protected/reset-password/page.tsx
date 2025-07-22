@@ -37,7 +37,7 @@ export default function ResetPasswordComponent() {
       )}
       {!passwordResetted && (
         <>
-          <h1 className="text-2xl font-medium">Reset password</h1>
+          <h4>Reset password</h4>
           <p className="text-sm text-foreground/60">
             Inserisci la tua nuova password.
           </p>

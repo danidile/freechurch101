@@ -67,6 +67,10 @@ export async function uploadImageAction(
         level: "info",
         meta: { userId, avatarPath, thumbPath },
       });
+      const { error: dbErr } = await supabase
+        .from("profiles")
+        .update({ avatar_url: avatarPath })
+        .eq("id", userId);
 
       return { success: true };
     }

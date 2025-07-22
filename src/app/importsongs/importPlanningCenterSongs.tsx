@@ -257,8 +257,8 @@ export default function importPlanningCenterSongs() {
                     offset={100}
                     orientation="horizontal"
                   >
-                    {selectedSongs.map((song) => {
-                      return <p>{song.Title}</p>;
+                    {selectedSongs.map((song, index) => {
+                      return <p key={index}>{song.Title}</p>;
                     })}
                   </ScrollShadow>
 

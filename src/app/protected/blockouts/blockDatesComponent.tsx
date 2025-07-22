@@ -97,7 +97,7 @@ export default function BlockDatesComponent({}: {}) {
   return (
     <I18nProvider locale="it-IT-u-ca-gregory">
       <div className="gap-0">
-        <h3 className="loading-none">Blocca date</h3>
+        <h4 className="loading-none">Blocca date</h4>
         <p className="">
           Inserisci durante quali date non sarai disponibile per le turnazioni.
         </p>

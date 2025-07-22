@@ -8,7 +8,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@heroui/react";
-import {  usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { MdDelete, MdModeEdit, MdMoreVert } from "react-icons/md";
@@ -201,7 +201,10 @@ export default function ChordProViewComponent({
 
       <div>
         <h5 className="song-title">{setListSong.song_title}</h5>
-        <small>{setListSong.author}</small>
+        <div className="flex flex-col gap-1 mt-2">
+          <small>{setListSong.author}</small>
+          <small>Tonalità: {songKey}</small>
+        </div>
         {!isChordPro && (
           <>
             {parsedLyrics.flatMap((line, i) => {
