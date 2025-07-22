@@ -91,7 +91,7 @@ export default function UserDataMenu() {
           placeholder={
             <img
               src={
-                `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}` ||
+                `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}?t=${Date.now()}` ||
                 "/images/userAvatarDefault.jpg"
               }
               className="w-full h-full object-cover rounded-full"

@@ -1,10 +1,10 @@
 "use client";
 import { Avatar, Button, Input } from "@heroui/react";
 import { useForm } from "react-hook-form";
-
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { completeAccountAction } from "./completeAccountAction";
-import { basicUserData } from "@/utils/types/userData";
+import { basicUserData, basicUserDataSchema } from "@/utils/types/userData";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa6";
 import { useUserStore } from "@/store/useUserStore";
@@ -33,19 +33,24 @@ export default function CompleteAccount() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<basicUserData>();
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<basicUserData>({
+    resolver: zodResolver(basicUserDataSchema),
+    defaultValues: userData, // your user data with default values
+  });
 
   const convertData = async (data: basicUserData) => {
     if (data.church_name) {
       const index = churchesList.findIndex(
         (church) => church.churchName === data.church_name
       );
-      data.church_id = churchesList[index].id;
+      if (index !== -1) {
+        data.church_id = churchesList[index].id;
+      }
     }
     data.id = userData.id;
-    console.log("DATA", data);
-    completeAccountAction(data);
+    await completeAccountAction(data);
     await fetchUser(); // client refetch
     router.push("/protected/dashboard/account"); // redirect AFTER store is up-to-date
   };
@@ -66,7 +71,7 @@ export default function CompleteAccount() {
                 size="lg"
                 className="transition-transform "
                 src={
-                  `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}` ||
+                  `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}?t=${Date.now()}` ||
                   "/images/userAvatarDefault.jpg"
                 }
               />
@@ -82,94 +87,106 @@ export default function CompleteAccount() {
             />
           </>
         )}{" "}
-        <form onSubmit={handleSubmit(convertData)}>
-          <div className="flex gap-4 items-center">
-            <Input
-              {...register("name")}
-              name="name"
-              label="Nome"
-              variant="bordered"
-              size="sm"
-              placeholder={userData.name}
-            />
-            <Input
-              {...register("lastname")}
-              name="lastname"
-              label="Cognome"
-              variant="bordered"
-              size="sm"
-              placeholder={userData.lastname}
-            />
+        <form
+          onSubmit={handleSubmit(convertData)}
+          className="flex flex-col gap-2 items-center"
+        >
+          <div className="flex gap-2 items-center">
+            <div className="flex flex-col">
+              <label htmlFor="name" className="mb-1 font-medium">
+                Nome
+              </label>
+              <input
+                id="name"
+                {...register("name")}
+                type="text"
+                placeholder={userData.name}
+                className={`cinput ${
+                  errors.name ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.name && (
+                <span className="text-red-600 text-xs mt-1">
+                  {errors.name.message}
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <label htmlFor="lastname" className="mb-1 font-medium">
+                Cognome
+              </label>
+              <input
+                id="lastname"
+                {...register("lastname")}
+                type="text"
+                placeholder={userData.lastname}
+                className={`cinput ${
+                  errors.lastname ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+              {errors.lastname && (
+                <span className="text-red-600 text-xs mt-1">
+                  {errors.lastname.message}
+                </span>
+              )}
+            </div>
           </div>
+
           {userData.church_id && (
             <p>
-              La mia chiesa:<strong>{userData.church_name}</strong>
+              La mia chiesa: <strong>{userData.church_name}</strong>
             </p>
           )}
-          {!userData.pending_church_confirmation && !userData.church_id && (
-            <>
-              <Autocomplete
-                defaultSelectedKey={userData.church_id}
-                variant="bordered"
-                placeholder="La mia chiesa..."
-                {...register("church_name")}
-                label="Seleziona la tua chiesa"
-              >
-                {churchesList.map(
-                  (church: { id: string; churchName: string }) => (
-                    <AutocompleteItem key={church.id} id={church.id}>
-                      {church.churchName}
-                    </AutocompleteItem>
-                  )
-                )}
-              </Autocomplete>
-              <small>
-                Se la tua chiesa non è nella lista{" "}
-                <Link
-                  href="/churches/addChurch"
-                  className="text-blue-600 underline font-bold"
-                >
-                  Clicca qui
-                </Link>
-              </small>
-            </>
-          )}
-          <Input
-            label="Email"
-            variant="bordered"
-            size="sm"
-            disabled
-            placeholder={userData.email}
-            endContent={
-              <FaLock className="text-l text-default-500 pointer-events-none shrink-0 my-auto" />
-            }
-          />
-          <Input
-            {...register("phone")}
-            label="Telefono"
-            variant="bordered"
-            size="sm"
-            type="tel"
-            placeholder={userData.phone}
-          />
 
-          <Input
+          <div className="flex flex-col w-full">
+            <label htmlFor="email" className="mb-1 font-medium">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={userData.email || ""}
+              disabled
+              className="cinput cursor-not-allowed"
+            />
+          </div>
+
+          <div className="flex flex-col w-full">
+            <label htmlFor="phone" className="mb-1 font-medium">
+              Telefono
+            </label>
+            <input
+              id="phone"
+              {...register("phone")}
+              type="tel"
+              placeholder={userData.phone}
+              className={`cinput ${
+                errors.phone ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.phone && (
+              <span className="text-red-600 text-xs mt-1">
+                {errors.phone.message}
+              </span>
+            )}
+          </div>
+
+          {/* Hidden input for id */}
+          <input
             {...register("id")}
-            name="id"
-            label="id"
-            className="hidden"
+            id="id"
+            type="hidden"
             value={userData.id}
           />
 
-          <Button
-            className="mt-3"
-            color="primary"
-            variant="shadow"
+          <button
             type="submit"
             disabled={isSubmitting}
+            className="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
           >
             Aggiorna profilo
-          </Button>
+          </button>
         </form>
       </div>
     </>

@@ -33,3 +33,26 @@ export type calendarMonth = {
   days?: number[];
   emptySpaces?: number;
 };
+
+export const basicUserDataSchema = z.object({
+  loggedIn: z.boolean().optional(),
+  id: z.string().optional(),
+  email: z.string().email().optional(),
+  name: z.string().min(1, "Il nome è obbligatorio").optional(),
+  phone: z
+    .string()
+    .optional()
+    .refine((val) => !val || /^[0-9+\-\s]*$/.test(val), {
+      message: "Numero di telefono non valido",
+    }),
+  role: z.string().optional(),
+  lastname: z.string().min(1, "Il cognome è obbligatorio").optional(),
+  church_id: z.string().optional(),
+  church_name: z.string().optional(),
+  pending_church_confirmation: z.boolean().optional(),
+  fetched: z.boolean().optional(),
+  church_logo: z.string().optional(),
+  teams: z.array(z.string()).optional(),
+  leaderOf: z.array(z.string()).optional(),
+  avatar_url: z.string().optional(),
+});

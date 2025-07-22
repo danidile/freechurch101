@@ -10,6 +10,7 @@ const nextConfig = {
     return [
       {
         source: "/(.*)",
+
         headers: [
           {
             key: "Strict-Transport-Security",
@@ -58,6 +59,11 @@ worker-src blob: 'self';
   },
   turbopack: {
     root: path.join(__dirname, ".."),
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '5mb',
+    },
   },
 };
 
