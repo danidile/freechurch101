@@ -1,7 +1,5 @@
-import isTeamLeaderServer from "@/utils/supabase/isTeamLeaderServer";
 import AddSetlistComponent from "./addSetlistComponent";
 import userDataServer from "@/utils/supabase/getUserDataServer";
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { checkPermission } from "@/utils/supabase/permissions/checkPermission";
 
 export default async function songs() {
@@ -11,7 +9,8 @@ export default async function songs() {
     userData.teams,
     "setlists",
     "create",
-    userData.id
+    userData.id,
+    userData.role
   );
   if (allowed) {
     return <AddSetlistComponent />;
@@ -24,6 +23,7 @@ export default async function songs() {
             Solo gli amministratori della chiesa e i responsabili dei team
             possono creare eventi e turnazioni.
           </p>
+          {userData.role}
         </div>
       </div>
     );

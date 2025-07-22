@@ -8,6 +8,7 @@ import {
   useDisclosure,
   TimeInput,
 } from "@heroui/react";
+
 import { I18nProvider } from "@react-aria/i18n";
 import {
   DateValue,
@@ -207,29 +208,6 @@ export default function UpdateSetlistForm({
     );
   };
 
-  function dateValueToString(date: DateValue): string {
-    if (!(date instanceof CalendarDate)) return "";
-
-    const year = date.year;
-    const month = String(date.month).padStart(2, "0");
-    const day = String(date.day).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  }
-  const addSongtoSetlist = (song: setListSongT) => {
-    setState([
-      ...state,
-      {
-        id: crypto.randomUUID(),
-        song: song.id,
-        song_title: song.song_title,
-        author: song.author,
-        type: song.type,
-        key: "A",
-      },
-    ]);
-  };
-
   const addItemToSetlist = (item: string) => {
     setSchedule([
       ...schedule,
@@ -238,10 +216,6 @@ export default function UpdateSetlistForm({
         type: item,
       },
     ]);
-  };
-
-  const removeSection = (id: string) => {
-    setState(state.filter((section) => section.id !== id));
   };
 
   const removeItemFromSchedule = (id: string) => {

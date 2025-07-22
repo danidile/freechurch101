@@ -2,15 +2,20 @@
 import { createClient } from "@/utils/supabase/server";
 import { DEFAULT_ROLE_PERMISSIONS } from "@/constants";
 import { Permission } from "@/utils/types/types";
+import { roles } from "@/constants";
 
 export async function checkPermission(
   teamIds: string[],
   resource: string,
   action: string,
-  userId: string
+  userId: string,
+  userRole?: string
 ) {
   const supabase = await createClient();
 
+  if (roles.find((role) => role.slug === userRole).key <= 1) {
+    return true;
+  }
   // 1. Prendi i ruoli dell’utente in tutti i team richiesti
   const { data: memberships, error: membershipError } = await supabase
     .from("team-members")

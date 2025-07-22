@@ -44,6 +44,7 @@ export default function CreateChurch() {
   const [success, setSuccess] = useState(false);
 
   const handleRegister = async (data: TauthSchema) => {
+    setSending(true);
     const response = await regristrationAction(data);
     if (response.success) {
       router.push("/protected/dashboard/account");

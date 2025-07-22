@@ -14,14 +14,12 @@ import {
 
 type HistoryState = {
   subject: string;
-  htmlTemplate: string;
   textTemplate: string;
 };
 
 type EmailTemplate = {
   team_id: string;
   subject: string;
-  html_template: string;
   text_template: string;
 };
 
@@ -31,26 +29,6 @@ function parseTemplate(template: string, data: Record<string, string>) {
     (_, key) => data[key.trim()] || `{{${key.trim()}}}`
   );
 }
-
-const defaultHtmlTemplate = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
-  <div style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-    <h2 style="color: #1f2937; margin-bottom: 20px;">🎵 Promemoria Turno</h2>
-    <p style="color: #374151; font-size: 16px; line-height: 1.6;">
-      Ciao <strong>{{name}}</strong>, questo è un promemoria che sei di turno con il <strong>{{team}}</strong> {{date}} 🙌
-    </p>
-    <p style="color: #374151; font-size: 16px; line-height: 1.6;">
-      Se non hai ancora confermato la tua presenza su ChurchLab, ti invitiamo gentilmente a farlo ora cliccando sul pulsante qui sotto:
-    </p>
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="{{link}}" style="background: #10b981; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-        Conferma Presenza
-      </a>
-    </div>
-    <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
-      Grazie per il tuo servizio! 💝
-    </p>
-  </div>
-</div>`;
 
 export default function EmailTemplateForm({
   defaultTemplate,
@@ -62,20 +40,16 @@ export default function EmailTemplateForm({
   const [subject, setSubject] = useState(
     "🎵 {{name}}, sei nel team {{team}} per {{date}} - Conferma la tua presenza!"
   );
-  const [htmlTemplate, setHtmlTemplate] = useState(
-    defaultTemplate || defaultHtmlTemplate
-  );
+  const [htmlTemplate, setHtmlTemplate] = useState(defaultTemplate);
   const [textTemplate, setTextTemplate] = useState(
     "Ciao {{name}}, questo è un promemoria che sei di turno con il {{team}} {{date}} 🙌. Se non hai ancora confermato la tua presenza su ChurchLab, ti invitiamo gentilmente a farlo ora: {{link}}. Grazie per il tuo servizio! 💝"
   );
   const [preview, setPreview] = useState("");
   const [previewSubject, setPreviewSubject] = useState("");
-  const [activeTab, setActiveTab] = useState<"html" | "text">("html");
   const [showPreview, setShowPreview] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Auto-save indicator
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -85,7 +59,6 @@ export default function EmailTemplateForm({
     {
       subject:
         "🎵 {{name}}, sei nel team {{team}} per {{date}} - Conferma la tua presenza!",
-      htmlTemplate: defaultTemplate || defaultHtmlTemplate,
       textTemplate:
         "Ciao {{name}}, questo è un promemoria che sei di turno con il {{team}} {{date}} 🙌. Se non hai ancora confermato la tua presenza su ChurchLab, ti invitiamo gentilmente a farlo ora: {{link}}. Grazie per il tuo servizio! 💝",
     },
@@ -106,12 +79,10 @@ export default function EmailTemplateForm({
   // Auto-preview when content changes
   useEffect(() => {
     if (showPreview) {
-      const previewHtml = parseTemplate(htmlTemplate, sampleData);
       const previewSubj = parseTemplate(subject, sampleData);
-      setPreview(previewHtml);
       setPreviewSubject(previewSubj);
     }
-  }, [htmlTemplate, textTemplate, subject, showPreview]);
+  }, [, textTemplate, subject, showPreview]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -189,36 +160,10 @@ export default function EmailTemplateForm({
       }
       saveToHistory({
         subject: newSubject,
-        htmlTemplate,
         textTemplate,
       });
     },
-    [htmlTemplate, textTemplate, saveToHistory]
-  );
-
-  const updateHtmlTemplate = useCallback(
-    (newHtml: string) => {
-      setHtmlTemplate(newHtml);
-      const invalid = validateTemplate(newHtml);
-      if (invalid.length > 0) {
-        setErrors((prev) => ({
-          ...prev,
-          html: `Placeholder non validi: ${invalid.join(", ")}`,
-        }));
-      } else {
-        setErrors((prev) => {
-          const newErrors = { ...prev };
-          delete newErrors.html;
-          return newErrors;
-        });
-      }
-      saveToHistory({
-        subject,
-        htmlTemplate: newHtml,
-        textTemplate,
-      });
-    },
-    [subject, textTemplate, saveToHistory]
+    [textTemplate, saveToHistory]
   );
 
   const updateTextTemplate = useCallback(
@@ -239,11 +184,10 @@ export default function EmailTemplateForm({
       }
       saveToHistory({
         subject,
-        htmlTemplate,
         textTemplate: newText,
       });
     },
-    [subject, htmlTemplate, saveToHistory]
+    [subject, saveToHistory]
   );
 
   const handleUndo = () => {
@@ -253,7 +197,6 @@ export default function EmailTemplateForm({
 
       isUpdatingFromHistory.current = true;
       setSubject(state.subject);
-      setHtmlTemplate(state.htmlTemplate);
       setTextTemplate(state.textTemplate);
       setHistoryIndex(newIndex);
 
@@ -270,7 +213,6 @@ export default function EmailTemplateForm({
 
       isUpdatingFromHistory.current = true;
       setSubject(state.subject);
-      setHtmlTemplate(state.htmlTemplate);
       setTextTemplate(state.textTemplate);
       setHistoryIndex(newIndex);
 
@@ -289,14 +231,12 @@ export default function EmailTemplateForm({
       const defaultState = {
         subject:
           "🎵 {{name}}, sei nel team {{team}} per {{date}} - Conferma la tua presenza!",
-        htmlTemplate: defaultTemplate || defaultHtmlTemplate,
         textTemplate:
           "Ciao {{name}}, questo è un promemoria che sei di turno con il {{team}} {{date}} 🙌. Se non hai ancora confermato la tua presenza su ChurchLab, ti invitiamo gentilmente a farlo ora: {{link}}. Grazie per il tuo servizio! 💝",
       };
 
       isUpdatingFromHistory.current = true;
       setSubject(defaultState.subject);
-      setHtmlTemplate(defaultState.htmlTemplate);
       setTextTemplate(defaultState.textTemplate);
       setErrors({});
 
@@ -334,7 +274,6 @@ export default function EmailTemplateForm({
     const template: EmailTemplate = {
       team_id: "",
       subject,
-      html_template: htmlTemplate,
       text_template: textTemplate,
     };
 
@@ -376,22 +315,18 @@ export default function EmailTemplateForm({
 
   const insertPlaceholder = (placeholder: string) => {
     const textarea = document.getElementById(
-      activeTab === "html" ? "htmlTemplate" : "textTemplate"
+      "textTemplate"
     ) as HTMLTextAreaElement;
     if (textarea) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      const current = activeTab === "html" ? htmlTemplate : textTemplate;
+      const current = textTemplate;
       const newValue =
         current.substring(0, start) +
         `{{${placeholder}}}` +
         current.substring(end);
 
-      if (activeTab === "html") {
-        updateHtmlTemplate(newValue);
-      } else {
-        updateTextTemplate(newValue);
-      }
+      updateTextTemplate(newValue);
 
       setTimeout(() => {
         textarea.focus();
@@ -406,9 +341,7 @@ export default function EmailTemplateForm({
   const hasErrors = Object.keys(errors).length > 0;
 
   return (
-    <div
-      className={`${isFullscreen ? "fixed inset-0 bg-white z-50 overflow-auto" : "max-w-7xl mx-auto"} p-6 space-y-6`}
-    >
+    <div className={`"max-w-7xl mx-auto"} p-6 space-y-6`}>
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-200 pb-4">
         <div className="flex items-center gap-4">
@@ -430,19 +363,7 @@ export default function EmailTemplateForm({
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Keyboard shortcuts hint */}
-          <div className="text-xs text-gray-500 mr-4 hidden lg:block">
-            Ctrl+S: Salva | Ctrl+P: Anteprima | Ctrl+Z: Annulla
-          </div>
-
           {/* Fullscreen toggle */}
-          <button
-            onClick={() => setIsFullscreen(!isFullscreen)}
-            className="px-3 py-2 text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg transition-colors"
-            title="Modalità schermo intero"
-          >
-            {isFullscreen ? "⤓" : "⤢"}
-          </button>
 
           {/* Reset button */}
           <button
@@ -500,17 +421,6 @@ export default function EmailTemplateForm({
               <label className="block text-sm font-medium text-gray-700">
                 Oggetto Email
               </label>
-              <button
-                onClick={() => copyToClipboard(subject, "subject")}
-                className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-              >
-                {copied === "subject" ? (
-                  <Check size={12} />
-                ) : (
-                  <Copy size={12} />
-                )}
-                {copied === "subject" ? "Copiato" : "Copia"}
-              </button>
             </div>
             <input
               type="text"
@@ -528,87 +438,22 @@ export default function EmailTemplateForm({
 
           {/* Template Tabs */}
           <div>
-            <div className="flex items-center justify-between border-b border-gray-200 mb-4">
-              <div className="flex">
-                <button
-                  onClick={() => setActiveTab("html")}
-                  className={`px-4 py-2 font-medium text-sm transition-colors ${
-                    activeTab === "html"
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Template HTML
-                  {errors.html && <span className="ml-1 text-red-500">•</span>}
-                </button>
-                <button
-                  onClick={() => setActiveTab("text")}
-                  className={`px-4 py-2 font-medium text-sm transition-colors ${
-                    activeTab === "text"
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  Template Testo
-                  {errors.text && <span className="ml-1 text-red-500">•</span>}
-                </button>
-              </div>
-              <button
-                onClick={() =>
-                  copyToClipboard(
-                    activeTab === "html" ? htmlTemplate : textTemplate,
-                    activeTab
-                  )
-                }
-                className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-              >
-                {copied === activeTab ? (
-                  <Check size={12} />
-                ) : (
-                  <Copy size={12} />
-                )}
-                {copied === activeTab ? "Copiato" : "Copia tutto"}
-              </button>
-            </div>
-
-            {activeTab === "html" ? (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Template HTML
-                </label>
-                <textarea
-                  id="htmlTemplate"
-                  value={htmlTemplate}
-                  onChange={(e) => updateHtmlTemplate(e.target.value)}
-                  rows={isFullscreen ? 25 : 20}
-                  className={`w-full border rounded-lg px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-colors ${
-                    errors.html ? "border-red-300 bg-red-50" : "border-gray-300"
-                  }`}
-                  placeholder="Inserisci il template HTML..."
-                />
-                {errors.html && (
-                  <p className="text-sm text-red-600 mt-1">{errors.html}</p>
-                )}
-              </div>
-            ) : (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Template Testo (fallback)
-                </label>
-                <textarea
-                  id="textTemplate"
-                  value={textTemplate}
-                  onChange={(e) => updateTextTemplate(e.target.value)}
-                  rows={isFullscreen ? 15 : 8}
-                  className={`w-full border rounded-lg px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-colors ${
-                    errors.text ? "border-red-300 bg-red-50" : "border-gray-300"
-                  }`}
-                  placeholder="Inserisci il template di testo..."
-                />
-                {errors.text && (
-                  <p className="text-sm text-red-600 mt-1">{errors.text}</p>
-                )}
-              </div>
+            
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Template Testo (fallback)
+            </label>
+            <textarea
+              id="textTemplate"
+              value={textTemplate}
+              onChange={(e) => updateTextTemplate(e.target.value)}
+              rows={8}
+              className={`w-full border rounded-lg px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-colors ${
+                errors.text ? "border-red-300 bg-red-50" : "border-gray-300"
+              }`}
+              placeholder="Inserisci il template di testo..."
+            />
+            {errors.text && (
+              <p className="text-sm text-red-600 mt-1">{errors.text}</p>
             )}
           </div>
 
@@ -629,20 +474,20 @@ export default function EmailTemplateForm({
           {/* Placeholders */}
           <div className="bg-gray-50 rounded-lg p-4">
             <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              Placeholders Disponibili
+              Variabili Disponibili
               <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                 {availablePlaceholders.length}
               </span>
             </h3>
             <div className="space-y-3">
               {availablePlaceholders.map((placeholder) => (
-                <div key={placeholder.key} className="group">
+                <div key={placeholder.key} className="group my-2">
                   <button
                     onClick={() => insertPlaceholder(placeholder.key)}
-                    className="w-full text-left bg-white border border-gray-200 rounded-lg px-3 py-3 hover:bg-blue-50 hover:border-blue-200 transition-all duration-200 group-hover:shadow-sm"
+                    className="w-full text-left bg-white border border-gray-200 rounded-lg px-3 py-3 transition-all duration-200"
                   >
                     <div className="flex items-center justify-between">
-                      <code className="text-blue-600 font-semibold">{`{{${placeholder.key}}}`}</code>
+                      <p className="text-blue-600 font-medium">{`{{${placeholder.key}}}`}</p>
                       <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
                         Click per inserire
                       </span>
@@ -650,56 +495,9 @@ export default function EmailTemplateForm({
                     <div className="text-xs text-gray-500 mt-1">
                       {placeholder.description}
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">
-                      Es: {placeholder.example}
-                    </div>
                   </button>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Sample Data */}
-          <div className="bg-blue-50 rounded-lg p-4">
-            <h3 className="text-lg font-semibold mb-3">Dati di Esempio</h3>
-            <div className="space-y-3 text-sm">
-              {Object.entries(sampleData).map(([key, value]) => (
-                <div key={key} className="flex flex-col gap-1">
-                  <code className="text-blue-600 font-semibold">{`{{${key}}}`}</code>
-                  <span className="text-gray-700 bg-white px-2 py-1 rounded border text-xs">
-                    {value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Status */}
-          <div className="bg-green-50 rounded-lg p-4">
-            <h3 className="text-lg font-semibold mb-2">Stato</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>Modifiche:</span>
-                <span
-                  className={
-                    hasUnsavedChanges ? "text-amber-600" : "text-green-600"
-                  }
-                >
-                  {hasUnsavedChanges ? "Non salvate" : "Salvate"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Validazione:</span>
-                <span className={hasErrors ? "text-red-600" : "text-green-600"}>
-                  {hasErrors ? "Errori presenti" : "OK"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Cronologia:</span>
-                <span className="text-gray-600">
-                  {historyIndex + 1}/{history.length}
-                </span>
-              </div>
             </div>
           </div>
         </div>

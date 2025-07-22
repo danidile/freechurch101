@@ -150,3 +150,11 @@ export const DEFAULT_ROLE_PERMISSIONS: Omit<Permission, "team_id">[] = [
     allowed: true,
   })),
 ];
+
+
+
+export const roles = [
+  { key: 1, label: "Fondatore Chiesa", slug: "churchfounder" },
+  { key: 2, label: "Admin Chiesa", slug: "churchadmin" },
+  { key: 8, label: "Membro Chiesa", slug: "churchmember" },
+];

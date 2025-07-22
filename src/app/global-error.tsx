@@ -2,6 +2,7 @@
 
 import { logEventClient } from "@/utils/supabase/logClient";
 import NextError from "next/error";
+import Link from "next/link";
 import { useEffect } from "react";
 
 export default function GlobalError({
@@ -37,6 +38,10 @@ export default function GlobalError({
         definition requires a `statusCode` prop. However, since the App Router
         does not expose status codes for errors, we simply pass 0 to render a
         generic error message. */}
+        <div className="container-sub">
+          <p>Errore</p>
+          <Link href={"/"}>Clicca qui per ritornare alla Homepage</Link>
+        </div>
         <NextError statusCode={0} />
       </body>
     </html>

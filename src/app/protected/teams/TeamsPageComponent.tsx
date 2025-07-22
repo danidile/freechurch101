@@ -43,16 +43,7 @@ export default function TeamsPageComponent() {
 
       {churchTeams.length === 0 ? (
         <div className="flex flex-col justify-center items-center gap-4 mb-6">
-          {" "}
           <p className="text-gray-700">Nessun team trovato.</p>
-          {hasPermission(userData.role as Role, "create:team") && (
-            <Link href="/protected/teams/create-team">
-              <Button size="sm" className="gap-2">
-                <FaPlus />
-                Crea nuovo team
-              </Button>
-            </Link>
-          )}
         </div>
       ) : (
         <div className="grid gap-2 max-w-[350px]">

@@ -7,12 +7,8 @@ import { IoReturnDownForwardSharp, IoSettingsSharp } from "react-icons/io5";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { updateProfileRole } from "./updateProfileRoleAction";
+import { roles } from "@/constants";
 
-const roles = [
-  { key: 1, label: "Fondatore Chiesa", slug: "churchfounder" },
-  { key: 2, label: "Admin Chiesa", slug: "churchadmin" },
-  { key: 8, label: "Membro Chiesa", slug: "churchmember" },
-];
 
 export default function ModalRoleUpdate({
   peopleId,
