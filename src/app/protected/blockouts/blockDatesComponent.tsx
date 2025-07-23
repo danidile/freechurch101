@@ -9,7 +9,7 @@ import { addBlockoutAction } from "./addBlockoutsAction";
 import { deleteBlockoutAction } from "./deleteBlockoutsAction";
 import { getBlockoutsByUserId } from "@/hooks/GET/getBlockoutsByUserId";
 import { BlockedDate, RangeValueString } from "@/utils/types/types";
-import DateRangePicker from "@/app/testpages/daterange/page";
+import DateRangePicker from "@/app/components/DataRangePicker";
 
 export default function BlockDatesComponent() {
   const { userData, loading } = useUserStore();
