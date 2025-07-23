@@ -89,149 +89,151 @@ export default function ChurchComponent() {
   };
 
   return (
-    <div className="p-2 sm:p-5">
-      <div className="w-full">
-        <h5 className="font-bold ml-3 my-5">{userData.church_name}</h5>
-      </div>
-      <div className="max-w-full mx-auto w-full ">
-        <h5 className="font-bold">Membri di chiesa:</h5>
-        <table className="ntable max-w-[800px] ">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th className="hidden sm:table-cell">Email</th>
-              <th className="max-w-[50px] w-[50px] py-[2px]">Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profiles.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td className="py-[2px]">
-                    {item.name} {item.lastname}{" "}
-                    {item.role <= 2 && (
-                      <small className="font-bold">Admin</small>
-                    )}
-                  </td>
-                  <td className="py-[2px] hidden sm:table-cell">
-                    {item.email}{" "}
-                  </td>
-                  <td className="max-w-[50px] w-[50px] py-[2px]">
-                    {hasPermission(userData.role as Role, "update:teams") && (
-                      <div className="relative flex flex-row justify-center items-center gap-1 mx-auto">
-                        <Dropdown>
-                          <DropdownTrigger>
-                            <Button
-                              className="mx-auto"
-                              isIconOnly
-                              variant="light"
-                              size="sm"
-                            >
-                              <BsThreeDotsVertical />
-                            </Button>
-                          </DropdownTrigger>
-                          <DropdownMenu aria-label="Static Actions">
-                            <DropdownItem
-                              key="update"
-                              as={Link}
-                              startContent={<FaRegEye />}
-                              href={`/people/${item.id}`}
-                            >
-                              Visualizza dettagli utente
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </Dropdown>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        aria-labelledby="add-user-modal-title"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader
-                className="flex flex-col gap-1"
-                id="add-user-modal-title"
-              >
-                Aggiungi membro Chiesa
-              </ModalHeader>
-              <ModalBody>
-                <form
-                  onSubmit={handleSubmit(addMember)}
-                  className="flex flex-col gap-4"
+    <div className="flex flex-col gap-4 justify-center items-center w-full">
+      <div>
+        <div className="w-full">
+          <h5 className="font-bold ml-3 my-5">{userData.church_name}</h5>
+        </div>
+        <div className="max-w-full mx-auto w-full ">
+          <h5 className="font-bold">Membri di chiesa:</h5>
+          <table className="ntable max-w-[800px] ">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th className="hidden sm:table-cell">Email</th>
+                <th className="max-w-[50px] w-[50px] py-[2px]">Azioni</th>
+              </tr>
+            </thead>
+            <tbody>
+              {profiles.map((item, index) => {
+                return (
+                  <tr key={index}>
+                    <td className="py-[2px]">
+                      {item.name} {item.lastname}{" "}
+                      {item.role <= 2 && (
+                        <small className="font-bold">Admin</small>
+                      )}
+                    </td>
+                    <td className="py-[2px] hidden sm:table-cell">
+                      {item.email}{" "}
+                    </td>
+                    <td className="max-w-[50px] w-[50px] py-[2px]">
+                      {hasPermission(userData.role as Role, "update:teams") && (
+                        <div className="relative flex flex-row justify-center items-center gap-1 mx-auto">
+                          <Dropdown>
+                            <DropdownTrigger>
+                              <Button
+                                className="mx-auto"
+                                isIconOnly
+                                variant="light"
+                                size="sm"
+                              >
+                                <BsThreeDotsVertical />
+                              </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu aria-label="Static Actions">
+                              <DropdownItem
+                                key="update"
+                                as={Link}
+                                startContent={<FaRegEye />}
+                                href={`/people/${item.id}`}
+                              >
+                                Visualizza dettagli utente
+                              </DropdownItem>
+                            </DropdownMenu>
+                          </Dropdown>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          aria-labelledby="add-user-modal-title"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader
+                  className="flex flex-col gap-1"
+                  id="add-user-modal-title"
                 >
-                  <div className="flex flex-row gap-2">
-                    <Input
-                      label="Nome"
-                      size="sm"
-                      id="name"
-                      {...register("name", { required: "Name is required" })}
-                    />
-                    <Input
-                      label="Cognome"
-                      size="sm"
-                      id="lastname"
-                      {...register("lastname", {
-                        required: "Name is required",
-                      })}
-                    />
-                  </div>
+                  Aggiungi membro Chiesa
+                </ModalHeader>
+                <ModalBody>
+                  <form
+                    onSubmit={handleSubmit(addMember)}
+                    className="flex flex-col gap-4"
+                  >
+                    <div className="flex flex-row gap-2">
+                      <Input
+                        label="Nome"
+                        size="sm"
+                        id="name"
+                        {...register("name", { required: "Name is required" })}
+                      />
+                      <Input
+                        label="Cognome"
+                        size="sm"
+                        id="lastname"
+                        {...register("lastname", {
+                          required: "Name is required",
+                        })}
+                      />
+                    </div>
 
-                  <div>
-                    <Input
-                      label="Email"
-                      size="sm"
-                      id="email"
-                      type="email"
-                      {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                          value:
-                            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                          message: "Invalid email address",
-                        },
-                      })}
-                    />
-                  </div>
+                    <div>
+                      <Input
+                        label="Email"
+                        size="sm"
+                        id="email"
+                        type="email"
+                        {...register("email", {
+                          required: "Email is required",
+                          pattern: {
+                            value:
+                              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                            message: "Invalid email address",
+                          },
+                        })}
+                      />
+                    </div>
 
-                  {isSubmitSuccessful && (
-                    <p className="text-green-600 mt-2">
-                      User added successfully!
-                    </p>
-                  )}
-                  <div className="flex flex-row gap-4">
-                    <Button
-                      color="danger"
-                      variant="light"
-                      fullWidth
-                      onPress={onClose}
-                    >
-                      Chiudi
-                    </Button>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      disabled={isSubmitting}
-                      color="primary"
-                    >
-                      {isSubmitting ? "Aggiungendo..." : "Aggiungi"}
-                    </Button>
-                  </div>
-                </form>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+                    {isSubmitSuccessful && (
+                      <p className="text-green-600 mt-2">
+                        User added successfully!
+                      </p>
+                    )}
+                    <div className="flex flex-row gap-4">
+                      <Button
+                        color="danger"
+                        variant="light"
+                        fullWidth
+                        onPress={onClose}
+                      >
+                        Chiudi
+                      </Button>
+                      <Button
+                        type="submit"
+                        fullWidth
+                        disabled={isSubmitting}
+                        color="primary"
+                      >
+                        {isSubmitting ? "Aggiungendo..." : "Aggiungi"}
+                      </Button>
+                    </div>
+                  </form>
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </div>
     </div>
   );
 }

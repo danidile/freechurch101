@@ -30,11 +30,18 @@ export const lostPasswordSchema = z.object({
   email: z.string().email(),
 });
 export type TlostPasswordSchema = z.infer<typeof lostPasswordSchema>;
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "La password deve contenere almeno 8 caratteri"),
+    confirmPassword: z
+      .string()
+      .min(8, "La conferma deve contenere almeno 8 caratteri"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Le password non corrispondono",
+  });
 
-export const resetPasswordSchema = z.object({
-  password: z.string().min(8, "Password must be at least 5 characters long"),
-  confirmPassword: z
-    .string()
-    .min(8, "Password must be at least 5 characters long"),
-});
 export type TresetPasswordSchema = z.infer<typeof resetPasswordSchema>;

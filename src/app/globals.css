@@ -91,8 +91,7 @@
   }
 
   button {
-    margin: 0 auto;
-    padding: 0;
+
     box-sizing: border-box;
     font-size: 16px;
   }
@@ -852,9 +851,9 @@
     padding: 1rem 0rem;
     height: 100%;
     width: 100%;
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; */
 
     gap: 20px;
     min-height: 94vh;
@@ -1889,7 +1888,7 @@
     focus:border-black;
 }
 label {
-  margin-top: 0.8rem;
+  margin-top: 0.4rem;
   font-size: 14px;
 }
 .csubmit {

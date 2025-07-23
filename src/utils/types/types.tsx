@@ -219,7 +219,11 @@ export type newMember = {
   church_logo?: string;
   church_name?: string;
 };
-
+export type BlockedDate = {
+  id: string;
+  start: Date;
+  end: Date;
+};
 export type Team = {
   id: string;
   team_name: string;

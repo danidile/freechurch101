@@ -4,7 +4,7 @@ import { clsx } from "clsx";
 import Link from "next/link";
 
 export type CDropdownOption = {
-  label: string;
+  label: React.ReactNode; // ✅ corretto
   value: string;
   href?: string;
   color?: string;
@@ -16,6 +16,7 @@ type DropdownProps = {
   radius?: string;
   onSelect?: (option: CDropdownOption) => void;
   buttonPadding?: string;
+  isIconOnly?: boolean; // ✅ corretto
 };
 
 export default function CDropdown({
@@ -24,6 +25,7 @@ export default function CDropdown({
   radius,
   onSelect,
   buttonPadding,
+  isIconOnly = true,
 }: DropdownProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<CDropdownOption | null>(null);
@@ -60,8 +62,6 @@ export default function CDropdown({
     onSelect?.(option);
   };
 
-  const isIconOnly = typeof placeholder !== "string";
-
   return (
     <div ref={dropdownRef} className="relative inline-block font-sans">
       <button
@@ -69,11 +69,10 @@ export default function CDropdown({
         className={clsx(
           {
             " !p-0": buttonPadding === "sm",
-            "bg-white": !isIconOnly,
-            "bg-gray-100": isIconOnly,
-            "bg-white cursor-pointer select-none rounded-md text-left flex items-center justify-center transition-all duration-200   ": true,
+
+            "bg-gray-100 gap-3 cursor-pointer select-none rounded-md text-left flex items-center justify-center transition-all duration-200": true,
           },
-          isIconOnly ? "w-10 h-10 p-2" : "min-w-[150px] px-3 py-2"
+          isIconOnly ? "w-10 h-10 p-2" : " !px-4 !py-1"
         )}
         aria-haspopup="listbox"
         aria-expanded={open}

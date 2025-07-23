@@ -42,7 +42,7 @@ export default function SongsPageClient() {
   }
   console.log(userData);
   return (
-    <div className="container-sub gap-5">
+    <div className="container-sub gap-5 !px-2">
       <h4>Nessuna canzone trovata</h4>
       {userData && hasPermission(userData.role as Role, "create:songs") && (
         <>

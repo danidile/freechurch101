@@ -37,7 +37,7 @@ import {
   Tooltip,
 } from "@heroui/react";
 import { Controller, useForm } from "react-hook-form";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
 import { addSetlist } from "../../addSetlist/addSetlistAction";
 import { updateSetlist } from "./updateSetlist";
@@ -51,6 +51,7 @@ import { MdEditNote, MdOutlineTitle } from "react-icons/md";
 import { TbClockHour2, TbMusicPlus } from "react-icons/tb";
 import BlockoutsCalendarComponent from "@/app/protected/blockouts-calendar/calendarComponent";
 import { useUserStore } from "@/store/useUserStore";
+import CDropdown, { CDropdownOption } from "@/app/components/CDropdown";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -312,7 +313,51 @@ export default function UpdateSetlistForm({
       await updateSetlist(updatedSetlist, setlistData);
     }
   };
-
+  const options: CDropdownOption[] = [
+    {
+      label: (
+        <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
+          <MdOutlineTitle />
+          Titolo
+        </div>
+      ),
+      value: "title",
+    },
+    {
+      label: (
+        <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
+          <TbMusicPlus />
+          Canzone
+        </div>
+      ),
+      value: "song",
+    },
+    {
+      label: (
+        <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
+          <MdEditNote />
+          Nota
+        </div>
+      ),
+      value: "note",
+    },
+  ];
+  const optionsTurnazioni: CDropdownOption[] = useMemo(() => {
+    return teams
+      .filter(
+        (team) =>
+          userData.leaderOf.includes(team.id) &&
+          !teamsState.some((el) => el.team_name === team.team_name)
+      )
+      .map((team) => ({
+        label: (
+          <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
+            {team.team_name}
+          </div>
+        ),
+        value: team.id,
+      }));
+  }, [teams, teamsState, userData]);
   //date modal change
   const [isDateConflictModalOpen, setIsDateConflictModalOpen] = useState(false);
   const [conflictedMembers, setConflictedMembers] = useState<churchMembersT[]>(
@@ -505,8 +550,25 @@ export default function UpdateSetlistForm({
                 />
               </div>
             </div>
-            <div className="">
-              <h5 className="p-4">Scaletta</h5>
+            <div>
+              <div className="flex flex-row items-center justify-start gap-2 mt-4">
+                <h5>Scaletta</h5>
+                <CDropdown
+                  placeholder={
+                    <>
+                      <FaPlus />
+                    </>
+                  }
+                  buttonPadding="sm"
+                  isIconOnly={true}
+                  options={options}
+                  onSelect={(option) => {
+                    const value = option.value as "title" | "song" | "note";
+                    addItemToSetlist(value);
+                  }}
+                />
+              </div>
+
               {schedule.length > 0 && (
                 <div className="ncard-responsive nborder-responsive ">
                   <Reorder.Group
@@ -538,48 +600,6 @@ export default function UpdateSetlistForm({
                   </Reorder.Group>
                 </div>
               )}
-
-              <div className="transpose-button-container mr-8">
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button variant="bordered">
-                      <FaPlus />
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu aria-label="Static Actions">
-                    <DropdownItem
-                      key="title"
-                      as={Button}
-                      color="primary"
-                      variant="light"
-                      onPress={() => addItemToSetlist("title")}
-                      startContent={<MdOutlineTitle />}
-                    >
-                      Titolo
-                    </DropdownItem>
-                    <DropdownItem
-                      key="song"
-                      as={Button}
-                      color="primary"
-                      variant="light"
-                      onPress={() => addItemToSetlist("song")}
-                      startContent={<TbMusicPlus />}
-                    >
-                      Canzone
-                    </DropdownItem>
-                    <DropdownItem
-                      key="note"
-                      variant="light"
-                      color="primary"
-                      as={Button}
-                      onPress={() => addItemToSetlist("note")}
-                      startContent={<MdEditNote />}
-                    >
-                      Nota
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
             </div>
             <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
               <div className="flex flex-row justify-start gap-3 items-center">
@@ -593,30 +613,23 @@ export default function UpdateSetlistForm({
                   </Button>
                 </Tooltip>
               </div>
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button variant="bordered">Aggiungi Team</Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Static Actions">
-                  {teams &&
-                    teams
-                      .filter(
-                        (team) =>
-                          userData.leaderOf.includes(team.id) && // ✅ only show teams the user leads
-                          !teamsState.some(
-                            (el) => el.team_name === team.team_name
-                          ) // exclude already added teams
-                      )
-                      .map((team: teamData) => (
-                        <DropdownItem
-                          key={team.id}
-                          onPress={() => addTeam(team.id)}
-                        >
-                          {team.team_name}
-                        </DropdownItem>
-                      ))}
-                </DropdownMenu>
-              </Dropdown>
+
+              {optionsTurnazioni.length > 0 && (
+                <CDropdown
+                  placeholder={
+                    <>
+                      <FaPlus />
+                    </>
+                  }
+                  buttonPadding="sm"
+                  isIconOnly={true}
+                  options={optionsTurnazioni}
+                  onSelect={(option) => {
+                    addTeam(option.value);
+                  }}
+                />
+              )}
+
               <AnimatePresence>
                 {teamsState.map((section) => (
                   <div key={section.id} className="mt-4">
