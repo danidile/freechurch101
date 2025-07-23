@@ -13,7 +13,7 @@ import {
 import { FaPlus } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { DateValue } from "@internationalized/date";
+import { DateValue, getLocalTimeZone } from "@internationalized/date";
 import { fadeInUp, transitionSpring } from "@/motion/motionVariants";
 
 export function SelectWorshipTeamMemberDrawer({
@@ -34,10 +34,29 @@ export function SelectWorshipTeamMemberDrawer({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [members, setmembers] = useState(teamMembers);
   const [searchTerm, setSearchTerm] = useState("");
+  const selectedDate = date.toDate(getLocalTimeZone());
 
+  function isMemberUnavailable(
+    member: churchMembersT,
+    date: DateValue
+  ): boolean {
+    const selectedDate = date.toDate(getLocalTimeZone());
+
+    return member.blockouts.some((range) => {
+      const start = new Date(range.start + "T00:00:00");
+      const end = new Date(range.end + "T23:59:59"); // cover full day
+      return selectedDate >= start && selectedDate <= end;
+    });
+  }
   return (
     <>
-      <Button isIconOnly color="primary" size="lg" className="mr-0" onPress={onOpen}>
+      <Button
+        isIconOnly
+        color="primary"
+        size="lg"
+        className="mr-0"
+        onPress={onOpen}
+      >
         <FaPlus />
       </Button>
 
@@ -87,18 +106,10 @@ export function SelectWorshipTeamMemberDrawer({
                               .includes(searchTerm.toLowerCase())
                         )
                         .map((member, index) => {
-                          const isUnavailable =
-                            member.blockouts &&
-                            member.blockouts.some((b) => {
-                              const start = new Date(b.start);
-                              const end = new Date(b.end);
-                              const target = new Date(
-                                date.year,
-                                date.month - 1,
-                                date.day
-                              );
-                              return target >= start && target <= end;
-                            });
+                          const isUnavailable = isMemberUnavailable(
+                            member,
+                            date
+                          );
 
                           return (
                             <motion.div
@@ -123,6 +134,7 @@ export function SelectWorshipTeamMemberDrawer({
                                 <p className="song-card-searchBar">
                                   {member.name + " " + member.lastname}
                                   <br />
+
                                   {!isUnavailable && (
                                     <small>{member.roles.join(", ")}</small>
                                   )}

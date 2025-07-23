@@ -39,6 +39,7 @@ export default function AddSetlistComponent() {
     );
   }
   const setlistData: null = null;
+  console.log("teams", teams);
 
   return (
     <div className="container-sub">

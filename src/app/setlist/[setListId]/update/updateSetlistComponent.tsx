@@ -47,6 +47,7 @@ export default function UpdateSetlistComponent({
   }, [loading, userData, setListId]);
 
   if (isLoading || !setlistData || !songs) {
+    console.log("setlistData", setlistData);
     return (
       <div className="container-sub min-h-[80vh] flex ">
         <ChurchLabLoader />

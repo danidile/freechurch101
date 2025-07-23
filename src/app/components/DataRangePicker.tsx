@@ -197,14 +197,21 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <div className="p-4">
               {/* Day Headers */}
               <div className="grid grid-cols-7 mb-2">
-                {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-                  <div
-                    key={index}
-                    className="h-8 flex items-center justify-center text-xs font-medium text-gray-400 uppercase"
-                  >
-                    {day}
-                  </div>
-                ))}
+                {[...Array(7)].map((_, index) => {
+                  const date = new Date(2021, 0, 4 + index); // Jan 4, 2021 = Monday
+                  const label = new Intl.DateTimeFormat("it-IT", {
+                    weekday: "short",
+                  }).format(date);
+
+                  return (
+                    <div
+                      key={index}
+                      className="h-8 flex items-center justify-center text-xs font-medium text-gray-400 uppercase"
+                    >
+                      {label}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Calendar Days */}
@@ -223,7 +230,8 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                     "h-7 flex items-center justify-center text-sm relative rounded-sm ";
 
                   if (disabled) {
-                    dayClasses += "text-red-400 bg-red-50 cursor-not-allowed opacity-50 ";
+                    dayClasses +=
+                      "text-red-400 bg-red-50 cursor-not-allowed opacity-50 ";
                   } else if (past) {
                     dayClasses += "text-gray-400 cursor-not-allowed ";
                   } else if (selected) {

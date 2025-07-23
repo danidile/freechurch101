@@ -368,8 +368,7 @@ export default function UpdateSetlistForm({
     sectionId: string,
     memberProfile: string | undefined
   ): string[] | undefined => {
-    console.log("eventDetails:", eventDetails);
-    console.log("eventDetails?.teams:", eventDetails?.teams);
+
     if (!teams) return undefined;
 
     const team = teams.find((t) => t.id === sectionId);
@@ -552,13 +551,14 @@ export default function UpdateSetlistForm({
             </div>
             <div>
               <div className="flex flex-row items-center justify-start gap-2 mt-4">
-                <h5>Scaletta</h5>
+                <h5 className="w-[120px]">Scaletta</h5>
                 <CDropdown
                   placeholder={
                     <>
                       <FaPlus />
                     </>
                   }
+                  positionOnMobile="center"
                   buttonPadding="sm"
                   isIconOnly={true}
                   options={options}
@@ -601,34 +601,34 @@ export default function UpdateSetlistForm({
                 </div>
               )}
             </div>
+            <div className="w-full border-b-1 my-4"></div>
             <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
               <div className="flex flex-row justify-start gap-3 items-center">
-                <h5>Turnazioni</h5>
-                <Tooltip
+                <h5 className="w-[120px]">Turnazioni</h5>
+                {/* <Tooltip
                   className="text-sm"
                   content="Mostra calendario con date bloccate."
                 >
                   <Button isIconOnly className="ml-0" onPress={onOpen}>
                     <FaRegCalendarAlt />
                   </Button>
-                </Tooltip>
+                </Tooltip> */}
+                {optionsTurnazioni.length > 0 && (
+                  <CDropdown
+                    placeholder={
+                      <>
+                        <FaPlus />
+                      </>
+                    }
+                    buttonPadding="sm"
+                    isIconOnly={true}
+                    options={optionsTurnazioni}
+                    onSelect={(option) => {
+                      addTeam(option.value);
+                    }}
+                  />
+                )}
               </div>
-
-              {optionsTurnazioni.length > 0 && (
-                <CDropdown
-                  placeholder={
-                    <>
-                      <FaPlus />
-                    </>
-                  }
-                  buttonPadding="sm"
-                  isIconOnly={true}
-                  options={optionsTurnazioni}
-                  onSelect={(option) => {
-                    addTeam(option.value);
-                  }}
-                />
-              )}
 
               <AnimatePresence>
                 {teamsState.map((section) => (
@@ -642,7 +642,11 @@ export default function UpdateSetlistForm({
                         addMemberToTeam={addMemberToTeam} // Pass function correctly
                         section={null}
                         teamId={section.id}
-                        date={eventDate}
+                        date={
+                          watch("eventDate")
+                            ? parseDate(watch("eventDate"))
+                            : today(getLocalTimeZone())
+                        }
                       />
                     </div>
                     {section.selected?.length >= 1 && (

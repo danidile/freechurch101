@@ -107,6 +107,7 @@ export default function AccountComponent() {
           </h4>
           <CDropdown
             options={dropdownOptions}
+            positionOnMobile="right"
             placeholder={
               <span>
                 <IoSettingsOutline size={20} />

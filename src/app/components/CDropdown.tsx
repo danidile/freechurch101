@@ -17,6 +17,7 @@ type DropdownProps = {
   onSelect?: (option: CDropdownOption) => void;
   buttonPadding?: string;
   isIconOnly?: boolean; // ✅ corretto
+  positionOnMobile?: "left" | "center" | "right"; // ✅ corretto
 };
 
 export default function CDropdown({
@@ -26,6 +27,7 @@ export default function CDropdown({
   onSelect,
   buttonPadding,
   isIconOnly = true,
+  positionOnMobile = "center",
 }: DropdownProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<CDropdownOption | null>(null);
@@ -89,8 +91,16 @@ export default function CDropdown({
           open
             ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 -translate-y-4 scale-95 pointer-events-none",
-          // Alignment behavior
-          "max-sm:right-0 max-sm:left-auto sm:left-1/2 sm:-translate-x-1/2"
+          // Desktop positioning (always centered)
+          "sm:left-1/2 sm:-translate-x-1/2",
+
+          // Mobile positioning (based on positionOnMobile)
+          {
+            "max-sm:left-0 max-sm:right-auto": positionOnMobile === "left",
+            "max-sm:left-1/2 max-sm:-translate-x-1/2":
+              positionOnMobile === "center",
+            "max-sm:right-0 max-sm:left-auto": positionOnMobile === "right",
+          }
         )}
         style={{
           minWidth: 200,
