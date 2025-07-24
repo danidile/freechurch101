@@ -7,19 +7,19 @@ export function ScheduleViewComponents({ element }: { element: setListSongT }) {
   return (
     <div className="schedule-view-container">
       {element.type === "title" && (
-        <div className="schedule-title">{element.title}</div>
+        <p className="schedule-title">{element.title}</p>
       )}
       {element.type === "song" && (
-        <div className="flex items-center border-b p-1 text-sm">
-          <div className="w-1/2 truncate ">
-            {element.song_title || (
-              <span className="text-gray-400 ">Canzone da scegliere</span>
-            )}
-          </div>
+        <div className="flex items-center border-b p-1 ">
+          {element.song_title ? (
+            <p className="w-1/2 truncate">{element.song_title}</p>
+          ) : (
+            <p className="text-gray-400 w-1/2 truncate">Canzone da scegliere</p>
+          )}
           {element.singerName && (
-            <div className="w-1/2 px-2 text-clip border-l-1 border-gray-300 ml-2">
+            <p className="w-1/2 px-2 text-clip border-l-1 border-gray-300 ml-2">
               {element.singerName}
-            </div>
+            </p>
           )}
         </div>
       )}

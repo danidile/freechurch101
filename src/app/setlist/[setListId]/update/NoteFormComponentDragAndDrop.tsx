@@ -19,9 +19,13 @@ export function NoteFormComponent({
   updateNotesSection: (text: string, section: number) => void;
 }) {
   return (
-    <div className="flex flex-row my-2px items-center w-full">
+    <div
+      className="setlist-section"
+      // dragConstraints={container}
+    >
+      {" "}
       <Textarea
-        className="max-w-[91%]"
+        className="max-w-[92.3%]"
         placeholder="Dettagli aggiuntivi.... "
         radius="none"
         type="text"

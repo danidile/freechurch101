@@ -234,6 +234,11 @@
     font-weight: 400;
   }
 
+  @media (max-width: 450px) {
+    p {
+      font-size: 14.5px;
+    }
+  }
   small {
     font-size: 0.75rem;
     font-weight: 400;
@@ -693,10 +698,10 @@
       font-size: 18px;
     }
     input {
-      font-size: 16px !important;
+      font-size: 14px !important;
     }
     textarea {
-      font-size: 16px !important;
+      font-size: 14px !important;
     }
     .song-details-selection1 {
       flex-direction: column;

@@ -1,12 +1,11 @@
 "use server";
-import { expandedTeamT, setListSongT, setListT } from "@/utils/types/types";
+import { setListSongT, setListT } from "@/utils/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 import { encodedRedirect } from "@/utils/utils";
 import { logEvent } from "@/utils/supabase/log";
-import { sign } from "crypto";
-// 🔥 NEW: Added logging import
+
 
 function diffById<T extends { id?: string }>(
   newItems: T[],

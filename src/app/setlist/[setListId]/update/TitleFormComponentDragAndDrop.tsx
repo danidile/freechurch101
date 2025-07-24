@@ -17,9 +17,13 @@ export function TitleFormComponent({
   setSchedule: React.Dispatch<React.SetStateAction<setListSongT[]>>;
 }) {
   return (
-    <div className="flex flex-row my-2px items-center w-full">
+    <div
+      className="setlist-section"
+      // dragConstraints={container}
+    >
+      {" "}
       <Input
-        className="max-w-[91%]"
+        className="max-w-[92.3%]"
         defaultValue={section.title || ""}
         placeholder="Inizio Incontro"
         radius="none"
