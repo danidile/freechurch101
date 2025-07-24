@@ -26,6 +26,7 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { FaCompass } from "react-icons/fa6";
 import LogsComponent from "../admin/logs/LogsComponent";
 import { LuLogs } from "react-icons/lu";
+import NotificationButton from "@/components/NotificationButton";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -108,7 +109,6 @@ export default function Sidebar() {
             </DropdownMenu>
           </Dropdown>
         </li>
-
         <li className="sidebar-li">
           <Link className="sidebar-link" href="/protected/dashboard/account">
             <div className="sidebar-element">
@@ -135,7 +135,6 @@ export default function Sidebar() {
             </div>
           </Link>
         </li>
-
         {userData.church_id && (
           <>
             {(hasPermission(userData.role as Role, "read:churchmembers") ||
@@ -222,6 +221,7 @@ export default function Sidebar() {
             </div>
           </Link>
         </li>
+        {userData.email === "danidile94@gmail.com" && <NotificationButton />}
         <li className="sidebar-li mt-10! "></li>
         <li className="sidebar-li">
           <button

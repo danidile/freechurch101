@@ -51,6 +51,16 @@ worker-src blob: 'self';
           },
         ],
       },
+      // 🔹 SW-specific header
+      {
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Service-Worker-Allowed",
+            value: "/",
+          },
+        ],
+      },
     ];
   },
   webpack(config) {
@@ -62,7 +72,7 @@ worker-src blob: 'self';
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '5mb',
+      bodySizeLimit: "5mb",
     },
   },
 };

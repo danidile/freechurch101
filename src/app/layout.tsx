@@ -5,6 +5,7 @@ import { ZustandProviders } from "./zustandProvider";
 import { ToastProvider } from "@heroui/toast";
 
 import { SiderbarProvider } from "./SiderbarProvider";
+import NotificationButton from "../components/NotificationButton";
 
 export const viewport: Viewport = {
   maximumScale: 1,
@@ -52,6 +53,7 @@ export default function RootLayout({
         <ZustandProviders>
           {/* <PullToRefreshLayout> */}
           <main className="pb-[120px]">
+
             <MenuBar />
             <ToastProvider
               placement="top-right"
