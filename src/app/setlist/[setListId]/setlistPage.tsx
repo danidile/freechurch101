@@ -146,7 +146,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           <>
             {" "}
             <h5 className="font-medium">Scaletta</h5>
-            <div className=" mb-2 px-3 py-4">
+            <div className=" mb-2 px-1 py-4">
               {setlistSchedule.map((element, index) => {
                 return (
                   <div key={index}>

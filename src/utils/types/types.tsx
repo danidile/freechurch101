@@ -282,7 +282,7 @@ export type setListSongT = {
   id?: string;
   song?: string;
   singer?: string;
-  singerId?: string;
+  singerName?: string;
   song_title?: string;
   author?: string;
   key?: string;

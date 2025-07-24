@@ -10,14 +10,17 @@ export function ScheduleViewComponents({ element }: { element: setListSongT }) {
         <div className="schedule-title">{element.title}</div>
       )}
       {element.type === "song" && (
-        <div className="flex items-center border-b py-1 px-3 text-sm">
-          <div className="w-1/2">
+        <div className="flex items-center border-b p-1 text-sm">
+          <div className="w-1/2 truncate ">
             {element.song_title || (
-              <span className="text-gray-400">Canzone da scegliere</span>
+              <span className="text-gray-400 ">Canzone da scegliere</span>
             )}
           </div>
-          <div className="w-1/4 font-semibold">{element.key}</div>
-          <div className="w-1/4 font-semibold">{element.singer}</div>
+          {element.singerName && (
+            <div className="w-1/2 px-2 text-clip border-l-1 border-gray-300 ml-2">
+              {element.singerName}
+            </div>
+          )}
         </div>
       )}
 

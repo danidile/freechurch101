@@ -34,8 +34,10 @@ export const getSetlistSchedule = async (setlistId: unknown) => {
     key: item.key,
     order: item.order,
     type: "song",
-    singer: item.singer ? item.singer?.name + " " + item.singer?.lastname : "",
-    singerId: item.singer ? item.singer.id : null,
+    singer: item.singer ? item.singer.id : null,
+    singerName: item.singer
+      ? item.singer?.name + " " + item.singer?.lastname
+      : "",
   }));
 
   const notes = (setlistNotes || []).map((item: any) => ({

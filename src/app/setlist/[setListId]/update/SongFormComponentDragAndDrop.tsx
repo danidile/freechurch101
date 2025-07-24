@@ -71,62 +71,56 @@ export function SongFormComponent({
         {section.song_title}
         {!section.song_title && <>Seleziona Canzone</>}
       </p>
-      <Select
-        size="sm"
-        className="key-selector"
-        aria-label="key-selector"
-        defaultSelectedKeys={
-          new Set([keys.includes(section.key) ? section.key : keys[0]])
+      <select
+        value={
+          section.key && keys.includes(section.key) ? section.key : keys[0]
         }
         onChange={(e) => {
           const newKey = e.target.value;
-          setSchedule((prevState) => {
-            // Update the object at the given index
-            return prevState.map((item, idx) => {
-              if (idx === index) {
-                return { ...item, key: newKey }; // Update the key field of the matched object
-              }
-              return item; // Return the rest of the items unchanged
-            });
-          });
+          setSchedule((prevState) =>
+            prevState.map((item, idx) =>
+              idx === index ? { ...item, key: newKey } : item
+            )
+          );
         }}
+        className="aselect"
+        aria-label="key-selector"
       >
         {keys.map((key) => (
-          <SelectItem id={key} key={key}>
-            {key}
-          </SelectItem>
+          <option key={key} value={key}>
+            {key + " "}
+          </option>
         ))}
-      </Select>
-      <Select
-        size="sm"
-        aria-label="Seleziona membro del team"
-        placeholder="Voce guida"
-        defaultSelectedKeys={
-          new Set([section.singerId ? section.singerId : ""])
-        }
+      </select>
+      <select
+        value={section.singer || ""}
         onChange={(e) => {
           const newSinger = e.target.value;
-          setSchedule((prevState) => {
-            // Update the object at the given index
-            return prevState.map((item, idx) => {
-              if (idx === index) {
-                return { ...item, singer: newSinger }; // Update the key field of the matched object
-              }
-              return item; // Return the rest of the items unchanged
-            });
-          });
+          setSchedule((prevState) =>
+            prevState.map((item, idx) =>
+              idx === index ? { ...item, singer: newSinger } : item
+            )
+          );
         }}
+        className="aselect min-w-[100px]"
+        aria-label="Seleziona membro del team"
       >
-        {worshipMembers.map((member) => (
-          <SelectItem
-            key={member.profile}
-            id={member.profile}
-            textValue={member.name + " " + member.lastname}
-          >
-            {member.name} {member.lastname}
-          </SelectItem>
-        ))}
-      </Select>
+        {worshipMembers.length === 0 ? (
+          <option disabled value="">
+            Nessun membro disponibile
+          </option>
+        ) : (
+          <>
+            <option value="">Seleziona voce guida</option>
+            {worshipMembers.map((member) => (
+              <option key={member.profile} value={member.profile}>
+                {member.name} {member.lastname}
+              </option>
+            ))}
+          </>
+        )}
+      </select>
+
       <Dropdown>
         <DropdownTrigger>
           <Button
