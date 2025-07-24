@@ -8,7 +8,7 @@ export const getChurchTeams = async (churchId: string) => {
   const supabase = await createClient();
   const { data: teams, error } = await supabase
     .from("church-teams")
-    .select("id,team_name")
+    .select("id,team_name,is_worship")
     .eq("church", churchId);
 
   if (error) {
@@ -27,6 +27,7 @@ export const getChurchTeams = async (churchId: string) => {
         team_name: team.team_name,
         team_members: teamMembers ?? [], // Assicura un array vuoto se `null`
         selected: [] as churchMembersT[],
+        is_worship: team.is_worship || false, // Default to false if not provided
       };
     })
   );

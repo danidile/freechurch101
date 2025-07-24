@@ -144,7 +144,9 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
 
         {setlistSchedule && setlistSchedule.length > 0 && (
           <>
-            <div className="ncard nborder mb-2 px-3 py-4">
+            {" "}
+            <h5 className="font-medium">Scaletta</h5>
+            <div className=" mb-2 px-3 py-4">
               {setlistSchedule.map((element, index) => {
                 return (
                   <div key={index}>
@@ -225,12 +227,13 @@ Grazie per il tuo servizio! Se hai dubbi o imprevisti, fammi sapere.`;
 
                         return (
                           <tr key={item.profile}>
-                            <td className="truncate">
-                              {item.name} {item.lastname}
+                            <td
+                              className={`truncate ${item.lead ? "font-bold underline" : ""}`}
+                            >
+                              {item.name} {item.lastname}{" "}
                             </td>
                             <td>{item.selected_roles}</td>
                             <td className="center">
-                              
                               <div className="sm-hide">
                                 <Chip
                                   className="capitalize text-center"

@@ -13,8 +13,7 @@ import {
 } from "@heroui/react";
 
 import { Input } from "@heroui/input";
-import { motion, Reorder } from "framer-motion";
-import { setListSongT, TsongNameAuthor } from "@/utils/types/types";
+import { setListSongT, teamData, TsongNameAuthor } from "@/utils/types/types";
 import { Button } from "@heroui/button";
 import { MdMoreVert } from "react-icons/md";
 import {
@@ -23,36 +22,25 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/dropdown";
-import { MutableRefObject, useEffect, useState } from "react";
+import { useState } from "react";
 
 export function SongFormComponent({
   section,
   index,
   songsList,
-  removeItemFromSchedule,
-  updateSongtoSetlist,
-  updateKey,
-  container,
+  worshipTeams,
+  setSchedule,
 }: {
   section: setListSongT;
   index: number;
   songsList: TsongNameAuthor[];
-  removeItemFromSchedule: (id: string) => void;
-  updateSongtoSetlist: (song: setListSongT, section: number) => void;
-  updateKey: (index: number, value: string) => void;
-  container: MutableRefObject<null>;
+  worshipTeams: teamData[];
+  setSchedule: React.Dispatch<React.SetStateAction<setListSongT[]>>;
 }) {
   const sectionIndex = index;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [songs, setSongs] = useState(songsList);
   const [searchText, setSearchText] = useState(""); // Local state for search input
-
-  const normalize = (str: string) =>
-    str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-
   const aggiornaLista = () => {
     const filteredSongs = songsList.filter(
       (song: setListSongT) =>
@@ -66,7 +54,14 @@ export function SongFormComponent({
       aggiornaLista(); // Trigger search on Enter key
     }
   };
-
+  const worshipMembers = Array.from(
+    new Map(
+      worshipTeams
+        .filter((team) => team.is_worship) // only worship teams
+        .flatMap((team) => team.selected) // only selected members
+        .map((member) => [member.profile, member]) // deduplicate by profile
+    ).values()
+  );
   return (
     <div
       className="setlist-section"
@@ -79,18 +74,56 @@ export function SongFormComponent({
       <Select
         size="sm"
         className="key-selector"
+        aria-label="key-selector"
         defaultSelectedKeys={
           new Set([keys.includes(section.key) ? section.key : keys[0]])
         }
         onChange={(e) => {
           const newKey = e.target.value;
-          updateKey(index, newKey); // Pass the actual key value
+          setSchedule((prevState) => {
+            // Update the object at the given index
+            return prevState.map((item, idx) => {
+              if (idx === index) {
+                return { ...item, key: newKey }; // Update the key field of the matched object
+              }
+              return item; // Return the rest of the items unchanged
+            });
+          });
         }}
-        aria-label="tonalità"
       >
         {keys.map((key) => (
           <SelectItem id={key} key={key}>
             {key}
+          </SelectItem>
+        ))}
+      </Select>
+      <Select
+        size="sm"
+        aria-label="Seleziona membro del team"
+        placeholder="Voce guida"
+        defaultSelectedKeys={
+          new Set([section.singerId ? section.singerId : ""])
+        }
+        onChange={(e) => {
+          const newSinger = e.target.value;
+          setSchedule((prevState) => {
+            // Update the object at the given index
+            return prevState.map((item, idx) => {
+              if (idx === index) {
+                return { ...item, singer: newSinger }; // Update the key field of the matched object
+              }
+              return item; // Return the rest of the items unchanged
+            });
+          });
+        }}
+      >
+        {worshipMembers.map((member) => (
+          <SelectItem
+            key={member.profile}
+            id={member.profile}
+            textValue={member.name + " " + member.lastname}
+          >
+            {member.name} {member.lastname}
           </SelectItem>
         ))}
       </Select>
@@ -124,7 +157,11 @@ export function SongFormComponent({
             color="danger"
             variant="light"
             id={section.id}
-            onPress={() => removeItemFromSchedule(section.id)}
+            onPress={() =>
+              setSchedule((schedule) =>
+                schedule.filter((element) => element.id !== section.id)
+              )
+            }
             accessKey={String(index)}
           >
             Elimina
@@ -172,7 +209,26 @@ export function SongFormComponent({
                             style={{ cursor: "pointer" }}
                             key={(song.id + index).toString()}
                             onClick={() => {
-                              updateSongtoSetlist(song, sectionIndex);
+                              setSchedule((prevState) => {
+                                const index = prevState.findIndex(
+                                  (s, index) => index === sectionIndex
+                                );
+                                const newSong = {
+                                  song: song.id,
+                                  song_title: song.song_title,
+                                  author: song.author,
+                                  key: "A",
+                                };
+                                if (index === -1) return prevState; // No match found, return original state
+
+                                const updatedState = [...prevState]; // Create a new array (immutability)
+                                updatedState[index] = {
+                                  ...updatedState[index],
+                                  ...newSong,
+                                }; // Update only the found section
+
+                                return updatedState; // Set the new state
+                              });
                               onClose();
                             }}
                           >

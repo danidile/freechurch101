@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 type TeamRow = {
   id: string;
   team_name: string;
+  is_worship: boolean;
 };
 
 type TeamMemberRow = {
@@ -21,6 +22,7 @@ type TeamWithDetails = {
   team_name: string;
   member_count: number;
   leaders: string[];
+  is_worship: boolean;
 };
 
 export const getTeamsByChurch = async (
@@ -31,7 +33,7 @@ export const getTeamsByChurch = async (
   // 1. Get all teams for this church
   const { data: teams, error: teamError } = await supabase
     .from("church-teams")
-    .select("id, team_name")
+    .select("id, team_name,is_worship")
     .eq("church", churchId);
 
   if (teamError || !teams) {
@@ -68,6 +70,7 @@ export const getTeamsByChurch = async (
       team_name: team.team_name,
       member_count: teamMembers.length,
       leaders,
+      is_worship: team.is_worship || false,
     };
   });
 

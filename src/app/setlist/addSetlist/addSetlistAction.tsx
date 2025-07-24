@@ -67,6 +67,7 @@ export const addSetlist = async (formData: setListT) => {
         member: member.profile,
         team: team.id,
         roles: member.selected_roles,
+        lead: member.lead ? true : false, // Ensure lead is a boolean
       });
     });
   });
@@ -113,6 +114,7 @@ export const addSetlist = async (formData: setListT) => {
       song: section.song,
       key: section.key,
       order: section.originalIndex,
+      singer: section.singer,
     }));
 
     console.log("⚙️ Songs to add", songsDb);

@@ -7,7 +7,7 @@ export const getSetListTeams = async (setlistId: string) => {
   const { data, error } = await supabase
     .from("event-team")
     .select(
-      "id, member(id, name, lastname,email,phone),team(team_name),status,roles,last_email"
+      "id, member(id, name, lastname,email,phone),team(team_name),status,roles,last_email,lead"
     )
     .eq("setlist", setlistId);
 
@@ -26,6 +26,7 @@ export const getSetListTeams = async (setlistId: string) => {
         email: member.member.email,
         phone: member.member.phone,
         last_email: member.last_email,
+        lead: member.lead ? true : false, // Ensure lead is a boolean
       };
     });
     const groupedByTeam = result.reduce<GroupedMembers>((acc, item) => {

@@ -10,11 +10,11 @@ import {
   DrawerFooter,
   useDisclosure,
 } from "@heroui/react";
-import { FaPlus } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { DateValue, getLocalTimeZone } from "@internationalized/date";
 import { fadeInUp, transitionSpring } from "@/motion/motionVariants";
+import { MdPersonAddAlt1 } from "react-icons/md";
 
 export function SelectWorshipTeamMemberDrawer({
   teamId,
@@ -34,7 +34,6 @@ export function SelectWorshipTeamMemberDrawer({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [members, setmembers] = useState(teamMembers);
   const [searchTerm, setSearchTerm] = useState("");
-  const selectedDate = date.toDate(getLocalTimeZone());
 
   function isMemberUnavailable(
     member: churchMembersT,
@@ -52,12 +51,14 @@ export function SelectWorshipTeamMemberDrawer({
     <>
       <Button
         isIconOnly
-        color="primary"
-        size="lg"
+        color="default"
+        variant="flat"
+        size="md"
+        radius="sm"
         className="mr-0"
         onPress={onOpen}
       >
-        <FaPlus />
+<MdPersonAddAlt1 />
       </Button>
 
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>

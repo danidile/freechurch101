@@ -1,29 +1,10 @@
 "use client";
-import { keys } from "@/constants";
 
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
-import { Select, SelectItem } from "@heroui/react";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-} from "@heroui/react";
+import { Reorder, useDragControls } from "framer-motion";
+import { setListSongT, teamData, TsongNameAuthor } from "@/utils/types/types";
+import { MdDragIndicator } from "react-icons/md";
 
-import { Input } from "@heroui/input";
-import { motion, Reorder, useDragControls } from "framer-motion";
-import { setListSongT, TsongNameAuthor } from "@/utils/types/types";
-import { Button } from "@heroui/button";
-import { MdDragIndicator, MdMoreVert } from "react-icons/md";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@heroui/dropdown";
-import { MutableRefObject, useEffect, useState } from "react";
+import { RefObject } from "react";
 import { TitleFormComponent } from "./TitleFormComponentDragAndDrop";
 import { SongFormComponent } from "./SongFormComponentDragAndDrop";
 import { NoteFormComponent } from "./NoteFormComponentDragAndDrop";
@@ -33,40 +14,22 @@ export function ScheduleComponents({
   index,
   songsList,
   removeItemFromSchedule,
-  updateSongtoSetlist,
-  updateKey,
+
   container,
-  updateTitleSection,
   updateNotesSection,
+  worshipTeams,
+  setSchedule,
 }: {
-  updateTitleSection: (text: string, section: number) => void;
   section: setListSongT;
   index: number;
   songsList: TsongNameAuthor[];
   removeItemFromSchedule: (id: string) => void;
-  updateSongtoSetlist: (song: setListSongT, section: number) => void;
-  updateKey: (index: number, value: string) => void;
-  container: MutableRefObject<null>;
-  updateNotesSection: (text: string, section: number) => void;
-}) {
-  const sectionIndex = index;
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [songs, setSongs] = useState(songsList);
-  const [searchText, setSearchText] = useState(""); // Local state for search input
 
-  const aggiornaLista = () => {
-    const filteredSongs = songsList.filter(
-      (song: setListSongT) =>
-        song.song_title.toLowerCase().includes(searchText.toLowerCase()) ||
-        song.author.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setSongs(filteredSongs);
-  };
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      aggiornaLista(); // Trigger search on Enter key
-    }
-  };
+  container: RefObject<null>;
+  updateNotesSection: (text: string, section: number) => void;
+  worshipTeams: teamData[];
+  setSchedule: React.Dispatch<React.SetStateAction<setListSongT[]>>;
+}) {
   const controls = useDragControls();
 
   return (
@@ -90,23 +53,20 @@ export function ScheduleComponents({
       {section.type === "title" && (
         <>
           <TitleFormComponent
-            removeItemFromSchedule={removeItemFromSchedule}
             section={section}
             index={index}
-            updateTitleSection={updateTitleSection}
+            setSchedule={setSchedule}
           />
         </>
       )}
       {section.type === "song" && (
         <>
           <SongFormComponent
-            updateSongtoSetlist={updateSongtoSetlist}
-            removeItemFromSchedule={removeItemFromSchedule}
             section={section}
             index={index}
             songsList={songsList}
-            updateKey={updateKey}
-            container={container}
+            worshipTeams={worshipTeams}
+            setSchedule={setSchedule}
           />
         </>
       )}

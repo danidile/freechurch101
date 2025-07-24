@@ -13,7 +13,7 @@ export default async function isTeamLeaderClient() {
   } = await supabase.auth.getUser();
 
   if (userError) {
-    console.error("Not logged in:", userError.message);
+    console.log("Not logged in:", userError.message);
     return isLeader;
   }
 
@@ -25,7 +25,7 @@ export default async function isTeamLeaderClient() {
       .eq("role", "leader");
 
     if (teamLeaderError) {
-      console.error("Error fetching profile:", teamLeaderError.message);
+      console.log("Error fetching profile:", teamLeaderError.message);
       return isLeader;
     } else {
       if (teamLeader.length >= 1) {

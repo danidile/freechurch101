@@ -10,13 +10,11 @@ import { MdMoreVert } from "react-icons/md";
 export function TitleFormComponent({
   section,
   index,
-  removeItemFromSchedule,
-  updateTitleSection,
+  setSchedule,
 }: {
   section: setListSongT;
   index: number;
-  removeItemFromSchedule: (id: string) => void;
-  updateTitleSection: (text: string, section: number) => void;
+  setSchedule: React.Dispatch<React.SetStateAction<setListSongT[]>>;
 }) {
   return (
     <div className="flex flex-row my-2px items-center w-full">
@@ -26,7 +24,17 @@ export function TitleFormComponent({
         placeholder="Inizio Incontro"
         radius="none"
         type="text"
-        onChange={(e) => updateTitleSection(e.target.value, index)}
+        onChange={(e) =>
+          setSchedule((prevState) => {
+            // Update the object at the given index
+            return prevState.map((item, idx) => {
+              if (idx === index) {
+                return { ...item, title: e.target.value }; // Update the key field of the matched object
+              }
+              return item; // Return the rest of the items unchanged
+            });
+          })
+        }
         variant="flat"
         // eslint-disable-next-line no-console
       />
@@ -51,7 +59,11 @@ export function TitleFormComponent({
             type="button"
             variant="light"
             id={section.id}
-            onPress={() => removeItemFromSchedule(section.id)}
+            onPress={() =>
+              setSchedule((schedule) =>
+                schedule.filter((element) => element.id !== section.id)
+              )
+            }
             accessKey={String(index)}
           >
             Elimina

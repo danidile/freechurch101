@@ -4,14 +4,14 @@ import { basicUserData } from "@/utils/types/userData";
 type ProfileData = {
   name: string;
   lastname: string;
-  role?: { role_name: string }; // role is an object, not an array
   phone?: string;
-
+  role?: { role_name: string }; // role is an object, not an array
   church: {
-    logo?: string | null;
-    id?: string | null;
-    church_name?: string | null;
+    logo: string | null;
+    id: string | null;
+    church_name: string | null;
   };
+  avatar_url: string;
 };
 
 type SupabaseResponse = {
@@ -25,12 +25,14 @@ export default async function userDataServer() {
     role: "user",
     fetched: true,
   };
+  console.time("⏱️ Fetched user data");
 
   const supabase = await createClient();
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
+  console.timeEnd("⏱️ Fetched user data");
 
   if (userError) {
     console.log("Not logged in:", userError.message);
@@ -41,26 +43,29 @@ export default async function userDataServer() {
     const { data, error } = (await supabase
       .from("profiles")
       .select(
-        "name, lastname, role(role_name), church(id,church_name,logo),phone"
+        "name, lastname,avatar_url, role(role_name), church(id,church_name,logo),phone"
       )
-      .eq("id", user.id)
-      .single()) as unknown as SupabaseResponse;
+      .eq("id", user.id) // Filter by the user's id
+      .single()) as unknown as SupabaseResponse; // Use the full SupabaseResponse type
     userData = {
       loggedIn: true,
       id: user?.id || null,
       email: user?.email || null,
       phone: data?.phone || null,
       name: data?.name || null,
+      role: data?.role?.role_name || "user", // No array, safe access
       lastname: data?.lastname || null,
-      role: data?.role?.role_name || "user",
       church_id: data?.church?.id || null,
       church_name: data?.church?.church_name || null,
       church_logo: data?.church?.logo || null,
+      avatar_url: data?.avatar_url || null,
     };
+    // Now, TypeScript knows that 'error' exists in the response object
     if (error) {
       console.log("Error fetching profile:", error.message);
       return userData;
     }
+
     let churchpending: boolean = false;
     if (!data || !data.church) {
       let { data: churchMembershipRequest } = await supabase

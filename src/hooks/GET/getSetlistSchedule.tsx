@@ -1,12 +1,15 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
 import { setListSongT } from "@/utils/types/types";
+import { sign } from "crypto";
 
 export const getSetlistSchedule = async (setlistId: unknown) => {
   const supabase = await createClient();
   const { data: setlistSongs, error: songsError } = await supabase
     .from("setlist-songs")
-    .select("id, song(id, song_title, author),key,order")
+    .select(
+      "id, song(id, song_title, author),key,order,singer(id,name,lastname)"
+    )
     .eq("setlist_id", setlistId);
 
   const { data: setlistNotes, error: notesError } = await supabase
@@ -31,6 +34,8 @@ export const getSetlistSchedule = async (setlistId: unknown) => {
     key: item.key,
     order: item.order,
     type: "song",
+    singer: item.singer ? item.singer?.name + " " + item.singer?.lastname : "",
+    singerId: item.singer ? item.singer.id : null,
   }));
 
   const notes = (setlistNotes || []).map((item: any) => ({

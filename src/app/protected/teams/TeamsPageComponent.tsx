@@ -55,6 +55,9 @@ export default function TeamsPageComponent() {
               >
                 <div className="pr-2">
                   <h4 className=" font-semibold">{team.team_name}</h4>
+                  {team.is_worship && (
+                    <span className="text-sm text-gray-500">(Worship Team)</span>
+                  )}
                   <p className="text-sm text-gray-500">
                     <b>Leader:</b> {team.leaders.join(", ")}
                   </p>

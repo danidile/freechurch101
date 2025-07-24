@@ -35,7 +35,7 @@ export default function ViewFullSetListComponent({
             console.log(song);
             if (song.lyrics)
               return (
-                <div>
+                <div key={index}>
                   <ChordProViewComponent setListSong={song} />
                   <Divider className="my-14" />
                 </div>

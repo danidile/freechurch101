@@ -7,23 +7,12 @@ export const getSelectedChurchTeams = async (
   setListId?: string
 ) => {
   const supabase = await createClient();
-  const { data: teams, error } = await supabase
-    .from("church-teams")
-    .select("id,team_name")
-    .eq("church", churchId);
-
-  if (error) {
-    console.log("error", error);
-    return null;
-  }
-
-  if (!teams) return null;
 
   // Use Promise.all to wait for all async operations
   const teamFinal: teamData[] = await getChurchTeams(churchId);
   const { data, error: errorEventTeam } = await supabase
     .from("event-team")
-    .select("id,member(id, name, lastname),team(team_name),roles,status")
+    .select("id,member(id, name, lastname),team(team_name),roles,status,lead")
     .eq("setlist", setListId);
 
   if (errorEventTeam) {
@@ -40,11 +29,12 @@ export const getSelectedChurchTeams = async (
             lastname: member.member.lastname,
             selected_roles: member.roles || null,
             status: member.status,
+            lead: member.lead ? true : false, // Ensure lead is a boolean
           });
         }
       });
     });
   }
-
+  console.log("teamFinal", teamFinal);
   return teamFinal;
 };

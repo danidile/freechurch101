@@ -230,6 +230,7 @@ export type Team = {
   teamMembers?: TeamMember[];
   leaders?: string[];
   member_count?: number;
+  is_worship?: boolean;
 };
 
 export type eventPlanner = {
@@ -280,6 +281,8 @@ export type TeamMemberRaw = {
 export type setListSongT = {
   id?: string;
   song?: string;
+  singer?: string;
+  singerId?: string;
   song_title?: string;
   author?: string;
   key?: string;
@@ -345,6 +348,7 @@ export type churchMembersT = {
   team_name?: string;
   blockouts?: Blockout[];
   isLeader?: boolean;
+  lead?: boolean;
 };
 export type TeamMemberWithBlockouts = {
   id: string;
@@ -364,7 +368,7 @@ export type searchBar = {
 
 export type ChurchMemberByTeam = {
   id: number;
-
+  lead?: boolean; // Ensure lead is a boolean
   team_name: string;
   profile: string;
   name: string;
@@ -421,6 +425,7 @@ export type expandedTeamT = {
   team?: string;
   roles?: string;
   pending?: string;
+  lead?: boolean; // Ensure lead is a boolean
   status?: string;
 };
 

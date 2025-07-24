@@ -5,6 +5,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 
 import { encodedRedirect } from "@/utils/utils";
 import { logEvent } from "@/utils/supabase/log";
+import { sign } from "crypto";
 // 🔥 NEW: Added logging import
 
 function diffById<T extends { id?: string }>(
@@ -49,7 +50,10 @@ function prepareScheduleDiff(
   const titlesOld = filterType(oldItems, "title");
 
   const compareSongs = (a: setListSongT, b: setListSongT) =>
-    a.song !== b.song || a.key !== b.key || a.originalIndex !== b.originalIndex;
+    a.song !== b.song ||
+    a.key !== b.key ||
+    a.singer !== b.singer ||
+    a.originalIndex !== b.originalIndex;
 
   const compareNotes = (a: setListSongT, b: setListSongT) =>
     a.note !== b.note || a.originalIndex !== b.originalIndex;
@@ -180,6 +184,7 @@ export const updateSetlistSchedule = async (
         song: item.song,
         key: item.key,
         order: item.originalIndex,
+        singer: item.singer,
       };
       return item.id ? { ...base, id: item.id } : base;
     });
@@ -356,6 +361,7 @@ type FlattenedMember = {
   team: string;
   roles: string;
   status: string;
+  lead: boolean; // Ensure lead is a boolean
 };
 
 function flattenTeams(setlist: setListT): FlattenedMember[] {
@@ -369,6 +375,7 @@ function flattenTeams(setlist: setListT): FlattenedMember[] {
           team: team.id!,
           roles: member.selected_roles!,
           status: member.status || "pending",
+          lead: member.lead ? true : false, // Ensure lead is a boolean
         })) ?? []
     ) ?? []
   );
@@ -378,6 +385,7 @@ function compareTeamMembers(a: FlattenedMember, b: FlattenedMember) {
   return (
     a.team !== b.team ||
     a.status !== b.status ||
+    a.lead !== b.lead ||
     JSON.stringify(a.roles) !== JSON.stringify(b.roles)
   );
 }

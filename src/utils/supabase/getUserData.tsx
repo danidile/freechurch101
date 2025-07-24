@@ -25,12 +25,14 @@ export default async function fbasicUserData() {
     role: "user",
     fetched: true,
   };
+  console.time("⏱️ Fetched user data");
 
   const supabase = await createClient();
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
+  console.timeEnd("⏱️ Fetched user data");
 
   if (userError) {
     console.log("Not logged in:", userError.message);
