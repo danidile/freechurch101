@@ -240,18 +240,17 @@ export async function POST(req: Request) {
     "checkout.session.completed",
     "payment_intent.succeeded",
     "payment_intent.payment_failed",
+
+    "customer.subscription.updated",
+    "customer.subscription.deleted",
+    "invoice.payment_failed",
+    "invoice.payment_succeeded",
+    "invoice.paid",
   ];
 
   if (permittedEvents.includes(event.type)) {
     try {
       switch (event.type) {
-        case "checkout.session.completed": {
-          const session = event.data.object as Stripe.Checkout.Session;
-          console.log(
-            `💰 Checkout session completed. Status: ${session.payment_status}`
-          );
-          break;
-        }
         case "payment_intent.succeeded": {
           const intent = event.data.object as Stripe.PaymentIntent;
           console.log(`✅ Payment succeeded. Status: ${intent.status}`);
@@ -274,16 +273,12 @@ export async function POST(req: Request) {
 
           const subscription =
             await stripe.subscriptions.retrieve(subscriptionId);
-          const currentPeriodEnd = getCurrentPeriodEnd(
-            subscription.items.data[0].current_period_end
-          );
 
           const { error } = await supabase.from("subscriptions").insert({
             stripe_customer_id: customerId,
             stripe_subscription_id: subscriptionId,
             profile: userId,
             status: subscription.status,
-            current_period_end: currentPeriodEnd,
             church: churchId,
           });
 
@@ -299,9 +294,6 @@ export async function POST(req: Request) {
             .update({
               status: subscription.status,
               stripe_price_id: subscription.items.data[0].price.id,
-              current_period_end: getCurrentPeriodEnd(
-                subscription.items.data[0].current_period_end
-              ),
             })
             .eq("stripe_subscription_id", subscription.id);
 
@@ -365,53 +357,53 @@ export async function POST(req: Request) {
           }
 
           // Try getting the subscription ID directly
-          let subscriptionId =
-            typeof invoice.parent.subscription === "string"
-              ? invoice.parent.subscription
-              : undefined;
+          // let subscriptionId =
+          //   typeof invoice.parent.subscription === "string"
+          //     ? invoice.parent.subscription
+          //     : undefined;
 
-          // If not in invoice.subscription, get it from line items
-          if (!subscriptionId && invoice.lines?.data?.length) {
-            subscriptionId =
-              invoice.lines.data[0]?.parent?.subscription_item_details
-                ?.subscription ?? undefined;
-          }
+          // // If not in invoice.subscription, get it from line items
+          // if (!subscriptionId && invoice.lines?.data?.length) {
+          //   subscriptionId =
+          //     invoice.lines.data[0]?.parent?.subscription_item_details
+          //       ?.subscription ?? undefined;
+          // }
 
-          if (!subscriptionId) {
-            console.warn(
-              `⚠️ No subscription ID found in invoice ${invoice.id}`
-            );
-            return NextResponse.json({ received: true });
-          }
+          // if (!subscriptionId) {
+          //   console.warn(
+          //     `⚠️ No subscription ID found in invoice ${invoice.id}`
+          //   );
+          //   return NextResponse.json({ received: true });
+          // }
 
-          const periodEnd = invoice.lines?.data?.[0]?.period?.end;
-          const currentPeriodEnd = periodEnd
-            ? getCurrentPeriodEnd(periodEnd)
-            : null;
+          // const periodEnd = invoice.lines?.data?.[0]?.period?.end;
+          // const currentPeriodEnd = periodEnd
+          //   ? getCurrentPeriodEnd(periodEnd)
+          //   : null;
 
-          if (!currentPeriodEnd) {
-            console.warn(
-              `⚠️ Missing current_period_end for invoice ${invoice.id}`
-            );
-          }
+          // if (!currentPeriodEnd) {
+          //   console.warn(
+          //     `⚠️ Missing current_period_end for invoice ${invoice.id}`
+          //   );
+          // }
 
-          const { error } = await supabase
-            .from("subscriptions")
-            .update({
-              status: "active",
-              current_period_end: currentPeriodEnd,
-            })
-            .eq("stripe_subscription_id", subscriptionId);
+          // const { error } = await supabase
+          //   .from("subscriptions")
+          //   .update({
+          //     status: "active",
+          //     current_period_end: currentPeriodEnd,
+          //   })
+          //   .eq("stripe_subscription_id", subscriptionId);
 
-          if (error) {
-            throw new Error(
-              `Supabase invoice update error for subscription ${subscriptionId}: ${error.message}`
-            );
-          }
+          // if (error) {
+          //   throw new Error(
+          //     `Supabase invoice update error for subscription ${subscriptionId}: ${error.message}`
+          //   );
+          // }
 
-          console.log(
-            `✅ Updated subscription ${subscriptionId} to active until ${currentPeriodEnd}`
-          );
+          // console.log(
+          //   `✅ Updated subscription ${subscriptionId} to active until ${currentPeriodEnd}`
+          // );
 
           return NextResponse.json({ received: true });
         }
