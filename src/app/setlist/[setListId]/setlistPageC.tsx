@@ -9,9 +9,10 @@ import LoginForm from "@/app/(auth-pages)/login/loginForm";
 import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
 import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
 import { GroupedMembers } from "@/utils/types/types";
-import SetlistHeader from "./setlistHeader";
-import SetlistSchedule from "./setlistSchedule";
-import SetlistTeams from "./setlistTeams";
+import SetlistSchedule from "./setlistScheduleC";
+import SetlistTeams from "./setlistTeamsC";
+import SetlistHeader from "./setlistHeaderC";
+
 
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, loading } = useUserStore();

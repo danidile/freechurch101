@@ -3,8 +3,8 @@
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { FiSend } from "react-icons/fi";
 import { useState } from "react";
-import TeamTable from "./teamTable";
 import { GroupedMembers, setListT } from "@/utils/types/types";
+import TeamTable from "./teamTableC";
 
 interface SetlistTeamsProps {
   teams: GroupedMembers;
