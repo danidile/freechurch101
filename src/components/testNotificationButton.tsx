@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { MdNotificationsActive } from "react-icons/md";
 
-export default function NotificationButton() {
+export default function TestNotificationButton() {
   const [permission, setPermission] = useState<NotificationPermission | null>(
     null
   );
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [showButton, setShowButton] = useState(false);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -22,7 +23,7 @@ export default function NotificationButton() {
       setPermission(Notification.permission);
     }
 
-    // Register service worker for push notifications
+    // Register service worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(console.error);
     }
@@ -43,7 +44,7 @@ export default function NotificationButton() {
           ),
         });
 
-        // Send subscription to your API route
+        // Send subscription to your API
         await fetch("/api/save-subscription", {
           method: "POST",
           headers: {
@@ -69,6 +70,21 @@ export default function NotificationButton() {
     }
   };
 
+  const sendTestNotification = async () => {
+    if (Notification.permission !== "granted") {
+      alert("Permessi notifiche non concessi.");
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+
+    registration.showNotification("🔔 Notifica di Test", {
+      body: "Questa è una notifica locale!",
+      icon: "/icon.png",
+      tag: "test-notification",
+    });
+  };
+
   if (!showButton) return null;
 
   return (
@@ -88,6 +104,15 @@ export default function NotificationButton() {
               <p>Notifiche abilitate.</p>
             </div>
           </div>
+        )}
+
+        {permission === "granted" && (
+          <button onClick={sendTestNotification} className="sidebar-link mt-2">
+            <div className="sidebar-element">
+              <MdNotificationsActive className="dashboard-icon" />
+              <p>Invia notifica di test</p>
+            </div>
+          </button>
         )}
       </li>
 
@@ -112,6 +137,22 @@ export default function NotificationButton() {
       )}
     </>
   );
+}
+
+// --- Helpers ---
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
 }
 
 function isApplePWA(): boolean {
@@ -140,17 +181,4 @@ function isStandalonePWA() {
   if (typeof window === "undefined") return false;
 
   return window.matchMedia("(display-mode: standalone)").matches;
-}
-function urlBase64ToUint8Array(base64String: string) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-
-  return outputArray;
 }

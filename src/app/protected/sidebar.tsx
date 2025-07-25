@@ -27,6 +27,7 @@ import { FaCompass } from "react-icons/fa6";
 import LogsComponent from "../admin/logs/LogsComponent";
 import { LuLogs } from "react-icons/lu";
 import NotificationButton from "@/components/NotificationButton";
+import TestNotificationButton from "@/components/testNotificationButton";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -222,6 +223,9 @@ export default function Sidebar() {
           </Link>
         </li>
         {userData.email === "danidile94@gmail.com" && <NotificationButton />}
+        {userData.email === "danidile94@gmail.com" && (
+          <TestNotificationButton />
+        )}
         <li className="sidebar-li mt-10! "></li>
         <li className="sidebar-li">
           <button

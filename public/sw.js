@@ -1,21 +1,23 @@
-// public/sw.js
-
 self.addEventListener("push", function (event) {
   const data = event.data?.json() || {};
 
-  const title = data.title || "New Notification";
-  const options = {
-    body: data.body || "You have a new message.",
-    icon: "/icon-192x192.png", // optional
-    badge: "/badge-icon.png", // optional
+  const type = data.type || "default";
+  let title = "Notifica";
+  let options = {
+    body: "Hai una nuova notifica",
+    icon: "/icon.png",
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
-});
+  if (type === "reminder") {
+    title = data.title || "Promemoria";
+    options.body = data.body || "Hai un evento in arrivo";
+  } else if (type === "alert") {
+    title = data.title || "Avviso importante";
+    options.body = data.body || "Controlla subito l'app!";
+  } else {
+    title = data.title || title;
+    options.body = data.body || options.body;
+  }
 
-self.addEventListener("notificationclick", function (event) {
-  event.notification.close();
-  event.waitUntil(
-    clients.openWindow("/") // or your preferred route
-  );
+  event.waitUntil(self.registration.showNotification(title, options));
 });
