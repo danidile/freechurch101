@@ -100,6 +100,7 @@
     "@react-aria/selection": "^3.23.1",
     "@react-aria/utils": "^3.28.1",
     "@stripe/stripe-js": "^7.4.0",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.50.4",
     "@tailwindcss/postcss": "^4.1.11",

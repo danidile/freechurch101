@@ -50,7 +50,7 @@ export default function SetListListComponent() {
             <Button
               isIconOnly
               color="primary"
-              variant="flat"
+              variant="light"
               onPress={() => setViewMode("list")}
             >
               <FaList />
@@ -58,7 +58,7 @@ export default function SetListListComponent() {
             <Button
               isIconOnly
               color="primary"
-              variant="flat"
+              variant="light"
               onPress={() => setViewMode("calendar")}
             >
               <FaRegCalendarAlt />
@@ -68,7 +68,7 @@ export default function SetListListComponent() {
               <Button
                 isIconOnly
                 color="primary"
-                variant="solid"
+                variant="light"
                 as={Link}
                 href="/setlist/addSetlist"
               >

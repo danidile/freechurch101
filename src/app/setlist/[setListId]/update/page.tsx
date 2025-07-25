@@ -8,9 +8,10 @@ export default async function songs({
   params: Promise<{ setListId: string }>;
 }) {
   const awaitedParams = await params;
-
+  console.time("VerificationTime");
   const userData = await userDataServer();
-  console.log("leaderOf", userData.leaderOf);
+  console.timeEnd("VerificationTime");
+
   const allowed = await checkPermission(
     userData.teams,
     "setlists",

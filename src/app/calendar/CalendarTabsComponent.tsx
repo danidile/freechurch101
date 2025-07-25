@@ -9,6 +9,7 @@ import { useUserStore } from "@/store/useUserStore";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight, Clock, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import SetListTabs from "../components/SetListTabsComponent";
 
 export default function CalendarView({
@@ -20,6 +21,7 @@ export default function CalendarView({
 }) {
   const { eventTypes } = useChurchStore();
   const { userData } = useUserStore();
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [dayViewDate, setDayViewDate] = useState<Date | null>(null);
 
@@ -50,6 +52,16 @@ export default function CalendarView({
     day: number,
     month: calendarMonth
   ) => {
+    const events = eventsByDate.get(dateKey) || [];
+
+    // If there's only one event, navigate directly to it
+    if (events.length === 1) {
+      const event = events[0];
+      router.push(`/setlist/${event.id}`); // Adjust the path according to your routing structure
+      return;
+    }
+
+    // Otherwise, open the day view as before
     const clickedDate = new Date(month.year, month.month, day);
     setDayViewDate(clickedDate);
     setSelectedDate(dateKey);
@@ -228,7 +240,6 @@ export default function CalendarView({
                             (el) => el.key === event.event_type
                           );
                           const color = matched?.color || "#999";
-
                           return (
                             <div
                               key={idx}
@@ -241,8 +252,6 @@ export default function CalendarView({
                               <span className="pr-6">
                                 {matched?.alt || matched?.label || "Evento"}
                               </span>
-
-                             
                             </div>
                           );
                         })}

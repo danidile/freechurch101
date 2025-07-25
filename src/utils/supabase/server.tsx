@@ -1,30 +1,28 @@
+// utils/supabase/server.ts
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 export async function createClient() {
-  const cookieStore = await cookies();
+  const cookieStore = await cookies(); // ✅ correct in Next.js 15
 
-
-  const client = createServerClient(
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        async getAll() {
+        getAll() {
           return cookieStore.getAll();
         },
-        async setAll(cookiesToSet) {
+        setAll(cookiesToSet) {
           try {
-            for (const { name, value, options } of cookiesToSet) {
-              cookieStore.set(name, value, options);
-            }
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
           } catch {
-            // Called from a Server Component – can be ignored
+            // Safe to ignore errors in RSC or edge.
           }
         },
       },
     }
   );
-
-  return client;
 }

@@ -1,4 +1,4 @@
-import SetlistPage from "./setlistPage";
+import SetlistPage from "./SetlistPage";
 
 export default async function page({
   params,

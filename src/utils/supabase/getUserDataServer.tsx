@@ -25,9 +25,10 @@ export default async function userDataServer() {
     role: "user",
     fetched: true,
   };
-  console.time("⏱️ Fetched user data");
 
   const supabase = await createClient();
+  console.time("⏱️ Fetched user data");
+
   const {
     data: { user },
     error: userError,

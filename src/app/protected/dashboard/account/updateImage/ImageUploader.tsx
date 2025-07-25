@@ -55,6 +55,15 @@ export default function ImageUploader({
 
       const file = fileRef.current;
 
+      // Log what we're about to send
+      console.log("Attempting upload with:", {
+        userId: userData.id,
+        type,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+      });
+
       const formData = new FormData();
       formData.append("userId", userData.id);
       formData.append("type", type);
@@ -62,14 +71,38 @@ export default function ImageUploader({
 
       const result = await uploadImageAction(formData);
 
-      if (result.success) {
+      console.log("Upload result:", result);
+
+      if (result?.success) {
         closeState?.(false);
         fetchUser();
       } else {
-        setError("Errore durante l'upload.");
+        // Handle the case where result is returned but indicates failure
+        const errorMessage = result?.error || "Errore durante l'upload.";
+        setError(errorMessage);
+        console.error("Upload failed:", result);
       }
     } catch (err) {
-      setError("Errore imprevisto: " + (err as Error).message);
+      // This catches when the server action throws an error before returning
+      console.error("Upload error caught:", err);
+
+      if (err instanceof Error) {
+        // Check if it's a network/fetch error
+        if (err.message.includes("fetch")) {
+          setError(
+            "Errore di connessione. Verifica la tua connessione internet."
+          );
+        } else if (
+          err.message.includes("403") ||
+          err.message.includes("Forbidden")
+        ) {
+          setError("Accesso negato. Prova a effettuare nuovamente il login.");
+        } else {
+          setError("Errore imprevisto: " + err.message);
+        }
+      } else {
+        setError("Errore sconosciuto durante l'upload.");
+      }
     } finally {
       setLoading(false);
     }
