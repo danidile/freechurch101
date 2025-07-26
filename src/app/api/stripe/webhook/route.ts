@@ -1,7 +1,7 @@
 import { Stripe } from "stripe";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
+import { supabaseAdmin } from "@/utils/supabase/server_admin";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -27,7 +27,6 @@ export async function POST(req: Request) {
   const body = await req.text();
 
   let event: Stripe.Event;
-  const supabase = await createClient();
 
   try {
     event = stripe.webhooks.constructEvent(
@@ -69,8 +68,8 @@ export async function POST(req: Request) {
 
           const subscriptionId = session.subscription as string;
           const customerId = session.customer as string;
-          const churchName = session.metadata?.church_name ?? null;
-          const churchId = session.metadata?.church_id ?? null;
+          const userId = session.metadata?.user_id ?? null;
+          const churchId = session.metadata?.church ?? null;
 
           // Get full subscription details from Stripe
           const subscription = await stripe.subscriptions.retrieve(
@@ -83,18 +82,19 @@ export async function POST(req: Request) {
           const metadata = extractSubscriptionMetadata(subscription);
 
           // Insert/Update subscription in database
-          const { error: subError } = await supabase
+          const { error: subError } = await supabaseAdmin
             .from("subscriptions")
             .upsert(
               {
                 stripe_customer_id: customerId,
                 stripe_subscription_id: subscriptionId,
                 stripe_price_id: subscription.items.data[0]?.price?.id,
-                profile: churchName,
+                profile: userId,
                 status: subscription.status,
                 current_period_end: toISOString(
                   subscription.items.data[0]?.current_period_end
                 ),
+                church: churchId,
                 trial_start: toISOString(subscription.trial_start),
                 trial_end: toISOString(subscription.trial_end),
                 cancel_at_period_end: subscription.cancel_at_period_end,
@@ -115,14 +115,26 @@ export async function POST(req: Request) {
           }
 
           // Update church record if church_id is provided
-          if (churchId && churchName) {
-            const { error: churchError } = await supabase
+          if (churchId) {
+            console.log(
+              `Updating church ${churchId} with subscription ${subscriptionId}`
+            );
+            const { error: churchError } = await supabaseAdmin
               .from("churches")
-              .update({ updated_at: new Date().toISOString() })
+              .update({
+                stripe_customer_id: customerId,
+                stripe_subscription_id: subscriptionId,
+                subscription_status: subscription.status,
+                stripe_price_id: subscription.items.data[0]?.price?.id,
+              })
               .eq("id", churchId);
 
             if (churchError) {
               console.warn("⚠️ Church update error:", churchError);
+            } else {
+              console.log(
+                `✅ Updated church ${churchId} with subscription ${subscriptionId}`
+              );
             }
           }
 
@@ -139,7 +151,7 @@ export async function POST(req: Request) {
 
           // Get church name from existing subscription or customer
           let churchName = null;
-          const { data: existingSub } = await supabase
+          const { data: existingSub } = await supabaseAdmin
             .from("subscriptions")
             .select("profile")
             .eq("stripe_subscription_id", subscription.id)
@@ -157,7 +169,7 @@ export async function POST(req: Request) {
             // }
           }
 
-          const { error } = await supabase.from("subscriptions").upsert(
+          const { error } = await supabaseAdmin.from("subscriptions").upsert(
             {
               stripe_customer_id: subscription.customer as string,
               stripe_subscription_id: subscription.id,
@@ -193,7 +205,7 @@ export async function POST(req: Request) {
         case "customer.subscription.deleted": {
           const subscription = event.data.object as Stripe.Subscription;
 
-          const { error } = await supabase
+          const { error } = await supabaseAdmin
             .from("subscriptions")
             .update({
               status: "canceled",
@@ -406,7 +418,7 @@ export async function POST(req: Request) {
           );
 
           // Optional: Update any trial-related fields or trigger notifications
-          const { error } = await supabase
+          const { error } = await supabaseAdmin
             .from("subscriptions")
             .update({
               updated_at: new Date().toISOString(),
@@ -453,6 +465,5 @@ export async function POST(req: Request) {
       );
     }
   }
-
   return NextResponse.json({ message: "Event not processed" }, { status: 200 });
 }

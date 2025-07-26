@@ -6,18 +6,18 @@ import { useEffect, useState } from "react";
 import { Subscription } from "@/utils/supabase/subscriptionTypes";
 
 export default function Page() {
-  //   const { userData, loading } = useUserStore();
-  //   const [subscription, setSubscription] = useState(null);
-  //   useEffect(() => {
-  //     const fetchSubscription = async () => {
-  //       const fetchedSubscription = await getSubscriptionByChurchId(
-  //         userData.church_id
-  //       );
-  //       setSubscription(fetchedSubscription);
-  //       console.log("Fetched subscription:", fetchedSubscription);
-  //     };
-  //     fetchSubscription();
-  //   }, [userData.loggedIn, loading]);
+    const { userData, loading } = useUserStore();
+    const [subscription, setSubscription] = useState(null);
+    useEffect(() => {
+      const fetchSubscription = async () => {
+        const fetchedSubscription = await getSubscriptionByChurchId(
+          userData.church_id
+        );
+        setSubscription(fetchedSubscription);
+        console.log("Fetched subscription:", fetchedSubscription);
+      };
+      fetchSubscription();
+    }, [userData.loggedIn, loading]);
   const mockSubscription: Subscription = {
     id: 1,
     stripe_subscription_id: "sub_1234567890",
