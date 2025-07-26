@@ -12,7 +12,6 @@ const toISOString = (timestamp: number | null): string | null => {
 
 // Helper function to extract metadata from subscription
 const extractSubscriptionMetadata = (subscription: Stripe.Subscription) => {
-  const priceId = subscription.items.data[0]?.price?.id;
   const planMetadata = subscription.items.data[0]?.price?.metadata || {};
 
   return {
