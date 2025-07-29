@@ -9,6 +9,8 @@ type UserStore = {
   userData: basicUserData | null;
   loading: boolean;
   error: string | null;
+  setUserData: (userData: basicUserData) => void;
+
   notifications: GroupedNotificationsT;
   fetchUser: () => Promise<void>;
 };
@@ -19,6 +21,8 @@ export const useUserStore = create<UserStore>((set) => ({
   error: null,
 
   notifications: {},
+  setUserData: (newData: basicUserData) => set({ userData: newData }),
+
   fetchUser: async () => {
     set({ loading: true, error: null });
 

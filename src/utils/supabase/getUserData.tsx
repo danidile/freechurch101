@@ -66,33 +66,20 @@ export default async function fbasicUserData() {
       return userData;
     }
 
-    let churchpending: boolean = false;
-    if (!data || !data.church) {
-      let { data: churchMembershipRequest } = await supabase
-        .from("church-membership-request")
-        .select("*")
-        .eq("profile", user.id);
-      console.log("churchMembershipRequest");
-      console.log(churchMembershipRequest);
-      if (churchMembershipRequest.length > 0) {
-        churchpending = true;
-        userData.pending_church_confirmation = churchpending;
-      }
-    }
     let { data: teams, error: teamError } = await supabase
       .from("team-members")
-      .select("*")
+      .select("team_id,role")
       .eq("profile", user.id);
     if (error) {
       console.log("Error fetching profile:", error.message);
       return userData;
     }
-    const teamLead = teams
+    const teamsFormatted = teams
       .filter((team) => team.role === "leader")
-      .map((team) => team.team_id);
-    const ids = teams.map((team) => team.team_id);
-    userData.teams = ids;
-    userData.leaderOf = teamLead;
+      .map((team) => {
+        return { team_id: team.team_id, role: "leader" };
+      });
+    userData.teams = teamsFormatted;
   }
 
   return userData;

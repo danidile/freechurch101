@@ -7,7 +7,7 @@ export const userData = z.object({
   church: z.string(),
 });
 export type TuserData = z.infer<typeof userData>;
-
+export type profilesTeams = { team_id: string; role: string };
 export type basicUserData = {
   loggedIn?: boolean;
   id?: string;
@@ -21,8 +21,7 @@ export type basicUserData = {
   pending_church_confirmation?: boolean;
   fetched?: boolean;
   church_logo?: string;
-  teams?: string[];
-  leaderOf?: string[];
+  teams?: profilesTeams[];
   avatar_url?: string;
 };
 

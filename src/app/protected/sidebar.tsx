@@ -180,7 +180,8 @@ export default function Sidebar() {
                 </div>
               </Link>
             </li>
-            {userData.leaderOf.length >= 1 && (
+            {userData.teams.filter((team) => team.role === "leader").length >=
+              1 && (
               <li className="sidebar-li">
                 <Link
                   className="sidebar-link"

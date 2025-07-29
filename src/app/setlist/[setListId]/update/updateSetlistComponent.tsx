@@ -8,9 +8,9 @@ import { getSetListSongsCompact } from "@/hooks/GET/getSetListSongsCompact";
 import { getSelectedChurchTeams } from "@/hooks/GET/getSelectedChurchTeams";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
-import { Spinner } from "@heroui/spinner";
 import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
 import ChurchLabLoader from "@/app/components/churchLabSpinner";
+import { checkPermissionClient } from "@/utils/supabase/permissions/checkPermissionClient";
 export default function UpdateSetlistComponent({
   setListId,
 }: {
@@ -19,21 +19,30 @@ export default function UpdateSetlistComponent({
   const { userData, loading } = useUserStore();
   const [setlistData, setSetlistData] = useState<setListT | null>({});
   const [songs, setSongs] = useState<TsongNameAuthor[] | null>([]);
+  const [canEditEventData, setCanEditEventData] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchSongs = async () => {
       if (!loading && userData && userData.church_id) {
+        console.time("fetchedSetlist");
+
         const fetchedSetlist: setListT = await getSetList(setListId);
-        const fetchedSetlistsongs = await getSetListSongsCompact(setListId);
+        console.timeEnd("fetchedSetlist");
+
+        console.time("fetchedSchedule");
+
         const fetchedSchedule = await getSetlistSchedule(setListId);
+        console.timeEnd("fetchedSchedule");
+        console.time("fetchedSetlistTeams");
 
         const fetchedSetlistTeams = await getSelectedChurchTeams(
           userData.church_id,
           setListId
         );
+        console.timeEnd("fetchedSetlistTeams");
+
         fetchedSetlist.teams = fetchedSetlistTeams;
         fetchedSetlist.schedule = fetchedSchedule;
-        fetchedSetlist.setListSongs = fetchedSetlistsongs;
 
         setSetlistData(fetchedSetlist);
         const fetchedSongs: TsongNameAuthor[] = await getSongsCompact(
@@ -42,12 +51,18 @@ export default function UpdateSetlistComponent({
         setSongs(fetchedSongs);
         setIsLoading(false);
       }
+      checkPermissionClient(
+        userData.teams,
+        "setlists",
+        "edit",
+        userData.id,
+        userData.role
+      ).then((result: boolean) => setCanEditEventData(result));
     };
     fetchSongs();
   }, [loading, userData, setListId]);
 
   if (isLoading || !setlistData || !songs) {
-    console.log("setlistData", setlistData);
     return (
       <div className="container-sub min-h-[80vh] flex ">
         <ChurchLabLoader />
@@ -61,6 +76,7 @@ export default function UpdateSetlistComponent({
         page="update"
         setlistData={setlistData}
         songsList={songs}
+        canEditEventData={canEditEventData}
       />
     </div>
   );

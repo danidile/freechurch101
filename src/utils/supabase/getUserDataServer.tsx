@@ -82,18 +82,16 @@ export default async function userDataServer() {
     }
     let { data: teams, error: teamError } = await supabase
       .from("team-members")
-      .select("*")
+      .select("team_id,role")
       .eq("profile", user.id);
     if (error) {
       console.log("Error fetching profile:", error.message);
       return userData;
     }
-    const teamLead = teams
-      .filter((team) => team.role === "leader")
-      .map((team) => team.team_id);
-    const ids = teams.map((team) => team.team_id);
-    userData.teams = ids;
-    userData.leaderOf = teamLead;
+    const teamsFormatted = teams.map((team) => {
+      return { team_id: team.team_id, role: "leader" };
+    });
+    userData.teams = teamsFormatted;
   }
 
   return userData;

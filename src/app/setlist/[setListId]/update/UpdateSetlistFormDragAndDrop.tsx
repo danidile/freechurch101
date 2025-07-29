@@ -7,13 +7,11 @@ import {
   ModalFooter,
   useDisclosure,
   TimeInput,
-  user,
 } from "@heroui/react";
 
 import { I18nProvider } from "@react-aria/i18n";
 import {
   DateValue,
-  CalendarDate,
   parseTime,
   getLocalTimeZone,
   today,
@@ -27,16 +25,7 @@ import {
   setListT,
   teamData,
 } from "@/utils/types/types";
-import {
-  Button,
-  Select,
-  SelectItem,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Tooltip,
-} from "@heroui/react";
+import { Button, Select, SelectItem, Tooltip } from "@heroui/react";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TsongNameAuthor, formValues } from "@/utils/types/types";
@@ -53,22 +42,26 @@ import { TbClockHour2, TbMusicPlus } from "react-icons/tb";
 import BlockoutsCalendarComponent from "@/app/protected/blockouts-calendar/calendarComponent";
 import { useUserStore } from "@/store/useUserStore";
 import CDropdown, { CDropdownOption } from "@/app/components/CDropdown";
+import { getSetlistTeamLeadBySetlistAndUserId } from "@/hooks/GET/getSetlistTeamLeadBySetlistAndUserId";
+import { checkPermissionClient } from "@/utils/supabase/permissions/checkPermissionClient";
 export default function UpdateSetlistForm({
   teams,
   page,
   songsList,
   setlistData,
+  canEditEventData = false,
 }: {
   teams: teamData[] | null;
   page: string;
   songsList: TsongNameAuthor[];
   setlistData: setListT;
+  canEditEventData?: boolean;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedRoom, setSelectedRoom] = useState<string | null>(
     setlistData?.room ?? null
   );
-  const { userData } = useUserStore();
+  const { userData, setUserData } = useUserStore();
 
   const { eventTypes, rooms } = useChurchStore();
   const [churchRooms, setChurchRooms] = useState<roomsType[]>([]);
@@ -86,23 +79,15 @@ export default function UpdateSetlistForm({
       setChurchRooms(rooms);
     }
   }, [rooms]);
-
-  const [state, setState] = useState<setListSongT[]>(
-    setlistData?.setListSongs || []
-  );
   const [schedule, setSchedule] = useState<setListSongT[]>(
     setlistData?.schedule || []
   );
-  const [eventColor, setEventColor] = useState<string>(
-    setlistData?.color || "#fe564b"
-  );
+
   const [teamsState, setTeamsState] = useState<teamData[]>(
     (teams || []).filter((team) => team.selected.length > 0)
   );
   const [team, setTeam] = useState<churchMembersT[]>([]);
-  const [showBlockoutsCalendar, setShowBlockoutsCalendar] =
-    useState<boolean>(false);
-  const [eventDetails, setEventDetails] = useState<setListT>(setlistData);
+
   const [previousEventDate, setPreviousEventDate] = useState<DateValue | null>(
     () => {
       if (setlistData?.date) {
@@ -118,11 +103,21 @@ export default function UpdateSetlistForm({
     return parseDate(todaysDate);
   });
   const container = useRef(null);
-  useEffect(() => {
-    setEventDetails(setlistData);
-  }, [setlistData]);
-  const [alreadySubmitting, setAlreadySubmitting] = useState<boolean>(false);
 
+  const [alreadySubmitting, setAlreadySubmitting] = useState<boolean>(false);
+  useEffect(() => {
+    if (setlistData) {
+      getSetlistTeamLeadBySetlistAndUserId(userData.id, setlistData.id).then(
+        (lead: { team_id: string; role: string }[]) => {
+          if (lead.length >= 1)
+            setUserData({
+              ...userData,
+              teams: [...userData.teams, ...lead], // ✅ creates a new array reference
+            });
+        }
+      );
+    }
+  }, []);
   const {
     handleSubmit,
     register,
@@ -165,7 +160,6 @@ export default function UpdateSetlistForm({
               : [...(team.selected || []), member],
           };
         } else {
-
           return team;
         }
       })
@@ -221,19 +215,7 @@ export default function UpdateSetlistForm({
   const removeItemFromSchedule = (id: string) => {
     setSchedule(schedule.filter((section) => section.id !== id));
   };
-  const updateKey = (index: number, value: string) => {
-    setSchedule((prevState) => {
-      // Update the object at the given index
-      return prevState.map((item, idx) => {
-        if (idx === index) {
-          return { ...item, key: value }; // Update the key field of the matched object
-        }
-        return item; // Return the rest of the items unchanged
-      });
-    });
-  };
 
-  
   const updateNotesSection = (text: string, section: number) => {
     setSchedule((prevState) => {
       const index = prevState.findIndex((s, index) => index === section);
@@ -265,14 +247,11 @@ export default function UpdateSetlistForm({
       date: watchAllFields.eventDate.toString(),
       private: watchAllFields.private,
       room: selectedRoom,
-      setListSongs: state,
       teams: teamsState,
-      color: eventColor,
       schedule: schedule,
       hour: watchAllFields.hour,
     };
-    console.log("updatedSetlist");
-    console.log(updatedSetlist);
+
     if (page === "create") {
       await addSetlist(updatedSetlist);
     } else if (page === "update") {
@@ -312,7 +291,9 @@ export default function UpdateSetlistForm({
     return teams
       .filter(
         (team) =>
-          userData.leaderOf.includes(team.id) &&
+          userData.teams
+            .filter((team) => team.role === "leader")
+            .some((item) => item.team_id === team.id) &&
           !teamsState.some((el) => el.team_name === team.team_name)
       )
       .map((team) => ({
@@ -324,6 +305,7 @@ export default function UpdateSetlistForm({
         value: team.id,
       }));
   }, [teams, teamsState, userData]);
+
   //date modal change
   const [isDateConflictModalOpen, setIsDateConflictModalOpen] = useState(false);
   const [conflictedMembers, setConflictedMembers] = useState<churchMembersT[]>(
@@ -353,170 +335,220 @@ export default function UpdateSetlistForm({
           <form onSubmit={handleSubmit(convertData)}>
             <div className="flex items-center">
               <div className="flex items-center gap-2">
-                <h4>
+                <h3>
                   {page === "create" && "Crea"}
                   {page === "update" && "Aggiorna"} Evento
-                </h4>
+                </h3>
               </div>
             </div>
-            <div className="flex flex-col gap-2 mt-8">
-              {/* EVENT TYPE */}
-              <div className="gap-1.5">
-                <Controller
-                  name="event_type"
-                  control={control}
-                  rules={{ required: "Tipo evento obbligatorio" }}
-                  defaultValue={setlistData?.event_type || ""}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <Select
-                        {...field}
-                        fullWidth
-                        items={eventTypes}
-                        label="Tipo di evento"
-                        variant="underlined"
-                        placeholder="Seleziona il tipo di evento"
-                        selectedKeys={
-                          field.value ? new Set([field.value]) : new Set()
-                        }
-                        onSelectionChange={(keys) => {
-                          const value = Array.from(keys)[0] || "";
-                          field.onChange(value);
-                        }}
-                        isInvalid={!!fieldState.error}
-                        errorMessage={fieldState.error?.message}
-                      >
-                        {(type) => (
-                          <SelectItem key={type.key}>
-                            {type.alt ? type.alt : type.label}
-                          </SelectItem>
-                        )}
-                      </Select>
-                    </>
-                  )}
-                />
-              </div>
-
-              {churchRooms && churchRooms.length === 1 ? (
-                <p>
-                  Location:{" "}
-                  <span className="font-medium">
-                    {churchRooms[0].name} - {churchRooms[0].address},{" "}
-                    {churchRooms[0].comune}
-                  </span>
-                </p>
-              ) : (
-                <Controller
-                  name="room_id" // define this in your formValues
-                  control={control}
-                  rules={{ required: "Devi selezionare una location" }}
-                  defaultValue={selectedRoom || ""}
-                  render={({ field, fieldState }) => (
-                    <Select
-                      label="Seleziona la Location"
-                      variant="underlined"
-                      size="sm"
-                      placeholder="Scegli una stanza"
-                      selectedKeys={
-                        field.value ? new Set([field.value]) : new Set()
-                      }
-                      onSelectionChange={(keys) => {
-                        const selectedId = Array.from(keys)[0] || "";
-                        field.onChange(selectedId);
-                        setSelectedRoom(String(selectedId));
-                      }}
-                      isInvalid={!!fieldState.error}
-                      errorMessage={fieldState.error?.message}
-                    >
-                      {churchRooms.map((room) => (
-                        <SelectItem key={room.id} textValue={room.name}>
-                          <div>
-                            <p className="font-regular">{room.name}</p>
-                            {room.address && (
-                              <small className="text-default-500">
-                                {room.address}, {room.comune}
-                              </small>
+            {canEditEventData ? (
+              <>
+                <div className="flex flex-col gap-2 mt-8">
+                  {/* EVENT TYPE */}
+                  <div className="gap-1.5">
+                    <Controller
+                      name="event_type"
+                      control={control}
+                      rules={{ required: "Tipo evento obbligatorio" }}
+                      defaultValue={setlistData?.event_type || ""}
+                      render={({ field, fieldState }) => (
+                        <>
+                          <Select
+                            {...field}
+                            fullWidth
+                            items={eventTypes}
+                            label="Tipo di evento"
+                            variant="underlined"
+                            placeholder="Seleziona il tipo di evento"
+                            selectedKeys={
+                              field.value ? new Set([field.value]) : new Set()
+                            }
+                            onSelectionChange={(keys) => {
+                              const value = Array.from(keys)[0] || "";
+                              field.onChange(value);
+                            }}
+                            isInvalid={!!fieldState.error}
+                            errorMessage={fieldState.error?.message}
+                          >
+                            {(type) => (
+                              <SelectItem key={type.key}>
+                                {type.alt ? type.alt : type.label}
+                              </SelectItem>
                             )}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  )}
-                />
-              )}
+                          </Select>
+                        </>
+                      )}
+                    />
+                  </div>
 
-              {/* HOUR + DATE */}
-              <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-                {/* HOUR */}
-                <Controller
-                  name="hour"
-                  control={control}
-                  rules={{ required: "Ora obbligatoria" }}
-                  render={({ field }) => {
-                    const timeValue = parseTime(field.value);
-                    return (
-                      <TimeInput
-                        label="Ora"
-                        variant="underlined"
-                        startContent={<TbClockHour2 />}
-                        value={timeValue}
-                        onChange={(newTime) => {
-                          const hourStr = newTime.toString();
-                          field.onChange(hourStr);
-                        }}
-                        isInvalid={!!errors.hour}
-                        errorMessage={errors.hour?.message}
-                      />
-                    );
-                  }}
-                />
-
-                {/* DATE */}
-                <Controller
-                  name="eventDate"
-                  control={control}
-                  rules={{ required: "Data obbligatoria" }}
-                  render={({ field }) => {
-                    // Convert string (field.value) to DateValue for DatePicker, or null if empty
-                    const dateValue: DateValue | null = field.value
-                      ? parseDate(field.value)
-                      : null;
-
-                    return (
-                      <DatePicker
-                        label="Data"
-                        variant="underlined"
-                        showMonthAndYearPickers
-                        value={dateValue}
-                        minValue={today(getLocalTimeZone())}
-                        onChange={(newDate) => {
-                          const newDateStr = newDate.toString(); // DateValue → "YYYY-MM-DD"
-
-                          const unavailable = getUnavailableMembers(
-                            newDateStr,
-                            teamsState
-                          );
-
-                          if (unavailable.length > 0) {
-                            setPreviousEventDate(dateValue);
-                            setIsDateConflictModalOpen(true);
-                            setPendingDate(newDate);
-                          } else {
-                            field.onChange(newDateStr);
+                  {churchRooms && churchRooms.length === 1 ? (
+                    <p>
+                      Location:{" "}
+                      <span className="font-medium">
+                        {churchRooms[0].name} - {churchRooms[0].address},{" "}
+                        {churchRooms[0].comune}
+                      </span>
+                    </p>
+                  ) : (
+                    <Controller
+                      name="room_id" // define this in your formValues
+                      control={control}
+                      rules={{ required: "Devi selezionare una location" }}
+                      defaultValue={selectedRoom || ""}
+                      render={({ field, fieldState }) => (
+                        <Select
+                          label="Seleziona la Location"
+                          variant="underlined"
+                          size="sm"
+                          placeholder="Scegli una stanza"
+                          selectedKeys={
+                            field.value ? new Set([field.value]) : new Set()
                           }
-                        }}
-                        disableAnimation
-                        isInvalid={!!errors.eventDate}
-                        errorMessage={errors.eventDate?.message}
-                      />
-                    );
-                  }}
-                />
-              </div>
-            </div>
+                          onSelectionChange={(keys) => {
+                            const selectedId = Array.from(keys)[0] || "";
+                            field.onChange(selectedId);
+                            setSelectedRoom(String(selectedId));
+                          }}
+                          isInvalid={!!fieldState.error}
+                          errorMessage={fieldState.error?.message}
+                        >
+                          {churchRooms.map((room) => (
+                            <SelectItem key={room.id} textValue={room.name}>
+                              <div>
+                                <p className="font-regular">{room.name}</p>
+                                {room.address && (
+                                  <small className="text-default-500">
+                                    {room.address}, {room.comune}
+                                  </small>
+                                )}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                  )}
+
+                  {/* HOUR + DATE */}
+                  <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                    {/* HOUR */}
+                    <Controller
+                      name="hour"
+                      control={control}
+                      rules={{ required: "Ora obbligatoria" }}
+                      render={({ field }) => {
+                        const timeValue = parseTime(field.value);
+                        return (
+                          <TimeInput
+                            label="Ora"
+                            variant="underlined"
+                            startContent={<TbClockHour2 />}
+                            value={timeValue}
+                            onChange={(newTime) => {
+                              const hourStr = newTime.toString();
+                              field.onChange(hourStr);
+                            }}
+                            isInvalid={!!errors.hour}
+                            errorMessage={errors.hour?.message}
+                          />
+                        );
+                      }}
+                    />
+
+                    {/* DATE */}
+                    <Controller
+                      name="eventDate"
+                      control={control}
+                      rules={{ required: "Data obbligatoria" }}
+                      render={({ field }) => {
+                        // Convert string (field.value) to DateValue for DatePicker, or null if empty
+                        const dateValue: DateValue | null = field.value
+                          ? parseDate(field.value)
+                          : null;
+
+                        return (
+                          <DatePicker
+                            label="Data"
+                            variant="underlined"
+                            showMonthAndYearPickers
+                            value={dateValue}
+                            minValue={today(getLocalTimeZone())}
+                            onChange={(newDate) => {
+                              const newDateStr = newDate.toString(); // DateValue → "YYYY-MM-DD"
+
+                              const unavailable = getUnavailableMembers(
+                                newDateStr,
+                                teamsState
+                              );
+
+                              if (unavailable.length > 0) {
+                                setPreviousEventDate(dateValue);
+                                setIsDateConflictModalOpen(true);
+                                setPendingDate(newDate);
+                              } else {
+                                field.onChange(newDateStr);
+                              }
+                            }}
+                            disableAnimation
+                            isInvalid={!!errors.eventDate}
+                            errorMessage={errors.eventDate?.message}
+                          />
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col gap-2 mt-8">
+                  {/* EVENT TYPE */}
+                  <div className="gap-1.5 flex flex-col">
+                    <p>
+                      {" "}
+                      <strong>Evento:</strong>{" "}
+                      {
+                        eventTypes.find(
+                          (event) => event.key === setlistData?.event_type
+                        )?.label
+                      }
+                    </p>
+                    <p>
+                      <strong>Stanza:</strong>{" "}
+                      {
+                        churchRooms?.find(
+                          (room) => room.id === setlistData?.room
+                        )?.name
+                      }
+                    </p>
+                    <p className="capitalize">
+                      <strong>Data:</strong>{" "}
+                      {new Date("2025-07-20T00:00:00").toLocaleDateString(
+                        "it-IT",
+                        {
+                          weekday: "long", // optional: e.g., Sunday
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
+                    </p>{" "}
+                    <p>
+                      <strong>Ora:</strong>{" "}
+                      {new Intl.DateTimeFormat("it-IT", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      }).format(new Date(`1970-01-01T${setlistData.hour}`))}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+
             <div>
               <div className="flex flex-row items-center justify-start gap-2 mt-4">
-                <h5 className="w-[120px]">Scaletta</h5>
+                <h3 className="w-[120px]">Scaletta</h3>
                 <CDropdown
                   placeholder={
                     <>
@@ -570,7 +602,7 @@ export default function UpdateSetlistForm({
             <div className="w-full border-b-1 my-4"></div>
             <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
               <div className="flex flex-row justify-start gap-3 items-center">
-                <h5 className="w-[120px]">Turnazioni</h5>
+                <h3 className="w-[120px]">Turnazioni</h3>
                 <Tooltip
                   className="text-sm"
                   content="Mostra calendario con date bloccate."
@@ -605,14 +637,19 @@ export default function UpdateSetlistForm({
               <AnimatePresence>
                 {teamsState.map((section) => {
                   const canEdit =
-                    userData.leaderOf.includes(section.id) ||
+                    userData.teams
+                      .filter(
+                        (team) =>
+                          team.role === "leader" || team.role === "editor"
+                      )
+                      .some((item) => item.team_id === section.id) ||
                     userData.role === "churchadmin" ||
                     userData.role === "churchfounder";
                   return (
-                    <div key={section.id} className="mt-4">
+                    <div key={section.id} className="">
                       <>
                         <div className="flex flex-row flex-wrap items-center gap-3 my-2.5">
-                          <h4 className="font-medium">{section.team_name}</h4>
+                          <h5 className="font-medium">{section.team_name}</h5>
                           {canEdit && (
                             <SelectWorshipTeamMemberDrawer
                               state={section.selected}
@@ -633,11 +670,12 @@ export default function UpdateSetlistForm({
 
                       {section.selected?.length >= 1 && (
                         <>
-                          {!section.selected?.some((member) => member.lead) && canEdit && (
-                            <small className="mb-2 px-2 py-1 text-red-600">
-                              Seleziona un leader per questo team.
-                            </small>
-                          )}
+                          {!section.selected?.some((member) => member.lead) &&
+                            canEdit && (
+                              <small className="mb-2 px-2 py-1 text-red-600">
+                                Seleziona un leader per questo team.
+                              </small>
+                            )}
                           <table className="w-full text-left  rounded-mdtext-sm atable">
                             <thead className="bg-gray-50">
                               <tr>

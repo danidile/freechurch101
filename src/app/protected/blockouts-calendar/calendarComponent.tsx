@@ -1,7 +1,7 @@
 "use client";
 import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
 import { setListT, TeamWithBlockouts } from "@/utils/types/types";
-import { calendarMonth } from "@/utils/types/userData";
+import { calendarMonth, profilesTeams } from "@/utils/types/userData";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import BlockoutsCalendarTabs from "./CalendarTabsComponent";
@@ -15,9 +15,12 @@ export default function BlockoutsCalendarComponent() {
     const fetchData = async () => {
       if (!loading && userData.loggedIn) {
         const teamsArray = [];
-        for (const team of userData.leaderOf) {
-          const teamMembers: TeamWithBlockouts =
-            await getBlockoutsByTeamId(team);
+        for (const team of userData.teams.filter(
+          (team: profilesTeams) => team.role === "leader"
+        )) {
+          const teamMembers: TeamWithBlockouts = await getBlockoutsByTeamId(
+            team.team_id
+          );
           if (teamMembers) {
             teamsArray.push(teamMembers);
           }

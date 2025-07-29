@@ -4,7 +4,6 @@ import { checkPermission } from "@/utils/supabase/permissions/checkPermission";
 
 export default async function songs() {
   const userData = await userDataServer();
-  console.log("leaderOf", userData.leaderOf);
   const allowed = await checkPermission(
     userData.teams,
     "setlists",

@@ -1,11 +1,11 @@
 // utils/supabase/checkPermission.ts
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 import { DEFAULT_ROLE_PERMISSIONS } from "@/constants";
 import { Permission } from "@/utils/types/types";
 import { roles } from "@/constants";
 import { profilesTeams } from "@/utils/types/userData";
 
-export async function checkPermission(
+export async function checkPermissionClient(
   teams: profilesTeams[],
   resource: string,
   action: string,

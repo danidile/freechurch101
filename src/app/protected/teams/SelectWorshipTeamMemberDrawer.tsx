@@ -53,12 +53,12 @@ export function SelectWorshipTeamMemberDrawer({
         isIconOnly
         color="default"
         variant="flat"
-        size="md"
+        size="sm"
         radius="sm"
         className="mr-0"
         onPress={onOpen}
       >
-<MdPersonAddAlt1 />
+        <MdPersonAddAlt1 size={19} />
       </Button>
 
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
