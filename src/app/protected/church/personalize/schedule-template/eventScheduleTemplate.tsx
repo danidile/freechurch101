@@ -162,8 +162,7 @@ export default function EventScheduleTemplate() {
             <div className="flex items-center">
               <div className="flex items-center gap-2">
                 <h3>
-                  {page === "create" && "Crea"}
-                  {page === "update" && "Aggiorna"} Evento
+                Crea Evento
                 </h3>
               </div>
             </div>
