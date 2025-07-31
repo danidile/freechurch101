@@ -143,7 +143,7 @@
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.13.3",
     "sonner": "^1.7.0",
-    "stripe": "^18.3.0",
+    "stripe": "^18.4.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss": "^4.1.11",
     "tailwindcss-animate": "^1.0.7",
