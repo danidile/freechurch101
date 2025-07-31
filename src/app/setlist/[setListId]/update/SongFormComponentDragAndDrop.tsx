@@ -27,10 +27,12 @@ import { useState } from "react";
 export function SongFormComponent({
   section,
   index,
+  source,
   songsList,
   worshipTeams,
   setSchedule,
 }: {
+  source: string;
   section: setListSongT;
   index: number;
   songsList: TsongNameAuthor[];
@@ -57,7 +59,7 @@ export function SongFormComponent({
   const worshipMembers = Array.from(
     new Map(
       worshipTeams
-        .filter((team) => team.is_worship) // only worship teams
+        ?.filter((team) => team.is_worship) // only worship teams
         .flatMap((team) => team.selected) // only selected members
         .map((member) => [member.profile, member]) // deduplicate by profile
     ).values()
@@ -67,59 +69,68 @@ export function SongFormComponent({
       className="setlist-section"
       // dragConstraints={container}
     >
-      <p onClick={onOpen} className="cursor-pointer">
+      <p
+        onClick={() => {
+          if (source === "setlist") onOpen;
+        }}
+        className={`${source === "setlist" ? "cursor-pointer" : ""}`}
+      >
         {section.song_title}
-        {!section.song_title && <>Seleziona Canzone</>}
+        {!section.song_title && <>Canzone da scegliere</>}
       </p>
-      <select
-        value={
-          section.key && keys.includes(section.key) ? section.key : keys[0]
-        }
-        onChange={(e) => {
-          const newKey = e.target.value;
-          setSchedule((prevState) =>
-            prevState.map((item, idx) =>
-              idx === index ? { ...item, key: newKey } : item
-            )
-          );
-        }}
-        className="aselect"
-        aria-label="key-selector"
-      >
-        {keys.map((key) => (
-          <option key={key} value={key}>
-            {key + " "}
-          </option>
-        ))}
-      </select>
-      <select
-        value={section.singer || ""}
-        onChange={(e) => {
-          const newSinger = e.target.value;
-          setSchedule((prevState) =>
-            prevState.map((item, idx) =>
-              idx === index ? { ...item, singer: newSinger } : item
-            )
-          );
-        }}
-        className="aselect min-w-[100px]"
-        aria-label="Seleziona membro del team"
-      >
-        {worshipMembers.length === 0 ? (
-          <option disabled value="">
-            Nessun membro disponibile
-          </option>
-        ) : (
-          <>
-            <option value="">Seleziona voce guida</option>
-            {worshipMembers.map((member) => (
-              <option key={member.profile} value={member.profile}>
-                {member.name} {member.lastname}
+      {source === "setlist" && (
+        <>
+          <select
+            value={
+              section.key && keys.includes(section.key) ? section.key : keys[0]
+            }
+            onChange={(e) => {
+              const newKey = e.target.value;
+              setSchedule((prevState) =>
+                prevState.map((item, idx) =>
+                  idx === index ? { ...item, key: newKey } : item
+                )
+              );
+            }}
+            className="aselect"
+            aria-label="key-selector"
+          >
+            {keys.map((key) => (
+              <option key={key} value={key}>
+                {key + " "}
               </option>
             ))}
-          </>
-        )}
-      </select>
+          </select>
+          <select
+            value={section.singer || ""}
+            onChange={(e) => {
+              const newSinger = e.target.value;
+              setSchedule((prevState) =>
+                prevState.map((item, idx) =>
+                  idx === index ? { ...item, singer: newSinger } : item
+                )
+              );
+            }}
+            className="aselect min-w-[100px]"
+            aria-label="Seleziona membro del team"
+          >
+            {worshipMembers.length === 0 ? (
+              <option disabled value="">
+                Nessun membro disponibile
+              </option>
+            ) : (
+              <>
+                <option value="">Seleziona voce guida</option>
+                {worshipMembers.map((member) => (
+                  <option key={member.profile} value={member.profile}>
+                    {member.name} {member.lastname}
+                  </option>
+                ))}
+              </>
+            )}
+          </select>
+        </>
+      )}
 
       <Dropdown>
         <DropdownTrigger>
@@ -134,16 +145,19 @@ export function SongFormComponent({
           </Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
-          <DropdownItem
-            key="update"
-            as={Button}
-            className="p-1"
-            onPress={onOpen}
-            variant="light"
-          >
-            {section.song_title && <>Modifica canzone</>}
-            {!section.song_title && <>Seleziona canzone</>}
-          </DropdownItem>
+          {source === "setlist" && (
+            <DropdownItem
+              key="update"
+              as={Button}
+              className="p-1"
+              onPress={onOpen}
+              variant="light"
+            >
+              {section.song_title && <>Modifica canzone</>}
+              {!section.song_title && <>Seleziona canzone</>}
+            </DropdownItem>
+          )}
+
           <DropdownItem
             key="delete"
             className="p-1 selection:"

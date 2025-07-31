@@ -48,6 +48,7 @@ export default function AddSetlistComponent() {
         page="create"
         setlistData={setlistData}
         songsList={songs}
+        canEditEventData={true}
       />
     </div>
   );

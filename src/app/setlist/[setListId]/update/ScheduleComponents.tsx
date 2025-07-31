@@ -12,6 +12,7 @@ import { NoteFormComponent } from "./NoteFormComponentDragAndDrop";
 export function ScheduleComponents({
   section,
   index,
+  source = "setlist",
   songsList,
   removeItemFromSchedule,
 
@@ -20,6 +21,7 @@ export function ScheduleComponents({
   worshipTeams,
   setSchedule,
 }: {
+  source?: string;
   section: setListSongT;
   index: number;
   songsList: TsongNameAuthor[];
@@ -64,6 +66,7 @@ export function ScheduleComponents({
           <SongFormComponent
             section={section}
             index={index}
+            source={source}
             songsList={songsList}
             worshipTeams={worshipTeams}
             setSchedule={setSchedule}

@@ -44,11 +44,12 @@ export default function UpdateSetlistComponent({
         fetchedSetlist.teams = fetchedSetlistTeams;
         fetchedSetlist.schedule = fetchedSchedule;
 
-        setSetlistData(fetchedSetlist);
         const fetchedSongs: TsongNameAuthor[] = await getSongsCompact(
           userData.church_id
         );
         setSongs(fetchedSongs);
+        setSetlistData(fetchedSetlist);
+
         setIsLoading(false);
       }
       checkPermissionClient(

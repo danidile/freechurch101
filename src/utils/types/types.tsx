@@ -278,7 +278,6 @@ export type TeamMemberRaw = {
   roles: string;
 };
 
-
 export type setListSongT = {
   id?: string;
   song?: string;
@@ -322,6 +321,19 @@ export type setListT = {
   schedule?: setListSongT[];
 };
 
+export type scheduleTemplate = {
+  id?: string;
+  name: string;
+  event_title?: string;
+  event_type?: string;
+  hour?: string;
+
+  room?: string;
+  schedule?: setListSongT[];
+};
+export const scheduleTemplateSchema = z.object({
+  name: z.string().min(4, "Il nome deve contenere almeno 4 caratteri"),
+});
 export type teamData = {
   id?: string;
   team_name?: string;

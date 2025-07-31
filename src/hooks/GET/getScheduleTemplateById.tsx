@@ -1,0 +1,31 @@
+"use server";
+
+import { createClient } from "@/utils/supabase/server";
+
+export const getScheduleTemplateById = async (templateId: string | number) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("schedule-template")
+    .select("id, name")
+    .eq("id", templateId)
+    .single();
+  if (error) {
+    console.log("Error in fetching data from schedule-template");
+  } else {
+    const { data: elementsData, error: elementsError } = await supabase
+      .from("schedule-template-elements")
+      .select("*")
+      .eq("template", templateId);
+    if (error) {
+      console.log("Error in fetching data from schedule-template-elements");
+    } else {
+      console.log("elementsData", elementsData);
+      return {
+        id: data.id,
+        name: data.name,
+        schedule: elementsData,
+      };
+    }
+  }
+};

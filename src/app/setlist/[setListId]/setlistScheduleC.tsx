@@ -6,7 +6,7 @@ import { ScheduleViewComponents } from "./ScheduleViewComponents";
 
 interface SetlistScheduleProps {
   schedule: any[];
-  setListId: string;
+  setListId?: string;
 }
 
 export default function SetlistSchedule({

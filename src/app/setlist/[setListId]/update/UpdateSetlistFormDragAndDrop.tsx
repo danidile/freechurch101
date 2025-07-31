@@ -61,6 +61,7 @@ export default function UpdateSetlistForm({
   const [selectedRoom, setSelectedRoom] = useState<string | null>(
     setlistData?.room ?? null
   );
+
   const { userData, setUserData } = useUserStore();
 
   const { eventTypes, rooms } = useChurchStore();
@@ -288,8 +289,9 @@ export default function UpdateSetlistForm({
     },
   ];
   const optionsTurnazioni: CDropdownOption[] = useMemo(() => {
+    // if(teams?.length>=1)
     return teams
-      .filter(
+      ?.filter(
         (team) =>
           userData.teams
             .filter((team) => team.role === "leader")
@@ -535,11 +537,17 @@ export default function UpdateSetlistForm({
                     </p>{" "}
                     <p>
                       <strong>Ora:</strong>{" "}
-                      {new Intl.DateTimeFormat("it-IT", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: true,
-                      }).format(new Date(`1970-01-01T${setlistData.hour}`))}
+                      {setlistData?.hour && (
+                        <>
+                          {new Intl.DateTimeFormat("it-IT", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })?.format(
+                            new Date(`1970-01-01T${setlistData?.hour}`)
+                          )}
+                        </>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -617,7 +625,7 @@ export default function UpdateSetlistForm({
                     <FaRegCalendarAlt />
                   </Button>
                 </Tooltip>
-                {optionsTurnazioni.length > 0 && (
+                {optionsTurnazioni?.length > 0 && (
                   <CDropdown
                     placeholder={
                       <>
