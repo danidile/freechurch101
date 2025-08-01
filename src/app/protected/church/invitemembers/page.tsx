@@ -2,6 +2,7 @@
 
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
+import { logEventClient } from "@/utils/supabase/logClient"; // make sure the import is correct
 
 import {
   Modal,
@@ -21,7 +22,7 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import sendInvitesAction from "../personalize/sendInvitesAction";
 import sendInviteEmail from "../personalize/sendInviteEmail";
 import { getInvitesByChurch } from "@/hooks/GET/getInvitesByChurch";
-import { FaCircle, FaExclamation } from "react-icons/fa";
+import { FaCircle, FaExclamation, FaRegTrashAlt } from "react-icons/fa";
 import { IoMailOutline } from "react-icons/io5";
 import { ChipColor, newMember } from "@/utils/types/types";
 import { statusColorMap, statusMap } from "@/constants";
@@ -69,16 +70,54 @@ export default function InviteUsersModalComponent() {
 
   const sendInvites = async () => {
     const filteredMembers = checkedMembers.filter((member) => !member.error);
+
     if (filteredMembers.length >= 1) {
-      const invitesAdded: newMember[] =
-        await sendInvitesAction(filteredMembers);
+      try {
+        const invitesAdded: newMember[] =
+          await sendInvitesAction(filteredMembers);
 
-      await Promise.all(
-        invitesAdded.map((newMember) => sendInviteEmail(newMember))
-      );
+        await Promise.all(
+          invitesAdded.map(async (newMember) => {
+            try {
+              await sendInviteEmail(newMember);
+            } catch (emailError: any) {
+              await logEventClient({
+                event: "invite_email_error",
+                level: "error",
+                user_id: null, // or your actual user id if available
+                meta: {
+                  message: emailError.message || "Unknown error",
+                  email: newMember.email,
+                  context: "sendInviteEmail",
+                },
+              });
+            }
+          })
+        );
 
-      setRefetchTrigger((prev) => !prev);
-      setMembers([{ name: "", lastname: "", email: "" }]);
+        await logEventClient({
+          event: "invite_batch_success",
+          level: "info",
+          user_id: null,
+          meta: {
+            count: invitesAdded.length,
+            context: "sendInvitesAction + sendInviteEmail",
+          },
+        });
+
+        setRefetchTrigger((prev) => !prev);
+        setMembers([{ name: "", lastname: "", email: "" }]);
+      } catch (actionError: any) {
+        await logEventClient({
+          event: "invite_batch_error",
+          level: "error",
+          user_id: null,
+          meta: {
+            message: actionError.message || "Unknown error",
+            context: "sendInvitesAction",
+          },
+        });
+      }
     }
   };
 
@@ -157,18 +196,11 @@ export default function InviteUsersModalComponent() {
           return (
             <div
               key={index}
-              className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 border-b-2 py-3 relative"
+              className="gap-2 flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 border-b-2 py-3 relative "
             >
               {/* Remove Button */}
-              <button
-                type="button"
-                onClick={() => handleRemoveMember(index)}
-                className="absolute top-2 right-2 text-red-500 text-xs hover:underline"
-              >
-                Rimuovi
-              </button>
 
-              <div className="flex flex-col flex-1">
+              <div className="flex flex-col flex-1 ">
                 <label
                   htmlFor={`member-name-${index}`}
                   className="text-sm font-medium text-gray-700 mb-1"
@@ -227,6 +259,18 @@ export default function InviteUsersModalComponent() {
                   }
                   className="w-full px-2 py-1 border border-gray-300 rounded text-sm font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
+              </div>
+              <div className="flex flex-col flex-1 max-w-[40px] mx-auto items-center">
+                <label className="!text-[12px] h-[24px] font-medium text-gray-400 mb-1">
+                  Elimina
+                </label>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveMember(index)}
+                  className=" text-red-500"
+                >
+                  <FaRegTrashAlt />
+                </button>
               </div>
             </div>
           );

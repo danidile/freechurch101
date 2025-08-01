@@ -27,7 +27,7 @@ import { useState } from "react";
 export function SongFormComponent({
   section,
   index,
-  source,
+  source = "setlist",
   songsList,
   worshipTeams,
   setSchedule,
@@ -71,7 +71,7 @@ export function SongFormComponent({
     >
       <p
         onClick={() => {
-          if (source === "setlist") onOpen;
+          if (source === "setlist") onOpen();
         }}
         className={`${source === "setlist" ? "cursor-pointer" : ""}`}
       >

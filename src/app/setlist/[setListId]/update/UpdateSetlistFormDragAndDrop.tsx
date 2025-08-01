@@ -347,7 +347,7 @@ export default function UpdateSetlistForm({
               <>
                 <div className="flex flex-col gap-2 mt-8">
                   {/* EVENT TYPE */}
-                  <div className="gap-1.5">
+                  <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
                     <Controller
                       name="event_type"
                       control={control}
@@ -360,6 +360,7 @@ export default function UpdateSetlistForm({
                             fullWidth
                             items={eventTypes}
                             label="Tipo di evento"
+                            size="sm"
                             variant="underlined"
                             placeholder="Seleziona il tipo di evento"
                             selectedKeys={
@@ -381,55 +382,55 @@ export default function UpdateSetlistForm({
                         </>
                       )}
                     />
-                  </div>
 
-                  {churchRooms && churchRooms.length === 1 ? (
-                    <p>
-                      Location:{" "}
-                      <span className="font-medium">
-                        {churchRooms[0].name} - {churchRooms[0].address},{" "}
-                        {churchRooms[0].comune}
-                      </span>
-                    </p>
-                  ) : (
-                    <Controller
-                      name="room_id" // define this in your formValues
-                      control={control}
-                      rules={{ required: "Devi selezionare una location" }}
-                      defaultValue={selectedRoom || ""}
-                      render={({ field, fieldState }) => (
-                        <Select
-                          label="Seleziona la Location"
-                          variant="underlined"
-                          size="sm"
-                          placeholder="Scegli una stanza"
-                          selectedKeys={
-                            field.value ? new Set([field.value]) : new Set()
-                          }
-                          onSelectionChange={(keys) => {
-                            const selectedId = Array.from(keys)[0] || "";
-                            field.onChange(selectedId);
-                            setSelectedRoom(String(selectedId));
-                          }}
-                          isInvalid={!!fieldState.error}
-                          errorMessage={fieldState.error?.message}
-                        >
-                          {churchRooms.map((room) => (
-                            <SelectItem key={room.id} textValue={room.name}>
-                              <div>
-                                <p className="font-regular">{room.name}</p>
-                                {room.address && (
-                                  <small className="text-default-500">
-                                    {room.address}, {room.comune}
-                                  </small>
-                                )}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </Select>
-                      )}
-                    />
-                  )}
+                    {churchRooms && churchRooms.length === 1 ? (
+                      <p>
+                        Location:{" "}
+                        <span className="font-medium">
+                          {churchRooms[0].name} - {churchRooms[0].address},{" "}
+                          {churchRooms[0].comune}
+                        </span>
+                      </p>
+                    ) : (
+                      <Controller
+                        name="room_id" // define this in your formValues
+                        control={control}
+                        rules={{ required: "Devi selezionare una location" }}
+                        defaultValue={selectedRoom || ""}
+                        render={({ field, fieldState }) => (
+                          <Select
+                            label="Seleziona la Location"
+                            variant="underlined"
+                            size="sm"
+                            placeholder="Scegli una stanza"
+                            selectedKeys={
+                              field.value ? new Set([field.value]) : new Set()
+                            }
+                            onSelectionChange={(keys) => {
+                              const selectedId = Array.from(keys)[0] || "";
+                              field.onChange(selectedId);
+                              setSelectedRoom(String(selectedId));
+                            }}
+                            isInvalid={!!fieldState.error}
+                            errorMessage={fieldState.error?.message}
+                          >
+                            {churchRooms.map((room) => (
+                              <SelectItem key={room.id} textValue={room.name}>
+                                <div>
+                                  <p className="font-regular">{room.name}</p>
+                                  {room.address && (
+                                    <small className="text-default-500">
+                                      {room.address}, {room.comune}
+                                    </small>
+                                  )}
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
+                    )}
+                  </div>
 
                   {/* HOUR + DATE */}
                   <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
@@ -442,6 +443,7 @@ export default function UpdateSetlistForm({
                         const timeValue = parseTime(field.value);
                         return (
                           <TimeInput
+                            size="sm"
                             label="Ora"
                             variant="underlined"
                             startContent={<TbClockHour2 />}
@@ -471,6 +473,7 @@ export default function UpdateSetlistForm({
                         return (
                           <DatePicker
                             label="Data"
+                            size="sm"
                             variant="underlined"
                             showMonthAndYearPickers
                             value={dateValue}
@@ -575,7 +578,7 @@ export default function UpdateSetlistForm({
               </div>
 
               {schedule.length > 0 && (
-                <div className="ncard-responsive nborder-responsive ">
+                <div className="">
                   <Reorder.Group
                     values={schedule.map((s) => s.id)}
                     onReorder={(newOrderIds) => {
@@ -590,6 +593,7 @@ export default function UpdateSetlistForm({
                       return (
                         <ScheduleComponents
                           setSchedule={setSchedule}
+                          source="setlist"
                           key={section.id} // <-- Add this!
                           removeItemFromSchedule={removeItemFromSchedule}
                           section={section}
