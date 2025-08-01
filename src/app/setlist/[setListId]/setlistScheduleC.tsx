@@ -25,11 +25,6 @@ export default function SetlistSchedule({
           </div>
         ))}
       </div>
-      <div className="center- gap-3 mt-5 mb-5">
-        <Link href={`/setlist/${setListId}/view`}>
-          <Button color="primary">Visualizza set completo</Button>
-        </Link>
-      </div>
     </>
   );
 }

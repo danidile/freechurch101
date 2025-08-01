@@ -21,10 +21,32 @@ export const getScheduleTemplateById = async (templateId: string | number) => {
       console.log("Error in fetching data from schedule-template-elements");
     } else {
       console.log("elementsData", elementsData);
+      const formatted = elementsData.map((el) => {
+        if (el.type === "song")
+          return {
+            id: el.id,
+            type: el.type,
+            order: el.order,
+          };
+        if (el.type === "title")
+          return {
+            id: el.id,
+            type: el.type,
+            order: el.order,
+            title: el.content,
+          };
+        if (el.type === "note")
+          return {
+            id: el.id,
+            type: el.type,
+            order: el.order,
+            note: el.content,
+          };
+      });
       return {
         id: data.id,
         name: data.name,
-        schedule: elementsData,
+        schedule: formatted,
       };
     }
   }

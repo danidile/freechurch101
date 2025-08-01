@@ -1,56 +1,31 @@
 "use client";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  TimeInput,
-} from "@heroui/react";
 
 import { I18nProvider } from "@react-aria/i18n";
+
 import {
-  DateValue,
-  parseTime,
-  getLocalTimeZone,
-  today,
-} from "@internationalized/date";
-import { DatePicker } from "@heroui/react";
-import { parseDate } from "@internationalized/date";
-import {
-  churchMembersT,
-  roomsType,
+
   scheduleTemplate,
   scheduleTemplateSchema,
   setListSongT,
-  setListT,
-  teamData,
-} from "@/utils/types/types";
-import { Button, Select, SelectItem, Tooltip } from "@heroui/react";
-import { Controller, useForm } from "react-hook-form";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { TsongNameAuthor, formValues } from "@/utils/types/types";
 
-import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
-import { RiDeleteBinLine } from "react-icons/ri";
-import { AnimatePresence, motion, Reorder } from "framer-motion";
-import { FaPlus, FaRegCalendarAlt, FaRegStar } from "react-icons/fa";
-import { useChurchStore } from "@/store/useChurchStore";
+} from "@/utils/types/types";
+import { useForm } from "react-hook-form";
+import { useRef, useState } from "react";
+
+import { Reorder } from "framer-motion";
+import { FaPlus } from "react-icons/fa";
 import { MdEditNote, MdOutlineTitle } from "react-icons/md";
-import { TbClockHour2, TbMusicPlus } from "react-icons/tb";
-import BlockoutsCalendarComponent from "@/app/protected/blockouts-calendar/calendarComponent";
-import { useUserStore } from "@/store/useUserStore";
+import { TbMusicPlus } from "react-icons/tb";
+
 import CDropdown, { CDropdownOption } from "@/app/components/CDropdown";
-import { getSetlistTeamLeadBySetlistAndUserId } from "@/hooks/GET/getSetlistTeamLeadBySetlistAndUserId";
-import { checkPermissionClient } from "@/utils/supabase/permissions/checkPermissionClient";
 import { ScheduleComponents } from "@/app/setlist/[setListId]/update/ScheduleComponents";
 import { addScheduleTemplate } from "./addScheduleTemplateAction";
-import { updateScheduleTemplate } from "./updateScheduleTemplate";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, TauthSchema } from "@/utils/types/auth";
-export default function EventScheduleTemplate() {
-  const { userData, setUserData } = useUserStore();
+export default function EventScheduleTemplate({
+  schedulePre,
+}: {
+  schedulePre?: setListSongT[];
+}) {
   const {
     register,
     handleSubmit,
@@ -62,11 +37,8 @@ export default function EventScheduleTemplate() {
 
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
-  function parseSetlistDate(dateString?: string): DateValue {
-    return parseDate((dateString || todaysDate).split("T")[0]);
-  }
 
-  const [schedule, setSchedule] = useState<setListSongT[]>([]);
+  const [schedule, setSchedule] = useState<setListSongT[]>(schedulePre ?? []);
   const page = "create";
 
   const container = useRef(null);
@@ -161,9 +133,7 @@ export default function EventScheduleTemplate() {
           >
             <div className="flex items-center">
               <div className="flex items-center gap-2">
-                <h3>
-                Crea Evento
-                </h3>
+                <h3>Crea Evento</h3>
               </div>
             </div>
             <div>

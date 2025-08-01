@@ -3,7 +3,7 @@ import { getSetList } from "@/hooks/GET/getSetList";
 import { setListT } from "@/utils/types/types";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
-import { Alert } from "@heroui/react";
+import { Alert, Button, Link } from "@heroui/react";
 import ChurchLabLoader from "@/app/components/churchLabSpinner";
 import LoginForm from "@/app/(auth-pages)/login/loginForm";
 import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
@@ -12,7 +12,6 @@ import { GroupedMembers } from "@/utils/types/types";
 import SetlistSchedule from "./setlistScheduleC";
 import SetlistTeams from "./setlistTeamsC";
 import SetlistHeader from "./setlistHeaderC";
-
 
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, loading } = useUserStore();
@@ -95,10 +94,17 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
         />
 
         {setlistData.schedule && (
-          <SetlistSchedule
-            schedule={setlistData.schedule}
-            setListId={setListId}
-          />
+          <>
+            <SetlistSchedule
+              schedule={setlistData.schedule}
+              setListId={setListId}
+            />
+            <div className="center- gap-3 mt-5 mb-5">
+              <Link href={`/setlist/${setListId}/view`}>
+                <Button color="primary">Visualizza set completo</Button>
+              </Link>
+            </div>
+          </>
         )}
 
         {setlistData.teams && (

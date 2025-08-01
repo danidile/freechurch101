@@ -142,284 +142,313 @@ export default function InviteUsersModalComponent() {
 
     return matchesSearch && matchesStatus;
   });
+  const handleRemoveMember = (index: number) => {
+    setMembers((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
-    <div className="nborder ncard ">
-      {invitesSent.length >= 1 && (
-        <>
-          <h3 className="my-4">Inviti già inviati</h3>
-          <div className="flex flex-col sm:flex-row items-start  sm:items-center justify-between gap-2 mb-4">
-            <p className="min-w-[40px]">Filtri:</p>
-            <input
-              type="text"
-              placeholder="Cerca per nome o email..."
-              className="px-3 py-2 border rounded-md text-sm w-full"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+    <>
+      <div className="nborder ncard max-w-[800px]">
+        <h3 className="my-4">Invia nuovi inviti</h3>
 
-            <select
-              className="px-3 py-2 border w-full rounded-md text-sm"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+        {/* Table with the NEW INVITES */}
+
+        {members.map((member, index) => {
+          return (
+            <div
+              key={index}
+              className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 border-b-2 py-3 relative"
             >
-              <option value="all">Tutti gli stati</option>
-              <option value="pending">In attesa</option>
-              <option value="confirmed">Accettato</option>
-            </select>
-          </div>
+              {/* Remove Button */}
+              <button
+                type="button"
+                onClick={() => handleRemoveMember(index)}
+                className="absolute top-2 right-2 text-red-500 text-xs hover:underline"
+              >
+                Rimuovi
+              </button>
 
-          <table className="btable">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Ultima Email</th>
-                <th>Stato</th>
-                <th>Invia email</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredInvites.map((member, index) => {
-                const lastEmailDate = new Date(member.last_email);
-                const formattedDate = lastEmailDate.toLocaleDateString(
-                  "it-IT",
-                  {
-                    day: "numeric",
-                    month: "long",
-                  }
-                );
-                const now = new Date();
-                const timeDiff = now.getTime() - lastEmailDate.getTime();
-                const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-                const recentlyEmailed = daysDiff < 2;
-                const status = statusMap[member.status] ?? {
-                  label: "Sconosciuto",
-                  color: "text-gray-500",
-                };
-                const colorChip: ChipColor =
-                  statusColorMap[member.status] ?? "default";
-
-                return (
-                  <tr key={index}>
-                    <td className="btable-name">
-                      <p>{member.name + " " + member.lastname}</p>
-                      <small>{member.email}</small>
-                    </td>
-                    <td className="capitalize">{formattedDate}</td>
-                    <td>
-                      <div className="btable-chip-container">
-                        <Chip
-                          className="capitalize text-center"
-                          color={colorChip}
-                          size="sm"
-                          variant="flat"
-                        >
-                          <span className={status.color}>{status.label}</span>
-                        </Chip>
-                      </div>
-                      <div className="btable-chip-icon">
-                        <FaCircle color={status.color} />
-                      </div>
-                    </td>
-                    <td className="btable-mail-button">
-                      {member.status !== "confirmed" && (
-                        <>
-                          {recentlyEmailed ? (
-                            <Popover placement="right">
-                              <PopoverTrigger>
-                                <Button
-                                  isIconOnly
-                                  size="sm"
-                                  variant="light"
-                                  color="danger"
-                                >
-                                  <FaExclamation />
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent>
-                                <div className="px-1 py-2">
-                                  <div className="text-small font-bold">
-                                    Email inviata di recente
-                                  </div>
-                                  <div className="text-tiny">
-                                    Puoi inviare un nuovo promemoria solo dopo 2
-                                    giorni.
-                                    <br />
-                                    <span className="capitalize underline">
-                                      Ultima Email {formattedDate}
-                                    </span>
-                                  </div>
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                          ) : (
-                            <Button
-                              variant="light"
-                              isIconOnly
-                              onPress={() => {
-                                setEmailPerson(member);
-                              }}
-                            >
-                              <IoMailOutline size={24} />
-                            </Button>
-                          )}
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </>
-      )}
-
-      <h3 className="my-4">Invia nuovi inviti</h3>
-
-      {/* Table with the NEW INVITES */}
-      <table className="w-full max-w-4xl border-0 border-gray-300 text-sm">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className=" px-1 py-2 text-center">Nome</th>
-            <th className=" px-1 py-2 text-center">Cognome</th>
-            <th className=" px-1 py-2 text-center">Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {members.map((member, index) => {
-            return (
-              <tr key={index} className="border-b">
-                <td className="">
-                  <input
-                    required
-                    type="text"
-                    value={member.name}
-                    onChange={(e) =>
-                      handleMembersInputChange(index, "name", e.target.value)
-                    }
-                    placeholder="Alberto..."
-                    className="w-full rounded-none! px-2 py-1 border-0 border-gray-300 text-sm font-normal "
-                  />
-                </td>
-                <td>
-                  <input
-                    required
-                    placeholder="Rossi..."
-                    type="text"
-                    value={member.lastname}
-                    onChange={(e) =>
-                      handleMembersInputChange(
-                        index,
-                        "lastname",
-                        e.target.value
-                      )
-                    }
-                    className="w-full px-2 py-1 border-0 border-gray-300 rounded  text-sm font-normal"
-                  />
-                </td>
-                <td>
-                  <input
-                    required
-                    placeholder="lamia@email.com..."
-                    type="email"
-                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-                    value={member.email}
-                    onChange={(e) =>
-                      handleMembersInputChange(index, "email", e.target.value)
-                    }
-                    className="w-full px-2 py-1 border-0 border-gray-300 rounded  text-sm font-normal"
-                  />
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="w-full flex flex-col justify-center">
-        <Button
-          onPress={() => addMember()}
-          color="primary"
-          variant="flat"
-          className=" my-3"
-        >
-          Aggiungi persona
-        </Button>
-      </div>
-
-      <div className="flex flex-row gap-4">
-        <Button
-          type="submit"
-          fullWidth
-          className="mt-6"
-          color="primary"
-          onPress={() => {
-            onOpen();
-            checkInvites();
-          }}
-        >
-          Aggiungi
-        </Button>
-      </div>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement="center"
-        scrollBehavior="inside"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Invia inviti
-              </ModalHeader>
-              <ModalBody>
-                <small>
-                  Le email il box rosso non verranno invitate in o già
-                  possiedono un account o hanno già ricevuto un invito dalla tua
-                  chiesa.
-                </small>
-                {checkedMembers.length >= 1 && (
-                  <div className="flex flex-col  gap-2">
-                    {checkedMembers.map((member, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className={`p-4 nborder w-full ${member?.error ? "bg-red-100!" : ""}`}
-                        >
-                          <p
-                            className={`${member?.error ? "text-red-700!" : ""}`}
-                          >
-                            {member.name + " " + member.lastname}
-                          </p>
-                          <small
-                            className={`${member?.error ? "text-red-500!" : ""}`}
-                          >
-                            {member?.error && member?.error}
-                            {!member?.error && member?.email}
-                          </small>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Annulla
-                </Button>
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    onClose();
-                    sendInvites();
-                  }}
+              <div className="flex flex-col flex-1">
+                <label
+                  htmlFor={`member-name-${index}`}
+                  className="text-sm font-medium text-gray-700 mb-1"
                 >
+                  Nome
+                </label>
+                <input
+                  id={`member-name-${index}`}
+                  required
+                  type="text"
+                  value={member.name}
+                  onChange={(e) =>
+                    handleMembersInputChange(index, "name", e.target.value)
+                  }
+                  placeholder="Alberto..."
+                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="flex flex-col flex-1">
+                <label
+                  htmlFor={`member-lastname-${index}`}
+                  className="text-sm font-medium text-gray-700 mb-1"
+                >
+                  Cognome
+                </label>
+                <input
+                  id={`member-lastname-${index}`}
+                  required
+                  placeholder="Rossi..."
+                  type="text"
+                  value={member.lastname}
+                  onChange={(e) =>
+                    handleMembersInputChange(index, "lastname", e.target.value)
+                  }
+                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="flex flex-col flex-1">
+                <label
+                  htmlFor={`member-email-${index}`}
+                  className="text-sm font-medium text-gray-700 mb-1"
+                >
+                  Email
+                </label>
+                <input
+                  id={`member-email-${index}`}
+                  required
+                  placeholder="lamia@email.com..."
+                  type="email"
+                  pattern="^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+                  value={member.email}
+                  onChange={(e) =>
+                    handleMembersInputChange(index, "email", e.target.value)
+                  }
+                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          );
+        })}
+        <div className="w-full flex flex-row justify-center">
+          <Button
+            onPress={() => addMember()}
+            color="primary"
+            variant="flat"
+            className=" my-3 mr-0 max-w-[200px]"
+          >
+            Aggiungi persona
+          </Button>
+        </div>
+
+        <div className="flex flex-row gap-4 justify-center">
+          <Button
+            type="submit"
+            fullWidth
+            className="mt-3  max-w-[400px]"
+            color="primary"
+            onPress={() => {
+              onOpen();
+              checkInvites();
+            }}
+          >
+            Aggiungi
+          </Button>
+        </div>
+      </div>
+      <div className="nborder ncard max-w-[800px]">
+        {invitesSent.length >= 1 && (
+          <>
+            <h3 className="my-4">Inviti già inviati</h3>
+            <div className="flex flex-col sm:flex-row items-start  sm:items-center justify-between gap-2 mb-4">
+              <p className="min-w-[40px]">Filtri:</p>
+              <input
+                type="text"
+                placeholder="Cerca per nome o email..."
+                className="px-3 py-2 border rounded-md text-sm w-full"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+
+              <select
+                className="px-3 py-2 border w-full rounded-md text-sm"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">Tutti gli stati</option>
+                <option value="pending">In attesa</option>
+                <option value="confirmed">Accettato</option>
+              </select>
+            </div>
+
+            <table className="btable">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Ultima Email</th>
+                  <th>Stato</th>
+                  <th>Invia email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredInvites.map((member, index) => {
+                  const lastEmailDate = new Date(member.last_email);
+                  const formattedDate = lastEmailDate.toLocaleDateString(
+                    "it-IT",
+                    {
+                      day: "numeric",
+                      month: "long",
+                    }
+                  );
+                  const now = new Date();
+                  const timeDiff = now.getTime() - lastEmailDate.getTime();
+                  const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+                  const recentlyEmailed = daysDiff < 2;
+                  const status = statusMap[member.status] ?? {
+                    label: "Sconosciuto",
+                    color: "text-gray-500",
+                  };
+                  const colorChip: ChipColor =
+                    statusColorMap[member.status] ?? "default";
+
+                  return (
+                    <tr key={index}>
+                      <td className="btable-name">
+                        <p>{member.name + " " + member.lastname}</p>
+                        <small>{member.email}</small>
+                      </td>
+                      <td className="capitalize">{formattedDate}</td>
+                      <td>
+                        <div className="btable-chip-container">
+                          <Chip
+                            className="capitalize text-center"
+                            color={colorChip}
+                            size="sm"
+                            variant="flat"
+                          >
+                            <span className={status.color}>{status.label}</span>
+                          </Chip>
+                        </div>
+                        <div className="btable-chip-icon">
+                          <FaCircle color={status.color} />
+                        </div>
+                      </td>
+                      <td className="btable-mail-button">
+                        {member.status !== "confirmed" && (
+                          <>
+                            {recentlyEmailed ? (
+                              <Popover placement="right">
+                                <PopoverTrigger>
+                                  <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    color="danger"
+                                  >
+                                    <FaExclamation />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                  <div className="px-1 py-2">
+                                    <div className="text-small font-bold">
+                                      Email inviata di recente
+                                    </div>
+                                    <div className="text-tiny">
+                                      Puoi inviare un nuovo promemoria solo dopo
+                                      2 giorni.
+                                      <br />
+                                      <span className="capitalize underline">
+                                        Ultima Email {formattedDate}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+                            ) : (
+                              <Button
+                                variant="light"
+                                isIconOnly
+                                onPress={() => {
+                                  setEmailPerson(member);
+                                }}
+                              >
+                                <IoMailOutline size={24} />
+                              </Button>
+                            )}
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
+        )}
+
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          placement="center"
+          scrollBehavior="inside"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
                   Invia inviti
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </div>
+                </ModalHeader>
+                <ModalBody>
+                  <small>
+                    Le email il box rosso non verranno invitate in o già
+                    possiedono un account o hanno già ricevuto un invito dalla
+                    tua chiesa.
+                  </small>
+                  {checkedMembers.length >= 1 && (
+                    <div className="flex flex-col  gap-2">
+                      {checkedMembers.map((member, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className={`p-4 nborder w-full ${member?.error ? "bg-red-100!" : ""}`}
+                          >
+                            <p
+                              className={`${member?.error ? "text-red-700!" : ""}`}
+                            >
+                              {member.name + " " + member.lastname}
+                            </p>
+                            <small
+                              className={`${member?.error ? "text-red-500!" : ""}`}
+                            >
+                              {member?.error && member?.error}
+                              {!member?.error && member?.email}
+                            </small>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Annulla
+                  </Button>
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      onClose();
+                      sendInvites();
+                    }}
+                  >
+                    Invia inviti
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </div>
+    </>
   );
 }
