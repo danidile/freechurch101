@@ -1,5 +1,5 @@
 import { newMember } from "@/utils/types/types";
-import { logEvent } from "@/utils/supabase/log";
+import { logEventClient } from "@/utils/supabase/logClient";
 
 export default async function sendInviteEmail(newMember: newMember) {
   const inviteLink = `https://churchlab.it/invite/accept?token=${newMember.token}`;
@@ -38,7 +38,7 @@ export default async function sendInviteEmail(newMember: newMember) {
   try {
     if (!response.ok) {
       const text = await response.text();
-      await logEvent({
+      await logEventClient({
         event: "send_invite_email_error",
         level: "error",
         user_id: null,
@@ -52,7 +52,7 @@ export default async function sendInviteEmail(newMember: newMember) {
     }
 
     data = await response.json();
-    await logEvent({
+    await logEventClient({
       event: "send_invite_email_success",
       level: "info",
       user_id: null,
@@ -65,7 +65,7 @@ export default async function sendInviteEmail(newMember: newMember) {
     console.log("✅ Email sent:", data);
     return data;
   } catch (err: any) {
-    await logEvent({
+    await logEventClient({
       event: "send_invite_email_error",
       level: "error",
       user_id: null,
