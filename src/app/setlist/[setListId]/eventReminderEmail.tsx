@@ -9,14 +9,16 @@ export default async function eventReminderEmail(
   setlistId: string
 ) {
   console.log(item.email);
-  const response = await fetch("/api/send-email", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      to: item.email,
-      subject: `👋 Promemoria per il tuo turno con il team ${team[0]} – ${readableDate} - (${Date.now()})`,
-      text: "Benvenuto su ChurchLab, la piattaforma per organizzare il tuo team di lode.",
-      html: `
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: item.email,
+        subject: `👋 Promemoria per il tuo turno con il team ${team[0]} – ${readableDate} - (${Date.now()})`,
+        text: "Benvenuto su ChurchLab, la piattaforma per organizzare il tuo team di lode.",
+        html: `
       <table cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 10px;">
   <tr>
     <td>
@@ -50,8 +52,9 @@ export default async function eventReminderEmail(
 </table>
 
     `,
-    }),
-  });
+      }),
+    }
+  );
 
   const data = await response.json();
   console.log(data);

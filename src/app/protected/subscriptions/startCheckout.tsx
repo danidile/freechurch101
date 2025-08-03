@@ -10,7 +10,7 @@ const startCheckout = async (
   email: string,
   church: string
 ) => {
-  const res = await fetch("/api/checkout", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -1,16 +1,19 @@
+"use server";
 import { newMember } from "@/utils/types/types";
-import { logEventClient } from "@/utils/supabase/logClient";
+import { logEvent } from "@/utils/supabase/log";
 
 export default async function sendInviteEmail(newMember: newMember) {
   const inviteLink = `https://churchlab.it/invite/accept?token=${newMember.token}`;
 
-  const response = await fetch("/api/send-email", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      to: newMember.email,
-      subject: "Sei stato invitato a ChurchLab",
-      html: `
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: newMember.email,
+        subject: "Sei stato invitato a ChurchLab",
+        html: `
         <div style="font-family: sans-serif; color: #333; padding: 20px;">
           <h2 style="color: #2d7a78;">Benvenuto su ChurchLab 👋</h2>
           <p>Ciao,</p>
@@ -31,14 +34,15 @@ export default async function sendInviteEmail(newMember: newMember) {
           <hr style="margin-top: 40px;" />
           <p style="font-size: 12px; color: #999;">Questo invito è riservato a te. Se non ti aspettavi questa email, puoi ignorarla.</p>
         </div>`,
-    }),
-  });
+      }),
+    }
+  );
 
   let data;
   try {
     if (!response.ok) {
       const text = await response.text();
-      await logEventClient({
+      await logEvent({
         event: "send_invite_email_error",
         level: "error",
         user_id: null,
@@ -52,7 +56,7 @@ export default async function sendInviteEmail(newMember: newMember) {
     }
 
     data = await response.json();
-    await logEventClient({
+    await logEvent({
       event: "send_invite_email_success",
       level: "info",
       user_id: null,
@@ -65,7 +69,7 @@ export default async function sendInviteEmail(newMember: newMember) {
     console.log("✅ Email sent:", data);
     return data;
   } catch (err: any) {
-    await logEventClient({
+    await logEvent({
       event: "send_invite_email_error",
       level: "error",
       user_id: null,
