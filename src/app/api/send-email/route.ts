@@ -6,11 +6,14 @@ import { logEvent } from "@/utils/supabase/log"; // adjust if needed
 import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  await logEvent({
+    event: "send_email",
+    level: "info",
+    meta: {
+      message: "Missing SMTP credentials.",
+      context: "email sending",
+    },
+  });
   try {
     const { to, subject, text, html } = await req.json();
 
@@ -18,7 +21,6 @@ export async function POST(req: NextRequest) {
       await logEvent({
         event: "send_email_error",
         level: "error",
-        user_id: user?.id ?? null,
         meta: {
           message: "Missing SMTP credentials.",
           context: "email sending",
@@ -35,7 +37,6 @@ export async function POST(req: NextRequest) {
       await logEvent({
         event: "send_email_error",
         level: "error",
-        user_id: user?.id ?? null,
         meta: {
           message: "Missing required email fields.",
           context: "email sending",
@@ -69,7 +70,6 @@ export async function POST(req: NextRequest) {
     await logEvent({
       event: "send_email_success",
       level: "info",
-      user_id: user?.id ?? null,
       meta: {
         to,
         subject,
@@ -84,7 +84,6 @@ export async function POST(req: NextRequest) {
     await logEvent({
       event: "send_email_error",
       level: "error",
-      user_id: user?.id ?? null,
       meta: {
         message: err.message,
         context: "email sending",

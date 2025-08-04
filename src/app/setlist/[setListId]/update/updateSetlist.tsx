@@ -6,7 +6,6 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { encodedRedirect } from "@/utils/utils";
 import { logEvent } from "@/utils/supabase/log";
 
-
 function diffById<T extends { id?: string }>(
   newItems: T[],
   oldItems: T[],

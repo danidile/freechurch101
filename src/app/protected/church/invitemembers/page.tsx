@@ -91,6 +91,7 @@ export default function InviteUsersModalComponent() {
                   context: "sendInviteEmail",
                 },
               });
+              console.log("error:", emailError);
             }
           })
         );
