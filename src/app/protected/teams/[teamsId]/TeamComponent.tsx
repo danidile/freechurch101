@@ -33,6 +33,7 @@ import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import { addMemberToTeamAction } from "./addMemberToTeamAction";
 import { saveUpdatedSkillsAction } from "./saveUpdatedSkillsAction";
 import { updateTeamMemberRoleAction } from "./updateTeamMemberRoleAction";
+import ChurchLabLoader from "@/app/components/churchLabSpinner";
 
 export default function TeamIdComponent({
   params,
@@ -125,7 +126,7 @@ export default function TeamIdComponent({
     fetchMembers();
   }, [userData, isloading, isLeader]);
 
-  if (loading || isloading) return <Spinner />;
+  if (loading || isloading) return <ChurchLabLoader />;
 
   const addMemberToTeam = (member: churchMembersT) => {
     setChurchTeam((prev) => {
@@ -248,8 +249,10 @@ export default function TeamIdComponent({
                 {!defineRoles && (
                   <>
                     <MoreDropdownTeams
+                      teamName={churchTeam.team_name}
                       setDefineLeaders={setDefineRoles}
                       teamsId={params.teamsId}
+                      isWorship={churchTeam.is_worship}
                     />
                   </>
                 )}
@@ -330,7 +333,7 @@ export default function TeamIdComponent({
                               }
                             >
                               <option value="leader">Leader</option>
-                              <option value="editor">Editor</option>
+                              {/* <option value="editor">Editor</option> */}
                               <option value="member">Membro</option>
                             </select>
                           ) : (
@@ -371,7 +374,7 @@ export default function TeamIdComponent({
                           }
                         >
                           <option value="leader">Leader</option>
-                          <option value="editor">Editor</option>
+                          {/* <option value="editor">Editor</option> */}
                           <option value="member">Membro</option>
                         </select>
                       ) : (

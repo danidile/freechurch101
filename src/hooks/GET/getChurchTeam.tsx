@@ -83,6 +83,7 @@ export const getChurchTeam = async (teamId: string) => {
   const formattedTeamMembers = await getTeamByIdFunction(teamId);
   const result: teamData = {
     id: teamId,
+    is_worship: churchTeam.is_worship,
     team_name: churchTeam.team_name,
     team_members: formattedTeamMembers as churchMembersT[],
     selected: [] as churchMembersT[],

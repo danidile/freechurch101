@@ -13,7 +13,7 @@ import { Button } from "@heroui/button";
 import { MdOpenInNew } from "react-icons/md";
 
 export default function TeamsPageComponent() {
-  const { userData, fetchUser, loading } = useUserStore();
+  const { userData, loading } = useUserStore();
   const [churchTeams, setChurchTeam] = useState<Team[]>([]);
 
   useEffect(() => {
@@ -23,13 +23,11 @@ export default function TeamsPageComponent() {
       });
     }
   }, [loading, userData]);
-
+  console.log("churchTeams", churchTeams);
   return (
     <div className="max-w-4xl mx-auto px-2 py-8">
       <div className="flex flex-wrap items-center gap-4 justify-between mb-6">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          I tuoi Team
-        </h1>
+        <h1 className="text-3xl font-bold flex items-center gap-2">Team</h1>
 
         {hasPermission(userData.role as Role, "create:team") && (
           <Link href="/protected/teams/create-team">
@@ -46,7 +44,7 @@ export default function TeamsPageComponent() {
           <p className="text-gray-700">Nessun team trovato.</p>
         </div>
       ) : (
-        <div className="grid gap-2 max-w-[350px]">
+        <div className="grid gap-2 max-w-[850px]">
           {churchTeams.map((team) => (
             <div key={team.id}>
               <Link
@@ -54,15 +52,27 @@ export default function TeamsPageComponent() {
                 className="py-2 px-3 rounded  hover:bg-gray-50 transition duration-150 items-center flex justify-between"
               >
                 <div className="pr-2">
-                  <h4 className=" font-semibold">{team.team_name}</h4>
-                  {team.is_worship && (
-                    <span className="text-sm text-gray-500">(Worship Team)</span>
-                  )}
-                  <p className="text-sm text-gray-500">
+                  <h4 className=" font-semibold">
+                    {team.team_name}{" "}
+                    {team.is_worship && (
+                      <span className="text-sm font-medium text-gray-800">
+                        (Worship Team)
+                      </span>
+                    )}
+                  </h4>
+
+                  <p className="text-sm">
                     <b>Leader:</b> {team.leaders.join(", ")}
                   </p>
-                  <p className="text-sm text-gray-500">
-                    <b>Membri del team:</b> {team.member_count}
+                  <p className="text-sm line-clamp-2 ">
+                    <b>Membri del team: </b>
+                    {team.teamMembers.map((member, index) => {
+                      return (
+                        <span key={index}>
+                          {member.name + " " + member.lastname + ", "}
+                        </span>
+                      );
+                    })}
                   </p>
                 </div>
                 <MdOpenInNew size={24} />

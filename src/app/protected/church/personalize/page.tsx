@@ -23,7 +23,7 @@ type Category = "personalizzazione" | "musica";
 
 const categoryLabels: Record<Category, string> = {
   personalizzazione: "Personalizzazione",
-  musica: "Musica"
+  musica: "Musica",
 };
 interface ChurchSettingsProps {
   userData: {
@@ -78,7 +78,7 @@ export default function PersonalizeChurchComponent() {
                   <div
                     className="relative mx-auto my-2 w-full max-w-xs h-48 bg-center bg-contain bg-no-repeat group"
                     style={{
-                      backgroundImage: `url(https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo})`,
+                      backgroundImage: `url(https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo}?t=${Date.now()})`,
                     }}
                   >
                     <button
@@ -89,7 +89,7 @@ export default function PersonalizeChurchComponent() {
                     </button>
                   </div>
                 ) : (
-                  <ImageUploader type="churchlogo" />
+                  <ImageUploader closeState={setUpdateLogo} type="churchlogo" />
                 )}
               </SectionCard>
 

@@ -33,14 +33,6 @@ export default function Sidebar() {
   const router = useRouter();
   const { fetchUser, userData, loading } = useUserStore();
 
-  const [avatarUrl, setAvatarUrl] = useState("/images/userAvatarDefault.jpg");
-  useEffect(() => {
-    if (userData?.id) {
-      setAvatarUrl(
-        `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.id}/avatar_thumb.jpg`
-      );
-    }
-  }, [userData?.id]);
   async function logouter() {
     await logoutAction();
     await fetchUser();
@@ -64,7 +56,7 @@ export default function Sidebar() {
           <>
             <img
               className="max-w-[125px] mx-auto mb-8"
-              src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo}`}
+              src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo}?t=${Date.now()}`}
               alt=""
             />
           </>

@@ -108,14 +108,7 @@ export default function BlockDatesComponent() {
                   </td>
                 </tr>
               ))}
-              {/* Row for new selection */}
-              {/* {value.start && value.end && (
-                <tr className="bg-gray-100 capitalize">
-                  <td>{formatter.format(value.start)}</td>
-                  <td>{formatter.format(value.end)}</td>
-                  <td className="text-gray-400 mx-auto">Da salvare</td>
-                </tr>
-              )} */}
+
             </tbody>
           </table>
         </div>
@@ -144,26 +137,27 @@ export default function BlockDatesComponent() {
               minDate={today(getLocalTimeZone()).toDate(getLocalTimeZone())}
               disabledRanges={blockedDates}
             />
-
-            <button
-              onClick={async () => {
-                await addBlock();
-                setShowPicker(false); // hide picker after save
-              }}
-              className={`button-style w-full ${alreadySubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
-              disabled={alreadySubmitting}
-            >
-              {alreadySubmitting ? (
-                <div
-                  className="h-6 mx-auto w-6 animate-spin rounded-full border-4 border-black border-t-gray-200"
-                  aria-label="Loading..."
-                />
-              ) : (
-                <> Salva</>
-              )}
-            </button>
+            {value.start && (
+              <button
+                onClick={async () => {
+                  await addBlock();
+                  setShowPicker(false); // hide picker after save
+                }}
+                className={`max-w-[300px] mx-auto button-style w-full ${alreadySubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                disabled={alreadySubmitting}
+              >
+                {alreadySubmitting ? (
+                  <div
+                    className="h-6 mx-auto w-6 animate-spin rounded-full border-4 border-black border-t-gray-200"
+                    aria-label="Loading..."
+                  />
+                ) : (
+                  <> Salva</>
+                )}
+              </button>
+            )}
           </div>
-        )}{" "}
+        )}
       </I18nProvider>
     </div>
   );

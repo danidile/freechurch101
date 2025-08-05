@@ -50,7 +50,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   }, []);
 
   const formatDateDisplay = (date: Date | null) => {
-    if (!date) return "Data";
+    if (!date) return "Seleziona Data";
     return date.toLocaleDateString("it-IT", {
       month: "short",
       day: "numeric",
@@ -144,16 +144,16 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   return (
     <div className="w-full mx-auto p-3 rounded-lg ">
       {/* Date Inputs */}
-      <div className="space-y-3 relative" ref={calendarRef}>
+      <div className="space-y-3 relative " ref={calendarRef}>
         <p className="my-2 font-medium">Seleziona date inizio e fine:</p>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 max-w-[300px] mx-auto">
           <button
             onClick={() =>
               setShowCalendar(showCalendar === "start" ? null : "start")
             }
-            className="w-full px-4 py-3 bg-gray-100 rounded-lg text-left font-medium text-gray-900 active:bg-gray-100"
+            className="w-full px-4 py-3 bg-gray-100 rounded-md text-left font-medium  text-gray-900 active:bg-gray-100"
           >
-            {formatDateDisplay(startDate)}
+            <p>{formatDateDisplay(startDate)}</p>
           </button>
 
           <button
@@ -162,9 +162,9 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
               setShowCalendar(showCalendar === "end" ? null : "end")
             }
             disabled={!startDate}
-            className="w-full px-4 py-3 bg-gray-100 rounded-lg text-left font-medium text-gray-900 active:bg-gray-100 disabled:opacity-70"
+            className="w-full px-4 py-3 bg-gray-100 rounded-md text-left font-medium text-gray-900 active:bg-gray-100 disabled:opacity-70"
           >
-            {formatDateDisplay(endDate)}
+           <p> {formatDateDisplay(endDate)}</p>
           </button>
         </div>
 

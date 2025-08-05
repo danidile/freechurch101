@@ -60,15 +60,24 @@ export const getTeamsByChurch = async (
 
   // 3. Combine data
   const result: TeamWithDetails[] = typedTeams.map((team) => {
-    const teamMembers = typedMembers.filter((m) => m.team_id === team.id);
+    const teamMembers = typedMembers
+      .filter((m) => m.team_id === team.id)
+      .map((member) => {
+        return {
+          name: member.profile.name,
+          lastname: member.profile.lastname,
+          role: member.role,
+        };
+      });
     const leaders = teamMembers
-      .filter((m) => m.role === "leader" && m.profile)
-      .map((m) => `${m.profile!.name} ${m.profile!.lastname}`);
+      .filter((m) => m.role === "leader")
+      .map((m) => `${m.name} ${m.lastname}`);
 
     return {
       id: team.id,
       team_name: team.team_name,
       member_count: teamMembers.length,
+      teamMembers: teamMembers,
       leaders,
       is_worship: team.is_worship || false,
     };

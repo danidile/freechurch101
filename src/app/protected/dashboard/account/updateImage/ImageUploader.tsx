@@ -11,7 +11,7 @@ export default function ImageUploader({
   type,
 }: {
   type?: "profilepicture" | "churchlogo";
-  closeState?: React.Dispatch<React.SetStateAction<boolean>>;
+  closeState: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { userData, fetchUser } = useUserStore();
   const { fetchChurchData } = useChurchStore();
@@ -165,12 +165,10 @@ export default function ImageUploader({
 
       if (result?.success) {
         // Give a moment to show 100% completion
-        setTimeout(() => {
-          closeState?.(false);
-          if (type === "churchlogo")
-            fetchChurchData(userData.church_id, userData.role);
-          if (type === "profilepicture") fetchUser();
-        }, 500);
+        closeState(false);
+        if (type === "churchlogo")
+          fetchChurchData(userData.church_id, userData.role);
+        if (type === "profilepicture") fetchUser();
       } else {
         const errorMessage = result?.error || "Errore durante l'upload.";
         setError(errorMessage);
