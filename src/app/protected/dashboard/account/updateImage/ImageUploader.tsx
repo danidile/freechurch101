@@ -11,7 +11,7 @@ export default function ImageUploader({
   type,
 }: {
   type?: "profilepicture" | "churchlogo";
-  closeState: React.Dispatch<React.SetStateAction<boolean>>;
+  closeState?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { userData, fetchUser } = useUserStore();
   const { fetchChurchData } = useChurchStore();
