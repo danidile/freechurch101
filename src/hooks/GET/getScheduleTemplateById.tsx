@@ -16,11 +16,11 @@ export const getScheduleTemplateById = async (templateId: string | number) => {
     const { data: elementsData, error: elementsError } = await supabase
       .from("schedule-template-elements")
       .select("*")
-      .eq("template", templateId);
+      .eq("template", templateId)
+      .order("order");
     if (error) {
       console.log("Error in fetching data from schedule-template-elements");
     } else {
-      console.log("elementsData", elementsData);
       const formatted = elementsData.map((el) => {
         if (el.type === "song")
           return {

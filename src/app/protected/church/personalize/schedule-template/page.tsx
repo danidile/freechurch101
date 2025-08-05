@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSongs } from "@/hooks/GET/getSongs";
 import { useUserStore } from "@/store/useUserStore";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import { scheduleTemplate, songType } from "@/utils/types/types";
+import { scheduleTemplate } from "@/utils/types/types";
 import { Button } from "@heroui/button";
 import Link from "next/link";
 import {
@@ -18,9 +17,8 @@ import { getChurchScheduleTemplates } from "@/hooks/GET/getChurchScheduleTemplat
 import ScheduleListComponent from "./ChurchSongTableComponent";
 
 export default function SongsPageClient() {
-  const { userData, loading } = useUserStore();
+  const { userData } = useUserStore();
   const [schedules, setSchedules] = useState<scheduleTemplate[] | null>([]);
-  const [loadingSongs, setLoadingSongs] = useState(true);
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -28,16 +26,37 @@ export default function SongsPageClient() {
         userData.church_id
       );
       setSchedules(fetchedTemplates);
-      setLoadingSongs(false);
     };
     fetchSongs();
   }, [userData?.loggedIn]);
 
-  // if (loading || loadingSongs) return <LoadingSongsPage />;
-
   if (schedules && schedules.length > 0) {
     return (
       <div className="container-sub">
+        <div className="flex flex-row gap-5 items-center justify-center mb-6">
+          <h3>Lista Template</h3>{" "}
+          {hasPermission(userData.role as Role, "create:songs") && (
+            <Dropdown>
+              <DropdownTrigger>
+                <Button color="primary" isIconOnly variant="flat">
+                  <FaPlus />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem
+                  as={Link}
+                  href="/protected/church/personalize/schedule-template/add"
+                  key="add"
+                  color="primary"
+                  variant="flat"
+                >
+                  Aggiungi Template
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          )}
+        </div>
+
         <ScheduleListComponent schedules={schedules} />
       </div>
     );
@@ -45,11 +64,11 @@ export default function SongsPageClient() {
   console.log(userData);
   return (
     <div className="container-sub gap-5 !px-2">
-      <h4>Nessuna canzone trovata</h4>
+      <h4>Nessun template trovato</h4>
       {userData && hasPermission(userData.role as Role, "create:songs") && (
         <>
           <p className="flex flex-row items-center gap-5">
-            Aggiungi canzone:
+            Aggiungi Template:
             {hasPermission(userData.role as Role, "create:songs") && (
               <Dropdown>
                 <DropdownTrigger>
@@ -60,21 +79,12 @@ export default function SongsPageClient() {
                 <DropdownMenu aria-label="Static Actions">
                   <DropdownItem
                     as={Link}
-                    href="/songs/addSong"
+                    href="/protected/church/personalize/schedule-template/add"
                     key="add"
                     color="primary"
                     variant="flat"
                   >
-                    Aggiungi canzone
-                  </DropdownItem>
-                  <DropdownItem
-                    as={Link}
-                    href="/artists"
-                    key="import"
-                    color="primary"
-                    variant="flat"
-                  >
-                    Importa da ChurchLab
+                    Aggiungi Template
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>

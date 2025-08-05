@@ -3,11 +3,9 @@
 import { I18nProvider } from "@react-aria/i18n";
 
 import {
-
   scheduleTemplate,
   scheduleTemplateSchema,
   setListSongT,
-
 } from "@/utils/types/types";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
@@ -21,25 +19,24 @@ import CDropdown, { CDropdownOption } from "@/app/components/CDropdown";
 import { ScheduleComponents } from "@/app/setlist/[setListId]/update/ScheduleComponents";
 import { addScheduleTemplate } from "./addScheduleTemplateAction";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { updateScheduleTemplate } from "../[templateid]/update/updateScheduleTemplate";
 export default function EventScheduleTemplate({
   schedulePre,
+  type,
 }: {
-  schedulePre?: setListSongT[];
+  schedulePre?: scheduleTemplate;
+  type?: string;
 }) {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { isSubmitting },
-  } = useForm<scheduleTemplate>({
+  const { register, handleSubmit, watch } = useForm<scheduleTemplate>({
     resolver: zodResolver(scheduleTemplateSchema),
+    defaultValues: {
+      name: schedulePre?.name || "",
+    },
   });
 
-  const date = new Date();
-  const todaysDate = date.toISOString().split("T")[0];
-
-  const [schedule, setSchedule] = useState<setListSongT[]>(schedulePre ?? []);
-  const page = "create";
+  const [schedule, setSchedule] = useState<setListSongT[]>(
+    schedulePre?.schedule ?? []
+  );
 
   const container = useRef(null);
 
@@ -79,16 +76,16 @@ export default function EventScheduleTemplate({
     setAlreadySubmitting(true);
     const watchAllFields = watch();
 
-    const updatedSetlist: scheduleTemplate = {
-      id: crypto.randomUUID(),
+    const updatedSchedule: scheduleTemplate = {
+      id: schedulePre?.id ? schedulePre.id : crypto.randomUUID(),
       name: watchAllFields.name,
       schedule: schedule,
     };
-    console.log("updatedSetlist", updatedSetlist);
-    if (page === "create") {
-      await addScheduleTemplate(updatedSetlist);
-    } else if (page === "update") {
-      // await updateScheduleTemplate(updatedSetlist, setlistData);
+    console.log("updatedSetlist", updatedSchedule);
+    if (type === "create") {
+      await addScheduleTemplate(updatedSchedule);
+    } else if (type === "update") {
+      await updateScheduleTemplate(updatedSchedule, schedulePre);
     }
   };
   const options: CDropdownOption[] = [
@@ -120,7 +117,6 @@ export default function EventScheduleTemplate({
       value: "note",
     },
   ];
-
   return (
     <div className="container-sub">
       <I18nProvider locale="it-IT-u-ca-gregory">
@@ -133,7 +129,7 @@ export default function EventScheduleTemplate({
           >
             <div className="flex items-center">
               <div className="flex items-center gap-2">
-                <h3>Crea Evento</h3>
+                <h3>{type === "create" ? "Crea" : "Aggiorna"} Template</h3>
               </div>
             </div>
             <div>
@@ -203,7 +199,7 @@ export default function EventScheduleTemplate({
             </div>
             <button
               type="submit"
-              className={`button-style w-full ${alreadySubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`my-8 button-style w-full ${alreadySubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={alreadySubmitting}
             >
               {alreadySubmitting ? (
@@ -212,7 +208,7 @@ export default function EventScheduleTemplate({
                   aria-label="Loading..."
                 />
               ) : (
-                <> {page === "create" ? "Crea" : "Aggiorna"} Evento</>
+                <> {type === "create" ? "Crea" : "Aggiorna"} Evento</>
               )}
             </button>
           </form>

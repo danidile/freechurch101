@@ -34,7 +34,7 @@ import { updateSetlist } from "./updateSetlist";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { AnimatePresence, motion, Reorder } from "framer-motion";
-import { FaPlus, FaRegCalendarAlt, FaRegStar } from "react-icons/fa";
+import { FaArrowDown, FaPlus, FaRegCalendarAlt } from "react-icons/fa";
 import { ScheduleComponents } from "./ScheduleComponents";
 import { useChurchStore } from "@/store/useChurchStore";
 import { MdEditNote, MdOutlineTitle } from "react-icons/md";
@@ -43,7 +43,6 @@ import BlockoutsCalendarComponent from "@/app/protected/blockouts-calendar/calen
 import { useUserStore } from "@/store/useUserStore";
 import CDropdown, { CDropdownOption } from "@/app/components/CDropdown";
 import { getSetlistTeamLeadBySetlistAndUserId } from "@/hooks/GET/getSetlistTeamLeadBySetlistAndUserId";
-import { checkPermissionClient } from "@/utils/supabase/permissions/checkPermissionClient";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -64,7 +63,8 @@ export default function UpdateSetlistForm({
 
   const { userData, setUserData } = useUserStore();
 
-  const { eventTypes, rooms } = useChurchStore();
+  const { eventTypes, rooms, scheduleTemplates, fetchChurchScheduleTemplates } =
+    useChurchStore();
   const [churchRooms, setChurchRooms] = useState<roomsType[]>([]);
   const date = new Date();
   const todaysDate = date.toISOString().split("T")[0];
@@ -107,6 +107,7 @@ export default function UpdateSetlistForm({
 
   const [alreadySubmitting, setAlreadySubmitting] = useState<boolean>(false);
   useEffect(() => {
+    fetchChurchScheduleTemplates(userData.church_id);
     if (setlistData) {
       getSetlistTeamLeadBySetlistAndUserId(userData.id, setlistData.id).then(
         (lead: { team_id: string; role: string }[]) => {
@@ -213,6 +214,18 @@ export default function UpdateSetlistForm({
     ]);
   };
 
+  const addScheduleItems = (items: Omit<setListSongT, "id" | "order">[]) => {
+    setSchedule((prev) => {
+      const startingOrder = prev.length;
+      const newItems: setListSongT[] = items.map((item, index) => ({
+        ...item,
+        id: crypto.randomUUID(),
+        order: startingOrder + index,
+      }));
+      return [...prev, ...newItems];
+    });
+  };
+
   const removeItemFromSchedule = (id: string) => {
     setSchedule(schedule.filter((section) => section.id !== id));
   };
@@ -288,6 +301,29 @@ export default function UpdateSetlistForm({
       value: "note",
     },
   ];
+
+  const scheduleTemplateOptions: CDropdownOption[] = useMemo(() => {
+    const customOption: CDropdownOption = {
+      label: (
+        <div className="flex items-center gap-2 cursor-pointer text-gray-500 italic">
+          Importa Template
+        </div>
+      ),
+      value: null,
+    };
+
+    const templateOptions = scheduleTemplates.map((team) => ({
+      label: (
+        <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
+          {team.name}
+        </div>
+      ),
+      value: team.id,
+    }));
+
+    return [customOption, ...templateOptions];
+  }, [scheduleTemplates]);
+
   const optionsTurnazioni: CDropdownOption[] = useMemo(() => {
     // if(teams?.length>=1)
     return teams
@@ -563,6 +599,7 @@ export default function UpdateSetlistForm({
                 <CDropdown
                   placeholder={
                     <>
+                      {" "}
                       <FaPlus />
                     </>
                   }
@@ -575,6 +612,27 @@ export default function UpdateSetlistForm({
                     addItemToSetlist(value);
                   }}
                 />
+                {scheduleTemplateOptions.length >= 2 && schedule.length < 3 && (
+                  <CDropdown
+                    placeholder={
+                      <>
+                        <FaArrowDown />
+                      </>
+                    }
+                    positionOnMobile="center"
+                    buttonPadding="sm"
+                    isIconOnly={true}
+                    options={scheduleTemplateOptions}
+                    onSelect={(option) => {
+                      if (option.value) {
+                        addScheduleItems(
+                          scheduleTemplates.find((e) => e.id === option.value)
+                            .schedule
+                        );
+                      }
+                    }}
+                  />
+                )}
               </div>
 
               {schedule.length > 0 && (

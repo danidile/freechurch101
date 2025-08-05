@@ -80,6 +80,7 @@ export default function InviteUsersModalComponent() {
           invitesAdded.map(async (newMember) => {
             try {
               await sendInviteEmail(newMember);
+              setRefetchTrigger((prev) => !prev);
             } catch (emailError: any) {
               await logEventClient({
                 event: "invite_email_error",

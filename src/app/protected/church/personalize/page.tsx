@@ -19,12 +19,11 @@ import CreateMultipleEventsForm from "@/app/protected/church/personalize/addmult
 
 import Link from "next/link";
 
-type Category = "personalizzazione" | "musica" | "membri";
+type Category = "personalizzazione" | "musica";
 
 const categoryLabels: Record<Category, string> = {
   personalizzazione: "Personalizzazione",
-  musica: "Musica",
-  membri: "Membri e Team",
+  musica: "Musica"
 };
 interface ChurchSettingsProps {
   userData: {
@@ -127,20 +126,10 @@ export default function PersonalizeChurchComponent() {
                 description="Visualizza e modifica tutte le canzoni caricate dalla tua chiesa"
                 href="/songs"
               />
-            </div>
-          )}
-
-          {selectedCategory === "membri" && (
-            <div className="space-y-2">
               <SectionCard
-                title="Invita nuovi membri"
-                description="Invita nuovi collaboratori, musicisti o volontari con un link dedicato per unirsi alla tua chiesa su questa piattaforma."
-                href="/protected/church/invitemembers"
-              />
-              <SectionCard
-                title="Gestione Team e Ruoli"
-                description="Crea team (come worship, accoglienza, produzione) e assegna ruoli e permessi specifici ai membri."
-                href="/protected/teams"
+                title="Template Scalette"
+                description="Crea e modifica modelli predefiniti per le tue scalette."
+                href="/protected/church/personalize/schedule-template"
               />
             </div>
           )}

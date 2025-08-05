@@ -37,7 +37,7 @@ import {
 
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
-import { FaRegEye } from "react-icons/fa";
+import { FaRegEye, FaUserPlus } from "react-icons/fa";
 import NextEventsComponent from "./nextEventsComponent";
 import CalendarPage from "@/app/calendar/page";
 import { Card } from "@heroui/card";
@@ -89,19 +89,24 @@ export default function ChurchComponent() {
   };
 
   return (
-    <div className="flex flex-col gap-4 justify-center items-center w-full">
+    <div className="flex flex-col gap-4 justify-center items-center w-full p-2">
       <div>
-        <div className="w-full">
-          <h5 className="font-bold ml-3 my-5">{userData.church_name}</h5>
+        <div className="w-full flex flex-row gap-5 items-center flex-wrap my-4">
+          <h5 className="font-bold">{userData.church_name}</h5>
+          <Link
+            href="/protected/church/invitemembers"
+            className="flex flex-row gap-2 items-center bg-blue-100 py-3  px-3 sm:px-4   rounded-md"
+          >
+            <FaUserPlus /> <p className="hidden sm:block">Invita membri</p>
+          </Link>
         </div>
         <div className="max-w-full mx-auto w-full ">
-          <h5 className="font-bold">Membri di chiesa:</h5>
           <table className="ntable max-w-[800px] ">
             <thead>
               <tr>
                 <th>Nome</th>
                 <th className="hidden sm:table-cell">Email</th>
-                <th className="max-w-[50px] w-[50px] py-[2px]">Azioni</th>
+                <th className="max-w-[50px] w-[50px] py-[2px]"></th>
               </tr>
             </thead>
             <tbody>

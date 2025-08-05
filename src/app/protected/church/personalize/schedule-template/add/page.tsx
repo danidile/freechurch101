@@ -5,6 +5,6 @@ import EventScheduleTemplate from "./eventScheduleTemplate";
 export default function PersonalizeSongsTagsModal() {
   
   return (
-    <EventScheduleTemplate/>
+    <EventScheduleTemplate type="create" />
   );
 }

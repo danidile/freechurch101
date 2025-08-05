@@ -95,10 +95,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
 
         {setlistData.schedule && (
           <>
-            <SetlistSchedule
-              schedule={setlistData.schedule}
-              setListId={setListId}
-            />
+            <SetlistSchedule schedule={setlistData.schedule} />
             <div className="center- gap-3 mt-5 mb-5">
               <Link href={`/setlist/${setListId}/view`}>
                 <Button color="primary">Visualizza set completo</Button>
