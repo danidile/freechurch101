@@ -13,6 +13,8 @@ export type songSchema = {
   bpm?: string;
   tempo?: string;
   type?: string;
+  time_signature?: string;
+  audio_path?: string;
 };
 
 export type songType = {
@@ -279,6 +281,8 @@ export type TeamMemberRaw = {
 };
 
 export type setListSongT = {
+  time_signature?: string;
+  bpm?: string;
   id?: string;
   song?: string;
   singer?: string;
@@ -299,6 +303,7 @@ export type setListSongT = {
   setlist_id?: string;
   title?: string;
   originalIndex?: number;
+  audio_path?: string;
 };
 
 export type setListT = {
@@ -327,13 +332,41 @@ export type scheduleTemplate = {
   event_title?: string;
   event_type?: string;
   hour?: string;
-
   room?: string;
   schedule?: setListSongT[];
 };
 export const scheduleTemplateSchema = z.object({
   name: z.string().min(4, "Il nome deve contenere almeno 4 caratteri"),
 });
+
+export type fetchedSchedule = {
+  id: string;
+  name: string;
+  schedule?: (
+    | {
+        id: string;
+        type: string;
+        order: number;
+        title?: string;
+        note?: string;
+      }
+    | {
+        id: string;
+        type: string;
+        order: number;
+        title: string;
+        note?: string;
+      }
+    | {
+        id: string;
+        type: string;
+        order: number;
+        note: string;
+        title?: string;
+      }
+  )[];
+};
+
 export type teamData = {
   id?: string;
   team_name?: string;
@@ -401,6 +434,7 @@ export type artistsT = {
   artist_name: string;
 };
 export type albumsT = {
+  value: any;
   id?: string;
   album_name?: string;
   release_date?: Date;

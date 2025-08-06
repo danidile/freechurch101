@@ -16,6 +16,8 @@ const ROLES = {
     "update:globalsongs",
     "delete:globalsongs",
     "create:team",
+    "update:italiansongs",
+    "create:italiansongs",
     // SETLISTS
     "view:setlists",
     "create:setlists",

@@ -29,6 +29,8 @@ import isChordProFormat from "./isChordProFormat";
 import { useUserStore } from "@/store/useUserStore";
 import { deleteSong } from "../songs/[songId]/deleteSongAction";
 import Link from "next/link";
+import { LuAudioLines } from "react-icons/lu";
+import { getAudioFileSongNames } from "@/hooks/GET/getAudioFileSongNames";
 
 export default function ChordProViewComponent({
   setListSong,
@@ -37,7 +39,6 @@ export default function ChordProViewComponent({
   setListSong: setListSongT;
   mode?: string;
 }) {
-  const viewMode = mode || "other";
   const pathname = usePathname(); // e.g. "/italiansongs/7784d9a0-2d3d..."
 
   const { userData } = useUserStore();
@@ -48,6 +49,17 @@ export default function ChordProViewComponent({
   useEffect(() => {
     setIsChordPro(isChordProFormat(setListSong.lyrics));
   }, [setListSong.lyrics]);
+  const [audioPaths, setAudioPaths] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (setListSong.audio_path) {
+      const folderPath = `${userData.church_id}/music/audio/${setListSong.id}`;
+      getAudioFileSongNames("churchdata", folderPath).then((names) => {
+        console.log("Files in folder:", names);
+        setAudioPaths(names);
+      });
+    }
+  }, []);
 
   // if it doesnt use custom parser.
   const [viewChords, setViewChords] = useState(true);
@@ -55,6 +67,7 @@ export default function ChordProViewComponent({
   const [transpose, setTranspose] = useState(
     stepsBetweenKeys(setListSong.upload_key!, setListSong.key!)
   );
+  const [showPlayer, setShowPlayer] = useState(false);
 
   const parsedLyrics = useMemo(
     () => parseChordSheet(setListSong.lyrics!, transpose),
@@ -195,15 +208,57 @@ export default function ChordProViewComponent({
                   </DropdownMenu>
                 </Dropdown>
               )}
+            {audioPaths.length >= 1 && (
+              <Button
+                isIconOnly
+                onPress={() => setShowPlayer((prev) => !prev)}
+                variant="flat"
+              >
+                <LuAudioLines />
+              </Button>
+            )}
           </div>
         </>
       )}
+      {showPlayer && (
+        <>
+          <div className="max-w-2xl mx-auto space-y-1 my-3">
+            {audioPaths.map((path, index) => {
+              const trackName = path
+                .replace(/\.[^/.]+$/, "")
+                .replace(/-/g, " ")
+                .replace(/\b\w/g, (l) => l.toUpperCase());
 
+              return (
+                <div
+                  key={index}
+                  className="my-2 border border-gray-100 rounded p-4"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <p className=" overflow-hidden line-clamp-1 text-sm text-gray-600">
+                      {trackName}
+                    </p>
+                  </div>
+                  <audio controls className="w-full h-8">
+                    <source
+                      src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData.church_id}/music/audio/${setListSong.id}/${path}`}
+                    />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
       <div>
         <h5 className="song-title">{setListSong.song_title}</h5>
         <div className="flex flex-col gap-1 mt-2">
           <small>{setListSong.author}</small>
-          <small>Tonalità: {songKey}</small>
+          <small>
+            Tonalità: {songKey} - BPM: {setListSong?.bpm} - Tempo:{" "}
+            {setListSong?.time_signature}{" "}
+          </small>
         </div>
         {!isChordPro && (
           <>

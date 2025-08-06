@@ -16,6 +16,7 @@ export const addItalianSong = async (data: songSchema) => {
       lyrics: data.lyrics,
       upload_key: data.upload_key,
       bpm: data.bpm,
+      time_signature: data.time_signature,
     })
     .select();
 

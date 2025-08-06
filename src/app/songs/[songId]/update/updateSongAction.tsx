@@ -17,6 +17,7 @@ export const updateSong = async (data: songSchema) => {
       upload_key: data.upload_key,
       bpm: data.bpm,
       tags: data.tags,
+      time_signature: data.time_signature,
     })
     .eq("id", data.id)
     .select();
@@ -31,15 +32,15 @@ export const updateSong = async (data: songSchema) => {
         message: error.message,
         code: error.code,
         song_id: data.id,
-        
+
         song_title: data.song_title,
       },
     });
 
-    return encodedRedirect("error", "/sign-up", error.message);
+    return { success: false, message: error.message };
   } else {
     console.log("UPDATE SUCCESSFUL");
 
-    return encodedRedirect("success", `/songs/${data.id}`, ".");
+    return { success: true };
   }
 };

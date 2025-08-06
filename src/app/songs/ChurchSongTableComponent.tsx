@@ -1,19 +1,30 @@
 "use client";
 
-import { Input, Button } from "@heroui/react";
+import {
+  Input,
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/react";
 import Link from "next/link";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { basicUserData } from "@/utils/types/userData";
+import { basicUserData, userData } from "@/utils/types/userData";
 import { searchBar, songsListType, songType } from "@/utils/types/types";
 import { TbExternalLink } from "react-icons/tb";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { FaPlus } from "react-icons/fa";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ChurchSongTableComponent({
   songs,
 }: {
   songs: songsListType;
 }) {
+  const { userData } = useUserStore();
   const [songList, setSongList] = useState(songs);
   console.log(songs);
   const {
@@ -44,9 +55,40 @@ export default function ChurchSongTableComponent({
   };
 
   return (
-    <div className="max-w-[1324px]">
+    <div className="max-w-[900px] mx-1">
       <div className="songs-header">
-        <h3>Lista canzoni</h3>
+        <div className="flex flex-row items-center justify-center gap-4">
+          <h3>Lista canzoni</h3>{" "}
+          {hasPermission(userData.role as Role, "create:songs") && (
+            <Dropdown>
+              <DropdownTrigger>
+                <Button color="primary" isIconOnly variant="flat">
+                  <FaPlus />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem
+                  as={Link}
+                  href="/songs/addSong"
+                  key="add"
+                  color="primary"
+                  variant="flat"
+                >
+                  Aggiungi canzone
+                </DropdownItem>
+                <DropdownItem
+                  as={Link}
+                  href="/artists"
+                  key="import"
+                  color="primary"
+                  variant="flat"
+                >
+                  Importa da ChurchLab
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          )}
+        </div>
         <form
           action=""
           className="songs-searchbar-form"
@@ -76,7 +118,7 @@ export default function ChurchSongTableComponent({
         >
           <thead>
             <tr>
-              <th className="w-6/12 min-w-[200px]">Title</th>
+              <th className="w-full min-w-[200px]">Title</th>
               <th className="w-3/12">Autore</th>
               <th className="w-3/12">Tag</th>
             </tr>
@@ -84,7 +126,7 @@ export default function ChurchSongTableComponent({
           <tbody>
             {songList.map((song) => (
               <tr key={song.id}>
-                <td>
+                <td className=" min-w-[200px] max-w-[200px]">
                   <Link href={`/songs/${song.id}`}>
                     <span className="font-medium line-clamp-1">
                       {song.song_title}

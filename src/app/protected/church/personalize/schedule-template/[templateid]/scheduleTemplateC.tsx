@@ -1,6 +1,10 @@
 "use client";
 import { getSetList } from "@/hooks/GET/getSetList";
-import { scheduleTemplate, setListT } from "@/utils/types/types";
+import {
+  fetchedSchedule,
+  scheduleTemplate,
+  setListT,
+} from "@/utils/types/types";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import { Alert, Link } from "@heroui/react";
@@ -32,7 +36,7 @@ export default function ScheduleTemplateC({
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const [schedule, setSchedule] = useState<scheduleTemplate>(null);
+  const [schedule, setSchedule] = useState<fetchedSchedule>(null);
   // Fetch all setlist data
   useEffect(() => {
     if (templateId) {

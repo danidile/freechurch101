@@ -35,7 +35,7 @@ export default function SongsPageClient() {
 
   if (songs && songs.length > 0) {
     return (
-      <div className="container-sub">
+      <div className="container-sub ">
         <ChurchSongTableComponent songs={songs} />
       </div>
     );

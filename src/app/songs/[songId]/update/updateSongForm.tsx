@@ -1,25 +1,36 @@
 "use client";
 import { albumsT, artistsT, songSchema } from "@/utils/types/types";
+import { Button } from "@heroui/react";
+import { ChevronDown, ChevronUp } from "lucide-react"; // optional icons
 import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Select,
-  SelectItem,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@heroui/react";
-
-import { Input, Textarea } from "@heroui/input";
+import { Textarea } from "@heroui/input";
 import { useForm } from "react-hook-form";
-import { useState, useRef, SetStateAction } from "react";
+import { useState, useRef, SetStateAction, useEffect } from "react";
 import { toChordPro } from "@/utils/chordProFunctions/chordProFuncs";
 import { updateSong } from "./updateSongAction";
-import { FaUndoAlt, FaRedoAlt } from "react-icons/fa";
+import { FaUndoAlt, FaRedoAlt, FaRegTrashAlt } from "react-icons/fa";
 import { addSong } from "../../addSong/addSongAction";
 import { usePathname } from "next/navigation";
 import { updateItalianSongAction } from "@/app/italiansongs/[songId]/update/updateItalianSongAction";
 import { addItalianSong } from "@/app/italiansongs/additaliansong/addItalianSongAction";
 import { keys } from "@/constants";
 import { useChurchStore } from "@/store/useChurchStore";
+import AutocompleteCL, {
+  AutocompleteOption,
+} from "@/app/components/autocompleteOption";
+import { MusicUploaderHandle } from "@/app/components/musiUploader/MusicUploader";
+import MusicUploaderInput from "@/app/components/musiUploader/MusicUploader";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/useUserStore";
+import { getAudioFileSongNames } from "@/hooks/GET/getAudioFileSongNames";
+import { deleteAudiosAction } from "./deleteAudiosAction";
 
 export default function UpdateSongForm({
   songData,
@@ -32,17 +43,57 @@ export default function UpdateSongForm({
   artists?: artistsT[];
   albums?: albumsT[];
 }) {
-  const { loadingChurchData, tags } = useChurchStore();
+  const [audioPaths, setAudioPaths] = useState<string[]>([]);
+  const { userData } = useUserStore();
+
+  useEffect(() => {
+    if (songData.audio_path) {
+      const folderPath = `${userData.church_id}/music/audio/${songData.id}`;
+      getAudioFileSongNames("churchdata", folderPath).then((names) => {
+        console.log("Files in folder:", names);
+        setAudioPaths(names);
+      });
+    }
+  }, []);
+  const musicUploaderRef = useRef<MusicUploaderHandle>(null);
+  const router = useRouter();
+
+  const artistsOptions: AutocompleteOption[] = artists?.map((artist) => {
+    return { key: artist.username, label: artist.artist_name };
+  });
+  const albumOptions: AutocompleteOption[] = albums?.map((album) => {
+    return {
+      key: album.id,
+      label: album.album_name,
+      value: { artist_username: album.artist_username },
+    };
+  });
+  const [selectedArtist, setSelectedArtist] = useState<string | null>(
+    songData.artist || null
+  );
+  const [selectedAlbum, setSelectedAlbum] = useState<string | null>(
+    songData.album || null
+  );
+  const {
+    isOpen: deleteAudioIsOpen,
+    onOpen: deleteAudioOnOpen,
+    onOpenChange: deleteAudioOnOpenChange,
+  } = useDisclosure();
+
+  const { tags } = useChurchStore();
   const [selectedTags, setSelectedTags] = useState<string[]>(
     songData?.tags ? songData.tags.split(",").map((tag) => tag.trim()) : []
   );
   const pathname = usePathname(); // e.g. "/italiansongs/7784d9a0-2d3d..."
   const category = pathname.split("/")[1]; // "italiansongs"
-  const [artistChosen, setArtistChosen] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [state, setState] = useState(songData.lyrics);
   const [history, setHistory] = useState<string[]>([]);
+  const [audiosToDelete, setAudiosToDelete] = useState<string[]>([]);
+  const [selectedAudioToDelete, setSelectedAudioToDelete] =
+    useState<string>(null);
   const [future, setFuture] = useState<string[]>([]);
+  const dropdownRef = useRef(null);
 
   const {
     register,
@@ -80,29 +131,56 @@ export default function UpdateSongForm({
       el.focus();
     }, 0);
   };
+  // Filter albums based on selected artist
+  const filteredAlbums = selectedArtist
+    ? albumOptions.filter(
+        (album) => album.value?.artist_username === selectedArtist
+      )
+    : [];
+
   const convertData = async (data: songSchema) => {
     data.lyrics = state;
+    data.tags = selectedTags.join(", ");
     console.log(data);
+
     if (category === "songs") {
+      let songId = "";
       if (type === "add") {
         data.lyrics = state;
         console.log(data);
-        await addSong(data);
+        const result = await addSong(data);
+        songId = result.songId;
+        if (result.success) {
+          router.push(`/songs/${songId}`);
+        }
       } else if (type === "update") {
         data.lyrics = state;
         console.log(data);
-        await updateSong(data);
+        const result = await updateSong(data);
+        if (result.success) {
+          if (audiosToDelete.length >= 1) {
+            const paths = audiosToDelete.map((path) => {
+              return `${userData.church_id}/music/audio/${songData.id}/${path}`;
+            });
+            deleteAudiosAction(paths);
+          }
+          router.push(`/songs/${songId}`);
+        }
+      }
+      if (songId.length >= 1 && musicUploaderRef.current?.hasFile()) {
+        console.log("Has song and SongID");
+        const uploadResult = await musicUploaderRef.current.upload(songId);
+        if (!uploadResult.success) {
+          console.log("Successo in caricamento canzone");
+        }
+
+        // ✅ uploadResult.url -> puoi salvarla nel tuo database
+        console.log("File audio caricato con successo:", uploadResult.url);
       }
     } else if (category === "italiansongs") {
-      const watched = watch();
-      const artistUsername: string | undefined = artists.find(
-        (n) => n.artist_name === watched.artist
-      )?.username;
-      const albumUsername: string | undefined = albums.find(
-        (n) => n.album_name === watched.album
-      )?.id;
-      data.artist = artistUsername;
-      data.album = albumUsername;
+      data.album = selectedAlbum;
+      data.artist = selectedArtist;
+
       if (type === "add") {
         data.lyrics = state;
         console.log(data);
@@ -144,176 +222,310 @@ export default function UpdateSongForm({
     }
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [audioIsOpen, setAudioIsOpen] = useState(false);
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
     <div className="container-sub">
       <form onSubmit={handleSubmit(convertData)}>
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          {/* // META FOR ITALIANSONGS PAGE */}
+          <div className="flex flex-wrap  md:flex-nowrap gap-2 items-center">
+            <div className="w-full">
+              <label htmlFor="song_title" className="block text-sm font-medium">
+                Titolo Canzone
+              </label>
+              <input
+                {...register("song_title", {
+                  required: "Song Title is required",
+                })}
+                name="song_title"
+                className="ainput"
+              />
+              {errors.song_title && (
+                <p className="text-red-500">{`${errors.song_title.message}`}</p>
+              )}
+            </div>
+            <div className="w-full">
+              <label htmlFor="author" className="block text-sm font-medium">
+                Autore
+              </label>
+              <input name="author" {...register("author")} className="ainput" />
+              {errors.song_title && (
+                <p className="text-red-500">{`${errors.author?.message}`}</p>
+              )}
+            </div>
+          </div>
           {category === "italiansongs" && (
             <>
-              <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-                <div className="flex gap-4 items-center">
-                  <Input
-                    {...register("song_title")}
-                    label="Titolo canzone"
-                    variant="bordered"
-                    size="sm"
-                  />
-                  <Input
-                    {...register("author")}
-                    label="Autore canzone"
-                    variant="bordered"
-                    size="sm"
-                  />
-                </div>
-                <div className="flex gap-4 items-center">
-                  <Autocomplete
-                    size="sm"
-                    defaultSelectedKey={1}
-                    variant="bordered"
-                    label="Seleziona l'artista"
-                    {...register("artist", {
-                      required: "Song Title is required",
-                    })}
-                    onSelectionChange={(e) => setArtistChosen(e.toString())}
-                  >
-                    {artists.map((artist: artistsT, index: number) => (
-                      <AutocompleteItem key={artist.username}>
-                        {artist.artist_name}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                  <Autocomplete
-                    size="sm"
-                    variant="bordered"
-                    label="Seleziona l'album"
-                    {...register("album")}
-                    defaultSelectedKey={songData.album || ""}
-                    isDisabled={artistChosen.length < 1}
-                  >
-                    {albums
-                      .filter((n) => n.artist_username === artistChosen)
-                      .map((album: albumsT, index: number) => (
-                        <AutocompleteItem key={album.id}>
-                          {album.album_name}
-                        </AutocompleteItem>
-                      ))}
-                  </Autocomplete>
-                </div>
+              <div className="flex gap-4 items-center">
+                <AutocompleteCL
+                  label="Seleziona l'artista"
+                  placeholder="Cerca artista..."
+                  options={artistsOptions}
+                  size="sm"
+                  variant="bordered"
+                  required
+                  name="artist"
+                  defaultSelectedKey={songData.artist}
+                  onSelectionChange={(key, option) => {
+                    setSelectedArtist(key?.toString() || null);
+                    setSelectedAlbum(null); // Reset album when artist changes
+                  }}
+                />
 
-                <div className="flex gap-4 items-center">
-                  <Select
-                    variant="bordered"
-                    fullWidth
-                    label="Tonalità"
-                    size="sm"
-                    {...register("upload_key")}
-                    defaultSelectedKeys={
-                      new Set([
-                        keys.includes(songData.upload_key)
-                          ? songData.upload_key
-                          : keys[0],
-                      ])
-                    }
-                    aria-label="tonalità"
-                  >
-                    {keys.map((key) => (
-                      <SelectItem id={key} key={key}>
-                        {key}
-                      </SelectItem>
-                    ))}
-                  </Select>
-
-                  <Input
-                    {...register("bpm")}
-                    label="BPM"
-                    variant="bordered"
-                    size="sm"
-                  />
-                </div>
+                <AutocompleteCL
+                  label="Seleziona l'album"
+                  placeholder="Cerca album..."
+                  options={filteredAlbums}
+                  size="sm"
+                  variant="bordered"
+                  name="album"
+                  disabled={!selectedArtist}
+                  defaultSelectedKey={songData.album}
+                  onSelectionChange={(key, option) => {
+                    setSelectedAlbum(key?.toString() || null);
+                  }}
+                />
               </div>
             </>
           )}
-          {/* META FOR SONGS PAGE */}
-          {category === "songs" && (
-            <>
-              <div className="flex flex-wrap  md:flex-nowrap gap-4 items-center">
-                <Input
-                  {...register("song_title", {
-                    required: "Song Title is required",
-                  })}
-                  label="Song Title"
-                  variant="bordered"
-                  size="sm"
-                />
-                {errors.song_title && (
-                  <p className="text-red-500">{`${errors.song_title.message}`}</p>
-                )}
+          <div className="flex flex-wrap  md:flex-nowrap gap-0 sm:gap-2 items-center">
+            <div className="w-1/5 pr-2 sm:pr-0">
+              <label htmlFor="upload_key" className="block text-sm font-medium">
+                Tonalità
+              </label>
+              <select
+                name="upload_key"
+                {...register("upload_key")}
+                className="ainput"
+                defaultValue={
+                  keys.includes(songData.upload_key)
+                    ? songData.upload_key
+                    : keys[0]
+                }
+              >
+                {keys.map((key) => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+              {errors.upload_key && (
+                <p className="text-red-500">{`${errors.upload_key.message}`}</p>
+              )}
+            </div>
 
-                <Input
-                  {...register("author")}
-                  name="author"
-                  label="Author"
-                  variant="bordered"
-                  size="sm"
-                />
-              </div>
-              <div className="flex flex-wrap  md:flex-nowrap gap-4 items-center">
-                <Select
-                  variant="bordered"
-                  fullWidth
-                  label="Tonalità"
-                  size="sm"
-                  aria-label="tonalità"
-                  {...register("upload_key")}
-                  defaultSelectedKeys={
-                    new Set([
-                      keys.includes(songData.upload_key)
-                        ? songData.upload_key
-                        : keys[0],
-                    ])
-                  }
+            <div className=" w-1/5  pr-2 sm:pr-0">
+              <label htmlFor="bpm" className="block text-sm font-medium">
+                BPM
+              </label>
+              <select name="bpm" {...register("bpm")} className="ainput">
+                {Array.from({ length: 141 }, (_, i) => 60 + i).map((bpm) => (
+                  <option key={bpm} value={bpm}>
+                    {bpm}
+                  </option>
+                ))}
+              </select>
+              {errors.bpm && (
+                <p className="text-red-500">{`${errors.bpm.message}`}</p>
+              )}
+            </div>
+            <div className=" w-1/5  pr-2 sm:pr-0">
+              <label
+                htmlFor="time_signature"
+                className="block text-sm font-medium"
+              >
+                Tempo
+              </label>
+              <select
+                name="time_signature"
+                {...register("time_signature")}
+                className="ainput"
+              >
+                <option value="4/4">4/4</option>
+                <option value="3/4">3/4</option>
+                <option value="2/4">2/4</option>
+                <option value="6/8">6/8</option>
+                <option value="9/8">9/8</option>
+                <option value="12/8">12/8</option>
+                <option value="5/4">5/4</option>
+                <option value="7/4">7/4</option>
+                <option value="3/8">3/8</option>
+                <option value="2/2">2/2</option>
+                <option value="6/4">6/4</option>
+                <option value="5/8">5/8</option>
+                <option value="7/8">7/8</option>
+                <option value="11/8">11/8</option>
+                <option value="15/8">15/8</option>
+              </select>
+              {errors.time_signature && (
+                <p className="text-red-500">{`${errors.time_signature.message}`}</p>
+              )}
+            </div>
+            {category !== "italiansongs" && (
+              <div className=" w-2/5 relative" ref={dropdownRef}>
+                <label className="block text-sm font-medium">
+                  Seleziona i tag
+                </label>
+
+                {/* Trigger Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="ainput w-full text-left h-[2rem] !flex !flex-row items-center justify-between max-h-[2rem] overflow-hidden"
                 >
-                  {keys.map((key) => (
-                    <SelectItem id={key} key={key}>
-                      {key}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Input
-                  {...register("bpm")}
-                  label="BPM"
-                  variant="bordered"
-                  size="sm"
-                />
-                <Select
-                  variant="bordered"
-                  fullWidth
-                  label="Seleziona i tag"
-                  size="sm"
-                  aria-label="tags"
-                  {...register("tags")}
-                  selectionMode="multiple"
-                  placeholder="Scegli uno o più tag"
-                  selectedKeys={selectedTags}
-                  onSelectionChange={(keys) =>
-                    setSelectedTags(Array.from(keys as Set<string>))
-                  }
+                  <p className="text-gray-700 line-clamp-1">
+                    {selectedTags.length === 0
+                      ? "Scegli i tag"
+                      : selectedTags.join(", ")}
+                  </p>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {/* Animated Dropdown */}
+                <div
+                  className={`absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto transition-all duration-200 origin-top ${
+                    isOpen
+                      ? "opacity-100 scale-y-100 translate-y-0"
+                      : "opacity-0 scale-y-95 -translate-y-2 pointer-events-none"
+                  }`}
                 >
                   {tags.map((tag) => (
-                    <SelectItem key={tag.name}>{tag.name}</SelectItem>
+                    <label
+                      key={tag.name}
+                      className="!mt-0 flex items-center space-x-2 px-3 py-1 hover:bg-gray-50 cursor-pointer transition-colors duration-150"
+                    >
+                      <input
+                        type="checkbox"
+                        value={tag.name}
+                        checked={selectedTags.includes(tag.name)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedTags([...selectedTags, tag.name]);
+                          } else {
+                            setSelectedTags(
+                              selectedTags.filter((t) => t !== tag.name)
+                            );
+                          }
+                        }}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 transition-colors duration-150"
+                      />
+                      <span className="text-sm text-gray-700">{tag.name}</span>
+                    </label>
                   ))}
-                </Select>
+                </div>
               </div>
+            )}
+          </div>
+          <div className="border rounded-lg">
+            <button
+              type="button" // 👈 this prevents form submission
+              onClick={() => setAudioIsOpen(!audioIsOpen)}
+              className="w-full flex items-center rounded-lg justify-between px-2 py-2 bg-white hover:bg-gray-100 transition font-medium"
+            >
+              <span>🎵 Audio Files ({audioPaths.length})</span>
+              {audioIsOpen ? (
+                <ChevronUp size={20} />
+              ) : (
+                <ChevronDown size={20} />
+              )}
+            </button>
 
-              <Input
-                {...register("id", { required: "" })}
-                name="id"
-                label="id"
-                className="hidden"
-              />
-            </>
-          )}
+            {audioIsOpen && (
+              <div className="p-2  bg-white rounded-lg">
+                {audioPaths.length >= 1 &&
+                  audioPaths
+                    .filter((el) => !audiosToDelete.includes(el))
+                    .map((path, index) => {
+                      const trackName = path
+                        .replace(/\.[^/.]+$/, "")
+                        .replace(/-/g, " ")
+                        .replace(/\b\w/g, (l) => l.toUpperCase());
+
+                      return (
+                        <div
+                          key={index}
+                          className="my-1 border border-gray-100 rounded p-2"
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
+                              {trackName}
+                            </p>
+                          </div>
+                          <div className="flex flex-row gap-2 items-center">
+                            <audio controls className="w-full h-8">
+                              <source
+                                src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData.church_id}/music/audio/${songData.id}/${path}`}
+                                type="audio/mpeg"
+                              />
+                              Your browser does not support the audio element.
+                            </audio>
+                            <Button
+                              type="button"
+                              color="danger"
+                              variant="light"
+                              size="sm"
+                              isIconOnly
+                              onPress={() => {
+                                setSelectedAudioToDelete(path);
+                                deleteAudioOnOpen();
+                              }}
+                            >
+                              <FaRegTrashAlt size={16} />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                {audiosToDelete.length >= 1 && (
+                  <div className="text-center mx-auto max-w-[300px]">
+                    <small className="text-center p-2 text-red-500">
+                      I file Audio verranno eliminati solo dopo aver cliccato su{" "}
+                      <span className="underline">Aggiorna Canzone</span> .
+                    </small>
+                  </div>
+                )}
+                <div className="mt-4">
+                  <MusicUploaderInput ref={musicUploaderRef} />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <input
+            {...register("id", { required: "" })}
+            name="id"
+            className="hidden"
+          />
+
           <div className="flex flex-row justify-center items-center">
             <Button
               type="button"
@@ -336,22 +548,24 @@ export default function UpdateSongForm({
               Sezione
             </Button>
 
-            <div className="p-1 border-amber-400">
+            <div className="p-1 border-amber-400 flex flex-row gap-2">
               <Button
                 type="button"
                 onPress={handleUndo}
                 variant="flat"
-                color="secondary"
+                size="sm"
+                color="primary"
                 isDisabled={history.length === 0}
                 isIconOnly
               >
                 <FaUndoAlt />
               </Button>
               <Button
+                size="sm"
                 type="button"
                 onPress={handleRedo}
                 variant="flat"
-                color="secondary"
+                color="primary"
                 isDisabled={future.length === 0}
                 isIconOnly
               >
@@ -359,6 +573,7 @@ export default function UpdateSongForm({
               </Button>
             </div>
           </div>
+
           <Textarea
             ref={textAreaRef} // 👈 Add this line
             // {...register("lyrics")}
@@ -374,7 +589,7 @@ export default function UpdateSongForm({
           />
           <Button
             color="primary"
-            variant="shadow"
+            variant="solid"
             type="submit"
             disabled={isSubmitting}
           >
@@ -386,6 +601,51 @@ export default function UpdateSongForm({
           </Button>
         </div>
       </form>
+      <Modal isOpen={deleteAudioIsOpen} onOpenChange={deleteAudioOnOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 text-red-600">
+                Elimina File Audio
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-sm text-gray-600">
+                  Sei sicuro di voler eliminare definitivamente questo file
+                  audio?
+                  <br />
+                  Questa azione è irreversibile e il file non potrà essere
+                  recuperato.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="primary"
+                  fullWidth
+                  variant="light"
+                  onPress={onClose}
+                >
+                  Annulla
+                </Button>
+                <Button
+                  color="danger"
+                  fullWidth
+                  className="bg-red-600"
+                  onPress={() => {
+                    setAudiosToDelete((prev) => [
+                      ...prev,
+                      selectedAudioToDelete,
+                    ]);
+
+                    onClose();
+                  }}
+                >
+                  Elimina
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
