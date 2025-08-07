@@ -1,4 +1,4 @@
-import ChordProViewComponent from "@/app/components/chordProViewComponent";
+import ChordProViewComponentAlt from "@/app/components/chordProViewComponentAlt";
 import { getItalianSongById } from "@/hooks/GET/getGlobalSongById";
 
 export default async function Page({ params }: { params: Promise<any> }) {
@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: Promise<any> }) {
     return (
       <div className="container-sub">
         <div className="song-presentation-container">
-          <ChordProViewComponent setListSong={songData}   />
+          <ChordProViewComponentAlt setListSong={songData}   />
         </div>
       </div>
     );

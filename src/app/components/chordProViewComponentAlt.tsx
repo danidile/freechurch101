@@ -44,6 +44,7 @@ import { getAudioFileSongNames } from "@/hooks/GET/getAudioFileSongNames";
 import { Note, Interval } from "tonal";
 import CDropdown from "./CDropdown";
 import { BsMusicNoteList } from "react-icons/bs";
+import { RiMusicAiFill } from "react-icons/ri";
 // Map semitone distance to Nashville numbers with accidentals
 const semitoneToNashville: Record<number, string> = {
   0: "1",
@@ -61,8 +62,7 @@ const semitoneToNashville: Record<number, string> = {
 };
 
 const chordRegex =
-  /\b([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M|\+|°|ø)?(?:\d+)?(?:[#b♯♭]\d+)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)[#b♯♭]?)?)\b/gi;
-
+  /\b([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M|\+|°|ø)?(?:\d+)?(?:[#b♯♭]\d+)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)[#b♯♭]?)?)/gi;
 type ParsedLine =
   | { type: "section"; text: string }
   | { type: "chords"; text: string }
@@ -138,33 +138,57 @@ const EN_TO_IT: Record<string, string> = {
   A: "La",
   B: "Si",
 };
-
-// Nashville Number System - scale degrees relative to key
-const MAJOR_SCALE_DEGREES: Record<string, number> = {
-  C: 1,
-  D: 2,
-  E: 3,
-  F: 4,
-  G: 5,
-  A: 6,
-  B: 7,
-};
-
-const CIRCLE_OF_FIFTHS = [
+// Notes in semitone order, starting from C
+const CHROMATIC_SCALE_SHARP = [
   "C",
-  "G",
-  "D",
-  "A",
-  "E",
-  "B",
-  "F#",
   "C#",
-  "Ab",
-  "Eb",
-  "Bb",
+  "D",
+  "D#",
+  "E",
   "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B",
 ];
 
+const CHROMATIC_SCALE_FLAT = [
+  "C",
+  "Db",
+  "D",
+  "Eb",
+  "E",
+  "F",
+  "Gb",
+  "G",
+  "Ab",
+  "A",
+  "Bb",
+  "B",
+];
+
+// Create mapping from note name to semitone index
+const NOTE_TO_SEMITONE: Record<string, number> = {
+  C: 0,
+  "C#": 1,
+  Db: 1,
+  D: 2,
+  "D#": 3,
+  Eb: 3,
+  E: 4,
+  F: 5,
+  "F#": 6,
+  Gb: 6,
+  G: 7,
+  "G#": 8,
+  Ab: 8,
+  A: 9,
+  "A#": 10,
+  Bb: 10,
+  B: 11,
+};
 type ChordNotation = "english" | "italian" | "nashville";
 type AccidentalPreference = "sharp" | "flat";
 
@@ -233,16 +257,31 @@ function normalizeChord(chord: string): string {
     .replace(/\+/g, "aug")
     .replace(/Δ/g, "maj7");
 }
-
 function normalizeAccidentals(
   note: string,
   preference: AccidentalPreference
 ): string {
-  if (preference === "sharp") {
-    return note.replace(/b/g, "#").replace(/♭/g, "♯");
-  } else {
-    return note.replace(/#/g, "b").replace(/♯/g, "♭");
-  }
+  const match = note.match(/^([A-Ga-g])([#b♯♭]?)/);
+  if (!match) return note;
+
+  const [_, baseNote, accidental] = match;
+  let enharmonic = baseNote.toUpperCase();
+
+  // Normalize accidentals to sharp/flat
+  const accidentalSymbol =
+    accidental === "♯" ? "#" : accidental === "♭" ? "b" : accidental;
+
+  if (accidentalSymbol) enharmonic += accidentalSymbol;
+
+  const semitone = NOTE_TO_SEMITONE[enharmonic];
+  if (semitone === undefined) return note; // Invalid note
+
+  const normalized =
+    preference === "sharp"
+      ? CHROMATIC_SCALE_SHARP[semitone]
+      : CHROMATIC_SCALE_FLAT[semitone];
+
+  return note.replace(match[0], normalized);
 }
 
 function toEnglishChord(chord: string): string {
@@ -301,32 +340,138 @@ function convertChordNotation(
 function isItalianChord(chord: string): boolean {
   return /^(Do|Re|Mi|Fa|Sol|La|Si)\b/i.test(chord);
 }
+function transposeNote(note: string, semitones: number): string {
+  console.log(`Transposing note: "${note}" by ${semitones} semitones`);
+
+  // Normalize semitones to 0-11 range
+  semitones = ((semitones % 12) + 12) % 12;
+  if (semitones === 0) return note;
+
+  // Parse the note - handle both regular and unicode accidentals
+  const match = note.match(/^([A-G])([#b♯♭]?)$/);
+  if (!match) {
+    console.log(`No match found for note: "${note}"`);
+    return note;
+  }
+
+  const [fullMatch, noteName, accidental] = match;
+  console.log(
+    `Parsed: fullMatch="${fullMatch}", noteName="${noteName}", accidental="${accidental}"`
+  );
+
+  // Try direct lookup first (for notes like "C#", "Bb")
+  let currentSemitone = NOTE_TO_SEMITONE[note];
+
+  if (currentSemitone === undefined) {
+    // If direct lookup fails, build it from parts
+    currentSemitone = NOTE_TO_SEMITONE[noteName];
+    if (currentSemitone === undefined) {
+      console.log(`Unknown note name: "${noteName}"`);
+      return note;
+    }
+
+    if (accidental === "#" || accidental === "♯") {
+      currentSemitone = (currentSemitone + 1) % 12;
+    } else if (accidental === "b" || accidental === "♭") {
+      currentSemitone = (currentSemitone - 1 + 12) % 12;
+    }
+  }
+
+  console.log(`Current semitone: ${currentSemitone}`);
+
+  // Calculate new semitone
+  const newSemitone = (currentSemitone + semitones) % 12;
+  console.log(`New semitone: ${newSemitone}`);
+
+  // Choose the best enharmonic spelling based on the original accidental preference
+  let result;
+  if (accidental === "#" || accidental === "♯") {
+    // Prefer sharps if original was sharp
+    result = CHROMATIC_SCALE_SHARP[newSemitone];
+  } else if (accidental === "b" || accidental === "♭") {
+    // Prefer flats if original was flat
+    result = CHROMATIC_SCALE_FLAT[newSemitone];
+  } else {
+    // Original was natural, choose based on direction
+    result =
+      semitones > 6
+        ? CHROMATIC_SCALE_FLAT[newSemitone]
+        : CHROMATIC_SCALE_SHARP[newSemitone];
+  }
+
+  console.log(`Result: "${result}"`);
+  return result;
+}
 
 function transposeChord(chord: string, semitones: number): string {
+  console.log(`=== TRANSPOSE CHORD START ===`);
+  console.log(`Input chord: "${chord}"`);
+  console.log(`Semitones: ${semitones}`);
+
   if (semitones === 0) return chord;
 
   const wasItalian = isItalianChord(chord);
   const englishChord = toEnglishChord(chord);
+  console.log(`English chord: "${englishChord}"`);
 
-  const match = englishChord.match(/^([A-G][#b♯♭]?)(.*)/);
-  if (!match) return chord;
+  const slashIndex = englishChord.indexOf("/");
+  let main = englishChord;
+  let bass = "";
 
-  const [, root, suffix] = match;
+  if (slashIndex !== -1) {
+    main = englishChord.slice(0, slashIndex);
+    bass = englishChord.slice(slashIndex + 1);
+    console.log(`Split - Main: "${main}", Bass: "${bass}"`);
+  } else {
+    console.log(`No slash found, treating as simple chord`);
+  }
 
-  try {
-    const interval = Interval.fromSemitones(semitones);
-    const transposedRoot = Note.transpose(root, interval);
+  const matchMain = main.match(/^([A-G][#b♯♭]?)(.*)/);
+  console.log(`Main chord match:`, matchMain);
 
-    if (!transposedRoot) return chord;
-
-    const result = transposedRoot + suffix;
-    return toItalianChord(result, wasItalian);
-  } catch (error) {
-    console.warn(`Failed to transpose chord ${chord}:`, error);
+  if (!matchMain) {
+    console.log(`Main chord match failed, returning original`);
     return chord;
   }
-}
 
+  const [, root, suffix] = matchMain;
+  console.log(`Main - Root: "${root}", Suffix: "${suffix}"`);
+
+  const transposedRoot = transposeNote(root, semitones);
+  console.log(`Transposed root: "${transposedRoot}"`);
+
+  let result = transposedRoot + suffix;
+  console.log(`Result after main: "${result}"`);
+
+  if (bass) {
+    // Only capture the note part for bass, preserve everything else
+    const bassMatch = bass.match(/^([A-G][#b♯♭]?)/);
+    console.log(`Bass match:`, bassMatch);
+
+    if (bassMatch) {
+      const [, bassRoot] = bassMatch;
+      console.log(`Bass root: "${bassRoot}"`);
+
+      const transposedBass = transposeNote(bassRoot, semitones);
+      console.log(`Transposed bass: "${transposedBass}"`);
+
+      const bassRemainder = bass.slice(bassRoot.length);
+      console.log(`Bass remainder: "${bassRemainder}"`);
+
+      result += "/" + transposedBass + bassRemainder;
+    } else {
+      console.log(`Bass match failed, preserving original bass`);
+      result += "/" + bass;
+    }
+  }
+
+  console.log(`Final result before Italian conversion: "${result}"`);
+  const finalResult = toItalianChord(result, wasItalian);
+  console.log(`Final result: "${finalResult}"`);
+  console.log(`=== TRANSPOSE CHORD END ===`);
+
+  return finalResult;
+}
 function transposeChordLine(
   line: string,
   semitones: number,
@@ -462,6 +607,7 @@ export default function ChordProViewComponent({
   setListSong: setListSongT;
   mode?: string;
 }) {
+  console.log(setListSong.lyrics);
   const pathname = usePathname();
   const { userData } = useUserStore();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -732,6 +878,39 @@ export default function ChordProViewComponent({
     const allOptions = [
       {
         label: (
+          <div
+            className={`${viewChords ? "opacity-100" : "opacity-0"} transopose-section`}
+            onMouseDown={(e) => e.stopPropagation()} // ✅ Prevent dropdown from closing
+          >
+            <p className="font-medium">Tonalità:</p>
+            <button
+              onMouseDown={(e) => e.stopPropagation()} // ✅ Prevent dropdown from closing
+              type="button"
+              className="icon-button"
+              onClick={(e) => {
+                e.stopPropagation(); // ✅ Stop bubbling
+                handleTransposeDown();
+              }}
+            >
+              <FaMinus />
+            </button>
+            <button
+              onMouseDown={(e) => e.stopPropagation()} // ✅ Prevent dropdown from closing
+              type="button"
+              className="icon-button"
+              onClick={(e) => {
+                e.stopPropagation(); // ✅ Stop bubbling
+                handleTransposeUp();
+              }}
+            >
+              <FaPlus />
+            </button>
+          </div>
+        ),
+        value: "transpose",
+      },
+      {
+        label: (
           <p className="hover:text-blue-500 transition duration-200">
             <span className="font-medium">Inglese</span> -{" "}
             <small>(A , B , C)</small>
@@ -805,11 +984,46 @@ export default function ChordProViewComponent({
     <div className="relative">
       {mode !== "preview" && (
         <div className="view-selector-container">
+          {audioPaths.length >= 1 && (
+            <Button
+              isIconOnly
+              onPress={() => setShowPlayer((prev) => !prev)}
+              variant="flat"
+            >
+              <LuAudioLines />
+            </Button>
+          )}
+          {userData && hasPermission(userData.role as Role, "update:songs") && (
+            <CDropdown
+              options={[
+                {
+                  label: "Aggiorna",
+                  value: "update",
+                  href: `/${pathname.split("/")[1]}/${setListSong.id}/update`,
+                },
+                {
+                  label: "Elimina",
+                  value: "delete",
+                  color: "danger",
+                },
+              ]}
+              buttonPadding="sm"
+              positionOnMobile="right"
+              placeholder={<MdMoreVert size={22} />}
+              onSelect={(option) => {
+                if (option.value === "delete") {
+                  onOpen();
+                }
+              }}
+            />
+          )}
+
           <CDropdown
             options={notationOptions}
             buttonPadding="sm"
-            positionOnMobile="left"
-            placeholder={<BsMusicNoteList />}
+            positionOnDesktop="right"
+            positionOnMobile="right"
+            placeholder={<RiMusicAiFill size={20} />}
             onSelect={(option) => {
               if (
                 option.value === "nashville" ||
@@ -827,66 +1041,6 @@ export default function ChordProViewComponent({
               }
             }}
           />
-          <div
-            className={`${viewChords ? "opacity-100" : "opacity-0"} transopose-section`}
-          >
-            <small className="font-medium">Tonalità:</small>
-            <Button
-              isIconOnly
-              variant="light"
-              onPress={handleTransposeDown}
-              size="md"
-            >
-              <FaMinus />
-            </Button>
-            <Button
-              isIconOnly
-              variant="light"
-              onPress={handleTransposeUp}
-              size="md"
-            >
-              <FaPlus />
-            </Button>
-          </div>
-
-          {audioPaths.length >= 1 && (
-            <Button
-              isIconOnly
-              onPress={() => setShowPlayer((prev) => !prev)}
-              variant="flat"
-            >
-              <LuAudioLines />
-            </Button>
-          )}
-          {userData && hasPermission(userData.role as Role, "update:songs") && (
-            <Dropdown>
-              <DropdownTrigger>
-                <Button variant="bordered" isIconOnly>
-                  <MdMoreVert className="text-2xl" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu variant="flat" aria-label="Dropdown menu">
-                <DropdownItem
-                  startContent={<MdModeEdit />}
-                  as={Link}
-                  href={`/${pathname.split("/")[1]}/${setListSong.id}/update`}
-                  key="edit"
-                >
-                  Aggiorna
-                </DropdownItem>
-                <DropdownItem
-                  startContent={<MdDelete />}
-                  variant="flat"
-                  onPress={onOpen}
-                  key="delete"
-                  className="text-danger"
-                  color="danger"
-                >
-                  Elimina
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          )}
         </div>
       )}
 
