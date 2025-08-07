@@ -43,7 +43,7 @@ export default function GlobalError({
           <p>Errore</p>
           <Link href={"/"}>Clicca qui per ritornare alla Homepage</Link>
         </div>
-        <NextError statusCode={0} />
+        {/* <NextError statusCode={0} /> */}
       </body>
     </html>
   );

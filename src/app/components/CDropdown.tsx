@@ -72,7 +72,7 @@ export default function CDropdown({
           {
             " !p-0": buttonPadding === "sm",
 
-            "bg-gray-100 gap-3 cursor-pointer select-none rounded-md text-left flex items-center justify-center transition-all duration-200": true,
+            "bg-[#eeeeef] gap-3 cursor-pointer select-none rounded-md text-left flex items-center justify-center transition-all duration-200": true,
           },
           isIconOnly ? "w-10 h-10 p-2" : " !px-4 !py-1"
         )}

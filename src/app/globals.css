@@ -444,7 +444,8 @@
 
   .transopose-section {
     display: flex;
-    gap: 10px;
+    gap: 5px;
+    background: #eeeeef;
     align-items: center;
     padding: 0px 0px 0px 15px;
     border-radius: 12px;

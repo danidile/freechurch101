@@ -1,5 +1,5 @@
 import { getSongById } from "@/hooks/GET/getSongById";
-import ChordProViewComponent from "@/app/components/chordProViewComponent";
+import ChordProViewComponentAlt from "@/app/components/chordProViewComponentAlt";
 import CustomizeWidget from "@/app/components/CustomizeWidget";
 
 export default async function Page({ params }: { params: Promise<any> }) {
@@ -13,7 +13,7 @@ export default async function Page({ params }: { params: Promise<any> }) {
         <CustomizeWidget />
 
         <div className="song-presentation-container">
-          <ChordProViewComponent setListSong={songData} />
+          <ChordProViewComponentAlt setListSong={songData} />
         </div>
       </div>
     );

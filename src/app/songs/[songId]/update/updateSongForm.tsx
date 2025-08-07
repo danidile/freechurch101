@@ -157,7 +157,20 @@ export default function UpdateSongForm({
         data.lyrics = state;
         console.log(data);
         const result = await updateSong(data);
+        songId = songData.id;
         if (result.success) {
+          if (songId.length >= 1 && musicUploaderRef.current?.hasFile()) {
+            console.log("Has song and SongID");
+            const uploadResult = await musicUploaderRef.current.upload(songId);
+            if (!uploadResult.success) {
+              console.log("Successo in caricamento canzone");
+            }
+
+            // ✅ uploadResult.url -> puoi salvarla nel tuo database
+            console.log("File audio caricato con successo:", uploadResult.url);
+          } else {
+            console.log("Doesnt have song and SongID");
+          }
           if (audiosToDelete.length >= 1) {
             const paths = audiosToDelete.map((path) => {
               return `${userData.church_id}/music/audio/${songData.id}/${path}`;
@@ -166,16 +179,6 @@ export default function UpdateSongForm({
           }
           router.push(`/songs/${songId}`);
         }
-      }
-      if (songId.length >= 1 && musicUploaderRef.current?.hasFile()) {
-        console.log("Has song and SongID");
-        const uploadResult = await musicUploaderRef.current.upload(songId);
-        if (!uploadResult.success) {
-          console.log("Successo in caricamento canzone");
-        }
-
-        // ✅ uploadResult.url -> puoi salvarla nel tuo database
-        console.log("File audio caricato con successo:", uploadResult.url);
       }
     } else if (category === "italiansongs") {
       data.album = selectedAlbum;
