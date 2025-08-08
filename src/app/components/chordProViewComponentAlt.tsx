@@ -8,27 +8,12 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@heroui/react";
-import { SiSharp } from "react-icons/si";
-import { TbWashDryFlat } from "react-icons/tb";
+
 import { usePathname } from "next/navigation";
 import { FaPlus, FaMinus } from "react-icons/fa";
-import {
-  MdDelete,
-  MdModeEdit,
-  MdMoreVert,
-  MdMusicNote,
-  MdOutlineTextSnippet,
-  MdPiano,
-} from "react-icons/md";
-import Image from "next/image";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@heroui/react";
-import ChordSheetJS from "chordsheetjs";
+import { MdMoreVert } from "react-icons/md";
 
+import ChordSheetJS from "chordsheetjs";
 import { JSX, useEffect, useMemo, useState, useCallback } from "react";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 import { setListSongT } from "@/utils/types/types";
@@ -36,771 +21,16 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import isChordProFormat from "./isChordProFormat";
 import { useUserStore } from "@/store/useUserStore";
 import { deleteSong } from "../songs/[songId]/deleteSongAction";
-import Link from "next/link";
 import { LuAudioLines } from "react-icons/lu";
 import { getAudioFileSongNames } from "@/hooks/GET/getAudioFileSongNames";
 
 // Improved chord sheet parser
 import CDropdown from "./CDropdown";
 import { RiMusicAiFill } from "react-icons/ri";
-// Map semitone distance to Nashville numbers with accidentals
-const semitoneToNashville: Record<number, string> = {
-  0: "1",
-  1: "#1",
-  2: "2",
-  3: "b3",
-  4: "3",
-  5: "4",
-  6: "#4",
-  7: "5",
-  8: "b6",
-  9: "6",
-  10: "b7",
-  11: "7",
-};
+import { AccidentalPreference, ChordNotation } from "@/utils/music/constants";
+import { parseChordSheet } from "@/utils/music/parseChords";
 
-// Improved chord regex - more strict and specific
-const chordRegex =
-  /\b([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M|\+|°|ø)?(?:\d+)?(?:[#b♯♭]\d+)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)[#b♯♭]?)?)(?=\s|$)/gi;
-
-type ParsedLine =
-  | { type: "section"; text: string }
-  | { type: "chords"; text: string }
-  | { type: "lyrics"; text: string };
-
-const SECTION_KEYWORDS = new Set([
-  // English
-  "intro",
-  "verse",
-  "chorus",
-  "pre-chorus",
-  "prechorus",
-  "bridge",
-  "interlude",
-  "instrumental",
-  "outro",
-  "ending",
-  "tag",
-  "refrain",
-  "hook",
-  "break",
-  "solo",
-  "coda",
-  "middle 8",
-
-  // Italian
-  "strofa",
-  "ritornello",
-  "pre-ritornello",
-  "ponte",
-  "coro",
-  "interludio",
-  "strumentale",
-  "finale",
-  "verso",
-  "pre-coro",
-  "precoro",
-  "ripresa",
-  "special",
-  "assolo",
-
-  // Additional common patterns
-  "verse 1",
-  "verse 2",
-  "verse 3",
-  "chorus 1",
-  "chorus 2",
-  "v1",
-  "v2",
-  "v3",
-  "c1",
-  "c2",
-  "ch1",
-  "ch2",
-]);
-
-const IT_TO_EN: Record<string, string> = {
-  Do: "C",
-  Re: "D",
-  Mi: "E",
-  Fa: "F",
-  Sol: "G",
-  La: "A",
-  Si: "B",
-};
-
-const EN_TO_IT: Record<string, string> = {
-  C: "Do",
-  D: "Re",
-  E: "Mi",
-  F: "Fa",
-  G: "Sol",
-  A: "La",
-  B: "Si",
-};
-
-// Notes in semitone order, starting from C
-const CHROMATIC_SCALE_SHARP = [
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#",
-  "A",
-  "A#",
-  "B",
-];
-
-const CHROMATIC_SCALE_FLAT = [
-  "C",
-  "Db",
-  "D",
-  "Eb",
-  "E",
-  "F",
-  "Gb",
-  "G",
-  "Ab",
-  "A",
-  "Bb",
-  "B",
-];
-
-// Create mapping from note name to semitone index
-const NOTE_TO_SEMITONE: Record<string, number> = {
-  C: 0,
-  "C#": 1,
-  Db: 1,
-  D: 2,
-  "D#": 3,
-  Eb: 3,
-  E: 4,
-  F: 5,
-  "F#": 6,
-  Gb: 6,
-  G: 7,
-  "G#": 8,
-  Ab: 8,
-  A: 9,
-  "A#": 10,
-  Bb: 10,
-  B: 11,
-};
-
-// Valid chord suffixes to help distinguish real chords from words
-const VALID_CHORD_SUFFIXES = new Set([
-  "",
-  "m",
-  "maj",
-  "min",
-  "dim",
-  "aug",
-  "sus",
-  "sus2",
-  "sus4",
-  "add",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "11",
-  "13",
-  "maj7",
-  "min7",
-  "dim7",
-  "aug7",
-  "m7",
-  "M7",
-  "7sus4",
-  "m7b5",
-  "mMaj7",
-  "add9",
-  "add2",
-  "6/9",
-  "m6",
-  "maj9",
-  "min9",
-  "9",
-  "sus2",
-  "sus4",
-  "+",
-  "°",
-  "ø",
-  "Δ",
-]);
-
-// Common Italian words that might be mistaken for chords
-const ITALIAN_WORDS_BLACKLIST = new Set([
-  "te",
-  "mi",
-  "si",
-  "re",
-  "la",
-  "del",
-  "della",
-  "nel",
-  "nella",
-  "con",
-  "per",
-  "che",
-  "non",
-  "una",
-  "solo",
-  "più",
-  "dove",
-  "come",
-  "quando",
-  "ogni",
-  "tutto",
-  "molto",
-  "ancora",
-  "anche",
-]);
-
-type ChordNotation = "english" | "italian" | "nashville";
-type AccidentalPreference = "sharp" | "flat";
-
-export function convertToNashville(chord: string, keyRoot: string): string {
-  // Check if it's a slash chord
-  const slashIndex = chord.indexOf("/");
-  let mainChord = chord;
-  let bassNote = "";
-
-  if (slashIndex !== -1) {
-    mainChord = chord.slice(0, slashIndex);
-    bassNote = chord.slice(slashIndex + 1);
-  }
-
-  // Parse main chord root and suffix
-  const match = mainChord.match(/^([A-Ga-g])([#b♯♭]?)(.*)$/);
-  if (!match) return chord;
-
-  let [, root, accidental = "", suffix = ""] = match;
-
-  root = root.toUpperCase();
-  accidental = accidental.replace("♯", "#").replace("♭", "b");
-  const chordRoot = root + accidental;
-
-  const chordRootIndex = NOTE_TO_SEMITONE[chordRoot];
-  const keyRootIndex = NOTE_TO_SEMITONE[keyRoot];
-
-  if (chordRootIndex === undefined || keyRootIndex === undefined) return chord;
-
-  // Calculate interval from key root
-  const interval = (chordRootIndex - keyRootIndex + 12) % 12;
-  let numberStr = semitoneToNashville[interval];
-
-  // Detect minor chords
-  const isMinor = /^(m|min|\-|minor)/i.test(suffix);
-  const cleanSuffix = suffix.replace(/^(m|min|\-|minor)/i, "");
-
-  if (isMinor) {
-    numberStr = numberStr.toLowerCase();
-  }
-
-  let result = numberStr + cleanSuffix;
-
-  // Handle bass note conversion
-  if (bassNote) {
-    const bassMatch = bassNote.match(/^([A-Ga-g])([#b♯♭]?)(.*)$/);
-    if (bassMatch) {
-      let [, bassRoot, bassAccidental = "", bassRemainder = ""] = bassMatch;
-
-      bassRoot = bassRoot.toUpperCase();
-      bassAccidental = bassAccidental.replace("♯", "#").replace("♭", "b");
-      const bassNoteRoot = bassRoot + bassAccidental;
-
-      const bassRootIndex = NOTE_TO_SEMITONE[bassNoteRoot];
-      if (bassRootIndex !== undefined) {
-        const bassInterval = (bassRootIndex - keyRootIndex + 12) % 12;
-        const bassNumberStr = semitoneToNashville[bassInterval];
-        result += "/" + bassNumberStr + bassRemainder;
-      } else {
-        // If bass note can't be converted, keep original
-        result += "/" + bassNote;
-      }
-    } else {
-      // If bass note can't be parsed, keep original
-      result += "/" + bassNote;
-    }
-  }
-
-  return result;
-}
-
-const sectionPatternCache = new Map<string, boolean>();
-
-function isSectionLine(line: string): boolean {
-  const trimmed = line.trim();
-
-  if (sectionPatternCache.has(trimmed)) {
-    return sectionPatternCache.get(trimmed)!;
-  }
-
-  const clean = trimmed
-    .replace(/^["'\[\(\{]*\s*/, "")
-    .replace(/\s*["'\]\)\}]*\s*[:\-–—]*\s*$/g, "")
-    .toLowerCase()
-    .replace(/\s+/g, " ");
-
-  const isSection = Array.from(SECTION_KEYWORDS).some((keyword) => {
-    const pattern = new RegExp(
-      `^${keyword.replace(/\s+/g, "\\s+")}\\s*(\\d+)?$`,
-      "i"
-    );
-    return pattern.test(clean);
-  });
-
-  sectionPatternCache.set(trimmed, isSection);
-  return isSection;
-}
-
-function normalizeChord(chord: string): string {
-  return chord
-    .replace(/°/g, "dim")
-    .replace(/ø/g, "m7b5")
-    .replace(/\+/g, "aug")
-    .replace(/Δ/g, "maj7");
-}
-
-function normalizeAccidentals(
-  note: string,
-  preference: AccidentalPreference
-): string {
-  const match = note.match(/^([A-Ga-g])([#b♯♭]?)/);
-  if (!match) return note;
-
-  const [_, baseNote, accidental] = match;
-  let enharmonic = baseNote.toUpperCase();
-
-  // Normalize accidentals to sharp/flat
-  const accidentalSymbol =
-    accidental === "♯" ? "#" : accidental === "♭" ? "b" : accidental;
-
-  if (accidentalSymbol) enharmonic += accidentalSymbol;
-
-  const semitone = NOTE_TO_SEMITONE[enharmonic];
-  if (semitone === undefined) return note; // Invalid note
-
-  const normalized =
-    preference === "sharp"
-      ? CHROMATIC_SCALE_SHARP[semitone]
-      : CHROMATIC_SCALE_FLAT[semitone];
-
-  return note.replace(match[0], normalized);
-}
-
-function toEnglishChord(chord: string): string {
-  const normalized = normalizeChord(chord);
-
-  const match = normalized.match(/^(Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(.*)/i);
-  if (!match) return normalized;
-
-  const [, root, accidental, suffix] = match;
-  const englishRoot =
-    IT_TO_EN[root.charAt(0).toUpperCase() + root.slice(1).toLowerCase()];
-
-  return englishRoot ? englishRoot + accidental + suffix : normalized;
-}
-
-function toItalianChord(chord: string, wasItalian: boolean): string {
-  if (!wasItalian) return chord;
-
-  const match = chord.match(/^([A-G])([#b♯♭]?)(.*)/);
-  if (!match) return chord;
-
-  const [, root, accidental, suffix] = match;
-  const italianRoot = EN_TO_IT[root.toUpperCase()];
-
-  return italianRoot ? italianRoot + accidental + suffix : chord;
-}
-
-function convertChordNotation(
-  chord: string,
-  targetNotation: ChordNotation,
-  accidentalPreference: AccidentalPreference = "sharp",
-  keyRoot: string = "C"
-): string {
-  // First normalize the chord to English
-  let englishChord = toEnglishChord(chord);
-
-  // Apply accidental preference
-  englishChord = normalizeAccidentals(englishChord, accidentalPreference);
-
-  const match = englishChord.match(/^([A-G])([#b♯♭]?)(.*)/);
-  if (!match) return chord;
-
-  const [, root, accidental, suffix] = match;
-
-  switch (targetNotation) {
-    case "italian":
-      const convertedRoot = EN_TO_IT[root] || root;
-      return convertedRoot + accidental + suffix;
-    case "nashville":
-      return convertToNashville(englishChord, keyRoot);
-    default:
-      return englishChord;
-  }
-}
-
-function isItalianChord(chord: string): boolean {
-  return /^(Do|Re|Mi|Fa|Sol|La|Si)\b/i.test(chord);
-}
-
-// Improved function to validate if a match is actually a chord
-function isValidChord(match: string): boolean {
-  const lowerMatch = match.toLowerCase();
-
-  // Check if it's in the Italian words blacklist
-  if (ITALIAN_WORDS_BLACKLIST.has(lowerMatch)) {
-    return false;
-  }
-
-  // Parse the chord
-  const chordMatch = match.match(
-    /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(.*)$/i
-  );
-  if (!chordMatch) return false;
-
-  const [, root, accidental, suffix] = chordMatch;
-
-  // If there's no suffix, it must be a single note (valid chord)
-  if (!suffix) return true;
-
-  // Check if suffix is valid
-  const normalizedSuffix = suffix.toLowerCase();
-
-  // Check for common valid patterns
-  if (
-    VALID_CHORD_SUFFIXES.has(suffix) ||
-    VALID_CHORD_SUFFIXES.has(normalizedSuffix)
-  ) {
-    return true;
-  }
-
-  // Check for slash chords
-  if (suffix.includes("/")) {
-    const [mainSuffix, bassPart] = suffix.split("/");
-    const bassMatch = bassPart.match(
-      /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(.*)$/i
-    );
-    return (
-      bassMatch !== null &&
-      (VALID_CHORD_SUFFIXES.has(mainSuffix) || mainSuffix === "")
-    );
-  }
-
-  // Check for numeric suffixes (7, 9, 11, 13, etc.)
-  if (/^\d+$/.test(suffix)) {
-    const num = parseInt(suffix);
-    return num >= 2 && num <= 13;
-  }
-
-  return false;
-}
-
-function transposeNote(note: string, semitones: number): string {
-  console.log(`Transposing note: "${note}" by ${semitones} semitones`);
-
-  // Normalize semitones to 0-11 range
-  semitones = ((semitones % 12) + 12) % 12;
-  if (semitones === 0) return note;
-
-  // Parse the note - handle both regular and unicode accidentals
-  const match = note.match(/^([A-G])([#b♯♭]?)$/);
-  if (!match) {
-    console.log(`No match found for note: "${note}"`);
-    return note;
-  }
-
-  const [fullMatch, noteName, accidental] = match;
-  console.log(
-    `Parsed: fullMatch="${fullMatch}", noteName="${noteName}", accidental="${accidental}"`
-  );
-
-  // Try direct lookup first (for notes like "C#", "Bb")
-  let currentSemitone = NOTE_TO_SEMITONE[note];
-
-  if (currentSemitone === undefined) {
-    // If direct lookup fails, build it from parts
-    currentSemitone = NOTE_TO_SEMITONE[noteName];
-    if (currentSemitone === undefined) {
-      console.log(`Unknown note name: "${noteName}"`);
-      return note;
-    }
-
-    if (accidental === "#" || accidental === "♯") {
-      currentSemitone = (currentSemitone + 1) % 12;
-    } else if (accidental === "b" || accidental === "♭") {
-      currentSemitone = (currentSemitone - 1 + 12) % 12;
-    }
-  }
-
-  console.log(`Current semitone: ${currentSemitone}`);
-
-  // Calculate new semitone
-  const newSemitone = (currentSemitone + semitones) % 12;
-  console.log(`New semitone: ${newSemitone}`);
-
-  // Choose the best enharmonic spelling based on the original accidental preference
-  let result;
-  if (accidental === "#" || accidental === "♯") {
-    // Prefer sharps if original was sharp
-    result = CHROMATIC_SCALE_SHARP[newSemitone];
-  } else if (accidental === "b" || accidental === "♭") {
-    // Prefer flats if original was flat
-    result = CHROMATIC_SCALE_FLAT[newSemitone];
-  } else {
-    // Original was natural, choose based on direction
-    result =
-      semitones > 6
-        ? CHROMATIC_SCALE_FLAT[newSemitone]
-        : CHROMATIC_SCALE_SHARP[newSemitone];
-  }
-
-  console.log(`Result: "${result}"`);
-  return result;
-}
-
-function transposeChord(chord: string, semitones: number): string {
-  console.log(`=== TRANSPOSE CHORD START ===`);
-  console.log(`Input chord: "${chord}"`);
-  console.log(`Semitones: ${semitones}`);
-
-  if (semitones === 0) return chord;
-
-  const wasItalian = isItalianChord(chord);
-  const englishChord = toEnglishChord(chord);
-  console.log(`English chord: "${englishChord}"`);
-
-  const slashIndex = englishChord.indexOf("/");
-  let main = englishChord;
-  let bass = "";
-
-  if (slashIndex !== -1) {
-    main = englishChord.slice(0, slashIndex);
-    bass = englishChord.slice(slashIndex + 1);
-    console.log(`Split - Main: "${main}", Bass: "${bass}"`);
-  } else {
-    console.log(`No slash found, treating as simple chord`);
-  }
-
-  const matchMain = main.match(/^([A-G][#b♯♭]?)(.*)/);
-  console.log(`Main chord match:`, matchMain);
-
-  if (!matchMain) {
-    console.log(`Main chord match failed, returning original`);
-    return chord;
-  }
-
-  const [, root, suffix] = matchMain;
-  console.log(`Main - Root: "${root}", Suffix: "${suffix}"`);
-
-  const transposedRoot = transposeNote(root, semitones);
-  console.log(`Transposed root: "${transposedRoot}"`);
-
-  let result = transposedRoot + suffix;
-  console.log(`Result after main: "${result}"`);
-
-  if (bass) {
-    // Only capture the note part for bass, preserve everything else
-    const bassMatch = bass.match(/^([A-G][#b♯♭]?)/);
-    console.log(`Bass match:`, bassMatch);
-
-    if (bassMatch) {
-      const [, bassRoot] = bassMatch;
-      console.log(`Bass root: "${bassRoot}"`);
-
-      const transposedBass = transposeNote(bassRoot, semitones);
-      console.log(`Transposed bass: "${transposedBass}"`);
-
-      const bassRemainder = bass.slice(bassRoot.length);
-      console.log(`Bass remainder: "${bassRemainder}"`);
-
-      result += "/" + transposedBass + bassRemainder;
-    } else {
-      console.log(`Bass match failed, preserving original bass`);
-      result += "/" + bass;
-    }
-  }
-
-  console.log(`Final result before Italian conversion: "${result}"`);
-  const finalResult = toItalianChord(result, wasItalian);
-  console.log(`Final result: "${finalResult}"`);
-  console.log(`=== TRANSPOSE CHORD END ===`);
-
-  return finalResult;
-}
-
-function transposeChordLine(
-  line: string,
-  semitones: number,
-  notation: ChordNotation = "english",
-  accidentalPreference: AccidentalPreference = "sharp",
-  keyRoot: string = "C"
-): string {
-  if (
-    semitones === 0 &&
-    notation === "english" &&
-    accidentalPreference === "sharp"
-  )
-    return line;
-
-  return line.replace(chordRegex, (match) => {
-    // Only process if it's actually a valid chord
-    if (!isValidChord(match)) {
-      return match; // Return unchanged if not a valid chord
-    }
-
-    const transposedChord = transposeChord(match, semitones);
-    return convertChordNotation(
-      transposedChord,
-      notation,
-      accidentalPreference,
-      keyRoot
-    );
-  });
-}
-
-function analyzeChordLine(line: string): {
-  chordMatches: string[];
-  words: string[];
-  matchRatio: number;
-  hasPunctuation: boolean;
-  italianChordRatio: number;
-  validChordRatio: number;
-} {
-  const words = line.split(/\s+/).filter((w) => w.length > 0);
-  const allMatches = Array.from(line.matchAll(chordRegex)).map((m) => m[0]);
-  const validChordMatches = allMatches.filter((match) => isValidChord(match));
-
-  const matchRatio =
-    words.length > 0 ? validChordMatches.length / words.length : 0;
-  const validChordRatio =
-    allMatches.length > 0 ? validChordMatches.length / allMatches.length : 0;
-
-  const hasPunctuation = /[.,;!?].*[a-z]{3,}|[a-z]{3,}.*[.,;!?]/.test(line);
-
-  const italianChords = validChordMatches.filter((match) =>
-    isItalianChord(match)
-  );
-  const italianChordRatio =
-    validChordMatches.length > 0
-      ? italianChords.length / validChordMatches.length
-      : 0;
-
-  return {
-    chordMatches: validChordMatches,
-    words,
-    matchRatio,
-    hasPunctuation,
-    italianChordRatio,
-    validChordRatio,
-  };
-}
-
-function isChordLine(line: string): boolean {
-  const analysis = analyzeChordLine(line);
-
-  // No valid chords found
-  if (analysis.chordMatches.length === 0) return false;
-
-  // If we found potential chord matches but none are valid, it's not a chord line
-  if (analysis.validChordRatio < 0.5) return false;
-
-  // High certainty - most words are valid chords
-  if (analysis.matchRatio >= 0.8) return true;
-
-  // Medium certainty - some chords, no punctuation, short line
-  if (
-    analysis.matchRatio >= 0.5 &&
-    !analysis.hasPunctuation &&
-    analysis.words.length <= 6
-  )
-    return true;
-
-  // Lower threshold for lines with only chord-like tokens
-  if (analysis.matchRatio >= 0.4 && analysis.words.length <= 4) return true;
-
-  return false;
-}
-
-interface ParseOptions {
-  transpose?: number;
-  preserveEmptyLines?: boolean;
-  maxEmptyLines?: number;
-  notation?: ChordNotation;
-  accidentalPreference?: AccidentalPreference;
-  keyRoot?: string;
-}
-
-function parseChordSheet(
-  input: string,
-  options: ParseOptions = {}
-): ParsedLine[] {
-  const {
-    transpose = 0,
-    preserveEmptyLines = true,
-    maxEmptyLines = 2,
-    notation = "english",
-    accidentalPreference = "sharp",
-    keyRoot = "C",
-  } = options;
-
-  if (!input) return [];
-
-  const lines = input.split(/\r?\n/);
-  const parsed: ParsedLine[] = [];
-  let consecutiveEmptyLines = 0;
-
-  for (const rawLine of lines) {
-    const trimmed = rawLine.trim();
-
-    if (trimmed === "") {
-      consecutiveEmptyLines++;
-      if (preserveEmptyLines && consecutiveEmptyLines <= maxEmptyLines) {
-        parsed.push({ type: "lyrics", text: "" });
-      }
-      continue;
-    }
-
-    consecutiveEmptyLines = 0;
-
-    if (isSectionLine(trimmed)) {
-      const cleanSection = trimmed.replace(
-        /^["'\[\(\{]*\s*|\s*["'\]\)\}]*\s*[:\-–—]*\s*$/g,
-        ""
-      );
-      parsed.push({ type: "section", text: cleanSection });
-      continue;
-    }
-
-    if (isChordLine(trimmed)) {
-      const transposed = transposeChordLine(
-        trimmed,
-        transpose,
-        notation,
-        accidentalPreference,
-        keyRoot
-      );
-      parsed.push({ type: "chords", text: transposed });
-      continue;
-    }
-
-    parsed.push({ type: "lyrics", text: trimmed });
-  }
-
-  return parsed;
-}
-export default function ChordProViewComponent({
+export default function ChordProViewComponentAlt({
   setListSong,
   mode,
 }: {
@@ -1183,95 +413,97 @@ export default function ChordProViewComponent({
   return (
     <div className="relative">
       {mode !== "preview" && (
-        <div className="view-selector-container">
-          {audioPaths.length >= 1 && (
-            <Button
-              isIconOnly
-              onPress={() => setShowPlayer((prev) => !prev)}
-              variant="flat"
-            >
-              <LuAudioLines />
-            </Button>
-          )}
-          {userData && hasPermission(userData.role as Role, "update:songs") && (
+        <>
+          <div className="view-selector-container">
+            {audioPaths.length >= 1 && (
+              <Button
+                isIconOnly
+                onPress={() => setShowPlayer((prev) => !prev)}
+                variant="flat"
+              >
+                <LuAudioLines />
+              </Button>
+            )}
+            {userData &&
+              hasPermission(userData.role as Role, "update:songs") && (
+                <CDropdown
+                  options={[
+                    {
+                      label: "Aggiorna",
+                      value: "update",
+                      href: `/${pathname.split("/")[1]}/${setListSong.id}/update`,
+                    },
+                    {
+                      label: "Elimina",
+                      value: "delete",
+                      color: "danger",
+                    },
+                  ]}
+                  buttonPadding="sm"
+                  positionOnMobile="right"
+                  placeholder={<MdMoreVert size={22} />}
+                  onSelect={(option) => {
+                    if (option.value === "delete") {
+                      onOpen();
+                    }
+                  }}
+                />
+              )}
+
             <CDropdown
-              options={[
-                {
-                  label: "Aggiorna",
-                  value: "update",
-                  href: `/${pathname.split("/")[1]}/${setListSong.id}/update`,
-                },
-                {
-                  label: "Elimina",
-                  value: "delete",
-                  color: "danger",
-                },
-              ]}
+              options={notationOptions}
               buttonPadding="sm"
+              positionOnDesktop="right"
               positionOnMobile="right"
-              placeholder={<MdMoreVert size={22} />}
+              placeholder={<RiMusicAiFill size={20} />}
               onSelect={(option) => {
-                if (option.value === "delete") {
-                  onOpen();
+                if (
+                  option.value === "nashville" ||
+                  option.value === "italian" ||
+                  option.value === "english"
+                ) {
+                  setChordNotation(option.value as ChordNotation);
+                } else if (
+                  option.value === "chords" ||
+                  option.value === "lyrics"
+                ) {
+                  toggleView();
+                } else if (option.value === "sharp-flat") {
+                  toggleAccidentals();
                 }
               }}
             />
+          </div>
+          {showPlayer && (
+            <div className="max-w-2xl mx-auto space-y-1 my-3">
+              {audioPaths.map((path, index) => {
+                const trackName = path
+                  .replace(/\.[^/.]+$/, "")
+                  .replace(/-/g, " ")
+                  .replace(/\b\w/g, (l) => l.toUpperCase());
+
+                return (
+                  <div
+                    key={index}
+                    className="my-2 border border-gray-100 rounded p-4"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
+                        {trackName}
+                      </p>
+                    </div>
+                    <audio controls className="w-full h-8">
+                      <source
+                        src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`}
+                      />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                );
+              })}
+            </div>
           )}
-
-          <CDropdown
-            options={notationOptions}
-            buttonPadding="sm"
-            positionOnDesktop="right"
-            positionOnMobile="right"
-            placeholder={<RiMusicAiFill size={20} />}
-            onSelect={(option) => {
-              if (
-                option.value === "nashville" ||
-                option.value === "italian" ||
-                option.value === "english"
-              ) {
-                setChordNotation(option.value as ChordNotation);
-              } else if (
-                option.value === "chords" ||
-                option.value === "lyrics"
-              ) {
-                toggleView();
-              } else if (option.value === "sharp-flat") {
-                toggleAccidentals();
-              }
-            }}
-          />
-        </div>
-      )}
-
-      {showPlayer && (
-        <div className="max-w-2xl mx-auto space-y-1 my-3">
-          {audioPaths.map((path, index) => {
-            const trackName = path
-              .replace(/\.[^/.]+$/, "")
-              .replace(/-/g, " ")
-              .replace(/\b\w/g, (l) => l.toUpperCase());
-
-            return (
-              <div
-                key={index}
-                className="my-2 border border-gray-100 rounded p-4"
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
-                    {trackName}
-                  </p>
-                </div>
-                <audio controls className="w-full h-8">
-                  <source
-                    src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`}
-                  />
-                  Your browser does not support the audio element.
-                </audio>
-              </div>
-            );
-          })}
-        </div>
+        </>
       )}
 
       <div>

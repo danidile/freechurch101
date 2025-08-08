@@ -1,7 +1,7 @@
 "use client";
 import { albumsT, artistsT, songSchema } from "@/utils/types/types";
 import { Button } from "@heroui/react";
-import { ChevronDown, ChevronUp } from "lucide-react"; // optional icons
+import { ChevronDown, ChevronUp, Eye, Maximize2, Music, X } from "lucide-react"; // optional icons
 import {
   Modal,
   ModalContent,
@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { useState, useRef, SetStateAction, useEffect } from "react";
 import { toChordPro } from "@/utils/chordProFunctions/chordProFuncs";
 import { updateSong } from "./updateSongAction";
-import { FaUndoAlt, FaRedoAlt, FaRegTrashAlt } from "react-icons/fa";
+import { FaUndoAlt, FaRedoAlt, FaRegTrashAlt, FaInfo } from "react-icons/fa";
 import { addSong } from "../../addSong/addSongAction";
 import { usePathname } from "next/navigation";
 import { updateItalianSongAction } from "@/app/italiansongs/[songId]/update/updateItalianSongAction";
@@ -31,6 +31,8 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
 import { getAudioFileSongNames } from "@/hooks/GET/getAudioFileSongNames";
 import { deleteAudiosAction } from "./deleteAudiosAction";
+import ChordProViewComponentAlt from "@/app/components/chordProViewComponentAlt";
+import { useScreenSize } from "@/app/components/useScreenSize";
 
 export default function UpdateSongForm({
   songData,
@@ -45,6 +47,9 @@ export default function UpdateSongForm({
 }) {
   const [audioPaths, setAudioPaths] = useState<string[]>([]);
   const { userData } = useUserStore();
+  const { width, height } = useScreenSize();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   useEffect(() => {
     if (songData.audio_path) {
@@ -105,6 +110,31 @@ export default function UpdateSongForm({
       ...songData,
     },
   });
+  const previewData = {
+    time_signature: watch("time_signature"),
+    bpm: watch("bpm"),
+    id: "",
+    song: "",
+    singer: "",
+    singerName: "",
+    song_title: watch("song_title"),
+    author: watch("author"),
+    key: watch("upload_key"),
+    lyrics: state,
+    upload_key: "",
+    order: 0,
+    type: "",
+    global_song: "",
+    isSong: false,
+    isTitle: false,
+    duration: "",
+    tonalita: "",
+    note: "",
+    setlist_id: "",
+    title: "",
+    originalIndex: 0,
+    audio_path: "",
+  };
   const insertBold = () => {
     const el = textAreaRef.current;
     if (!el) return;
@@ -245,7 +275,7 @@ export default function UpdateSongForm({
   }, [isOpen]);
 
   return (
-    <div className="container-sub">
+    <div className="container-sub !flex-row items-start gap-10">
       <form onSubmit={handleSubmit(convertData)}>
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <div className="flex flex-wrap  md:flex-nowrap gap-2 items-center">
@@ -534,14 +564,18 @@ export default function UpdateSongForm({
               type="button"
               onPress={convertIntoChordPro}
               color="primary"
-              variant="light"
+              variant="flat"
+              size="sm"
+              className="mr-1"
             >
               Converti in ChordPro
             </Button>
             <Button
               type="button"
               color="primary"
-              variant="light"
+              variant="flat"
+              size="sm"
+              className="mr-1"
               onPress={() => {
                 console.log("Button clicked");
 
@@ -550,7 +584,16 @@ export default function UpdateSongForm({
             >
               Sezione
             </Button>
-
+            <Button
+              type="button"
+              onPress={() => setIsInfoModalOpen(true)}
+              variant="flat"
+              size="sm"
+              color="primary"
+              isIconOnly
+            >
+              <FaInfo />
+            </Button>
             <div className="p-1 border-amber-400 flex flex-row gap-2">
               <Button
                 type="button"
@@ -575,6 +618,16 @@ export default function UpdateSongForm({
                 <FaRedoAlt />
               </Button>
             </div>
+            {width <= 1200 && (
+              <Button
+                size="sm"
+                color="primary"
+                onPress={() => setIsModalOpen(true)}
+              >
+                <Maximize2 size={18} />
+                Anteprima
+              </Button>
+            )}
           </div>
 
           <Textarea
@@ -649,6 +702,190 @@ export default function UpdateSongForm({
           )}
         </ModalContent>
       </Modal>
+
+      {width > 1200 && (
+        <div className="relative border-1 border-dashed border-blue-300 rounded-lg p-4">
+          {/* Preview Header */}
+          <div className="flex items-center gap-2 mb-3 text-blue-700 bg-blue-100 px-3 py-2 rounded-md">
+            <Eye size={18} />
+            <span className="font-semibold text-sm uppercase tracking-wide">
+              Anteprima
+            </span>
+          </div>
+
+          {/* Fixed Height Container with Scroll */}
+          <div className="relative">
+            <div
+              className="overflow-y-auto"
+              style={{ height: "800px", width: "500px" }}
+            >
+              <ChordProViewComponentAlt
+                mode="preview"
+                setListSong={previewData}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Preview Button - shows when width <= 1200 */}
+
+      {/* Modal for Mobile */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-[#0a0a0ac1] bg-opacity-20"
+            onClick={() => setIsModalOpen(false)}
+          />
+
+          {/* Modal Content */}
+          <div className="relative bg-white rounded-lg shadow-xl mx-4 my-8 w-full max-w-2xl max-h-full flex flex-col">
+            {/* Modal Header */}
+
+            {/* Modal Body - Scrollable */}
+            <div className="relative border-1 border-dashed border-blue-300 rounded-lg p-4">
+              {/* Preview Header */}
+              <div className="flex items-center gap-2 mb-3 text-blue-700 bg-blue-100 px-3 py-2 rounded-md justify-between">
+                <div className="flex-row gap-3 flex">
+                  <Eye size={18} />
+                  <span className="font-semibold text-sm uppercase tracking-wide">
+                    Anteprima
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="p-2 mr-0 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X color="black" size={25} />
+                </button>
+              </div>
+
+              {/* Fixed Height Container with Scroll */}
+              <div className="relative">
+                <div
+                  className="overflow-y-auto"
+                  style={{ height: "800px", width: "500px" }}
+                >
+                  <ChordProViewComponentAlt
+                    mode="preview"
+                    setListSong={previewData}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isInfoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-[#0a0a0ac1] bg-opacity-20"
+            onClick={() => setIsInfoModalOpen(false)}
+          />
+
+          {/* Modal Content */}
+          <div className="relative bg-white rounded-lg shadow-xl mx-4 my-8 w-full max-w-2xl max-h-full flex flex-col">
+            {/* Modal Header */}
+
+            {/* Modal Body - Scrollable */}
+            <div className="relative border-1 border-dashed border-blue-300 rounded-lg p-4">
+              {/* Preview Header */}
+              <div className="flex items-center gap-2 mb-3 text-blue-700 bg-blue-100 px-3 py-2 rounded-md justify-between">
+                <div className="flex-row gap-3 flex">
+                  <FaInfo size={18} />
+                  <h5 className="font-medium">Informazioni Utili</h5>
+                </div>
+                <button
+                  onClick={() => setIsInfoModalOpen(false)}
+                  className="p-2 mr-0 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X color="black" size={25} />
+                </button>
+              </div>
+
+              {/* Fixed Height Container with Scroll */}
+              <div className="relative pb-12 pt-8">
+                <ul className="leading-12 list-disc ml-6 space-y-4 text-sm text-gray-800 ">
+                  <li>
+                    {" "}
+                    <p>
+                      <strong>
+                        Usa <code>m</code> per gli accordi minori
+                      </strong>{" "}
+                      – ad esempio <code>Am</code> invece di <code>A-</code>.
+                    </p>{" "}
+                  </li>
+                  <li>
+                    {" "}
+                    <p>
+                      <strong>
+                        Evita di mettere accordi subito prima o dopo le
+                        parentesi
+                      </strong>{" "}
+                      – aggiungi uno spazio per evitare ambiguità.
+                    </p>{" "}
+                  </li>
+                  <li>
+                    {" "}
+                    <p>
+                      <strong>Scrivi gli accordi in maiuscolo</strong> – sempre
+                      con lettere maiuscole come <code>C</code>, <code>Dm</code>
+                      .
+                    </p>{" "}
+                  </li>
+                  <li>
+                    {" "}
+                    <p>
+                      <strong>
+                        Usa correttamente la notazione con lo slash
+                      </strong>{" "}
+                      – ad esempio <code>D/F#</code>.
+                    </p>{" "}
+                  </li>
+                  <li>
+                    <p>
+                      <strong>Metti gli accordi sopra il testo</strong> – non
+                      inserirli all’interno del testo stesso.
+                    </p>{" "}
+                  </li>
+                  <li>
+                    <p>
+                      <strong>Usa un solo sistema di notazione</strong> –
+                      Inglese <em>oppure</em> Italiano, non entrambi.
+                    </p>{" "}
+                  </li>
+                  <li>
+                    {" "}
+                    <p>
+                      <strong>Non complicare troppo gli accordi</strong> – usa
+                      nomi standard se non strettamente necessario.
+                    </p>
+                  </li>
+                  <li>
+                    {" "}
+                    <p>
+                      <strong>Usa simboli standard</strong> – come{" "}
+                      <code>maj</code>, <code>min</code>, <code>7</code>, ecc.
+                    </p>{" "}
+                  </li>
+                  <li>
+                    {" "}
+                    <p>
+                      <strong>
+                        Etichetta chiaramente le sezioni della canzone
+                      </strong>{" "}
+                      – ad esempio <code>Verse</code>, <code>Chorus</code>, ecc.
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
