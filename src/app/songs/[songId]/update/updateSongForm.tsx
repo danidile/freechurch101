@@ -1,4 +1,6 @@
 "use client";
+import { VscPreview } from "react-icons/vsc";
+
 import { albumsT, artistsT, songSchema } from "@/utils/types/types";
 import { Button } from "@heroui/react";
 import { ChevronDown, ChevronUp, Eye, Maximize2, Music, X } from "lucide-react"; // optional icons
@@ -568,7 +570,7 @@ export default function UpdateSongForm({
               size="sm"
               className="mr-1"
             >
-              Converti in ChordPro
+              ChordPro
             </Button>
             <Button
               type="button"
@@ -622,10 +624,10 @@ export default function UpdateSongForm({
               <Button
                 size="sm"
                 color="primary"
+                isIconOnly
                 onPress={() => setIsModalOpen(true)}
               >
                 <Maximize2 size={18} />
-                Anteprima
               </Button>
             )}
           </div>
@@ -735,7 +737,7 @@ export default function UpdateSongForm({
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-[#0a0a0ac1] bg-opacity-20"
+            className="absolute inset-0 bg-[#0a0a0ac1] bg-opacity-20  p-2"
             onClick={() => setIsModalOpen(false)}
           />
 
@@ -746,7 +748,7 @@ export default function UpdateSongForm({
             {/* Modal Body - Scrollable */}
             <div className="relative border-1 border-dashed border-blue-300 rounded-lg p-4">
               {/* Preview Header */}
-              <div className="flex items-center gap-2 mb-3 text-blue-700 bg-blue-100 px-3 py-2 rounded-md justify-between">
+              <div className="flex items-center gap-2 mb-3 text-blue-700 bg-blue-100 px-3 py-1 rounded-md justify-between">
                 <div className="flex-row gap-3 flex">
                   <Eye size={18} />
                   <span className="font-semibold text-sm uppercase tracking-wide">
@@ -755,7 +757,7 @@ export default function UpdateSongForm({
                 </div>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 mr-0 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-1 mr-0 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   <X color="black" size={25} />
                 </button>
@@ -765,7 +767,7 @@ export default function UpdateSongForm({
               <div className="relative">
                 <div
                   className="overflow-y-auto"
-                  style={{ height: "800px", width: "500px" }}
+                  style={{ height: "500px", width: "500px" }}
                 >
                   <ChordProViewComponentAlt
                     mode="preview"
@@ -835,6 +837,16 @@ export default function UpdateSongForm({
                       con lettere maiuscole come <code>C</code>, <code>Dm</code>
                       .
                     </p>{" "}
+                  </li>
+                  <li>
+                    {" "}
+                    <p>
+                      <strong> Sezioni Personalizzate </strong> Se l'algoritmo
+                      non ti riconosce il titolo della sezione puoi sempre usare{" "}
+                      <code>&lt;section&gt;&lt;/section&gt;</code> per inserire
+                      il tuo titolo personalizzato. – ad esempio{" "}
+                      &lt;section&gt;Sezione speciale&lt;/section&gt;.
+                    </p>
                   </li>
                   <li>
                     {" "}
