@@ -41,9 +41,7 @@ import { LuAudioLines } from "react-icons/lu";
 import { getAudioFileSongNames } from "@/hooks/GET/getAudioFileSongNames";
 
 // Improved chord sheet parser
-import { Note, Interval } from "tonal";
 import CDropdown from "./CDropdown";
-import { BsMusicNoteList } from "react-icons/bs";
 import { RiMusicAiFill } from "react-icons/ri";
 // Map semitone distance to Nashville numbers with accidentals
 const semitoneToNashville: Record<number, string> = {
@@ -61,8 +59,10 @@ const semitoneToNashville: Record<number, string> = {
   11: "7",
 };
 
+// Improved chord regex - more strict and specific
 const chordRegex =
-  /\b([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M|\+|°|ø)?(?:\d+)?(?:[#b♯♭]\d+)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)[#b♯♭]?)?)/gi;
+  /\b([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M|\+|°|ø)?(?:\d+)?(?:[#b♯♭]\d+)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)[#b♯♭]?)?)(?=\s|$)/gi;
+
 type ParsedLine =
   | { type: "section"; text: string }
   | { type: "chords"; text: string }
@@ -138,6 +138,7 @@ const EN_TO_IT: Record<string, string> = {
   A: "La",
   B: "Si",
 };
+
 // Notes in semitone order, starting from C
 const CHROMATIC_SCALE_SHARP = [
   "C",
@@ -189,12 +190,97 @@ const NOTE_TO_SEMITONE: Record<string, number> = {
   Bb: 10,
   B: 11,
 };
+
+// Valid chord suffixes to help distinguish real chords from words
+const VALID_CHORD_SUFFIXES = new Set([
+  "",
+  "m",
+  "maj",
+  "min",
+  "dim",
+  "aug",
+  "sus",
+  "sus2",
+  "sus4",
+  "add",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "11",
+  "13",
+  "maj7",
+  "min7",
+  "dim7",
+  "aug7",
+  "m7",
+  "M7",
+  "7sus4",
+  "m7b5",
+  "mMaj7",
+  "add9",
+  "add2",
+  "6/9",
+  "m6",
+  "maj9",
+  "min9",
+  "9",
+  "sus2",
+  "sus4",
+  "+",
+  "°",
+  "ø",
+  "Δ",
+]);
+
+// Common Italian words that might be mistaken for chords
+const ITALIAN_WORDS_BLACKLIST = new Set([
+  "te",
+  "mi",
+  "si",
+  "re",
+  "la",
+  "del",
+  "della",
+  "nel",
+  "nella",
+  "con",
+  "per",
+  "che",
+  "non",
+  "una",
+  "solo",
+  "più",
+  "dove",
+  "come",
+  "quando",
+  "ogni",
+  "tutto",
+  "molto",
+  "ancora",
+  "anche",
+]);
+
 type ChordNotation = "english" | "italian" | "nashville";
 type AccidentalPreference = "sharp" | "flat";
 
 export function convertToNashville(chord: string, keyRoot: string): string {
-  // Parse chord root and suffix
-  const match = chord.match(/^([A-Ga-g])([#b♯♭]?)(.*)$/);
+  // Check if it's a slash chord
+  const slashIndex = chord.indexOf("/");
+  let mainChord = chord;
+  let bassNote = "";
+
+  if (slashIndex !== -1) {
+    mainChord = chord.slice(0, slashIndex);
+    bassNote = chord.slice(slashIndex + 1);
+  }
+
+  // Parse main chord root and suffix
+  const match = mainChord.match(/^([A-Ga-g])([#b♯♭]?)(.*)$/);
   if (!match) return chord;
 
   let [, root, accidental = "", suffix = ""] = match;
@@ -203,10 +289,10 @@ export function convertToNashville(chord: string, keyRoot: string): string {
   accidental = accidental.replace("♯", "#").replace("♭", "b");
   const chordRoot = root + accidental;
 
-  const chordRootIndex = Note.chroma(chordRoot);
-  const keyRootIndex = Note.chroma(keyRoot);
+  const chordRootIndex = NOTE_TO_SEMITONE[chordRoot];
+  const keyRootIndex = NOTE_TO_SEMITONE[keyRoot];
 
-  if (chordRootIndex === null || keyRootIndex === null) return chord;
+  if (chordRootIndex === undefined || keyRootIndex === undefined) return chord;
 
   // Calculate interval from key root
   const interval = (chordRootIndex - keyRootIndex + 12) % 12;
@@ -220,7 +306,34 @@ export function convertToNashville(chord: string, keyRoot: string): string {
     numberStr = numberStr.toLowerCase();
   }
 
-  return numberStr + cleanSuffix;
+  let result = numberStr + cleanSuffix;
+
+  // Handle bass note conversion
+  if (bassNote) {
+    const bassMatch = bassNote.match(/^([A-Ga-g])([#b♯♭]?)(.*)$/);
+    if (bassMatch) {
+      let [, bassRoot, bassAccidental = "", bassRemainder = ""] = bassMatch;
+
+      bassRoot = bassRoot.toUpperCase();
+      bassAccidental = bassAccidental.replace("♯", "#").replace("♭", "b");
+      const bassNoteRoot = bassRoot + bassAccidental;
+
+      const bassRootIndex = NOTE_TO_SEMITONE[bassNoteRoot];
+      if (bassRootIndex !== undefined) {
+        const bassInterval = (bassRootIndex - keyRootIndex + 12) % 12;
+        const bassNumberStr = semitoneToNashville[bassInterval];
+        result += "/" + bassNumberStr + bassRemainder;
+      } else {
+        // If bass note can't be converted, keep original
+        result += "/" + bassNote;
+      }
+    } else {
+      // If bass note can't be parsed, keep original
+      result += "/" + bassNote;
+    }
+  }
+
+  return result;
 }
 
 const sectionPatternCache = new Map<string, boolean>();
@@ -257,6 +370,7 @@ function normalizeChord(chord: string): string {
     .replace(/\+/g, "aug")
     .replace(/Δ/g, "maj7");
 }
+
 function normalizeAccidentals(
   note: string,
   preference: AccidentalPreference
@@ -340,6 +454,59 @@ function convertChordNotation(
 function isItalianChord(chord: string): boolean {
   return /^(Do|Re|Mi|Fa|Sol|La|Si)\b/i.test(chord);
 }
+
+// Improved function to validate if a match is actually a chord
+function isValidChord(match: string): boolean {
+  const lowerMatch = match.toLowerCase();
+
+  // Check if it's in the Italian words blacklist
+  if (ITALIAN_WORDS_BLACKLIST.has(lowerMatch)) {
+    return false;
+  }
+
+  // Parse the chord
+  const chordMatch = match.match(
+    /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(.*)$/i
+  );
+  if (!chordMatch) return false;
+
+  const [, root, accidental, suffix] = chordMatch;
+
+  // If there's no suffix, it must be a single note (valid chord)
+  if (!suffix) return true;
+
+  // Check if suffix is valid
+  const normalizedSuffix = suffix.toLowerCase();
+
+  // Check for common valid patterns
+  if (
+    VALID_CHORD_SUFFIXES.has(suffix) ||
+    VALID_CHORD_SUFFIXES.has(normalizedSuffix)
+  ) {
+    return true;
+  }
+
+  // Check for slash chords
+  if (suffix.includes("/")) {
+    const [mainSuffix, bassPart] = suffix.split("/");
+    const bassMatch = bassPart.match(
+      /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(.*)$/i
+    );
+    return (
+      bassMatch !== null &&
+      (VALID_CHORD_SUFFIXES.has(mainSuffix) || mainSuffix === "")
+    );
+  }
+
+  // Check for numeric suffixes (7, 9, 11, 13, etc.)
+  if (/^\d+$/.test(suffix)) {
+    const num = parseInt(suffix);
+    return num >= 2 && num <= 13;
+  }
+
+  return false;
+}
+
 function transposeNote(note: string, semitones: number): string {
   console.log(`Transposing note: "${note}" by ${semitones} semitones`);
 
@@ -472,6 +639,7 @@ function transposeChord(chord: string, semitones: number): string {
 
   return finalResult;
 }
+
 function transposeChordLine(
   line: string,
   semitones: number,
@@ -487,6 +655,11 @@ function transposeChordLine(
     return line;
 
   return line.replace(chordRegex, (match) => {
+    // Only process if it's actually a valid chord
+    if (!isValidChord(match)) {
+      return match; // Return unchanged if not a valid chord
+    }
+
     const transposedChord = transposeChord(match, semitones);
     return convertChordNotation(
       transposedChord,
@@ -498,36 +671,64 @@ function transposeChordLine(
 }
 
 function analyzeChordLine(line: string): {
-  chordMatches: RegExpMatchArray[];
+  chordMatches: string[];
   words: string[];
   matchRatio: number;
   hasPunctuation: boolean;
   italianChordRatio: number;
+  validChordRatio: number;
 } {
   const words = line.split(/\s+/).filter((w) => w.length > 0);
-  const chordMatches = Array.from(line.matchAll(chordRegex));
-  const matchRatio = words.length > 0 ? chordMatches.length / words.length : 0;
+  const allMatches = Array.from(line.matchAll(chordRegex)).map((m) => m[0]);
+  const validChordMatches = allMatches.filter((match) => isValidChord(match));
+
+  const matchRatio =
+    words.length > 0 ? validChordMatches.length / words.length : 0;
+  const validChordRatio =
+    allMatches.length > 0 ? validChordMatches.length / allMatches.length : 0;
 
   const hasPunctuation = /[.,;!?].*[a-z]{3,}|[a-z]{3,}.*[.,;!?]/.test(line);
 
-  const italianChords = chordMatches.filter((match) =>
-    isItalianChord(match[0])
+  const italianChords = validChordMatches.filter((match) =>
+    isItalianChord(match)
   );
   const italianChordRatio =
-    chordMatches.length > 0 ? italianChords.length / chordMatches.length : 0;
+    validChordMatches.length > 0
+      ? italianChords.length / validChordMatches.length
+      : 0;
 
-  return { chordMatches, words, matchRatio, hasPunctuation, italianChordRatio };
+  return {
+    chordMatches: validChordMatches,
+    words,
+    matchRatio,
+    hasPunctuation,
+    italianChordRatio,
+    validChordRatio,
+  };
 }
 
 function isChordLine(line: string): boolean {
   const analysis = analyzeChordLine(line);
 
+  // No valid chords found
   if (analysis.chordMatches.length === 0) return false;
-  if (analysis.matchRatio >= 0.7) return true;
-  if (analysis.matchRatio >= 0.5 && !analysis.hasPunctuation) return true;
-  if (analysis.words.length === 1 && analysis.matchRatio === 1) return true;
-  if (analysis.chordMatches.length >= 2 && analysis.matchRatio >= 0.4)
+
+  // If we found potential chord matches but none are valid, it's not a chord line
+  if (analysis.validChordRatio < 0.5) return false;
+
+  // High certainty - most words are valid chords
+  if (analysis.matchRatio >= 0.8) return true;
+
+  // Medium certainty - some chords, no punctuation, short line
+  if (
+    analysis.matchRatio >= 0.5 &&
+    !analysis.hasPunctuation &&
+    analysis.words.length <= 6
+  )
     return true;
+
+  // Lower threshold for lines with only chord-like tokens
+  if (analysis.matchRatio >= 0.4 && analysis.words.length <= 4) return true;
 
   return false;
 }
@@ -599,7 +800,6 @@ function parseChordSheet(
 
   return parsed;
 }
-
 export default function ChordProViewComponent({
   setListSong,
   mode,
