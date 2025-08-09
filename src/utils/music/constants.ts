@@ -168,6 +168,8 @@ export const VALID_CHORD_SUFFIXES = new Set([
   "9",
   "11",
   "13",
+  "madd9",
+  "madd",
   "maj7",
   "min7",
   "dim7",
@@ -190,6 +192,7 @@ export const VALID_CHORD_SUFFIXES = new Set([
   "°",
   "ø",
   "Δ",
+  "b9",
 ]);
 
 // Common Italian words that might be mistaken for chords

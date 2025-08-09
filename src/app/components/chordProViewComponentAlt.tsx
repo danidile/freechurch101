@@ -23,8 +23,6 @@ import { useUserStore } from "@/store/useUserStore";
 import { deleteSong } from "../songs/[songId]/deleteSongAction";
 import { LuAudioLines } from "react-icons/lu";
 import { getAudioFileSongNames } from "@/hooks/GET/getAudioFileSongNames";
-
-// Improved chord sheet parser
 import CDropdown from "./CDropdown";
 import { RiMusicAiFill } from "react-icons/ri";
 import { AccidentalPreference, ChordNotation } from "@/utils/music/constants";
@@ -37,7 +35,6 @@ export default function ChordProViewComponentAlt({
   setListSong: setListSongT;
   mode?: string;
 }) {
-  console.log(setListSong.lyrics);
   const pathname = usePathname();
   const { userData } = useUserStore();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -58,7 +55,6 @@ export default function ChordProViewComponentAlt({
 
   // ChordPro specific states
   const [chordProState, setChordProState] = useState("");
-  const [chordProCount, setChordProCount] = useState(0);
   const [songKey, setSongKey] = useState(
     setListSong.key || setListSong.upload_key
   );
@@ -87,15 +83,13 @@ export default function ChordProViewComponentAlt({
     let song = parser.parse(setListSong.lyrics);
     const steps = stepsBetweenKeys(setListSong.upload_key, setListSong.key);
     song = song.transpose(steps);
-    const formatter = new ChordSheetJS.HtmlTableFormatter();
+    const formatter = new ChordSheetJS.TextFormatter();
 
     return { chordProSong: song, chordProFormatter: formatter };
   }, [setListSong.lyrics, setListSong.upload_key, setListSong.key]);
 
   // Parse lyrics with improved parser
   const parsedLyrics = useMemo(() => {
-    if (!setListSong.lyrics || isChordPro) return [];
-
     const originalKey = setListSong.upload_key || setListSong.key || "C";
     const currentKey = setListSong.key || setListSong.upload_key || "C";
 
@@ -105,7 +99,9 @@ export default function ChordProViewComponentAlt({
     const keyForNashville =
       chordNotation === "nashville" ? originalKey : currentKey;
 
-    return parseChordSheet(setListSong.lyrics, {
+    const selectedSong = isChordPro ? chordProState : setListSong.lyrics;
+
+    return parseChordSheet(selectedSong, {
       transpose: transposeAmount,
       preserveEmptyLines: true,
       maxEmptyLines: 2,
@@ -121,11 +117,12 @@ export default function ChordProViewComponentAlt({
     accidentalPreference,
     setListSong.key,
     setListSong.upload_key,
+    chordProState,
   ]);
   // Check ChordPro format
   useEffect(() => {
     setIsChordPro(isChordProFormat(setListSong.lyrics));
-  }, [setListSong.lyrics]);
+  }, []);
 
   // Initialize ChordPro display
   useEffect(() => {
@@ -140,7 +137,6 @@ export default function ChordProViewComponentAlt({
     if (setListSong.audio_path && userData?.church_id) {
       const folderPath = `${userData.church_id}/music/audio/${setListSong.id}`;
       getAudioFileSongNames("churchdata", folderPath).then((names) => {
-        console.log("Files in folder:", names);
         setAudioPaths(names);
       });
     }
@@ -162,14 +158,6 @@ export default function ChordProViewComponentAlt({
   const transposeUp = useCallback(() => {
     if (!chordProSong || !chordProFormatter) return;
 
-    setChordProCount((prevCount) => {
-      const newCount = prevCount + 1;
-      const newChords = chordProSong.transpose(newCount);
-      const display = chordProFormatter.format(newChords);
-      setChordProState(display);
-      return newCount;
-    });
-
     setSongKey((prevKey) => {
       const currentIndex = keys.findIndex((key) => key === prevKey);
       return keys[(currentIndex + 1) % keys.length];
@@ -178,14 +166,6 @@ export default function ChordProViewComponentAlt({
 
   const transposeDown = useCallback(() => {
     if (!chordProSong || !chordProFormatter) return;
-
-    setChordProCount((prevCount) => {
-      const newCount = prevCount - 1;
-      const newChords = chordProSong.transpose(newCount);
-      const display = chordProFormatter.format(newChords);
-      setChordProState(display);
-      return newCount;
-    });
 
     setSongKey((prevKey) => {
       const currentIndex = keys.findIndex((key) => key === prevKey);
@@ -410,6 +390,7 @@ export default function ChordProViewComponentAlt({
       return true;
     });
   }, [viewChords, chordNotation]);
+  console.log("chordProState", chordProState);
   return (
     <div className="relative">
       {mode !== "preview" && (
@@ -516,28 +497,7 @@ export default function ChordProViewComponentAlt({
           </small>
         </div>
 
-        {!isChordPro && renderParsedLyrics()}
-
-        {isChordPro && (
-          <>
-            {viewChords && (
-              <>
-                <div
-                  id="song-chords"
-                  dangerouslySetInnerHTML={{ __html: chordProState }}
-                  style={{ whiteSpace: "pre-wrap" }}
-                />
-              </>
-            )}
-            {!viewChords && (
-              <div
-                id="song-lyrics"
-                dangerouslySetInnerHTML={{ __html: chordProState }}
-                style={{ whiteSpace: "pre-wrap" }}
-              />
-            )}
-          </>
-        )}
+        {renderParsedLyrics()}
       </div>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
