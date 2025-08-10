@@ -5,8 +5,9 @@ import {
   FaUserCircle,
   FaCalendarTimes,
   FaRegCalendarAlt,
+  FaQuestion,
 } from "react-icons/fa";
-import { MdOutlineEventNote, MdOutlineLibraryMusic } from "react-icons/md";
+import { MdOutlineContactSupport, MdOutlineEventNote, MdOutlineLibraryMusic } from "react-icons/md";
 
 import { HiUserGroup } from "react-icons/hi2";
 import { IoNotificationsSharp } from "react-icons/io5";
@@ -215,10 +216,20 @@ export default function Sidebar() {
             </div>
           </Link>
         </li>
-        {userData.email === "danidile94@gmail.com" && <NotificationButton />}
+        <li className="sidebar-li">
+          <Link className="sidebar-link" href="/protected/tickets">
+            <div className="sidebar-element">
+              <FaQuestion />
+
+
+              <p>Ticket</p>
+            </div>
+          </Link>
+        </li>
+        {/* {userData.email === "danidile94@gmail.com" && <NotificationButton />}
         {userData.email === "danidile94@gmail.com" && (
           <TestNotificationButton />
-        )}
+        )} */}
         <li className="sidebar-li mt-10! "></li>
         <li className="sidebar-li">
           <button
