@@ -1,12 +1,16 @@
 "use client";
 import React, { useState, useEffect, useRef, FC } from "react";
+// --- (1) UPDATED IMPORTS ---
+// Import functions directly instead of service objects.
 import {
   createTicket,
+  getAllTickets,
+  getUserTickets,
+  getTicketMessages,
+  sendMessage,
+  updateTicketStatus,
   Message,
-  messageService,
-  supabase,
   Ticket,
-  ticketService,
 } from "./supabase";
 import { useUserStore } from "@/store/useUserStore";
 import { Toaster, toast } from "react-hot-toast";
@@ -29,54 +33,38 @@ export default function TicketSystem() {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Mock authentication and initial data load
-  useEffect(() => {
-    // In a real app, this would come from a proper auth context
-    if (userData.email === "danidile94@gmail.com") {
-      setIsAdmin(true);
-    }
-    loadTickets();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAdmin, userData.email]);
+  // --- (FIX 1) ---
+  // Remove the isAdmin state and derive it directly on each render.
+  // This is the source of truth and avoids timing issues.
+  const isAdmin = userData.email === "danidile94@gmail.com";
 
-  // Subscribe to real-time messages for the selected ticket
+  // --- (FIX 2) ---
+  // This useEffect now runs only when the calculated `isAdmin` value changes.
   useEffect(() => {
-    if (!selectedTicket) return;
-
-    const subscription = messageService.subscribeToMessages(
-      selectedTicket.id,
-      (newMessage: Message) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+    const loadTickets = async () => {
+      try {
+        setLoading(true);
+        // It now uses the correct `isAdmin` value for this render.
+        const data = isAdmin
+          ? await getAllTickets()
+          : await getUserTickets(userData.email);
+        setTickets(data || []);
+      } catch (error) {
+        toast.error("Failed to load tickets.");
+        console.error("Error loading tickets:", error);
+      } finally {
+        setLoading(false);
       }
-    );
-
-    // Unsubscribe on component unmount or when selectedTicket changes
-    return () => {
-      supabase.removeChannel(subscription);
     };
-  }, [selectedTicket]);
 
-  const loadTickets = async () => {
-    try {
-      setLoading(true);
-      const data = isAdmin
-        ? await ticketService.getAllTickets()
-        : await ticketService.getUserTickets(userData.email);
-      setTickets(data || []);
-    } catch (error) {
-      toast.error("Failed to load tickets.");
-      console.error("Error loading tickets:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    loadTickets();
+  }, [isAdmin, userData.email]); // Depend on isAdmin and the email itself.
 
   const loadMessages = async (ticketId: string) => {
     try {
-      const data = await messageService.getTicketMessages(ticketId);
+      const data = await getTicketMessages(ticketId);
       setMessages(data || []);
     } catch (error) {
       toast.error("Failed to load messages.");
@@ -113,13 +101,14 @@ export default function TicketSystem() {
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || !selectedTicket) return;
     try {
-      await messageService.sendMessage({
+      const newMessage = await sendMessage({
         ticket_id: selectedTicket.id,
         sender_name: userData.name,
         sender_email: userData.email,
         content,
-        is_admin: isAdmin,
+        is_admin: isAdmin, // Use the derived constant here too
       });
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
     } catch (error) {
       toast.error("Failed to send message.");
       console.error("Error sending message:", error);
@@ -132,7 +121,7 @@ export default function TicketSystem() {
   ) => {
     if (!isAdmin) return;
     try {
-      await ticketService.updateTicketStatus(ticketId, status);
+      await updateTicketStatus(ticketId, status);
       setTickets((prevTickets) =>
         prevTickets.map((t) => (t.id === ticketId ? { ...t, status } : t))
       );
@@ -146,6 +135,7 @@ export default function TicketSystem() {
     }
   };
 
+  // ... The rest of your component's JSX remains the same
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
@@ -206,6 +196,7 @@ export default function TicketSystem() {
   );
 }
 
+// ... All other child components (TicketList, TicketDetails, etc.) remain unchanged.
 // ============================================================================
 // Component: TicketList & TicketListItem
 // ============================================================================
@@ -435,7 +426,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, isOwnMessage }) => (
       )}
       <p className="sm:text-sm ">{message.content}</p>
       <p
-        className={`text-xs mt-1 ${isOwnMessage ? "text-blue-900" : "text-gray-500"} text-right`}
+        className={`text-xs mt-1 ${isOwnMessage ? "text-blue-200" : "text-gray-500"} text-right`}
       >
         {new Date(message.created_at).toLocaleTimeString([], {
           hour: "2-digit",
