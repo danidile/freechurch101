@@ -1,57 +1,39 @@
 "use client";
-import LoadingSongsPage from "@/app/songs/loading";
 import { getProfileSetList } from "@/hooks/GET/getProfileSetLists";
-import { getTeamsByProfile } from "@/hooks/GET/getTeamsByProfile";
 import { useUserStore } from "@/store/useUserStore";
 import { ChipColor, profileSetlistsT } from "@/utils/types/types";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Chip,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Spinner,
-} from "@heroui/react";
+import { Button, Chip, Spinner } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { MdEvent } from "react-icons/md";
 import { Alert } from "@heroui/alert";
 import { getPendingChurchMembershipRequests } from "@/hooks/GET/getPendingChurchMembershipRequests";
-import { FaExternalLinkAlt, FaPlus, FaRegCheckCircle, FaRegClock } from "react-icons/fa";
+import {
+  FaExternalLinkAlt,
+  FaRegCheckCircle,
+  FaRegClock,
+} from "react-icons/fa";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useChurchStore } from "@/store/useChurchStore";
 import { FaLink, FaRegCircleXmark } from "react-icons/fa6";
 import { FiPlus } from "react-icons/fi";
 import Link from "next/link";
 import { IoSettingsOutline } from "react-icons/io5";
-import router from "next/router";
 import CDropdown from "@/app/components/CDropdown";
-import { useRouter } from "next/navigation";
 import { statusColorMap, statusMap } from "@/constants";
 
 export default function AccountComponent() {
   const { userData, loading } = useUserStore();
-  const { churchMembers, loadingChurchData } = useChurchStore();
+  const { churchMembers } = useChurchStore();
   const [setlists, setSetlists] = useState<any[] | null>([]);
-  const [teams, setTeams] = useState<any[] | null>([]);
   const [pendingRequests, setPendingRequests] = useState(false);
-  const [fetchedData, setFetchedData] = useState(false);
   const { eventTypes } = useChurchStore();
 
   useEffect(() => {
     console.log(loading);
     const fetchData = async () => {
       if (!loading && userData) {
-        const [fetchedProfileSetLists, fetchedTeams] = await Promise.all([
-          getProfileSetList(userData.id),
-          getTeamsByProfile(userData.id),
-        ]);
+        const fetchedProfileSetLists = await getProfileSetList(userData.id);
         setSetlists(fetchedProfileSetLists);
-        setTeams(fetchedTeams);
-        setFetchedData(true);
 
         if (hasPermission(userData.role as Role, "confirm:churchMembership")) {
           const pendingChurchMembershipRequests =

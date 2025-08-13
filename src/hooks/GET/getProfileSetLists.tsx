@@ -7,7 +7,7 @@ export const getProfileSetList = async (prodileId: string) => {
     .from("event-team")
     .select("id,setlist(id,date,event_title,event_type),team(team_name),status")
     .eq("member", prodileId);
-
+  
   if (error) {
     console.log(error);
   } else {

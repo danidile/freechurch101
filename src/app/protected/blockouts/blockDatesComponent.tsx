@@ -10,6 +10,7 @@ import { deleteBlockoutAction } from "./deleteBlockoutsAction";
 import { getBlockoutsByUserId } from "@/hooks/GET/getBlockoutsByUserId";
 import { BlockedDate, RangeValueString } from "@/utils/types/types";
 import DateRangePicker from "@/app/components/DataRangePicker";
+import { Calendar, Clock, Trash2 } from "lucide-react";
 
 export default function BlockDatesComponent() {
   const { userData, loading } = useUserStore();
@@ -74,59 +75,86 @@ export default function BlockDatesComponent() {
     setBlockedDates((prev) => prev.filter((d) => d.id !== blockId));
     setRefreshKey((prev) => prev + 1);
   };
-
+  const calculateDuration = (start: Date, end: Date) => {
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays;
+  };
   return (
-    <div className="container-sub">
+    <div className="max-w-lg mx-auto p-2 bg-white min-h-screen">
       <I18nProvider locale="it-IT-u-ca-gregory">
-        <h4>Blocca date</h4>
-        <p>
-          Inserisci durante quali date non sarai disponibile per le turnazioni.
-        </p>
-        {/* Table of Blocked Dates */}
-        <div className="w-[500px] max-w-[95vw] my-4">
-          <table className="btable w-full">
-            <thead>
-              <tr>
-                <th className="!text-center">Inizio</th>
-                <th className="!text-center">Fine</th>
-                <th className="!text-center">Azioni</th>
-              </tr>
-            </thead>
-            <tbody>
-              {blockedDates.map((date) => (
-                <tr key={date.id} className="capitalize">
-                  <td>{formatter.format(date.start)}</td>
-                  <td>{formatter.format(date.end)}</td>
-                  <td>
-                    <button
-                      className="text-red-600 hover:text-red-400 mx-auto"
-                      onClick={() => deleteBlock(date.id)}
-                      title="Elimina blocco"
-                    >
-                      <FaRegTrashAlt />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-            </tbody>
-          </table>
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <Calendar className="w-6 h-6 text-blue-600" />
+            <h1 className="text-2xl font-bold text-gray-900">Blocca Date</h1>
+          </div>
+          <p className="text-gray-600">
+            Gestisci i periodi in cui non sarai disponibile per le turnazioni.
+          </p>
         </div>
-        {/* Date Range Picker & Add Button */}
-        {/* Toggle Button */}
+
+        <div className="mb-6">
+          {blockedDates.length === 0 ? (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-700 mb-2">
+                Nessuna data bloccata
+              </h3>
+              <p className="text-gray-500">
+                Aggiungi il tuo primo blocco di date
+              </p>
+            </div>
+          ) : (
+            <div className="text-center flex flex-col gap-2  p-2 sm:p-4 bg-gray-50 rounded-lg">
+              {blockedDates.map((date) => (
+                <div
+                  key={date.id}
+                  className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-5 h-5 text-gray-400 hidden sm:block" />
+                    <div>
+                      <p className="capitalize font-medium text-gray-900 text-left">
+                        {" "}
+                        {formatter.format(date.start)} →{" "}
+                        {formatter.format(date.end)}
+                      </p>
+                      <p className=" text-left text-sm text-gray-500">
+                        {calculateDuration(date.start, date.end)} giorn
+                        {calculateDuration(date.start, date.end) !== 1
+                          ? "i"
+                          : "o"}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => deleteBlock(date.id)}
+                    className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                    title="Elimina blocco"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {!showPicker && (
-          <button
-            onClick={() => setShowPicker(true)}
-            className="mt-4 bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-lg"
-            disabled={showPicker}
-          >
-            <FaPlus className="inline-block mr-2" />
-            Aggiungi blocco
-          </button>
+          <div className="flex justify-center items-center">
+            <button
+              onClick={() => setShowPicker(true)}
+              className="mt-4 bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-lg"
+              disabled={showPicker}
+            >
+              <FaPlus className="inline-block mr-2" />
+              Aggiungi blocco
+            </button>
+          </div>
         )}
         {/* DateRangePicker & Save Button */}
         {showPicker && (
-          <div className=" mt-1 text-center w-[500px] max-w-[95vw] ">
+          <div className="mx-auto mt-1 text-center w-[500px] max-w-[95vw] ">
             <DateRangePicker
               startDate={value.start}
               endDate={value.end}

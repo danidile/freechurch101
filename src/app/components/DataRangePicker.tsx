@@ -146,39 +146,38 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
       {/* Date Inputs */}
       <div className="space-y-3 relative " ref={calendarRef}>
         <p className="my-2 font-medium">Seleziona date inizio e fine:</p>
-        <div className="grid grid-cols-2 gap-4 max-w-[300px] mx-auto">
+        <div className="max-w-[300px] mx-auto">
           <button
             onClick={() =>
               setShowCalendar(showCalendar === "start" ? null : "start")
             }
-            className="w-full px-4 py-3 bg-gray-100 rounded-md text-left font-medium  text-gray-900 active:bg-gray-100"
+            className="flex flex-row justify-center w-full px-4 py-3 bg-gray-100 rounded-md text-left font-medium  text-gray-900 active:bg-gray-100"
           >
-            <p>{formatDateDisplay(startDate)}</p>
-          </button>
-
-          <button
-            onClick={() =>
-              startDate &&
-              setShowCalendar(showCalendar === "end" ? null : "end")
-            }
-            disabled={!startDate}
-            className="w-full px-4 py-3 bg-gray-100 rounded-md text-left font-medium text-gray-900 active:bg-gray-100 disabled:opacity-70"
-          >
-           <p> {formatDateDisplay(endDate)}</p>
+            <p>
+              {formatDateDisplay(startDate)}
+              {formatDateDisplay(endDate) === "Seleziona Data" ? (
+                ""
+              ) : (
+                <>
+                  {" - "}
+                  {formatDateDisplay(endDate)}
+                </>
+              )}
+            </p>
           </button>
         </div>
 
         {/* Calendar */}
         {showCalendar && (
           <div
-            className="absolute max-w-[250px] top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border-0 z-50 overflow-hidden"
+            className="absolute max-w-[250px] top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-2xl shadow-2xl border-0 z-50 overflow-hidden"
             style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
           >
             {/* Calendar Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div className="flex items-center justify-between px-1 py-1 border-b border-gray-100">
               <button
                 onClick={() => navigateMonth("prev")}
-                className="p-2 -m-2 active:bg-gray-100 rounded-full"
+                className="p-1 m-2 active:bg-gray-100 rounded-full"
               >
                 <ChevronLeft className="w-5 h-5 text-gray-600" />
               </button>
@@ -187,7 +186,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
               </h3>
               <button
                 onClick={() => navigateMonth("next")}
-                className="p-2 -m-2 active:bg-gray-100 rounded-full"
+                className="p-1 m-2 active:bg-gray-100 rounded-full"
               >
                 <ChevronRight className="w-5 h-5 text-gray-600" />
               </button>

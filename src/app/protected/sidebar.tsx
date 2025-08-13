@@ -7,10 +7,14 @@ import {
   FaRegCalendarAlt,
   FaQuestion,
 } from "react-icons/fa";
-import { MdOutlineContactSupport, MdOutlineEventNote, MdOutlineLibraryMusic } from "react-icons/md";
+import {
+  MdOutlineContactSupport,
+  MdOutlineEventNote,
+  MdOutlineLibraryMusic,
+} from "react-icons/md";
 
 import { HiUserGroup } from "react-icons/hi2";
-import { IoNotificationsSharp } from "react-icons/io5";
+import { IoNotificationsSharp, IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import logoutAction from "../components/logOutAction";
 import { useRouter } from "next/navigation";
@@ -21,6 +25,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  User,
 } from "@heroui/react";
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
@@ -29,6 +34,39 @@ import LogsComponent from "../admin/logs/LogsComponent";
 import { LuLogs } from "react-icons/lu";
 import NotificationButton from "@/components/NotificationButton";
 import TestNotificationButton from "@/components/testNotificationButton";
+import SidebarAlt from "./sidebarAlt";
+
+// A reusable sidebar link component for consistency
+const SidebarLink = ({
+  href,
+  icon,
+  text,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  text: string;
+}) => (
+  <li>
+    <Link
+      href={href}
+      className="flex items-center p-2 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 group"
+    >
+      {icon}
+      <span className="ms-3">{text}</span>
+    </Link>
+  </li>
+);
+
+// A reusable section title
+const SidebarSectionTitle = ({ title }: { title: string }) => (
+  <div className=" border-b mt-4">
+    <span className="sidebar-link">
+      <div className="sidebar-element sidebar-title">
+        <h6>{title}</h6>
+      </div>
+    </span>
+  </div>
+);
 
 export default function Sidebar() {
   const router = useRouter();
@@ -50,9 +88,92 @@ export default function Sidebar() {
     };
     fetchLeaderStatus();
   }, [loading, userData]);
+
+  const navSections = {
+    main: [
+      {
+        href: "/protected/dashboard/account",
+        icon: <FaUserCircle />,
+        text: "Dashboard",
+        show: true,
+      },
+      {
+        href: "/notifications",
+        icon: <IoNotificationsSharp />,
+        text: "Notifiche",
+        show: true,
+      },
+      {
+        href: "/protected/blockouts",
+        icon: <FaCalendarTimes />,
+        text: "Blocca Date",
+        show: !!userData.church_id,
+      },
+      { href: "/artists", icon: <FaCompass />, text: "Esplora", show: true },
+    ],
+    church: [
+      {
+        href: "/setlist",
+        icon: <FaRegCalendarAlt />,
+        text: "Eventi",
+        show: !!userData.church_id,
+      },
+      {
+        href: "/songs",
+        icon: <MdOutlineLibraryMusic />,
+        text: "Canzoni",
+        show: !!userData.church_id,
+      },
+      {
+        href: "/protected/teams",
+        icon: <HiUserGroup />,
+        text: "Team",
+        show: !!userData.church_id,
+      },
+      {
+        href: "/protected/church",
+        icon: <PiChurch />,
+        text: "Membri Chiesa",
+        show:
+          !!userData.church_id &&
+          (hasPermission(userData.role as Role, "read:churchmembers") ||
+            TeamLeader),
+      },
+    ],
+    management: [
+      {
+        href: "/protected/blockouts-calendar",
+        icon: <FaRegCalendarAlt />,
+        text: "Calendario Presenze",
+        show: userData.teams?.some((team) => team.role === "leader"),
+      },
+      {
+        href: "/protected/church/personalize",
+        icon: <PiChurchFill />,
+        text: "Personalizza Chiesa",
+        show:
+          hasPermission(userData.role as Role, "personalize:church") ||
+          TeamLeader,
+      },
+      {
+        href: "/protected/tickets",
+        icon: <FaQuestion />,
+        text: "Support Tickets",
+        show: true,
+      },
+    ],
+    admin: [
+      {
+        href: "/admin/logs",
+        icon: <LuLogs />,
+        text: "Logs",
+        show: userData.email === "danidile94@gmail.com",
+      },
+    ],
+  };
   return (
     <>
-      <ul className="sidebar-ul">
+      <div className="sidebar-ul">
         {userData.church_logo && (
           <>
             <img
@@ -62,48 +183,56 @@ export default function Sidebar() {
             />
           </>
         )}
-        <li className="">
-          <div className="sidebar-link my-5">
-            <h4 className="font-normal text-center ">
-              {userData.name + " " + userData.lastname}
-            </h4>
-          </div>
-        </li>
-        <li className=" mt-6! border-b ">
-          <span className="sidebar-link">
-            <div className="sidebar-element sidebar-title">
-              <h6>Area personale</h6>
-            </div>
-          </span>
-        </li>
-        <li className=" border-b ">
-          <Dropdown placement="bottom">
+        <div className="">
+          <Dropdown placement="bottom-start">
             <DropdownTrigger>
-              <span className="">
-                <div className="sidebar-element sidebar-title justify-between!"></div>
-              </span>
+              <button className="w-full text-left p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
+                <User
+                  name={`${userData.name} ${userData.lastname}`}
+                  description={userData.email}
+                  // You can use a generic avatar or a real one if you have it
+                  avatarProps={{
+                    src: userData.avatar_url
+                      ? `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}?t=${Date.now()}`
+                      : "/images/userAvatarDefault.jpg",
+
+                    fallback: (
+                      <FaUserCircle className="w-6 h-6 text-zinc-500" />
+                    ),
+                  }}
+                />
+              </button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions">
+            <DropdownMenu aria-label="User Actions">
               <DropdownItem
-                key="updateaccount"
+                key="update_profile"
                 as={Link}
                 href="/protected/dashboard/account/completeAccount"
-                startContent={<FaUserCircle className="dashboard-icon" />}
+                startContent={<IoSettingsOutline />}
               >
-                Aggiorna profilo
+                Aggiorna Profilo
               </DropdownItem>
               <DropdownItem
-                key="resetpassword"
+                key="reset_password"
                 as={Link}
                 href="/protected/reset-password"
-                startContent={<PiPasswordBold className="dashboard-icon" />}
+                startContent={<PiPasswordBold />}
               >
                 Cambia Password
               </DropdownItem>
+              <DropdownItem
+                key="logout"
+                color="danger"
+                className="text-danger"
+                onClick={logouter}
+                startContent={<MdOutlineLogout />}
+              >
+                Esci
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-        </li>
-        <li className="sidebar-li">
+        </div>
+        {/* <li className="sidebar-li">
           <Link className="sidebar-link" href="/protected/dashboard/account">
             <div className="sidebar-element">
               <FaUserCircle className="dashboard-icon" />
@@ -221,17 +350,93 @@ export default function Sidebar() {
             <div className="sidebar-element">
               <FaQuestion />
 
-
               <p>Ticket</p>
             </div>
           </Link>
-        </li>
+        </li> */}
         {/* {userData.email === "danidile94@gmail.com" && <NotificationButton />}
         {userData.email === "danidile94@gmail.com" && (
           <TestNotificationButton />
         )} */}
-        <li className="sidebar-li mt-10! "></li>
-        <li className="sidebar-li">
+        <nav className="flex-grow  overflow-y-auto">
+          <ul className="space-y-1">
+            {navSections.main
+              .filter((item) => item.show)
+              .map((item) => (
+                <SidebarLink
+                  key={item.href}
+                  {...item}
+                  icon={
+                    item.icon && <span className="w-5 h-5">{item.icon}</span>
+                  }
+                />
+              ))}
+          </ul>
+
+          {navSections.church.some((item) => item.show) && (
+            <>
+              <SidebarSectionTitle title="Chiesa" />
+              <ul className="space-y-1">
+                {navSections.church
+                  .filter((item) => item.show)
+                  .map((item) => (
+                    <SidebarLink
+                      key={item.href}
+                      {...item}
+                      icon={
+                        item.icon && (
+                          <span className="w-5 h-5">{item.icon}</span>
+                        )
+                      }
+                    />
+                  ))}
+              </ul>
+            </>
+          )}
+
+          {navSections.management.some((item) => item.show) && (
+            <>
+              <SidebarSectionTitle title="Gestione" />
+              <ul className="space-y-1">
+                {navSections.management
+                  .filter((item) => item.show)
+                  .map((item) => (
+                    <SidebarLink
+                      key={item.href}
+                      {...item}
+                      icon={
+                        item.icon && (
+                          <span className="w-5 h-5">{item.icon}</span>
+                        )
+                      }
+                    />
+                  ))}
+              </ul>
+            </>
+          )}
+
+          {navSections.admin.some((item) => item.show) && (
+            <>
+              <SidebarSectionTitle title="Admin" />
+              <ul className="space-y-1">
+                {navSections.admin
+                  .filter((item) => item.show)
+                  .map((item) => (
+                    <SidebarLink
+                      key={item.href}
+                      {...item}
+                      icon={
+                        item.icon && (
+                          <span className="w-5 h-5">{item.icon}</span>
+                        )
+                      }
+                    />
+                  ))}
+              </ul>
+            </>
+          )}
+        </nav>{" "}
+        <div className="sidebar-li">
           <button
             className="sidebar-link justify-center! logoutcolors"
             onClick={logouter}
@@ -239,8 +444,8 @@ export default function Sidebar() {
             <MdOutlineLogout />
             Esci
           </button>
-        </li>
-      </ul>
+        </div>
+      </div>
     </>
   );
 }
