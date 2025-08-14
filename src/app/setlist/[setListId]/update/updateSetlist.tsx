@@ -3,6 +3,7 @@ import { setListSongT, setListT } from "@/utils/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { logEvent } from "@/utils/supabase/log";
+import { getAuthHeader } from "@/utils/services/authHeader";
 
 // Error tracking type
 type ErrorDetail = {
@@ -637,7 +638,19 @@ export const updateSetlist = async (
 ): Promise<UpdateResult> => {
   const supabase = await createClient();
   const allErrors: ErrorDetail[] = [];
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
 
+  if (error) {
+    console.error("❌ Error getting session:", error);
+  } else {
+    console.log(
+      "🔑 Supabase session token:",
+      session?.access_token ?? "MISSING"
+    );
+  }
   try {
     // Execute all update operations and collect errors
     const dataErrors = await updateSetlistData(

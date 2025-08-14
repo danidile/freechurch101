@@ -342,7 +342,6 @@ export default function UpdateSetlistForm({
       // You can also display a user-facing error message here
       // e.g., showToast(error.message);
     } finally {
-      setAlreadySubmitting(false);
     }
   };
   const options: CDropdownOption[] = [
