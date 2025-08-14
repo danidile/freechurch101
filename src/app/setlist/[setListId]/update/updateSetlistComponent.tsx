@@ -58,7 +58,10 @@ export default function UpdateSetlistComponent({
         "edit",
         userData.id,
         userData.role
-      ).then((result: boolean) => setCanEditEventData(result));
+      ).then((result: boolean) => {
+        setCanEditEventData(result);
+        console.log("canEditEventData", canEditEventData);
+      });
     };
     fetchSongs();
   }, [loading, userData, setListId]);

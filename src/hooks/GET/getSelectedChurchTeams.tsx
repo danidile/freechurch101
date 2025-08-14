@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
 import { teamData } from "@/utils/types/types";
 import { getChurchTeams } from "./getChurchTeams";
 
