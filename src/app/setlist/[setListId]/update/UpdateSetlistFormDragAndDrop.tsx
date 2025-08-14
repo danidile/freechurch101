@@ -43,6 +43,7 @@ import BlockoutsCalendarComponent from "@/app/protected/blockouts-calendar/calen
 import { useUserStore } from "@/store/useUserStore";
 import CDropdown, { CDropdownOption } from "@/app/components/CDropdown";
 import { getSetlistTeamLeadBySetlistAndUserId } from "@/hooks/GET/getSetlistTeamLeadBySetlistAndUserId";
+import { useRouter } from "next/navigation";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -60,6 +61,7 @@ export default function UpdateSetlistForm({
   const [selectedRoom, setSelectedRoom] = useState<string | null>(
     setlistData?.room ?? null
   );
+  const router = useRouter();
 
   const { userData, setUserData } = useUserStore();
 
@@ -249,27 +251,59 @@ export default function UpdateSetlistForm({
     if (alreadySubmitting) return;
     setAlreadySubmitting(true);
 
-    const newTeam: any = [];
-    team.map((member) => {
-      newTeam.push({ profile: member.profile });
-    });
+    try {
+      const newTeam: any = [];
+      team.map((member) => {
+        newTeam.push({ profile: member.profile });
+      });
 
-    const watchAllFields = watch();
-    const updatedSetlist: setListT = {
-      id: setlistData?.id || crypto.randomUUID(),
-      event_type: watchAllFields.event_type,
-      date: watchAllFields.eventDate.toString(),
-      private: watchAllFields.private,
-      room: selectedRoom,
-      teams: teamsState,
-      schedule: schedule,
-      hour: watchAllFields.hour,
-    };
-    console.log("Sending new Data", updatedSetlist);
-    if (page === "create") {
-      await addSetlist(updatedSetlist);
-    } else if (page === "update") {
-      await updateSetlist(updatedSetlist, setlistData);
+      const watchAllFields = watch();
+      const updatedSetlist: setListT = {
+        id: setlistData?.id || crypto.randomUUID(),
+        event_type: watchAllFields.event_type,
+        date: watchAllFields.eventDate.toString(),
+        private: watchAllFields.private,
+        room: selectedRoom,
+        teams: teamsState,
+        schedule: schedule,
+        hour: watchAllFields.hour,
+      };
+
+      console.log("Sending new Data", updatedSetlist);
+
+      let result;
+      if (page === "create") {
+        result = await addSetlist(updatedSetlist);
+      } else if (page === "update") {
+        result = await updateSetlist(updatedSetlist, setlistData);
+      }
+
+      // Handle the result
+      if (result) {
+        if (result.success) {
+          console.log("✅ Operation successful:", result.message);
+          router.push(`/setlist/${updatedSetlist.id}`);
+        } else {
+          console.error("❌ Operation failed:", result.message);
+          console.error("Errors:", result.errors);
+
+          // Display errors to user
+          result.errors.forEach((error, index) => {
+            console.error(
+              `Error ${index + 1} [${error.operation}]:`,
+              error.message
+            );
+            if (error.details) {
+              console.error("Details:", error.details);
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.error("🔥 Unexpected error in convertData:", error);
+      // Handle unexpected errors
+    } finally {
+      setAlreadySubmitting(false);
     }
   };
   const options: CDropdownOption[] = [

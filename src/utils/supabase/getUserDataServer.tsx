@@ -27,13 +27,11 @@ export default async function userDataServer() {
   };
 
   const supabase = await createClient();
-  console.time("⏱️ Fetched user data");
 
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  console.timeEnd("⏱️ Fetched user data");
 
   if (userError) {
     console.log("Not logged in:", userError.message);

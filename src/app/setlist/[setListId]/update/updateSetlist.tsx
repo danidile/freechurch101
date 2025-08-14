@@ -2,9 +2,22 @@
 import { setListSongT, setListT } from "@/utils/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
-
-import { encodedRedirect } from "@/utils/utils";
 import { logEvent } from "@/utils/supabase/log";
+
+// Error tracking type
+type ErrorDetail = {
+  operation: string;
+  message: string;
+  code?: string;
+  context?: string;
+  details?: any;
+};
+
+type UpdateResult = {
+  success: boolean;
+  errors: ErrorDetail[];
+  message: string;
+};
 
 function diffById<T extends { id?: string }>(
   newItems: T[],
@@ -75,7 +88,8 @@ export const updateSetlistData = async (
   setlistData: setListT,
   supabase: SupabaseClient<any, any, any>,
   user_id?: string
-) => {
+): Promise<ErrorDetail[]> => {
+  const errors: ErrorDetail[] = [];
   let hasChanged: boolean = false;
 
   if (
@@ -107,6 +121,15 @@ export const updateSetlistData = async (
       console.log("\x1b[41m Error in setlist Data Update \x1b[0m");
       console.log(setlistError);
 
+      const errorDetail: ErrorDetail = {
+        operation: "updateSetlistData",
+        message: setlistError.message,
+        code: setlistError.code,
+        context: "setlist data update",
+        details: { setlist_id: setlistData.id },
+      };
+      errors.push(errorDetail);
+
       await logEvent({
         event: "update_setlist_data_error",
         level: "error",
@@ -124,6 +147,8 @@ export const updateSetlistData = async (
   } else {
     console.log("\x1b[42m Setlist Data was not changed \x1b[0m");
   }
+
+  return errors;
 };
 
 export const updateSetlistSchedule = async (
@@ -131,7 +156,9 @@ export const updateSetlistSchedule = async (
   setlistData: setListT,
   supabase: SupabaseClient<any, any, any>,
   user_id?: string
-) => {
+): Promise<ErrorDetail[]> => {
+  const errors: ErrorDetail[] = [];
+
   const diff = prepareScheduleDiff(
     updatedSetlist.schedule,
     setlistData.schedule
@@ -154,6 +181,15 @@ export const updateSetlistSchedule = async (
 
     if (deleteError) {
       console.log("🔥 Error deleting removed setlist-songs", deleteError);
+
+      const errorDetail: ErrorDetail = {
+        operation: "deleteSongs",
+        message: deleteError.message,
+        code: deleteError.code,
+        context: "setlist-songs delete",
+        details: { setlist_id: setlistData.id, song_ids: songsIdsToDelete },
+      };
+      errors.push(errorDetail);
 
       await logEvent({
         event: "delete_setlist_songs_error",
@@ -194,6 +230,18 @@ export const updateSetlistSchedule = async (
     if (error) {
       console.log("❌ Error upserting songs:", error);
 
+      const errorDetail: ErrorDetail = {
+        operation: "upsertSongs",
+        message: error.message,
+        code: error.code,
+        context: "setlist-songs upsert",
+        details: {
+          setlist_id: setlistData.id,
+          songs_count: songsToUpsert.length,
+        },
+      };
+      errors.push(errorDetail);
+
       await logEvent({
         event: "upsert_setlist_songs_error",
         level: "error",
@@ -227,6 +275,15 @@ export const updateSetlistSchedule = async (
 
     if (deleteError) {
       console.log("🔥 Error deleting removed setlist-notes", deleteError);
+
+      const errorDetail: ErrorDetail = {
+        operation: "deleteNotes",
+        message: deleteError.message,
+        code: deleteError.code,
+        context: "setlist-notes delete",
+        details: { setlist_id: setlistData.id, note_ids: notesIdsToDelete },
+      };
+      errors.push(errorDetail);
 
       await logEvent({
         event: "delete_setlist_notes_error",
@@ -264,6 +321,18 @@ export const updateSetlistSchedule = async (
     if (error) {
       console.log("❌ Error upserting notes:", error);
 
+      const errorDetail: ErrorDetail = {
+        operation: "upsertNotes",
+        message: error.message,
+        code: error.code,
+        context: "setlist-notes upsert",
+        details: {
+          setlist_id: setlistData.id,
+          notes_count: notesToUpsert.length,
+        },
+      };
+      errors.push(errorDetail);
+
       await logEvent({
         event: "upsert_setlist_notes_error",
         level: "error",
@@ -297,6 +366,15 @@ export const updateSetlistSchedule = async (
 
     if (deleteError) {
       console.log("🔥 Error deleting removed setlist-titles", deleteError);
+
+      const errorDetail: ErrorDetail = {
+        operation: "deleteTitles",
+        message: deleteError.message,
+        code: deleteError.code,
+        context: "setlist-titles delete",
+        details: { setlist_id: setlistData.id, title_ids: titlesIdsToDelete },
+      };
+      errors.push(errorDetail);
 
       await logEvent({
         event: "delete_setlist_titles_error",
@@ -334,6 +412,18 @@ export const updateSetlistSchedule = async (
     if (error) {
       console.log("❌ Error upserting titles:", error);
 
+      const errorDetail: ErrorDetail = {
+        operation: "upsertTitles",
+        message: error.message,
+        code: error.code,
+        context: "setlist-titles upsert",
+        details: {
+          setlist_id: setlistData.id,
+          titles_count: titlesToUpsert.length,
+        },
+      };
+      errors.push(errorDetail);
+
       await logEvent({
         event: "upsert_setlist_titles_error",
         level: "error",
@@ -350,6 +440,8 @@ export const updateSetlistSchedule = async (
       console.log("✅ Titles upserted successfully:", data);
     }
   }
+
+  return errors;
 };
 
 type FlattenedMember = {
@@ -393,7 +485,9 @@ export const updateSetlistTeam = async (
   setlistData: setListT,
   supabase: SupabaseClient<any, any, any>,
   user_id?: string
-) => {
+): Promise<ErrorDetail[]> => {
+  const errors: ErrorDetail[] = [];
+
   const newMembers = flattenTeams(updatedSetlist);
   const oldMembers = flattenTeams(setlistData);
 
@@ -418,6 +512,18 @@ export const updateSetlistTeam = async (
 
     if (deleteError) {
       console.log("🔥 Error deleting removed event-team", deleteError);
+
+      const errorDetail: ErrorDetail = {
+        operation: "deleteTeamMembers",
+        message: deleteError.message,
+        code: deleteError.code,
+        context: "event-team delete",
+        details: {
+          setlist_id: setlistData.id,
+          member_ids: teamMemberstoDelete,
+        },
+      };
+      errors.push(errorDetail);
 
       await logEvent({
         event: "delete_setlist_team_error",
@@ -448,6 +554,15 @@ export const updateSetlistTeam = async (
     if (insertError) {
       console.log("🔥 Error Inserting new TeamMembers", insertError);
 
+      const errorDetail: ErrorDetail = {
+        operation: "insertTeamMembers",
+        message: insertError.message,
+        code: insertError.code,
+        context: "event-team insert",
+        details: { setlist_id: setlistData.id, members_count: inserted.length },
+      };
+      errors.push(errorDetail);
+
       await logEvent({
         event: "insert_setlist_team_error",
         level: "error",
@@ -475,13 +590,25 @@ export const updateSetlistTeam = async (
           .update(data)
           .eq("id", id)
           .select()
-          .then(({ error }) => ({ error }));
+          .then(({ error }) => ({ error, id }));
       })
     );
 
-    const errors = updateResults.filter((r) => r.error);
-    if (errors.length > 0) {
-      console.log("🔥 Errors updating members:", errors);
+    const failedUpdates = updateResults.filter((r) => r.error);
+    if (failedUpdates.length > 0) {
+      console.log("🔥 Errors updating members:", failedUpdates);
+
+      const errorDetail: ErrorDetail = {
+        operation: "updateTeamMembers",
+        message: "Multiple update errors occurred",
+        context: "event-team update",
+        details: {
+          setlist_id: setlistData.id,
+          failed_updates: failedUpdates,
+          attempted_updates: updated.length,
+        },
+      };
+      errors.push(errorDetail);
 
       await logEvent({
         event: "update_setlist_team_error",
@@ -491,7 +618,7 @@ export const updateSetlistTeam = async (
           message: "Multiple update errors",
           context: "event-team update",
           setlist_id: setlistData.id,
-          errors: errors.map((e) => e.error),
+          errors: failedUpdates.map((e) => e.error),
           attempted_updates: updated.length,
         },
       });
@@ -499,22 +626,95 @@ export const updateSetlistTeam = async (
       console.log("✅ Team members updated successfully");
     }
   }
+
+  return errors;
 };
 
 export const updateSetlist = async (
   updatedSetlist: setListT,
   setlistData: setListT,
   user_id?: string
-) => {
+): Promise<UpdateResult> => {
   const supabase = await createClient();
+  const allErrors: ErrorDetail[] = [];
 
-  await updateSetlistData(updatedSetlist, setlistData, supabase, user_id);
-  await updateSetlistSchedule(updatedSetlist, setlistData, supabase, user_id);
-  await updateSetlistTeam(updatedSetlist, setlistData, supabase, user_id);
+  try {
+    // Execute all update operations and collect errors
+    const dataErrors = await updateSetlistData(
+      updatedSetlist,
+      setlistData,
+      supabase,
+      user_id
+    );
+    const scheduleErrors = await updateSetlistSchedule(
+      updatedSetlist,
+      setlistData,
+      supabase,
+      user_id
+    );
+    const teamErrors = await updateSetlistTeam(
+      updatedSetlist,
+      setlistData,
+      supabase,
+      user_id
+    );
 
-  return encodedRedirect(
-    "success",
-    `/setlist/${updatedSetlist.id}`,
-    "Setlist aggiornata con successo!"
-  );
+    // Combine all errors
+    allErrors.push(...dataErrors, ...scheduleErrors, ...teamErrors);
+
+    // Log all errors to console for client-side visibility
+    if (allErrors.length > 0) {
+      console.error("❌ Setlist update completed with errors:");
+      allErrors.forEach((error, index) => {
+        console.error(`Error ${index + 1}:`, error);
+      });
+
+      return {
+        success: false,
+        errors: allErrors,
+        message: `Setlist update completed with ${allErrors.length} error(s). Check console for details.`,
+      };
+    }
+
+    console.log("✅ Setlist updated successfully with no errors");
+    return {
+      success: true,
+      errors: [],
+      message: "Setlist aggiornata con successo!",
+    };
+  } catch (unexpectedError: any) {
+    console.error(
+      "🔥 Unexpected error during setlist update:",
+      unexpectedError
+    );
+
+    const criticalError: ErrorDetail = {
+      operation: "updateSetlist",
+      message: unexpectedError?.message || "Unknown error occurred",
+      context: "critical error",
+      details: { setlist_id: setlistData.id, error: unexpectedError },
+    };
+
+    allErrors.push(criticalError);
+
+    // Log critical error
+    await logEvent({
+      event: "update_setlist_critical_error",
+      level: "error",
+      user_id: user_id ?? null,
+      meta: {
+        message: unexpectedError?.message || "Unknown error",
+        context: "critical error",
+        setlist_id: setlistData.id,
+        stack: unexpectedError?.stack,
+      },
+    });
+
+    return {
+      success: false,
+      errors: allErrors,
+      message:
+        "Critical error occurred during setlist update. Check console for details.",
+    };
+  }
 };
