@@ -643,19 +643,20 @@ export const updateSetlist = async (
     error,
   } = await supabase.auth.getSession();
 
-  if (error) {
-    console.error("❌ Error getting session:", error);
-    allErrors.push({
+  if (error || !session) {
+    const authError: ErrorDetail = {
       operation: "AUTH",
-      message: "❌ Error getting session:",
+      message: "❌ Session not found or is invalid. Please log in again.",
       details: error,
-    });
-  } else {
-    console.log(
-      "🔑 Supabase session token:",
-      session?.access_token ?? "MISSING"
-    );
+    };
+    console.error(authError);
+    return {
+      success: false,
+      errors: [authError],
+      message: "Authentication error. Please refresh and log in.",
+    };
   }
+
   try {
     // Execute all update operations and collect errors
     const dataErrors = await updateSetlistData(
