@@ -637,17 +637,44 @@ export const updateSetlist = async (
   user_id?: string
 ): Promise<UpdateResult> => {
   const supabase = await createClient();
-  const allErrors: ErrorDetail[] = [];
+  const allErrors: ErrorDetail[] = [
+    {
+      operation: "Default Error",
+      message: "Start",
+    },
+  ];
+
+  // Step 1: Force a session refresh
+  const { data: refreshData, error: refreshError } =
+    await supabase.auth.refreshSession();
+
+  // If the refresh fails, we can't proceed.
+  if (refreshError || !refreshData.session) {
+    const authError = {
+      operation: "AUTH",
+      message: "❌ Session refresh failed. Please log in again.",
+      details: refreshError,
+    };
+    console.error(authError);
+    return {
+      success: false,
+      errors: [authError],
+      message: "Authentication error. Please refresh and log in.",
+    };
+  }
+
+  // Step 2: Get the newly refreshed session
   const {
     data: { session },
-    error,
+    error: sessionError,
   } = await supabase.auth.getSession();
 
-  if (error || !session) {
-    const authError: ErrorDetail = {
+  if (sessionError || !session) {
+    // This part is the same as your original code, but now we're more confident the session is current.
+    const authError = {
       operation: "AUTH",
       message: "❌ Session not found or is invalid. Please log in again.",
-      details: error,
+      details: sessionError,
     };
     console.error(authError);
     return {
