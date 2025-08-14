@@ -637,12 +637,7 @@ export const updateSetlist = async (
   user_id?: string
 ): Promise<UpdateResult> => {
   const supabase = await createClient();
-  const allErrors: ErrorDetail[] = [
-    {
-      operation: "Default Error",
-      message: "Start",
-    },
-  ];
+  const allErrors: ErrorDetail[] = [];
 
   // Step 1: Force a session refresh
   const { data: refreshData, error: refreshError } =

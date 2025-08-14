@@ -24,22 +24,16 @@ export default function UpdateSetlistComponent({
   useEffect(() => {
     const fetchSongs = async () => {
       if (!loading && userData && userData.church_id) {
-        console.time("fetchedSetlist");
 
         const fetchedSetlist: setListT = await getSetList(setListId);
-        console.timeEnd("fetchedSetlist");
 
-        console.time("fetchedSchedule");
 
         const fetchedSchedule = await getSetlistSchedule(setListId);
-        console.timeEnd("fetchedSchedule");
-        console.time("fetchedSetlistTeams");
 
         const fetchedSetlistTeams = await getSelectedChurchTeams(
           userData.church_id,
           setListId
         );
-        console.timeEnd("fetchedSetlistTeams");
 
         fetchedSetlist.teams = fetchedSetlistTeams;
         fetchedSetlist.schedule = fetchedSchedule;

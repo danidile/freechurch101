@@ -42,15 +42,12 @@ export const useChurchStore = create<useChurchStore>((set) => ({
   fetchChurchData: async (churchId: string, role?: string) => {
     set({ loadingChurchData: true, errorChurchData: null });
     try {
-      console.time("fetchChurchData");
       const data = await getChurchEventTypes(churchId);
       set({ eventTypes: data });
       const tags = await getChurchTags(churchId);
       set({ tags: tags });
       const fetchedRooms: roomsType[] = await getRoomsByChurch(churchId);
       set({ rooms: fetchedRooms });
-
-      console.timeEnd("fetchChurchData");
     } catch (err: any) {
       console.error("Error in fetchChurchData:", err);
 
@@ -67,14 +64,11 @@ export const useChurchStore = create<useChurchStore>((set) => ({
   },
   fetchChurchScheduleTemplates: async (churchId: string) => {
     try {
-      console.time("fetchChurchData");
-
       const fetchedScheduleTemplates: scheduleTemplate[] =
         await getChurchScheduleTemplatesFull(churchId);
       set({
         scheduleTemplates: fetchedScheduleTemplates,
       });
-      console.timeEnd("fetchChurchData");
     } catch (err: any) {
       console.error("Error in fetchChurchData:", err);
     }

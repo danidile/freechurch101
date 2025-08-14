@@ -14,12 +14,10 @@ export default function ScheduleUpdate({
   // Fetch all setlist data
   useEffect(() => {
     if (templateId) {
-      console.time("fetchSetlistData");
       const fetchTemplate = async () => {
         const fetchedSchedule = await getScheduleTemplateById(templateId);
         setSchedule(fetchedSchedule);
 
-        console.timeEnd("fetchSetlistData");
       };
 
       fetchTemplate();

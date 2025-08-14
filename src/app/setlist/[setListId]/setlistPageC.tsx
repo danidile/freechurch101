@@ -30,7 +30,6 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
   // Fetch all setlist data
   useEffect(() => {
     if (!loading && userData.loggedIn) {
-      console.time("fetchSetlistData");
       const fetchSetlistData = async () => {
         try {
           const [setlist, schedule, teams] = await Promise.all([
@@ -49,7 +48,6 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           console.error("Error fetching setlist data:", error);
           setSetlistData((prev) => ({ ...prev, loading: false }));
         }
-        console.timeEnd("fetchSetlistData");
       };
 
       fetchSetlistData();

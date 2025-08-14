@@ -9,7 +9,6 @@ export default async function songs({
 }) {
   const awaitedParams = await params;
   const userData = await userDataServer();
-  console.time("checkPermission");
 
   const allowed = await checkPermission(
     userData.teams,
@@ -19,7 +18,6 @@ export default async function songs({
     userData.role,
     awaitedParams.setListId
   );
-  console.timeEnd("checkPermission");
 
   if (allowed) {
     return (
