@@ -645,6 +645,11 @@ export const updateSetlist = async (
 
   if (error) {
     console.error("❌ Error getting session:", error);
+    allErrors.push({
+      operation: "AUTH",
+      message: "❌ Error getting session:",
+      details: error,
+    });
   } else {
     console.log(
       "🔑 Supabase session token:",
