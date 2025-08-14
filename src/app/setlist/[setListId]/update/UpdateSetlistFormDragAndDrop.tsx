@@ -44,6 +44,7 @@ import { useUserStore } from "@/store/useUserStore";
 import CDropdown, { CDropdownOption } from "@/app/components/CDropdown";
 import { getSetlistTeamLeadBySetlistAndUserId } from "@/hooks/GET/getSetlistTeamLeadBySetlistAndUserId";
 import { useRouter } from "next/navigation";
+import { logEventClient } from "@/utils/supabase/logClient";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -252,16 +253,30 @@ export default function UpdateSetlistForm({
     setAlreadySubmitting(true);
 
     try {
-      const newTeam: any = [];
-      team.map((member) => {
-        newTeam.push({ profile: member.profile });
-      });
-
       const watchAllFields = watch();
+
+      // --- Step 1: Validate essential fields before proceeding ---
+      if (
+        !watchAllFields.eventDate ||
+        !watchAllFields.event_type ||
+        !selectedRoom
+      ) {
+        const missingFields = [];
+        if (!watchAllFields.eventDate) missingFields.push("Event Date");
+        if (!watchAllFields.event_type) missingFields.push("Event Type");
+        if (!selectedRoom) missingFields.push("Room");
+
+        const errorMessage = `Missing required fields: ${missingFields.join(", ")}. Please complete the form.`;
+
+        console.error("❌ Data Validation Error:", errorMessage);
+        throw new Error(errorMessage);
+      }
+
+      // --- Step 2: Construct the updatedSetlist object with defensive checks ---
       const updatedSetlist: setListT = {
         id: setlistData?.id || crypto.randomUUID(),
         event_type: watchAllFields.event_type,
-        date: watchAllFields.eventDate.toString(),
+        date: watchAllFields.eventDate.toString(), // Ensure this conversion is robust
         private: watchAllFields.private,
         room: selectedRoom,
         teams: teamsState,
@@ -276,32 +291,56 @@ export default function UpdateSetlistForm({
         result = await addSetlist(updatedSetlist);
       } else if (page === "update") {
         result = await updateSetlist(updatedSetlist, setlistData);
+      } else {
+        throw new Error("Invalid page mode: 'create' or 'update' expected.");
       }
 
-      // Handle the result
-      if (result) {
-        if (result.success) {
-          console.log("✅ Operation successful:", result.message);
-          router.push(`/setlist/${updatedSetlist.id}`);
-        } else {
-          console.error("❌ Operation failed:", result.message);
-          console.error("Errors:", result.errors);
-
-          // Display errors to user
-          result.errors.forEach((error, index) => {
-            console.error(
-              `Error ${index + 1} [${error.operation}]:`,
-              error.message
-            );
-            if (error.details) {
-              console.error("Details:", error.details);
-            }
-          });
-        }
+      // --- Step 3: Handle the server response more clearly ---
+      if (!result) {
+        throw new Error("The server did not return a valid response.");
       }
-    } catch (error) {
+
+      if (result.success) {
+        console.log("✅ Operation successful:", result.message);
+        router.push(`/setlist/${updatedSetlist.id}`);
+      } else {
+        console.error("❌ Operation failed:", result.message);
+        console.error("Errors:", result.errors);
+
+        // Log specific server-side errors for debugging
+        result.errors.forEach((error, index) => {
+          console.error(
+            `Error ${index + 1} [${error.operation}]:`,
+            error.message
+          );
+          if (error.details) {
+            console.error("Details:", error.details);
+          }
+        });
+        // You can add a user-facing toast or notification here with result.message
+      }
+    } catch (error: any) {
       console.error("🔥 Unexpected error in convertData:", error);
-      // Handle unexpected errors
+
+      // Log a specific client-side error event
+      await logEventClient({
+        event: "update_setlist_data_error",
+        level: "error",
+        meta: {
+          function: "convertData",
+          user_id: userData.id, // Pass the user_id if you have it available on the client
+
+          message:
+            error.message ||
+            "An unknown error occurred during form submission.",
+
+          stack: error.stack,
+          // Add any other relevant client-side data
+        },
+      });
+
+      // You can also display a user-facing error message here
+      // e.g., showToast(error.message);
     } finally {
       setAlreadySubmitting(false);
     }
