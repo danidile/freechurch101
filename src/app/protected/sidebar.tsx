@@ -34,7 +34,6 @@ import LogsComponent from "../admin/logs/LogsComponent";
 import { LuLogs } from "react-icons/lu";
 import NotificationButton from "@/components/NotificationButton";
 import TestNotificationButton from "@/components/testNotificationButton";
-import SidebarAlt from "./sidebarAlt";
 
 // A reusable sidebar link component for consistency
 const SidebarLink = ({
@@ -52,7 +51,7 @@ const SidebarLink = ({
       className="flex items-center p-2 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 group"
     >
       {icon}
-      <span className="ms-3">{text}</span>
+      <p className="ms-3">{text}</p>
     </Link>
   </li>
 );
