@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const isProd = process.env.NODE_ENV !== "development";
+const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig = {
   async headers() {
