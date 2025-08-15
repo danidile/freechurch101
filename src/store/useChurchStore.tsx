@@ -1,8 +1,5 @@
 import { create } from "zustand";
-import fbasicUserData from "@/utils/supabase/getUserData";
-import { basicUserData } from "@/utils/types/userData";
 import {
-  churchMembersT,
   eventType,
   profileT,
   roomsType,
@@ -14,8 +11,7 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { getProfilesByChurch } from "@/hooks/GET/getProfilesByChurch";
 import getChurchTags from "./getChurchTags";
 import { getRoomsByChurch } from "@/hooks/GET/getRoomsByChurch";
-import { getScheduleTemplateById } from "@/hooks/GET/getScheduleTemplateById";
-import { getChurchScheduleTemplates } from "@/hooks/GET/getChurchScheduleTemplates";
+
 import { getChurchScheduleTemplatesFull } from "@/hooks/GET/getChurchScheduleTemplatesFull";
 type useChurchStore = {
   eventTypes: eventType[] | null;

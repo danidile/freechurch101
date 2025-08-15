@@ -63,22 +63,36 @@ export default async function fbasicUserData() {
       console.log("Error fetching profile:", error.message);
       return userData;
     }
-
-    let { data: teams, error: teamError } = await supabase
-      .from("team-members")
-      .select("team_id,role")
-      .eq("profile", user.id);
-    if (error) {
-      console.log("Error fetching profile:", error.message);
-      return userData;
-    }
-    const teamsFormatted = teams
-      .filter((team) => team.role === "leader")
-      .map((team) => {
-        return { team_id: team.team_id, role: "leader" };
+    if (userData.role === "admin" || userData.role === "churchadmin") {
+      let { data: teams, error: teamError } = await supabase
+        .from("church-teams")
+        .select("*")
+        .eq("church", userData.church_id);
+      if (teamError) {
+        console.log("Error fetching church-teams:", teamError.message);
+        return userData;
+      }
+      const teamsFormatted = teams.map((team) => {
+        return { team_id: team.id, role: "leader" };
       });
-    userData.teams = teamsFormatted;
+      userData.teams = teamsFormatted;
+    } else {
+      let { data: teams, error: teamError } = await supabase
+        .from("team-members")
+        .select("team_id,role")
+        .eq("profile", user.id);
+      if (teamError) {
+        console.log("Error fetching profile:", teamError.message);
+        return userData;
+      }
+      const teamsFormatted = teams
+        .filter((team) => team.role === "leader")
+        .map((team) => {
+          return { team_id: team.team_id, role: "leader" };
+        });
+      userData.teams = teamsFormatted;
+    }
   }
-
+  console.log("userData", userData);
   return userData;
 }

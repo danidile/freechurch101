@@ -7,6 +7,7 @@ import {
   ModalFooter,
   useDisclosure,
   TimeInput,
+  user,
 } from "@heroui/react";
 
 import { I18nProvider } from "@react-aria/i18n";
@@ -90,7 +91,6 @@ export default function UpdateSetlistForm({
   const [teamsState, setTeamsState] = useState<teamData[]>(
     (teams || []).filter((team) => team.selected.length > 0)
   );
-  const [team, setTeam] = useState<churchMembersT[]>([]);
 
   const [previousEventDate, setPreviousEventDate] = useState<DateValue | null>(
     () => {
@@ -249,10 +249,9 @@ export default function UpdateSetlistForm({
   };
 
   const convertData = async () => {
-    if (alreadySubmitting) return;
-    setAlreadySubmitting(true);
-
     try {
+      if (alreadySubmitting) return;
+      setAlreadySubmitting(true);
       const watchAllFields = watch();
 
       // --- Step 1: Validate essential fields before proceeding ---
@@ -271,7 +270,14 @@ export default function UpdateSetlistForm({
         console.error("❌ Data Validation Error:", errorMessage);
         throw new Error(errorMessage);
       }
-
+      const condensedTeams = teamsState.map((team) => {
+        return {
+          id: team.id,
+          is_worship: team.is_worship,
+          selected: team.selected,
+          team_name: team.team_name,
+        };
+      });
       // --- Step 2: Construct the updatedSetlist object with defensive checks ---
       const updatedSetlist: setListT = {
         id: setlistData?.id || crypto.randomUUID(),
@@ -279,10 +285,15 @@ export default function UpdateSetlistForm({
         date: watchAllFields.eventDate.toString(), // Ensure this conversion is robust
         private: watchAllFields.private,
         room: selectedRoom,
-        teams: teamsState,
+        teams: condensedTeams,
         schedule: schedule,
         hour: watchAllFields.hour,
       };
+      const jsonStr = JSON.stringify(updatedSetlist);
+
+      // Measure size in bytes
+      const sizeInBytes = new TextEncoder().encode(jsonStr).length;
+      console.log("Object size in bytes:", sizeInBytes);
 
       console.log("Sending new Data", updatedSetlist);
 
@@ -304,7 +315,7 @@ export default function UpdateSetlistForm({
         console.log("✅ Operation successful:", result.message);
         router.push(`/setlist/${updatedSetlist.id}`);
       } else {
-        console.error("❌ Operation failed:", result.message);
+        console.error("❌ Operation failed:", result);
         console.error("Errors:", result.errors);
 
         // Log specific server-side errors for debugging
@@ -335,6 +346,7 @@ export default function UpdateSetlistForm({
             "An unknown error occurred during form submission.",
 
           stack: error.stack,
+          error: error,
           // Add any other relevant client-side data
         },
       });
@@ -402,7 +414,9 @@ export default function UpdateSetlistForm({
       ?.filter(
         (team) =>
           userData.teams
-            .filter((team) => team.role === "leader")
+            .filter(
+              (team) => team.role === "leader" || userData.role === "admin"
+            )
             .some((item) => item.team_id === team.id) &&
           !teamsState.some((el) => el.team_name === team.team_name)
       )
