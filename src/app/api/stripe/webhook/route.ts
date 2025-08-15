@@ -2,6 +2,13 @@ import { Stripe } from "stripe";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { supabaseAdmin } from "@/utils/supabase/server_admin";
+import { logEvent } from "@/utils/supabase/log";
+
+export const config = {
+  api: {
+    bodyParser: false, // <--- disable body parsing for Stripe signature verification
+  },
+};
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -36,6 +43,13 @@ export async function POST(req: Request) {
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     console.error("❌ Webhook signature verification failed:", errorMessage);
+    await logEvent({
+      event: "stripe_webhook_error",
+      level: "error",
+      meta: {
+        message: errorMessage,
+      },
+    });
     return NextResponse.json(
       { message: `Webhook Error: ${errorMessage}` },
       { status: 400 }
