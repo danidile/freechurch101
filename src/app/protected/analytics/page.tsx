@@ -230,13 +230,13 @@ const EventsChart: React.FC<EventsChartProps> = ({ data }) => {
 
 type TimeRange = "1month" | "3months" | "6months" | "1year";
 
-export  const ChurchAnalyticsDashboard = () => {
+export default function page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedTimeRange, setSelectedTimeRange] =
     useState<TimeRange>("6months");
-    const {userData} = useUserStore();
-    const churchId = userData.church_id;
+  const { userData } = useUserStore();
+  const churchId = userData.church_id;
 
   // States to hold the fetched data
   const [summaryStats, setSummaryStats] = useState<SummaryStats | null>(null);
@@ -380,6 +380,4 @@ export  const ChurchAnalyticsDashboard = () => {
       </div>
     </div>
   );
-};
-
-export default ChurchAnalyticsDashboard;
+}
