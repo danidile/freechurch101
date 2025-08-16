@@ -48,7 +48,7 @@ const SidebarLink = ({
   <li>
     <Link
       href={href}
-      className="flex items-center p-2 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 group"
+      className="flex transition duration-300 items-center  p-[6px] text-zinc-700 dark:text-zinc-300 rounded-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 group"
     >
       {icon}
       <p className="ms-3">{text}</p>
@@ -153,6 +153,14 @@ export default function Sidebar() {
         show:
           hasPermission(userData.role as Role, "personalize:church") ||
           TeamLeader,
+      },
+      {
+        href: "/protected/church/stripe",
+        icon: <PiChurchFill />,
+        text: "Subscription",
+        show:
+          hasPermission(userData.role as Role, "personalize:church") &&
+          userData.email === "danidile94@gmail.com",
       },
       {
         href: "/protected/tickets",

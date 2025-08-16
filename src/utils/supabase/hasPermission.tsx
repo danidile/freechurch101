@@ -10,6 +10,9 @@ const ROLES = {
     "delete:songs",
     "create:team",
     "send:emails",
+        //SUBSXRIPTION
+
+    "manage:subscription",
     // GLOBALSONGS
     "view:globalsongs",
     "create:globalsongs",
@@ -89,6 +92,10 @@ const ROLES = {
     "read:albums",
     //ROLES
     "update:role",
+        //SUBSXRIPTION
+
+        "manage:subscription",
+
   ],
   churchadmin: [
     // SONGS
@@ -126,6 +133,10 @@ const ROLES = {
     "read:albums",
     //ROLES
     "update:role",
+    //SUBSXRIPTION
+
+        "manage:subscription",
+
   ],
   teamleader: [
     // SONGS

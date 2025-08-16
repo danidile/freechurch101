@@ -4,7 +4,7 @@ import { Button } from "@heroui/button";
 import startCheckout from "./startCheckout";
 
 export default function FullCheckoutButton() {
-  const { userData, loading } = useUserStore();
+  const { userData } = useUserStore();
 
   return (
     <Button

@@ -13,7 +13,7 @@ export function SiderbarProvider({ children }: { children: React.ReactNode }) {
   if (userData.loggedIn) {
     return (
       <div className="flex flex-row relative">
-        <div className="hidden md:block sidebar-container relative">
+        <div className="hidden md:block bg-zinc-50 sidebar-container relative">
           <Sidebar />
         </div>
         <div className="dashboard-container">

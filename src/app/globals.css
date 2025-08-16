@@ -1780,7 +1780,6 @@
   max-width: 240px;
   min-height: 100vh;
   position: fixed;
-  background: rgb(248, 248, 247);
   box-shadow: rgb(238, 238, 236) -1px 0px 0px 0px inset;
 }
 
