@@ -54,8 +54,10 @@ export type Invoice = {
 // --- SERVER COMPONENT (Default Export) --- //
 export default async function ChurchSubscriptionPage({
   customerId,
+  churchMembersCount,
 }: {
   customerId: string;
+  churchMembersCount: number;
 }) {
   try {
     const [subscriptionsRes, invoicesRes] = await Promise.all([
@@ -124,6 +126,7 @@ export default async function ChurchSubscriptionPage({
         url={session.url}
         subscription={subscription}
         invoices={invoices}
+        churchMembersCount={churchMembersCount}
       />
     );
   } catch (error) {

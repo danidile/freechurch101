@@ -6,12 +6,17 @@ import {
   FaCalendarTimes,
   FaRegCalendarAlt,
   FaQuestion,
+  FaAsterisk,
+  FaRegQuestionCircle,
 } from "react-icons/fa";
 import {
   MdOutlineContactSupport,
   MdOutlineEventNote,
+  MdOutlineExplore,
   MdOutlineLibraryMusic,
 } from "react-icons/md";
+import { FaRegCreditCard } from "react-icons/fa6";
+import { LiaNetworkWiredSolid } from "react-icons/lia";
 
 import { HiUserGroup } from "react-icons/hi2";
 import { IoNotificationsSharp, IoSettingsOutline } from "react-icons/io5";
@@ -31,9 +36,18 @@ import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { FaCompass } from "react-icons/fa6";
 import LogsComponent from "../admin/logs/LogsComponent";
-import { LuLogs } from "react-icons/lu";
+import {
+  LuCalendarClock,
+  LuCalendarOff,
+  LuCalendarRange,
+  LuChurch,
+  LuInbox,
+  LuLayoutDashboard,
+  LuLogs,
+} from "react-icons/lu";
 import NotificationButton from "@/components/NotificationButton";
 import TestNotificationButton from "@/components/testNotificationButton";
+import { BiNotification } from "react-icons/bi";
 
 // A reusable sidebar link component for consistency
 const SidebarLink = ({
@@ -48,17 +62,17 @@ const SidebarLink = ({
   <li>
     <Link
       href={href}
-      className="flex transition duration-300 items-center  p-[6px] text-zinc-700 dark:text-zinc-300 rounded-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 group"
+      className="flex gap-3 transition duration-300 items-center p-2 text-zinc-700 dark:text-zinc-300 rounded-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 group"
     >
       {icon}
-      <p className="ms-3">{text}</p>
+      <p>{text}</p>
     </Link>
   </li>
 );
 
 // A reusable section title
 const SidebarSectionTitle = ({ title }: { title: string }) => (
-  <div className=" border-b mt-4">
+  <div className=" border-b mt-4 mb-2">
     <span className="sidebar-link">
       <div className="sidebar-element sidebar-title">
         <h6>{title}</h6>
@@ -87,51 +101,56 @@ export default function Sidebar() {
     };
     fetchLeaderStatus();
   }, [loading, userData]);
-
+  const iconSize= 20;
   const navSections = {
     main: [
       {
         href: "/protected/dashboard/account",
-        icon: <FaUserCircle />,
+        icon: <LuLayoutDashboard size={iconSize} />,
         text: "Dashboard",
         show: true,
       },
       {
         href: "/notifications",
-        icon: <IoNotificationsSharp />,
+        icon: <LuInbox size={iconSize} />,
         text: "Notifiche",
         show: true,
       },
       {
         href: "/protected/blockouts",
-        icon: <FaCalendarTimes />,
+        icon: <LuCalendarOff  size={iconSize} />,
         text: "Blocca Date",
         show: !!userData.church_id,
       },
-      { href: "/artists", icon: <FaCompass />, text: "Esplora", show: true },
+      {
+        href: "/artists",
+        icon: <MdOutlineExplore size={iconSize}  />,
+        text: "Esplora",
+        show: true,
+      },
     ],
     church: [
       {
         href: "/setlist",
-        icon: <FaRegCalendarAlt />,
+        icon: <LuCalendarRange size={iconSize}  />,
         text: "Eventi",
         show: !!userData.church_id,
       },
       {
         href: "/songs",
-        icon: <MdOutlineLibraryMusic />,
+        icon: <MdOutlineLibraryMusic size={iconSize}  />,
         text: "Canzoni",
         show: !!userData.church_id,
       },
       {
         href: "/protected/teams",
-        icon: <HiUserGroup />,
+        icon: <FaAsterisk  size={iconSize} />,
         text: "Team",
         show: !!userData.church_id,
       },
       {
         href: "/protected/church",
-        icon: <PiChurch />,
+        icon: <PiChurch  size={iconSize} />,
         text: "Membri Chiesa",
         show:
           !!userData.church_id &&
@@ -142,13 +161,13 @@ export default function Sidebar() {
     management: [
       {
         href: "/protected/blockouts-calendar",
-        icon: <FaRegCalendarAlt />,
+        icon: <LuCalendarClock size={iconSize}  />,
         text: "Calendario Presenze",
         show: userData.teams?.some((team) => team.role === "leader"),
       },
       {
         href: "/protected/church/personalize",
-        icon: <PiChurchFill />,
+        icon: <LuChurch size={iconSize}  />,
         text: "Personalizza Chiesa",
         show:
           hasPermission(userData.role as Role, "personalize:church") ||
@@ -156,7 +175,7 @@ export default function Sidebar() {
       },
       {
         href: "/protected/church/stripe",
-        icon: <PiChurchFill />,
+        icon: <FaRegCreditCard size={iconSize}  />,
         text: "Subscription",
         show:
           hasPermission(userData.role as Role, "personalize:church") &&
@@ -164,7 +183,7 @@ export default function Sidebar() {
       },
       {
         href: "/protected/tickets",
-        icon: <FaQuestion />,
+        icon: <FaRegQuestionCircle size={iconSize}  />,
         text: "Support Tickets",
         show: true,
       },
@@ -172,7 +191,7 @@ export default function Sidebar() {
     admin: [
       {
         href: "/admin/logs",
-        icon: <LuLogs />,
+        icon: <LuLogs size={iconSize}  />,
         text: "Logs",
         show: userData.email === "danidile94@gmail.com",
       },

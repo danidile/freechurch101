@@ -26,7 +26,18 @@ export type InvoiceStatus =
   | "draft"
   | "uncollectible"
   | "void";
+const statusTranslations: Record<InvoiceStatus, string> = {
+  paid: "Pagato",
+  open: "Aperto",
+  failed: "Fallito",
+  draft: "Bozza",
+  uncollectible: "Irrecuperabile",
+  void: "Annullato",
+};
 
+type StatusBadgeProps = {
+  status: InvoiceStatus;
+};
 // --- Mock Server Action (Placeholder for the real server action) --- //
 const cancelSubscriptionAtEnd = async (subscriptionId: string) => {
   console.log(`Simulating cancellation for subscription: ${subscriptionId}`);
@@ -45,10 +56,12 @@ function ClientDashboard({
   subscription,
   url,
   invoices,
+  churchMembersCount,
 }: {
   subscription: Subscription | null;
   invoices: Invoice[];
   url: string;
+  churchMembersCount: number;
 }) {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [currentSubscription, setCurrentSubscription] = useState(subscription);
@@ -100,27 +113,33 @@ function ClientDashboard({
       <main className="max-w-7xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
         <header className="mb-8 md:mb-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
-            Subscription
+            Abbonamento
           </h1>
           <p className="mt-2 text-lg text-gray-600">
-            Manage your plan, billing, and invoices all in one place.
+            Gestisci il tuo piano e le tue fatture.
           </p>
         </header>
+        <div className="grid grid-cols-1 gap-8 lg:gap-12 items-start">
+          {currentSubscription.status === "canceled" ? (
+            <CanceledSubscriptionView onReactivate={handleReactivate} />
+          ) : (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+                <SubscriptionDetails
+                  url={url}
+                  subscription={currentSubscription}
+                  onCancel={() => setIsCancelModalOpen(true)}
+                />
+                <PlanUsage
+                  churchMembersCount={churchMembersCount}
+                  subscription={currentSubscription}
+                />{" "}
+              </div>
 
-        {currentSubscription.status === "canceled" ? (
-          <CanceledSubscriptionView onReactivate={handleReactivate} />
-        ) : (
-          <div className="grid grid-cols-1 2xl:grid-cols-3 gap-8 lg:gap-12 items-start">
-            <SubscriptionDetails
-              url={url}
-              subscription={currentSubscription}
-              onCancel={() => setIsCancelModalOpen(true)}
-            />
-            <PlanUsage subscription={currentSubscription} />
-
-            <InvoiceHistory invoices={invoices} />
-          </div>
-        )}
+              <InvoiceHistory invoices={invoices} />
+            </>
+          )}
+        </div>
       </main>
     </div>
   );
@@ -161,15 +180,11 @@ const CardHeader = ({
   </div>
 );
 
-const StatusBadge = ({
-  status,
-}: {
-  status: SubscriptionStatus | InvoiceStatus;
-}) => {
+const StatusBadge = ({ status }: { status: string }) => {
   const statusStyles: { [key: string]: string } = {
     active: "bg-green-100 text-green-800",
     trialing: "bg-blue-100 text-blue-800",
-    paid: "bg-green-100 text-green-800",
+    pagato: "bg-green-100 text-green-800",
     past_due: "bg-yellow-100 text-yellow-800",
     unpaid: "bg-yellow-100 text-yellow-800",
     incomplete: "bg-yellow-100 text-yellow-800",
@@ -225,18 +240,18 @@ const SubscriptionDetails = ({
   return (
     <Card>
       <CardHeader
-        title="Current Plan"
+        title="Piano Corrente"
         icon={<Briefcase className="w-6 h-6" />}
       />
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <span className="text-gray-500">Plan</span>
+          <span className="text-gray-500">Piano</span>
           <span className="font-semibold text-gray-800">
             {subscription.plan.name}
           </span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-gray-500">Status</span>
+          <span className="text-gray-500">Stato</span>
           <StatusBadge status={subscription.status} />
         </div>
         <div className="flex justify-between items-center">
@@ -275,19 +290,23 @@ const SubscriptionDetails = ({
   );
 };
 
-const PlanUsage = ({ subscription }: { subscription: Subscription }) => {
+const PlanUsage = ({
+  subscription,
+  churchMembersCount,
+}: {
+  subscription: Subscription;
+  churchMembersCount: number;
+}) => {
   const usagePercentage =
-    (subscription.seatsUsed / subscription.plan.maxSeats) * 100;
+    (churchMembersCount / subscription.plan.maxSeats) * 100;
 
   return (
     <Card>
       <CardHeader title="Plan Usage" icon={<Users className="w-6 h-6" />} />
       <div>
         <div className="flex justify-between items-baseline mb-2">
-          <span className="text-gray-800 font-semibold">Team Members</span>
-          <span className="text-sm text-gray-500">
-            {subscription.seatsUsed} of {subscription.plan.maxSeats}
-          </span>
+          <span className="text-gray-800 font-semibold">Membri di Chiesa</span>
+          <span className="text-sm text-gray-500">{churchMembersCount}</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
           <div
@@ -304,7 +323,7 @@ const InvoiceHistory = ({ invoices }: { invoices: Invoice[] }) => (
   <Card padding="p-0 sm:p-0">
     <div className="p-6 sm:p-8">
       <CardHeader
-        title="Invoice History"
+        title="Storico Fatture"
         icon={<Calendar className="w-6 h-6" />}
       />
     </div>
@@ -318,19 +337,19 @@ const InvoiceHistory = ({ invoices }: { invoices: Invoice[] }) => (
                   scope="col"
                   className="py-3.5 pl-6 sm:pl-8 pr-3 text-left text-sm font-semibold text-gray-900"
                 >
-                  Date
+                  Data
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Amount
+                  Costo
                 </th>
                 <th
                   scope="col"
                   className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                 >
-                  Status
+                  Stato
                 </th>
                 <th scope="col" className="relative py-3.5 pl-3 pr-6 sm:pr-8">
                   <span className="sr-only">Download</span>
@@ -344,10 +363,10 @@ const InvoiceHistory = ({ invoices }: { invoices: Invoice[] }) => (
                     {new Date(invoice.date).toLocaleDateString()}
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
-                    ${invoice.amount.toFixed(2)}
+                    €{invoice.amount.toFixed(2)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-600">
-                    <StatusBadge status={invoice.status} />
+                    <StatusBadge status={statusTranslations[invoice.status]} />
                   </td>
                   <td className="relative whitespace-nowrap py-4 pl-3 pr-6 sm:pr-8 text-right text-sm font-medium">
                     {invoice.url && (
