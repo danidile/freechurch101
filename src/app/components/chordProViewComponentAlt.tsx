@@ -31,9 +31,11 @@ import { parseChordSheet } from "@/utils/music/parseChords";
 export default function ChordProViewComponentAlt({
   setListSong,
   mode,
+  source = "songs",
 }: {
   setListSong: setListSongT;
   mode?: string;
+  source?: string;
 }) {
   const pathname = usePathname();
   const { userData } = useUserStore();
@@ -199,7 +201,7 @@ export default function ChordProViewComponentAlt({
           const restText = match[2].trim();
 
           lines.push(
-            <p key={`comment-${i}`} className="comment">
+            <p key={`comment-${i} `} className="comment">
               <b>{commentText}</b>
             </p>
           );
@@ -253,7 +255,7 @@ export default function ChordProViewComponentAlt({
           }
         }
       }
-
+      console.log("line", line);
       // Handle different line types
       switch (line.type) {
         case "section":
@@ -266,7 +268,10 @@ export default function ChordProViewComponentAlt({
         case "chords":
           if (viewChords) {
             lines.push(
-              <p key={`chords-${i}`} className="chord">
+              <p
+                key={`chords-${i}`}
+                className={`chord  ${isChordPro ? "chordpro-font" : ""}`}
+              >
                 {line.text}
               </p>
             );
@@ -274,7 +279,10 @@ export default function ChordProViewComponentAlt({
           break;
         case "lyrics":
           lines.push(
-            <p key={`lyrics-${i}`} className="lyrics">
+            <p
+              key={`lyrics-${i} `}
+              className={`lyrics ${isChordPro ? "chordpro-font" : ""}`}
+            >
               {line.text}
             </p>
           );
@@ -391,101 +399,98 @@ export default function ChordProViewComponentAlt({
     });
   }, [viewChords, chordNotation]);
   console.log("chordProState", chordProState);
+  const [zoomLevel, setZoomLevel] = useState(1); // Add this line
+
   return (
-    <div className="relative">
-      {mode !== "preview" && (
-        <>
-          <div className="view-selector-container">
-            {audioPaths.length >= 1 && (
-              <Button
-                isIconOnly
-                onPress={() => setShowPlayer((prev) => !prev)}
-                variant="flat"
-              >
-                <LuAudioLines />
-              </Button>
-            )}
-            {userData &&
-              hasPermission(userData.role as Role, "update:songs") && (
-                <CDropdown
-                  options={[
-                    {
-                      label: "Aggiorna",
-                      value: "update",
-                      href: `/${pathname.split("/")[1]}/${setListSong.id}/update`,
-                    },
-                    {
-                      label: "Elimina",
-                      value: "delete",
-                      color: "danger",
-                    },
-                  ]}
-                  buttonPadding="sm"
-                  positionOnMobile="right"
-                  placeholder={<MdMoreVert size={22} />}
-                  onSelect={(option) => {
-                    if (option.value === "delete") {
-                      onOpen();
-                    }
-                  }}
-                />
-              )}
+    <div
+      className="relative"
 
-            <CDropdown
-              options={notationOptions}
-              buttonPadding="sm"
-              positionOnDesktop="right"
-              positionOnMobile="right"
-              placeholder={<RiMusicAiFill size={20} />}
-              onSelect={(option) => {
-                if (
-                  option.value === "nashville" ||
-                  option.value === "italian" ||
-                  option.value === "english"
-                ) {
-                  setChordNotation(option.value as ChordNotation);
-                } else if (
-                  option.value === "chords" ||
-                  option.value === "lyrics"
-                ) {
-                  toggleView();
-                } else if (option.value === "sharp-flat") {
-                  toggleAccidentals();
-                }
-              }}
-            />
-          </div>
-          {showPlayer && (
-            <div className="max-w-2xl mx-auto space-y-1 my-3">
-              {audioPaths.map((path, index) => {
-                const trackName = path
-                  .replace(/\.[^/.]+$/, "")
-                  .replace(/-/g, " ")
-                  .replace(/\b\w/g, (l) => l.toUpperCase());
+    >
+      <div className="view-selector-container">
+        {userData && hasPermission(userData.role as Role, "update:songs") && (
+          <CDropdown
+            options={[
+              {
+                label: "Aggiorna",
+                value: "update",
+                href: `/${source}/${setListSong.song ? setListSong.song : setListSong.id}/update`,
+              },
+              {
+                label: "Elimina",
+                value: "delete",
+                color: "danger",
+              },
+            ]}
+            buttonPadding="sm"
+            positionOnMobile="right"
+            placeholder={<MdMoreVert size={22} />}
+            onSelect={(option) => {
+              if (option.value === "delete") {
+                onOpen();
+              }
+            }}
+          />
+        )}
 
-                return (
-                  <div
-                    key={index}
-                    className="my-2 border border-gray-100 rounded p-4"
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
-                        {trackName}
-                      </p>
-                    </div>
-                    <audio controls className="w-full h-8">
-                      <source
-                        src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`}
-                      />
-                      Your browser does not support the audio element.
-                    </audio>
+        {audioPaths.length >= 1 && (
+          <Button
+            isIconOnly
+            onPress={() => setShowPlayer((prev) => !prev)}
+            variant="flat"
+          >
+            <LuAudioLines />
+          </Button>
+        )}
+        <CDropdown
+          options={notationOptions}
+          buttonPadding="sm"
+          positionOnDesktop="right"
+          positionOnMobile="right"
+          placeholder={<RiMusicAiFill size={20} />}
+          onSelect={(option) => {
+            if (
+              option.value === "nashville" ||
+              option.value === "italian" ||
+              option.value === "english"
+            ) {
+              setChordNotation(option.value as ChordNotation);
+            } else if (option.value === "chords" || option.value === "lyrics") {
+              toggleView();
+            } else if (option.value === "sharp-flat") {
+              toggleAccidentals();
+            }
+          }}
+        />
+        {showPlayer && (
+          <div className="max-w-2xl mx-auto space-y-1 my-3">
+            {audioPaths.map((path, index) => {
+              const trackName = path
+                .replace(/\.[^/.]+$/, "")
+                .replace(/-/g, " ")
+                .replace(/\b\w/g, (l) => l.toUpperCase());
+
+              return (
+                <div
+                  key={index}
+                  className="my-2 border border-gray-100 rounded p-4"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
+                      {trackName}
+                    </p>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
+                  <audio controls className="w-full h-8">
+                    <source
+                      src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`}
+                    />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       <div>
         <h5 className="song-title">{setListSong.song_title}</h5>

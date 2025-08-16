@@ -9,7 +9,10 @@ export default async function Page({ params }: { params: Promise<any> }) {
     return (
       <div className="container-sub">
         <div className="song-presentation-container">
-          <ChordProViewComponentAlt setListSong={songData}   />
+          <ChordProViewComponentAlt
+            source="italiansongs"
+            setListSong={songData}
+          />
         </div>
       </div>
     );

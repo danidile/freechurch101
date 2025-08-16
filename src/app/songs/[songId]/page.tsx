@@ -13,7 +13,10 @@ export default async function Page({ params }: { params: Promise<any> }) {
         <CustomizeWidget />
 
         <div className="song-presentation-container">
-          <ChordProViewComponentAlt setListSong={songData} />
+          <ChordProViewComponentAlt
+            source="songs"
+            setListSong={songData}
+          />
         </div>
       </div>
     );

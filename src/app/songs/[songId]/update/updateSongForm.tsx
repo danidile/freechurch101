@@ -76,10 +76,10 @@ export default function UpdateSongForm({
     };
   });
   const [selectedArtist, setSelectedArtist] = useState<string | null>(
-    songData.artist || null
+    songData?.artist || null
   );
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(
-    songData.album || null
+    songData?.album || null
   );
   const {
     isOpen: deleteAudioIsOpen,
@@ -94,7 +94,7 @@ export default function UpdateSongForm({
   const pathname = usePathname(); // e.g. "/italiansongs/7784d9a0-2d3d..."
   const category = pathname.split("/")[1]; // "italiansongs"
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const [state, setState] = useState(songData.lyrics);
+  const [state, setState] = useState(songData?.lyrics);
   const [history, setHistory] = useState<string[]>([]);
   const [audiosToDelete, setAudiosToDelete] = useState<string[]>([]);
   const [selectedAudioToDelete, setSelectedAudioToDelete] =
@@ -350,8 +350,8 @@ export default function UpdateSongForm({
                 {...register("upload_key")}
                 className="ainput"
                 defaultValue={
-                  keys.includes(songData.upload_key)
-                    ? songData.upload_key
+                  keys.includes(songData?.upload_key)
+                    ? songData?.upload_key
                     : keys[0]
                 }
               >

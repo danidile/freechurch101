@@ -5,6 +5,7 @@ import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import { setListSongT, setListT } from "@/utils/types/types";
 
 import CustomizeWidget from "@/app/components/CustomizeWidget";
+import ChordProViewComponentAlt from "@/app/components/chordProViewComponentAlt";
 export default function ViewFullSetListComponent({
   setlistData,
   setlistsongs,
@@ -36,7 +37,11 @@ export default function ViewFullSetListComponent({
             if (song.lyrics)
               return (
                 <div key={index}>
-                  <ChordProViewComponent setListSong={song} />
+                  <ChordProViewComponentAlt
+                    source="songs"
+                    mode="preview"
+                    setListSong={song}
+                  />
                   <Divider className="my-14" />
                 </div>
               );

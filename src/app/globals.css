@@ -260,9 +260,15 @@
 
   .pwaiconsmenu small {
     margin-top: 3px;
-    color: #838383;
   }
 
+  .chordpro-font {
+    font-family:
+      ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono",
+      Menlo, monospace;
+    letter-spacing: -0.05rem !important;
+    font-size: 0.84rem !important;
+  }
   main {
     transition-property: opacity, transform, filter, background;
     transition-timing-function: ease-in-out;

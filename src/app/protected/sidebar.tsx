@@ -16,7 +16,6 @@ import {
   MdOutlineLibraryMusic,
 } from "react-icons/md";
 import { FaRegCreditCard } from "react-icons/fa6";
-import { LiaNetworkWiredSolid } from "react-icons/lia";
 
 import { HiUserGroup } from "react-icons/hi2";
 import { IoNotificationsSharp, IoSettingsOutline } from "react-icons/io5";

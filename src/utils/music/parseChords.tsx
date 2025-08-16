@@ -403,9 +403,10 @@ export function parseChordSheet(
       continue;
     }
 
+    // Use rawLine (not trimmed) for chord detection and storage
     if (isChordLine(trimmed)) {
       const transposed = transposeChordLine(
-        trimmed,
+        rawLine, // Use rawLine here to preserve spacing
         transpose,
         notation,
         accidentalPreference,
@@ -415,7 +416,8 @@ export function parseChordSheet(
       continue;
     }
 
-    parsed.push({ type: "lyrics", text: trimmed });
+    // For lyrics, you might want to preserve leading spaces too
+    parsed.push({ type: "lyrics", text: rawLine });
   }
 
   return parsed;

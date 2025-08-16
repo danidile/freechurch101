@@ -3,7 +3,7 @@ import { getSetList } from "@/hooks/GET/getSetList";
 import { setListT } from "@/utils/types/types";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
-import { Alert, Button, Link } from "@heroui/react";
+import { Alert, Button } from "@heroui/react";
 import ChurchLabLoader from "@/app/components/churchLabSpinner";
 import LoginForm from "@/app/(auth-pages)/login/loginForm";
 import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
@@ -12,6 +12,7 @@ import { GroupedMembers } from "@/utils/types/types";
 import SetlistSchedule from "./setlistScheduleC";
 import SetlistTeams from "./setlistTeamsC";
 import SetlistHeader from "./setlistHeaderC";
+import Link from "next/link";
 
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, loading } = useUserStore();

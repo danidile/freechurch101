@@ -19,7 +19,7 @@ import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
 import { basicUserData } from "@/utils/types/userData";
 import { BiCompass, BiSolidCompass } from "react-icons/bi";
-import { LuBell, LuBellRing } from "react-icons/lu";
+import { LuBell, LuBellRing, LuCalendarRange, LuInbox } from "react-icons/lu";
 
 import { FaRegCalendarDays } from "react-icons/fa6";
 
@@ -49,12 +49,17 @@ export default function MenuApp({
           {userdata.loggedIn && (
             <>
               <TransitionLink href="/songs" className="pwaiconsmenu">
-                {parameter === "songs" ? (
-                  <MdLibraryMusic />
-                ) : (
-                  <MdOutlineLibraryMusic />
-                )}
-                <small>Canzoni</small>
+                <MdOutlineLibraryMusic
+                  color={parameter === "songs" ? "black" : "#888888"}
+                />
+
+                <small
+                  className={
+                    parameter === "songs" ? "text-black" : "text-gray-500"
+                  }
+                >
+                  Canzoni
+                </small>
               </TransitionLink>
             </>
           )}
@@ -62,61 +67,80 @@ export default function MenuApp({
           {!userdata.loggedIn && (
             <>
               <TransitionLink href="/italiansongs" className="pwaiconsmenu">
-                {parameter === "italiansongs" ? (
-                  <MdLibraryMusic />
-                ) : (
-                  <MdOutlineLibraryMusic />
-                )}
-                <small>Canzoni</small>
+                <MdOutlineLibraryMusic
+                  color={parameter === "italiansongs" ? "black" : "#888888"}
+                />
+
+                <small
+                  className={
+                    parameter === "italiansongs"
+                      ? "text-black"
+                      : "text-gray-500"
+                  }
+                >
+                  Canzoni
+                </small>
               </TransitionLink>
             </>
           )}
           {userdata.loggedIn && (
             <TransitionLink href="/setlist" className="pwaiconsmenu">
-              {parameter === "setlist" ? (
-                <FaRegCalendarDays />
-              ) : (
-                <FaRegCalendarAlt />
-              )}
-              <small>Eventi</small>
+              <LuCalendarRange
+                color={parameter === "setlist" ? "black" : "#888888"}
+              />
+
+              <small
+                className={
+                  parameter === "setlist" ? "text-black" : "text-gray-500"
+                }
+              >
+                Eventi
+              </small>
             </TransitionLink>
           )}
 
           {userdata.loggedIn && (
             <>
               <TransitionLink href="/notifications" className="pwaiconsmenu">
-                {notifications >= 1 ? (
-                  <Badge size="sm" color="danger" content={notifications}>
-                    <LuBellRing />
-                  </Badge>
-                ) : (
-                  <>
-                    <Badge
-                      isInvisible={notifications === 0 ? true : false}
-                      size="sm"
-                      color="danger"
-                      showOutline={false}
-                      content={notifications}
-                    >
-                      <LuBell />
-                    </Badge>
-                  </>
-                )}
-                <small>Notifiche</small>
+                <LuInbox
+                  color={parameter === "notifications" ? "black" : "#888888"}
+                />
+
+                <small
+                  className={
+                    parameter === "notifications"
+                      ? "text-black"
+                      : "text-gray-500"
+                  }
+                >
+                  Notifiche
+                </small>
               </TransitionLink>
             </>
           )}
           {!userdata.loggedIn && (
             <>
               <TransitionLink href="/" className="pwaiconsmenu">
-                {parameter === "" ? <BiSolidCompass /> : <BiCompass />}
-                <small>Esplora</small>
+                <BiCompass color={parameter === "" ? "black" : "#888888"} />
+                <small
+                  className={parameter === "" ? "text-black" : "text-gray-500"}
+                >
+                  Esplora
+                </small>
               </TransitionLink>
             </>
           )}
           <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">
-            {parameter === "protected" ? <IoSettings /> : <IoSettingsOutline />}
-            <small>Account</small>
+            <IoSettingsOutline
+              color={parameter === "protected" ? "black" : "#888888"}
+            />
+            <small
+              className={
+                parameter === "protected" ? "text-black" : "text-gray-500"
+              }
+            >
+              Account
+            </small>
           </TransitionLink>
         </div>
       </IconContext.Provider>
