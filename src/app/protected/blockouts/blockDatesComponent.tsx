@@ -11,6 +11,8 @@ import { getBlockoutsByUserId } from "@/hooks/GET/getBlockoutsByUserId";
 import { BlockedDate, RangeValueString } from "@/utils/types/types";
 import DateRangePicker from "@/app/components/DataRangePicker";
 import { Calendar, Clock, Trash2 } from "lucide-react";
+import { LuCalendarOff } from "react-icons/lu";
+import { HeaderCL } from "@/app/components/header-comp";
 
 export default function BlockDatesComponent() {
   const { userData, loading } = useUserStore();
@@ -83,20 +85,15 @@ export default function BlockDatesComponent() {
   return (
     <div className="max-w-lg mx-auto p-2 bg-white min-h-screen">
       <I18nProvider locale="it-IT-u-ca-gregory">
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-3">
-            <Calendar className="w-6 h-6 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">Blocca Date</h1>
-          </div>
-          <p className="text-gray-600">
-            Gestisci i periodi in cui non sarai disponibile per le turnazioni.
-          </p>
-        </div>
+        
 
         <div className="mb-6">
           {blockedDates.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <LuCalendarOff
+                className="w-12 h-12 text-gray-800 mx-auto mb-4"
+                strokeWidth={1}
+              />
               <h3 className="text-lg font-medium text-gray-700 mb-2">
                 Nessuna data bloccata
               </h3>

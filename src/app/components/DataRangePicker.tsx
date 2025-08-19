@@ -166,38 +166,37 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             </p>
           </button>
         </div>
-
         {/* Calendar */}
         {showCalendar && (
           <div
-            className="absolute max-w-[250px] top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-2xl shadow-2xl border-0 z-50 overflow-hidden"
+            className="absolute w-full max-w-[250px] sm:max-w-[280px] md:max-w-[320px] top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-2xl shadow-2xl border-0 z-50 overflow-hidden"
             style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
           >
-            {/* Calendar Header */}
-            <div className="flex items-center justify-between px-1 py-1 border-b border-gray-100">
+            {/* Calendar Header - Make it more spacious on mobile */}
+            <div className="flex items-center justify-between px-2 sm:px-4 py-3 sm:py-4 border-b border-gray-100">
               <button
                 onClick={() => navigateMonth("prev")}
-                className="p-1 m-2 active:bg-gray-100 rounded-full"
+                className="p-2 sm:p-1 m-1 sm:m-2 active:bg-gray-100 rounded-full"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
               </button>
-              <h3 className="font-semibold text-gray-900 text-lg capitalize">
+              <h3 className="font-semibold text-gray-900 text-base sm:text-lg capitalize">
                 {monthYear}
               </h3>
               <button
                 onClick={() => navigateMonth("next")}
-                className="p-1 m-2 active:bg-gray-100 rounded-full"
+                className="p-2 sm:p-1 m-1 sm:m-2 active:bg-gray-100 rounded-full"
               >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
               </button>
             </div>
 
-            {/* Calendar Grid */}
-            <div className="p-4">
-              {/* Day Headers */}
-              <div className="grid grid-cols-7 mb-2">
+            {/* Calendar Grid - More spacious on mobile */}
+            <div className="p-3 sm:p-4 md:p-5">
+              {/* Day Headers - Larger on mobile */}
+              <div className="grid grid-cols-7 mb-2 sm:mb-3">
                 {[...Array(7)].map((_, index) => {
-                  const date = new Date(2021, 0, 4 + index); // Jan 4, 2021 = Monday
+                  const date = new Date(2021, 0, 4 + index);
                   const label = new Intl.DateTimeFormat("it-IT", {
                     weekday: "short",
                   }).format(date);
@@ -205,7 +204,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                   return (
                     <div
                       key={index}
-                      className="h-8 flex items-center justify-center text-xs font-medium text-gray-400 uppercase"
+                      className="h-8 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-medium text-gray-400 uppercase"
                     >
                       {label}
                     </div>
@@ -213,10 +212,11 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                 })}
               </div>
 
-              {/* Calendar Days */}
-              <div className="grid grid-cols-7 gap-1">
+              {/* Calendar Days - Responsive sizing */}
+              <div className="grid grid-cols-7 gap-1 sm:gap-2">
                 {days.map((date, index) => {
-                  if (!date) return <div key={index} className="h-7"></div>;
+                  if (!date)
+                    return <div key={index} className="h-8 sm:h-10"></div>;
 
                   const selected = isDateSelected(date);
                   const inRange = isDateInRange(date);
@@ -226,7 +226,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                   const past = isPast(date);
 
                   let dayClasses =
-                    "h-7 flex items-center justify-center text-sm relative rounded-sm ";
+                    "h-8 sm:h-10 flex items-center justify-center text-sm sm:text-base relative rounded-sm ";
 
                   if (disabled) {
                     dayClasses +=
@@ -240,7 +240,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                   } else if (isToday) {
                     dayClasses += "text-blue-500 font-semibold ";
                   } else {
-                    dayClasses += "text-gray-900 ";
+                    dayClasses += "text-gray-900 hover:bg-gray-50 ";
                   }
 
                   return (

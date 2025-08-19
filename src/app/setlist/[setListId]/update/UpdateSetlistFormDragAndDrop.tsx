@@ -46,6 +46,8 @@ import CDropdown, { CDropdownOption } from "@/app/components/CDropdown";
 import { getSetlistTeamLeadBySetlistAndUserId } from "@/hooks/GET/getSetlistTeamLeadBySetlistAndUserId";
 import { useRouter } from "next/navigation";
 import { logEventClient } from "@/utils/supabase/logClient";
+import { HeaderCL } from "@/app/components/header-comp";
+import { LuCalendarRange } from "react-icons/lu";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -454,17 +456,14 @@ export default function UpdateSetlistForm({
 
   return (
     <div className="container-sub">
+      <HeaderCL
+        icon={LuCalendarRange}
+        title={` ${page === "create" ? "Crea" : ""}
+                  ${page === "update" ? "Aggiorna" : ""} Evento`}
+      />
       <I18nProvider locale="it-IT-u-ca-gregory">
         <div className=" crea-setlist-container">
           <form onSubmit={handleSubmit(convertData)}>
-            <div className="flex items-center">
-              <div className="flex items-center gap-2">
-                <h3>
-                  {page === "create" && "Crea"}
-                  {page === "update" && "Aggiorna"} Evento
-                </h3>
-              </div>
-            </div>
             {canEditEventData ? (
               <>
                 <div className="flex flex-col gap-2 mt-8">

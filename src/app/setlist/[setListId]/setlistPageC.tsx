@@ -85,7 +85,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
 
   return (
     <div className="container-sub">
-      <div className="song-presentation-container">
+      <div className="w-full max-w-[600px]">
         <SetlistHeader
           setlist={setlistData.setlist}
           setListId={setListId}

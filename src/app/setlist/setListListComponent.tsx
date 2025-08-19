@@ -13,6 +13,14 @@ import { FaList, FaPlus } from "react-icons/fa6";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import CalendarComponent from "../calendar/calendarComponent";
 import Link from "next/link";
+import { HeaderCL } from "../components/header-comp";
+import {
+  LuCalendarDays,
+  LuCalendarPlus,
+  LuCalendarRange,
+  LuList,
+  LuMusic2,
+} from "react-icons/lu";
 
 export default function SetListListComponent() {
   const { userData, loading } = useUserStore();
@@ -42,42 +50,45 @@ export default function SetListListComponent() {
 
   return (
     <>
-      <div className="container-sub max-w-96!">
-        <h5 className="text-center m-2">Prossimi eventi</h5>
-        <div className="flex flex-row justify-center items-center gap-5">
-          <p>Modalità visualizzazione:</p>
-          <ButtonGroup>
-            <Button
-              isIconOnly
-              color="primary"
-              variant="light"
-              onPress={() => setViewMode("list")}
-            >
-              <FaList />
-            </Button>
-            <Button
-              isIconOnly
-              color="primary"
-              variant="light"
-              onPress={() => setViewMode("calendar")}
-            >
-              <FaRegCalendarAlt />
-            </Button>
-            {(hasPermission(userData.role as Role, "create:setlists") ||
-              TeamLeader) && (
+      <div className="container-sub">
+        <HeaderCL
+          icon={LuCalendarRange}
+          content={
+            <div className="flex flex-row justify-start items-center gap-2">
+              <p>Modalità visualizzazione:</p>
               <Button
                 isIconOnly
-                color="primary"
-                variant="light"
-                as={Link}
-                href="/setlist/addSetlist"
+                color="default"
+                variant="flat"
+                onPress={() => setViewMode("list")}
               >
-                <FaPlus />
+                <LuList size={18} />
               </Button>
-            )}
-          </ButtonGroup>
-        </div>
-
+              <Button
+                isIconOnly
+                color="default"
+                variant="flat"
+                onPress={() => setViewMode("calendar")}
+              >
+                <LuCalendarDays size={18} />
+              </Button>
+              {(hasPermission(userData.role as Role, "create:setlists") ||
+                TeamLeader) && (
+                <Button
+                  isIconOnly
+                  color="primary"
+                  variant="flat"
+                  as={Link}
+                  href="/setlist/addSetlist"
+                >
+                <LuCalendarPlus size={18} />
+                </Button>
+              )}
+            </div>
+          }
+          title="Prossimi eventi"
+        />{" "}
+        <h5 className="text-center m-2"></h5>
         {viewMode === "list" && (
           <SetListTabs userData={userData} setlists={setlists} />
         )}

@@ -18,8 +18,8 @@ export function SiderbarProvider({ children }: { children: React.ReactNode }) {
         </div>
         <div className="dashboard-container">
           {!isStandalone && (
-            <div className="w-full max-w-[1300px] mx-auto block">
-              <UserDataMenu />
+            <div className="w-full max-w-[1300px] h-[55px] mx-auto block">
+              {/* <UserDataMenu /> */}
             </div>
           )}
           {children}

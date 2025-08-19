@@ -14,10 +14,8 @@ type searchBar = {
 
 export default function ArtistListComponent({
   artists,
-  userData,
 }: {
   artists: artistT[];
-  userData: basicUserData;
 }) {
   const [artistsList, setArtistsList] = useState(artists);
   const {
@@ -38,10 +36,8 @@ export default function ArtistListComponent({
   };
   return (
     <>
-      <div className="songs-header">
-        <h4>Lista Artisti</h4>
+      <div className="mb-6">
         <form
-          action=""
           className="songs-searchbar-form"
           onSubmit={handleSubmit(aggiornaLista)}
         >
@@ -49,8 +45,8 @@ export default function ArtistListComponent({
             {...register("text")}
             color="primary"
             type="text"
+            
             placeholder="Cerca canzone"
-            className="song-searchbar"
           />
           <Button
             color="primary"

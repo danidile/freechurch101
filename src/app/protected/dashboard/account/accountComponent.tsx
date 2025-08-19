@@ -12,6 +12,7 @@ import {
   FaRegCheckCircle,
   FaRegClock,
 } from "react-icons/fa";
+import { LuCalendarOff } from "react-icons/lu";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useChurchStore } from "@/store/useChurchStore";
 import { FaLink, FaRegCircleXmark } from "react-icons/fa6";
@@ -151,7 +152,7 @@ export default function AccountComponent() {
                   as={Link}
                   href="/protected/blockouts"
                 >
-                  Blocca Date
+                  <LuCalendarOff size={20} /> Blocca Date
                 </Button>
               </div>
             </div>

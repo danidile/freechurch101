@@ -676,7 +676,7 @@
     display: none;
   }
   .container-song-list {
-    margin-top: 0px;
+    margin-top: 20px;
     display: grid;
     gap: 5px;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -706,13 +706,10 @@
     justify-content: center;
     align-items: center;
     margin: 0px auto;
-    width: 100%;
-    max-width: 500px;
+    width: 600px;
+    max-width: 600px;
   }
-  .song-searchbar {
-    width: 100%;
-    max-width: 70vw;
-  }
+
   @media only screen and (max-width: 850px) {
     .header-homepage {
       padding: 2rem;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { setListT } from "@/utils/types/types";
 import { calendarMonth } from "@/utils/types/userData";
 
@@ -11,19 +11,43 @@ import { ChevronLeft, ChevronRight, Clock, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SetListTabs from "../components/SetListTabsComponent";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
+import { Button } from "@heroui/button";
+import { FaPlus } from "react-icons/fa";
 
 export default function CalendarView({
   months,
   eventsByDate,
+  currentMonthRef,
 }: {
   months: calendarMonth[];
   eventsByDate: Map<string, setListT[]>;
+  currentMonthRef?: React.RefObject<HTMLDivElement>;
 }) {
   const { eventTypes } = useChurchStore();
   const { userData } = useUserStore();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [dayViewDate, setDayViewDate] = useState<Date | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to current month within the container
+  useEffect(() => {
+    if (currentMonthRef?.current && containerRef.current) {
+      const container = containerRef.current;
+      const currentMonth = currentMonthRef.current;
+
+      // Calculate the scroll position relative to the container
+      const containerTop = container.offsetTop;
+      const currentMonthTop = currentMonth.offsetTop;
+      const scrollPosition = currentMonthTop - containerTop;
+
+      container.scrollTo({
+        top: scrollPosition,
+        behavior: "auto",
+      });
+    }
+  }, [months.length]); // Trigger when months are loaded
 
   // Block/unblock body scroll when day view is open
   useEffect(() => {
@@ -155,6 +179,18 @@ export default function CalendarView({
                 <p className="text-gray-500">
                   Non ci sono eventi per questa giornata.
                 </p>
+                {hasPermission(userData.role as Role, "create:setlists") && (
+                  <Button
+                    className="my-6 text-white"
+                    color="primary"
+                    variant="solid"
+                    as={Link}
+                    prefetch
+                    href="/setlist/addSetlist"
+                  >
+                    Aggiungi evento <FaPlus />
+                  </Button>
+                )}
               </div>
             ) : (
               <div className="space-y-4">
@@ -176,13 +212,21 @@ export default function CalendarView({
 
   return (
     <>
-      <div className="w-full max-w-[1100px] mx-auto">
+      <div
+        ref={containerRef}
+        className="w-full max-w-[1100px] mx-auto h-screen overflow-y-auto"
+      >
         {months.map((month) => {
           const totalCells = month.emptySpaces + month.days.length;
           const rows = Math.ceil(totalCells / 7);
+          const isCurrentMonth = month.isCurrentMonth;
 
           return (
-            <section key={`${month.year}-${month.month}`} className="mb-6">
+            <section
+              key={`${month.year}-${month.month}`}
+              className="mb-6"
+              ref={isCurrentMonth ? currentMonthRef : null}
+            >
               {/* Sticky Month Header */}
               <div className="sticky top-0 bg-white z-10 px-4 py-4 ">
                 <h2 className="text-[32px] font-semibold text-gray-900 capitalize">

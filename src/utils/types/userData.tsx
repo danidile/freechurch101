@@ -31,6 +31,7 @@ export type calendarMonth = {
   month?: number;
   days?: number[];
   emptySpaces?: number;
+  isCurrentMonth?: boolean;
 };
 
 export const basicUserDataSchema = z.object({

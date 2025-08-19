@@ -4,13 +4,15 @@ import { setListT } from "@/utils/types/types";
 import { calendarMonth } from "@/utils/types/userData";
 import CalendarTabs from "./CalendarTabsComponent";
 import { useUserStore } from "@/store/useUserStore";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import LoadingSongsPage from "../songs/loading";
 import { Spinner } from "@heroui/spinner";
+import CalendarView from "./CalendarTabsComponent";
 
 export default function CalendarComponent() {
   const { userData, loading } = useUserStore();
   const [setlists, setSetlists] = useState<any[] | null>(null);
+  const currentMonthRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!loading && userData.loggedIn) {
@@ -35,8 +37,8 @@ export default function CalendarComponent() {
     }
   }
 
-  // Loop for the next 3 months
-  for (let i = 0; i < 12; i++) {
+  // Loop for past 6 months, current month, and next 11 months (total 18 months)
+  for (let i = -6; i < 12; i++) {
     const currentMonth = new Date(today.getFullYear(), today.getMonth() + i, 1);
     const monthName = currentMonth.toLocaleString("default", { month: "long" });
     const year = currentMonth.getFullYear();
@@ -50,8 +52,24 @@ export default function CalendarComponent() {
     // Generate days
     const days = Array.from({ length: totalDays }, (_, j) => j + 1);
 
-    months.push({ name: monthName, year, month, days, emptySpaces });
+    // Mark current month for scrolling reference
+    const isCurrentMonth = i === 0;
+
+    months.push({
+      name: monthName,
+      year,
+      month,
+      days,
+      emptySpaces,
+      isCurrentMonth, // Add this property to identify current month
+    });
   }
 
-  return <CalendarTabs months={months} eventsByDate={eventsByDate} />;
+  return (
+    <CalendarView
+      months={months}
+      eventsByDate={eventsByDate}
+      currentMonthRef={currentMonthRef}
+    />
+  );
 }

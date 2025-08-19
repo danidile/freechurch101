@@ -2,6 +2,8 @@ import { createClient } from "@/utils/supabase/server";
 import ArtistListComponent from "./ArtistListComponent";
 import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "../../utils/supabase/getUserData";
+import { HeaderCL } from "../components/header-comp";
+import { LuMusic2 } from "react-icons/lu";
 
 export default async function Page() {
   const supabase = await createClient();
@@ -13,7 +15,12 @@ export default async function Page() {
   if (artists) {
     return (
       <div className="container-sub">
-        <ArtistListComponent artists={artists} userData={userData} />
+        <HeaderCL
+          icon={LuMusic2}
+          title="Artisti"
+          description="Trova nuovi artisti e riscopri i classici della musica worship italiana contemporanea."
+        />{" "}
+        <ArtistListComponent artists={artists} />
       </div>
     );
   } else {

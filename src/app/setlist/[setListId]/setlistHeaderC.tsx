@@ -6,6 +6,8 @@ import { useChurchStore } from "@/store/useChurchStore";
 import { useState, useEffect } from "react";
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { setListT } from "@/utils/types/types";
+import { LuCalendarRange } from "react-icons/lu";
+import { HeaderCL } from "@/app/components/header-comp";
 
 interface SetlistHeaderProps {
   setlist: setListT;
@@ -13,7 +15,11 @@ interface SetlistHeaderProps {
   userData: any;
 }
 
-export default function SetlistHeader({ setlist, setListId, userData }: SetlistHeaderProps) {
+export default function SetlistHeader({
+  setlist,
+  setListId,
+  userData,
+}: SetlistHeaderProps) {
   const { eventTypes, rooms } = useChurchStore();
   const [isTeamLeader, setIsTeamLeader] = useState(false);
 
@@ -35,20 +41,30 @@ export default function SetlistHeader({ setlist, setListId, userData }: SetlistH
     day: "numeric",
   });
 
-  const matched = eventTypes?.find(event => event.key === setlist.event_type);
-  const setlistRoom = rooms?.find(room => room.id === setlist.room);
+  const matched = eventTypes?.find((event) => event.key === setlist.event_type);
+  const setlistRoom = rooms?.find((room) => room.id === setlist.room);
 
   return (
-    <div className="team-show">
-      <div className="flex flex-wrap justify-between">
-        <h2>{matched?.alt || matched?.label || "Evento sconosciuto"}</h2>
-        <div className="top-settings-bar">
-          <CopyLinkButton />
-          {userData && (hasPermission(userData.role as Role, "create:setlists") || isTeamLeader) && (
-            <MoreDropdownSetlist userData={userData} setlistId={setListId} />
-          )}
-        </div>
-      </div>
+    <>
+      <HeaderCL
+        icon={LuCalendarRange}
+        title={matched?.alt || matched?.label || "Evento sconosciuto"}
+        content={
+          <div className="flex flex-wrap justify-between">
+            <div className="top-settings-bar">
+              <CopyLinkButton />
+              {userData &&
+                (hasPermission(userData.role as Role, "create:setlists") ||
+                  isTeamLeader) && (
+                  <MoreDropdownSetlist
+                    userData={userData}
+                    setlistId={setListId}
+                  />
+                )}
+            </div>
+          </div>
+        }
+      />
 
       <p className="capitalize my-2">
         <b>ora: </b>
@@ -59,6 +75,6 @@ export default function SetlistHeader({ setlist, setListId, userData }: SetlistH
         {setlistRoom?.name}
         {" - "} {setlistRoom?.address}
       </p>
-    </div>
+    </>
   );
 }
