@@ -18,6 +18,8 @@ import ImageUploader from "../../dashboard/account/updateImage/ImageUploader";
 import CreateMultipleEventsForm from "@/app/protected/church/personalize/addmultipleevents/UpdateMultipleEventsForm";
 
 import Link from "next/link";
+import { HeaderCL } from "@/app/components/header-comp";
+import { LuChurch } from "react-icons/lu";
 
 type Category = "personalizzazione" | "musica";
 
@@ -44,10 +46,12 @@ export default function PersonalizeChurchComponent() {
     useState<Category>("personalizzazione");
 
   return (
-    <div className="p-0 sm:p-5">
-      <div className="w-full">
-        <h5 className="font-bold ml-3 my-5">{userData.church_name}</h5>
-      </div>
+    <div className="container-sub">
+      <HeaderCL
+        icon={LuChurch}
+        title="Personalizza Chiesa"
+      />
+
       <div>
         <div className="max-w-4xl mx-auto py-4 space-y-6">
           {/* Pulsanti categoria */}

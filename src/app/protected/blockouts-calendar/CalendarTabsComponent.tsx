@@ -1,9 +1,11 @@
 "use client";
 
+import { HeaderCL } from "@/app/components/header-comp";
 import { TeamWithBlockouts } from "@/utils/types/types";
 import { calendarMonth } from "@/utils/types/userData";
 import { Tabs, Tab, Input, Button, Chip } from "@heroui/react";
 import { useEffect, useState } from "react";
+import { LuCalendarClock } from "react-icons/lu";
 
 export default function BlockoutsCalendarTabs({
   months,
@@ -22,7 +24,8 @@ export default function BlockoutsCalendarTabs({
   }, [teams, selectedTeamId]);
 
   return (
-    <div className="flex w-full flex-col max-w-[1300px] mx-auto pt-3">
+    <div className="container-sub flex w-full flex-col !max-w-[1300px] mx-auto pt-3">
+      <HeaderCL icon={LuCalendarClock} title="Calendario Presenze" />
       <div className="mb-4 flex items-center gap-4 flex-wrap">
         {/* Show Blocked / Available toggle */}
         <label className="cursor-pointer select-none flex items-center gap-2">

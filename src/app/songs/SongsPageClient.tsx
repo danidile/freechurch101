@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { getSongs } from "@/hooks/GET/getSongs";
 import { useUserStore } from "@/store/useUserStore";
-import LoadingSongsPage from "./loading";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { songType } from "@/utils/types/types";
 import { Button } from "@heroui/button";
@@ -16,6 +15,7 @@ import {
 } from "@heroui/dropdown";
 import { FaPlus } from "react-icons/fa";
 import ChurchSongTableComponent from "./ChurchSongTableComponent";
+import ChurchLabLoader from "../components/churchLabSpinner";
 
 export default function SongsPageClient() {
   const { userData, loading } = useUserStore();
@@ -31,7 +31,7 @@ export default function SongsPageClient() {
     fetchSongs();
   }, [userData?.loggedIn]);
 
-  if (loading || loadingSongs) return <LoadingSongsPage />;
+  if (loading || loadingSongs) return <ChurchLabLoader />;
 
   if (songs && songs.length > 0) {
     return (

@@ -175,7 +175,7 @@ export default function Sidebar() {
       {
         href: "/protected/church/stripe",
         icon: <FaRegCreditCard size={iconSize}  />,
-        text: "Subscription",
+        text: "Abbonamento",
         show:
           hasPermission(userData.role as Role, "personalize:church") &&
           userData.email === "danidile94@gmail.com",

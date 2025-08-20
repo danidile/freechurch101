@@ -42,6 +42,8 @@ import NextEventsComponent from "./nextEventsComponent";
 import CalendarPage from "@/app/calendar/page";
 import { Card } from "@heroui/card";
 import { useForm } from "react-hook-form";
+import { HeaderCL } from "@/app/components/header-comp";
+import { PiChurch } from "react-icons/pi";
 
 type FormData = {
   name: string;
@@ -90,16 +92,20 @@ export default function ChurchComponent() {
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center w-full p-2">
-      <div>
-        <div className="w-full flex flex-row gap-5 items-center flex-wrap my-4">
-          <h5 className="font-bold">{userData.church_name}</h5>
+      <HeaderCL
+        icon={PiChurch}
+        title={userData.church_name}
+        titleDropDown={
           <Link
             href="/protected/church/invitemembers"
             className="flex flex-row gap-2 items-center bg-blue-100 py-3  px-3 sm:px-4   rounded-md"
           >
             <FaUserPlus /> <p className="hidden sm:block">Invita membri</p>
           </Link>
-        </div>
+        }
+      />
+
+      <div>
         <div className="max-w-full mx-auto w-full ">
           <table className="ntable max-w-[800px] ">
             <thead>

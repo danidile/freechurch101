@@ -5,7 +5,6 @@ import { calendarMonth } from "@/utils/types/userData";
 import CalendarTabs from "./CalendarTabsComponent";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect, useRef } from "react";
-import LoadingSongsPage from "../songs/loading";
 import { Spinner } from "@heroui/spinner";
 import CalendarView from "./CalendarTabsComponent";
 

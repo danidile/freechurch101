@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { getChurchMembersCompact } from "@/hooks/GET/getChurchMembersCompact";
 import { churchMembersT } from "@/utils/types/types";
 import { Spinner } from "@heroui/spinner";
+import { HeaderCL } from "@/app/components/header-comp";
+import { FaAsterisk } from "react-icons/fa";
 
 export default function CreateTeamComponent() {
   const { userData, loading } = useUserStore();
@@ -33,6 +35,7 @@ export default function CreateTeamComponent() {
   }
   return (
     <div className="container-sub">
+      <HeaderCL icon={FaAsterisk} title="Crea Team" />
       <TeamsForm
         page="create"
         churchTeam={null}

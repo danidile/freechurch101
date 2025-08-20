@@ -1,6 +1,8 @@
 import UpdateSongForm from "./updateSongForm";
 import { songSchema } from "@/utils/types/types";
 import { getSongById } from "@/hooks/GET/getSongById";
+import { HeaderCL } from "@/app/components/header-comp";
+import { MdOutlineLibraryMusic } from "react-icons/md";
 
 export default async function Page({ params }: { params: Promise<any> }) {
   const awaitedParams = await params;
@@ -10,8 +12,7 @@ export default async function Page({ params }: { params: Promise<any> }) {
   return (
     <>
       <div className="container-sub">
-        <h1 className="text-2xl font-medium">Aggiorna Canzone</h1>
-
+        <HeaderCL icon={MdOutlineLibraryMusic} title="Aggiorna canzone" />
         <UpdateSongForm songData={songData} type="update" />
       </div>
     </>

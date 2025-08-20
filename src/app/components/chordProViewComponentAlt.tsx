@@ -11,7 +11,7 @@ import {
 
 import { usePathname } from "next/navigation";
 import { FaPlus, FaMinus } from "react-icons/fa";
-import { MdMoreVert } from "react-icons/md";
+import { MdMoreVert, MdOutlineLibraryMusic } from "react-icons/md";
 
 import ChordSheetJS from "chordsheetjs";
 import { JSX, useEffect, useMemo, useState, useCallback } from "react";
@@ -27,6 +27,7 @@ import CDropdown from "./CDropdown";
 import { RiMusicAiFill } from "react-icons/ri";
 import { AccidentalPreference, ChordNotation } from "@/utils/music/constants";
 import { parseChordSheet } from "@/utils/music/parseChords";
+import { HeaderCL } from "./header-comp";
 
 export default function ChordProViewComponentAlt({
   setListSong,
@@ -37,7 +38,6 @@ export default function ChordProViewComponentAlt({
   mode?: string;
   source?: string;
 }) {
-  const pathname = usePathname();
   const { userData } = useUserStore();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -402,109 +402,111 @@ export default function ChordProViewComponentAlt({
   const [zoomLevel, setZoomLevel] = useState(1); // Add this line
 
   return (
-    <div
-      className="relative"
+    <div className="relative">
+      {mode !== "preview" && (
+        <>
+          <div className="view-selector-container">
+            {userData &&
+              hasPermission(userData.role as Role, "update:songs") && (
+                <CDropdown
+                  options={[
+                    {
+                      label: "Aggiorna",
+                      value: "update",
+                      href: `/${source}/${setListSong.song ? setListSong.song : setListSong.id}/update`,
+                    },
+                    {
+                      label: "Elimina",
+                      value: "delete",
+                      color: "danger",
+                    },
+                  ]}
+                  buttonPadding="sm"
+                  positionOnMobile="right"
+                  placeholder={<MdMoreVert size={22} />}
+                  onSelect={(option) => {
+                    if (option.value === "delete") {
+                      onOpen();
+                    }
+                  }}
+                />
+              )}
 
-    >
-      <div className="view-selector-container">
-        {userData && hasPermission(userData.role as Role, "update:songs") && (
-          <CDropdown
-            options={[
-              {
-                label: "Aggiorna",
-                value: "update",
-                href: `/${source}/${setListSong.song ? setListSong.song : setListSong.id}/update`,
-              },
-              {
-                label: "Elimina",
-                value: "delete",
-                color: "danger",
-              },
-            ]}
-            buttonPadding="sm"
-            positionOnMobile="right"
-            placeholder={<MdMoreVert size={22} />}
-            onSelect={(option) => {
-              if (option.value === "delete") {
-                onOpen();
-              }
-            }}
-          />
-        )}
+            {audioPaths.length >= 1 && (
+              <Button
+                isIconOnly
+                onPress={() => setShowPlayer((prev) => !prev)}
+                variant="flat"
+              >
+                <LuAudioLines />
+              </Button>
+            )}
+            <CDropdown
+              options={notationOptions}
+              buttonPadding="sm"
+              positionOnDesktop="right"
+              positionOnMobile="right"
+              placeholder={<RiMusicAiFill size={20} />}
+              onSelect={(option) => {
+                if (
+                  option.value === "nashville" ||
+                  option.value === "italian" ||
+                  option.value === "english"
+                ) {
+                  setChordNotation(option.value as ChordNotation);
+                } else if (
+                  option.value === "chords" ||
+                  option.value === "lyrics"
+                ) {
+                  toggleView();
+                } else if (option.value === "sharp-flat") {
+                  toggleAccidentals();
+                }
+              }}
+            />
+            {showPlayer && (
+              <div className="max-w-2xl mx-auto space-y-1 my-3">
+                {audioPaths.map((path, index) => {
+                  const trackName = path
+                    .replace(/\.[^/.]+$/, "")
+                    .replace(/-/g, " ")
+                    .replace(/\b\w/g, (l) => l.toUpperCase());
 
-        {audioPaths.length >= 1 && (
-          <Button
-            isIconOnly
-            onPress={() => setShowPlayer((prev) => !prev)}
-            variant="flat"
-          >
-            <LuAudioLines />
-          </Button>
-        )}
-        <CDropdown
-          options={notationOptions}
-          buttonPadding="sm"
-          positionOnDesktop="right"
-          positionOnMobile="right"
-          placeholder={<RiMusicAiFill size={20} />}
-          onSelect={(option) => {
-            if (
-              option.value === "nashville" ||
-              option.value === "italian" ||
-              option.value === "english"
-            ) {
-              setChordNotation(option.value as ChordNotation);
-            } else if (option.value === "chords" || option.value === "lyrics") {
-              toggleView();
-            } else if (option.value === "sharp-flat") {
-              toggleAccidentals();
-            }
-          }}
-        />
-        {showPlayer && (
-          <div className="max-w-2xl mx-auto space-y-1 my-3">
-            {audioPaths.map((path, index) => {
-              const trackName = path
-                .replace(/\.[^/.]+$/, "")
-                .replace(/-/g, " ")
-                .replace(/\b\w/g, (l) => l.toUpperCase());
-
-              return (
-                <div
-                  key={index}
-                  className="my-2 border border-gray-100 rounded p-4"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
-                      {trackName}
-                    </p>
-                  </div>
-                  <audio controls className="w-full h-8">
-                    <source
-                      src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`}
-                    />
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
-              );
-            })}
+                  return (
+                    <div
+                      key={index}
+                      className="my-2 border border-gray-100 rounded p-4"
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
+                          {trackName}
+                        </p>
+                      </div>
+                      <audio controls className="w-full h-8">
+                        <source
+                          src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`}
+                        />
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-
-      <div>
-        <h5 className="song-title">{setListSong.song_title}</h5>
-        <div className="flex flex-col gap-1 mt-2">
-          <small>{setListSong.author}</small>
+        </>
+      )}
+      <HeaderCL
+        description={setListSong.author}
+        title={setListSong.song_title}
+        content={
           <small>
             Tonalità: {songKey} - BPM: {setListSong?.bpm} - Tempo:{" "}
             {setListSong?.time_signature}
           </small>
-        </div>
-
-        {renderParsedLyrics()}
-      </div>
-
+        }
+      />{" "}
+      {renderParsedLyrics()}
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (

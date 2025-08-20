@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import { MdOpenInNew } from "react-icons/md";
+import { FaAsterisk, FaPlus } from "react-icons/fa";
+import { MdOpenInNew, MdOutlineLibraryMusic } from "react-icons/md";
 import { useUserStore } from "@/store/useUserStore";
 import { Button } from "@heroui/button";
 import { getTeamsByChurch } from "@/hooks/GET/getTeamsByChurch";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { Team } from "@/utils/types/types";
+import { HeaderCL } from "@/app/components/header-comp";
 
 export default function TeamsPageComponent() {
   const { userData, loading } = useUserStore();
@@ -22,18 +23,22 @@ export default function TeamsPageComponent() {
   }, [loading, userData]);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Team</h1>
-        {hasPermission(userData.role as Role, "create:team") && (
-          <Link href="/protected/teams/create-team">
-            <Button size="sm" className="gap-2">
-              <FaPlus />
-              Crea nuovo team
-            </Button>
-          </Link>
-        )}
-      </div>
+    <div className="container-sub">
+      <HeaderCL
+        icon={FaAsterisk}
+        title="Teams"
+        titleDropDown={
+          hasPermission(userData.role as Role, "create:team") && (
+            <Link href="/protected/teams/create-team">
+              <Button size="sm" className="gap-2">
+                <FaPlus />
+                Crea nuovo team
+              </Button>
+            </Link>
+          )
+        }
+      />
+
 
       {/* --- Team List --- */}
       {churchTeams.length === 0 ? (
@@ -41,7 +46,7 @@ export default function TeamsPageComponent() {
           <p className="text-lg">Nessun team trovato.</p>
         </div>
       ) : (
-        <div className="border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200">
+        <div className="border max-w-[1000px] border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200">
           {churchTeams.map((team) => (
             <Link
               key={team.id}

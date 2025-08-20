@@ -1,6 +1,8 @@
 "use client";
 import { songSchema } from "@/utils/types/types";
 import UpdateSongForm from "../[songId]/update/updateSongForm";
+import { HeaderCL } from "@/app/components/header-comp";
+import { MdOutlineLibraryMusic } from "react-icons/md";
 
 export default function Page() {
   const id = "";
@@ -16,5 +18,10 @@ export default function Page() {
     album,
   };
 
-  return <UpdateSongForm songData={songData} type="add" />;
+  return (
+    <div className="container-sub">
+      <HeaderCL icon={MdOutlineLibraryMusic} title="Crea canzone" />
+      <UpdateSongForm songData={songData} type="add" />
+    </div>
+  );
 }

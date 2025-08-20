@@ -121,7 +121,7 @@ export default function UpdateSongForm({
     singerName: "",
     song_title: watch("song_title"),
     author: watch("author"),
-    key: watch("upload_key"),
+    key: "",
     lyrics: state,
     upload_key: "",
     order: 0,
@@ -278,6 +278,7 @@ export default function UpdateSongForm({
 
   return (
     <div className="container-sub !flex-row items-start gap-10">
+      
       <form onSubmit={handleSubmit(convertData)}>
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <div className="flex flex-wrap  md:flex-nowrap gap-2 items-center">

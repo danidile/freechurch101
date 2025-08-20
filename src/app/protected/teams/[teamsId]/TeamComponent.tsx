@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@heroui/spinner";
 import { RiEdit2Line } from "react-icons/ri";
 import { PiTrash } from "react-icons/pi";
-import { FaPlus } from "react-icons/fa";
+import { FaAsterisk, FaPlus } from "react-icons/fa";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useUserStore } from "@/store/useUserStore";
 import { removeMemberFromTeamAction } from "./removeMemberFromTeamAction";
@@ -34,6 +34,7 @@ import { addMemberToTeamAction } from "./addMemberToTeamAction";
 import { saveUpdatedSkillsAction } from "./saveUpdatedSkillsAction";
 import { updateTeamMemberRoleAction } from "./updateTeamMemberRoleAction";
 import ChurchLabLoader from "@/app/components/churchLabSpinner";
+import { HeaderCL } from "@/app/components/header-comp";
 
 export default function TeamIdComponent({
   params,
@@ -216,10 +217,27 @@ export default function TeamIdComponent({
   if (churchTeam) {
     return (
       <div className="container-sub">
-        <div className="flex flex-row justify-between px-3 gap-5 items-center mb-7">
-          <div>
-            <h3 className="font-medium">{churchTeam.team_name}</h3>{" "}
-            {hasPermission(userData.role as Role, "update:teams") && (
+        <HeaderCL
+          icon={FaAsterisk}
+          title={churchTeam.team_name}
+          titleDropDown={
+            hasPermission(userData.role as Role, "update:teams") && (
+              <>
+                {!defineRoles && (
+                  <>
+                    <MoreDropdownTeams
+                      teamName={churchTeam.team_name}
+                      setDefineLeaders={setDefineRoles}
+                      teamsId={params.teamsId}
+                      isWorship={churchTeam.is_worship}
+                    />
+                  </>
+                )}
+              </>
+            )
+          }
+          content={
+            hasPermission(userData.role as Role, "update:teams") && (
               <>
                 {!defineRoles && (
                   <>
@@ -241,25 +259,10 @@ export default function TeamIdComponent({
                   </>
                 )}
               </>
-            )}
-          </div>
-          <div>
-            {hasPermission(userData.role as Role, "update:teams") && (
-              <>
-                {!defineRoles && (
-                  <>
-                    <MoreDropdownTeams
-                      teamName={churchTeam.team_name}
-                      setDefineLeaders={setDefineRoles}
-                      teamsId={params.teamsId}
-                      isWorship={churchTeam.is_worship}
-                    />
-                  </>
-                )}
-              </>
-            )}
-          </div>
-        </div>
+            )
+          }
+        />
+
         <table className="w-full max-w-[800px] atable">
           <thead>
             <tr>

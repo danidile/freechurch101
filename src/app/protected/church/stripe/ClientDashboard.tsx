@@ -110,15 +110,8 @@ function ClientDashboard({
   // --- Main Dashboard View --- //
   return (
     <div className="min-h-screen font-sans">
-      <main className="max-w-7xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
-        <header className="mb-8 md:mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
-            Abbonamento
-          </h1>
-          <p className="mt-2 text-lg text-gray-600">
-            Gestisci il tuo piano e le tue fatture.
-          </p>
-        </header>
+      <main className="max-w-7xl mx-auto p-8 sm:py-4ç px-4 sm:px-6 lg:px-8">
+        
         <div className="grid grid-cols-1 gap-8 lg:gap-12 items-start">
           {currentSubscription.status === "canceled" ? (
             <CanceledSubscriptionView onReactivate={handleReactivate} />
