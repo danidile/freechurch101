@@ -595,20 +595,19 @@ export default function UpdateSetlistForm({
                           <Controller
                             name="eventDate"
                             control={control}
-                            render={({ field }) => (
+                            rules={{ required: "Data obbligatoria" }}
+                            render={({ field, fieldState }) => (
                               <DatePicker
                                 label="Data"
                                 size="sm"
                                 variant="underlined"
                                 showMonthAndYearPickers
+                                // Convert the string from the form state to a DateValue for the component
                                 value={
-                                  field.value // The value is a string from the form
-                                    ? parseDate(field.value) // We parse it back to a DateValue for the DatePicker
-                                    : null
+                                  field.value ? parseDate(field.value) : null
                                 }
-                                onChange={(newDate) => {
-                                  // When the DatePicker changes, we convert the DateValue to a string
-                                  // before passing it back to the form field.
+                                onChange={(newDate: DateValue) => {
+                                  // The DatePicker returns a DateValue. Convert it to a string for the form field.
                                   const newDateStr = newDate.toString();
 
                                   const unavailable = getUnavailableMembers(
@@ -617,16 +616,16 @@ export default function UpdateSetlistForm({
                                   );
 
                                   if (unavailable.length > 0) {
-                                    setPreviousEventDate(dateValue);
+                                    setPreviousEventDate(newDate); // Pass the DateValue directly here
                                     setIsDateConflictModalOpen(true);
-                                    setPendingDate(newDate);
+                                    setPendingDate(newDate); // Pass the DateValue directly here
                                   } else {
-                                    field.onChange(newDateStr); // 💡 Corrected line
+                                    field.onChange(newDateStr); // Correctly update the form state with the string
                                   }
                                 }}
                                 disableAnimation
-                                isInvalid={!!errors.eventDate}
-                                errorMessage={errors.eventDate?.message}
+                                isInvalid={!!fieldState.error}
+                                errorMessage={fieldState.error?.message}
                               />
                             )}
                           />
