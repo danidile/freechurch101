@@ -592,32 +592,43 @@ export default function UpdateSetlistForm({
                           : null;
 
                         return (
-                          <DatePicker
-                            label="Data"
-                            size="sm"
-                            variant="underlined"
-                            showMonthAndYearPickers
-                            value={dateValue}
-                            minValue={today(getLocalTimeZone())}
-                            onChange={(newDate) => {
-                              const newDateStr = newDate.toString(); // DateValue → "YYYY-MM-DD"
+                          <Controller
+                            name="eventDate"
+                            control={control}
+                            render={({ field }) => (
+                              <DatePicker
+                                label="Data"
+                                size="sm"
+                                variant="underlined"
+                                showMonthAndYearPickers
+                                value={
+                                  field.value // The value is a string from the form
+                                    ? parseDate(field.value) // We parse it back to a DateValue for the DatePicker
+                                    : null
+                                }
+                                onChange={(newDate) => {
+                                  // When the DatePicker changes, we convert the DateValue to a string
+                                  // before passing it back to the form field.
+                                  const newDateStr = newDate.toString();
 
-                              const unavailable = getUnavailableMembers(
-                                newDateStr,
-                                teamsState
-                              );
+                                  const unavailable = getUnavailableMembers(
+                                    newDateStr,
+                                    teamsState
+                                  );
 
-                              if (unavailable.length > 0) {
-                                setPreviousEventDate(dateValue);
-                                setIsDateConflictModalOpen(true);
-                                setPendingDate(newDate);
-                              } else {
-                                field.onChange(newDateStr);
-                              }
-                            }}
-                            disableAnimation
-                            isInvalid={!!errors.eventDate}
-                            errorMessage={errors.eventDate?.message}
+                                  if (unavailable.length > 0) {
+                                    setPreviousEventDate(dateValue);
+                                    setIsDateConflictModalOpen(true);
+                                    setPendingDate(newDate);
+                                  } else {
+                                    field.onChange(newDateStr); // 💡 Corrected line
+                                  }
+                                }}
+                                disableAnimation
+                                isInvalid={!!errors.eventDate}
+                                errorMessage={errors.eventDate?.message}
+                              />
+                            )}
                           />
                         );
                       }}
