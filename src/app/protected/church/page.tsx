@@ -39,7 +39,6 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import Link from "next/link";
 import { FaRegEye, FaUserPlus } from "react-icons/fa";
 import NextEventsComponent from "./nextEventsComponent";
-import CalendarPage from "@/app/calendar/page";
 import { Card } from "@heroui/card";
 import { useForm } from "react-hook-form";
 import { HeaderCL } from "@/app/components/header-comp";
