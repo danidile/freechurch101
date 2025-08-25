@@ -63,7 +63,10 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     const month = date.getMonth();
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    const firstDayWeekday = firstDay.getDay();
+    let firstDayWeekday = firstDay.getDay();
+
+    // Convert Sunday (0) to be at the end (6), and shift others down
+    firstDayWeekday = firstDayWeekday === 0 ? 6 : firstDayWeekday - 1;
 
     const days = [];
 
@@ -193,23 +196,18 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
             {/* Calendar Grid - More spacious on mobile */}
             <div className="p-3 sm:p-4 md:p-5">
-              {/* Day Headers - Larger on mobile */}
+              {/* Day Headers - Fixed to show Monday-Sunday order */}
               <div className="grid grid-cols-7 mb-2 sm:mb-3">
-                {[...Array(7)].map((_, index) => {
-                  const date = new Date(2021, 0, 4 + index);
-                  const label = new Intl.DateTimeFormat("it-IT", {
-                    weekday: "short",
-                  }).format(date);
-
-                  return (
+                {["lun", "mar", "mer", "gio", "ven", "sab", "dom"].map(
+                  (day, index) => (
                     <div
                       key={index}
                       className="h-8 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-medium text-gray-400 uppercase"
                     >
-                      {label}
+                      {day}
                     </div>
-                  );
-                })}
+                  )
+                )}
               </div>
 
               {/* Calendar Days - Responsive sizing */}

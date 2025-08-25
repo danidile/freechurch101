@@ -11,7 +11,7 @@ import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { Button, ButtonGroup } from "@heroui/react";
 import { FaList, FaPlus } from "react-icons/fa6";
 import { FaRegCalendarAlt } from "react-icons/fa";
-import CalendarComponent from "../calendar/calendarComponent";
+import CalendarComponent from "../components/calendarComponent";
 import Link from "next/link";
 import { HeaderCL } from "../components/header-comp";
 import {
@@ -81,7 +81,7 @@ export default function SetListListComponent() {
                   as={Link}
                   href="/setlist/addSetlist"
                 >
-                <LuCalendarPlus size={18} />
+                  <LuCalendarPlus size={18} />
                 </Button>
               )}
             </div>
@@ -93,7 +93,9 @@ export default function SetListListComponent() {
           <SetListTabs userData={userData} setlists={setlists} />
         )}
       </div>
-      {viewMode === "calendar" && <CalendarComponent />}
+      {viewMode === "calendar" && (
+        <CalendarComponent userData={userData} setlists={setlists} />
+      )}
     </>
   );
 }

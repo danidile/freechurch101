@@ -221,6 +221,10 @@ export const ITALIAN_WORDS_BLACKLIST = new Set([
   "molto",
   "ancora",
   "anche",
+  "a",
+  "e",
+  "i",
+  "o",
 ]);
 
 export type ChordNotation = "english" | "italian" | "nashville";

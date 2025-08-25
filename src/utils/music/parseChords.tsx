@@ -6,6 +6,7 @@ import {
   CHROMATIC_SCALE_SHARP,
   EN_TO_IT,
   IT_TO_EN,
+  ITALIAN_WORDS_BLACKLIST,
   NOTE_TO_SEMITONE,
   ParsedLine,
   SECTION_KEYWORDS,
@@ -316,27 +317,34 @@ function analyzeChordLine(line: string): {
 function isChordLine(line: string): boolean {
   const analysis = analyzeChordLine(line);
 
-  // No valid chords found
+  // If there are no valid chords found, it's not a chord line.
   if (analysis.chordMatches.length === 0) return false;
 
-  // If we found potential chord matches but none are valid, it's not a chord line
-  if (analysis.validChordRatio < 0.5) return false;
+  // A chord line must have a high ratio of chord-like words.
+  if (analysis.matchRatio < 0.4) return false;
 
-  // High certainty - most words are valid chords
-  if (analysis.matchRatio >= 0.8) return true;
+  // Check for common words that are definitely not chords.
+  const nonChordWords = analysis.words.filter(
+    (word) => !analysis.chordMatches.includes(word)
+  );
 
-  // Medium certainty - some chords, no punctuation, short line
+  // If a significant portion of the line is blacklisted lyrics, it's a lyric line.
+  const lyricWordsFound = nonChordWords.filter((word) =>
+    ITALIAN_WORDS_BLACKLIST.has(word.toLowerCase())
+  );
   if (
-    analysis.matchRatio >= 0.5 &&
-    !analysis.hasPunctuation &&
-    analysis.words.length <= 6
-  )
-    return true;
+    lyricWordsFound.length > 0 &&
+    lyricWordsFound.length >= nonChordWords.length * 0.5
+  ) {
+    return false;
+  }
 
-  // Lower threshold for lines with only chord-like tokens
-  if (analysis.matchRatio >= 0.4 && analysis.words.length <= 4) return true;
+  // If the line contains punctuation, it's likely a lyric line.
+  if (analysis.hasPunctuation) return false;
 
-  return false;
+  // A chord line is typically composed of mostly chord words.
+  // We can increase the threshold for confidence.
+  return analysis.validChordRatio >= 0.7 && analysis.matchRatio >= 0.5;
 }
 function isSectionLine(line: string): boolean {
   const trimmed = line.trim();

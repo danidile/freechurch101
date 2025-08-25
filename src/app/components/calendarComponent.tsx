@@ -1,25 +1,21 @@
 "use client";
 import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
 import { setListT } from "@/utils/types/types";
-import { calendarMonth } from "@/utils/types/userData";
-import CalendarTabs from "./CalendarTabsComponent";
+import { basicUserData, calendarMonth } from "@/utils/types/userData";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect, useRef } from "react";
-import { Spinner } from "@heroui/spinner";
 import CalendarView from "./CalendarTabsComponent";
 
-export default function CalendarComponent() {
-  const { userData, loading } = useUserStore();
-  const [setlists, setSetlists] = useState<any[] | null>(null);
+export default function CalendarComponent({
+  setlists,
+  userData,
+  viewMode,
+}: {
+  setlists: setListT[];
+  userData: basicUserData;
+  viewMode?: string;
+}) {
   const currentMonthRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!loading && userData.loggedIn) {
-      getSetListsByChurch(userData.church_id).then((fetchedSetlists) => {
-        setSetlists(fetchedSetlists);
-      });
-    }
-  }, [loading, userData]);
 
   const today = new Date();
   const months: calendarMonth[] = [];
@@ -64,11 +60,31 @@ export default function CalendarComponent() {
     });
   }
 
+  // --- Start of new logic ---
+  let monthsToDisplay = months;
+
+  if (viewMode === 'compact') {
+    const monthsWithEvents = new Set<string>();
+
+    // Determine which months have events
+    for (const event of setlists) {
+      const date = new Date(event.date!);
+      monthsWithEvents.add(`${date.getFullYear()}-${date.getMonth()}`);
+    }
+
+    // Filter the months array to only include those with events
+    monthsToDisplay = months.filter(month => 
+      monthsWithEvents.has(`${month.year}-${month.month}`)
+    );
+  }
+  // --- End of new logic ---
+
   return (
     <CalendarView
-      months={months}
+      months={monthsToDisplay} // Pass the filtered array
       eventsByDate={eventsByDate}
       currentMonthRef={currentMonthRef}
+      viewMode={viewMode}
     />
   );
 }

@@ -1,16 +1,13 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/client";
-import {
-  GroupedNotificationsT,
-  notificationT,
-  teamData,
-} from "@/utils/types/types";
+import { createClient } from "@/utils/supabase/server";
+import { GroupedNotificationsT, notificationT } from "@/utils/types/types";
 
 export const getNotificationsById = async (
   userId: string
 ): Promise<GroupedNotificationsT> => {
-  const supabase = createClient();
+  const supabase = await createClient();
+  console.log("Fetching notifications for userId:", userId);
   const today = new Date().toISOString().split("T")[0]; // Get today's date in "YYYY-MM-DD"
 
   let { data: notifications, error } = await supabase
@@ -24,8 +21,10 @@ export const getNotificationsById = async (
     .gte("setlist.date", today);
 
   if (error) {
-    console.error(error);
+    console.error("NOTIFICATION ERROR", error);
     return { pending: {}, confirmed: {}, denied: {} };
+  } else {
+    console.log("Fetched notifications:", notifications);
   }
 
   // Ensure setlist and team are returned as single objects, not arrays

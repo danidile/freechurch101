@@ -83,7 +83,7 @@ export default function BlockDatesComponent() {
     return diffDays;
   };
   return (
-    <div className="max-w-lg mx-auto p-2 bg-white min-h-screen">
+    <div className="max-w-lg w-full mx-auto p-2 bg-white min-h-screen">
       <I18nProvider locale="it-IT-u-ca-gregory">
         
 

@@ -1,21 +1,16 @@
-import { ITALIAN_WORDS_BLACKLIST, VALID_CHORD_SUFFIXES } from "./constants";
+import { VALID_CHORD_SUFFIXES } from "./constants";
 
 export function isValidChord(match: string): boolean {
-  const lowerMatch = match.toLowerCase();
-
-  // Check if it's in the Italian words blacklist
-  if (ITALIAN_WORDS_BLACKLIST.has(lowerMatch)) {
-    return false;
-  }
-
   // Parse root, accidental, suffix
   const chordMatch = match.match(
-    /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(.*)$/i
+    /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(maj|min|dim|aug|sus|add|m|M|\+|°|ø|Δ)?(\d{0,2})?([#b♯♭]?\d{0,2})?(\/([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?))?$/i
   );
   if (!chordMatch) return false;
 
   const [, root, accidental, suffix] = chordMatch;
-
+  if (suffix?.includes(" ")) {
+    return false;
+  }
   // If there's no suffix, it's valid (single note chord)
   if (!suffix) return true;
 
@@ -60,12 +55,27 @@ export function isValidChord(match: string): boolean {
 /**
  * Checks if a suffix is made up of multiple valid suffix tokens.
  */
+/**
+ * Checks if a suffix is made up of multiple valid suffix tokens.
+ */
 function isCompoundSuffixValid(suffix: string): boolean {
-  // Match chunks like maj, m, 7, b5, #11, add9, etc.
+  // Trim the suffix to handle leading/trailing spaces
+  const trimmedSuffix = suffix.trim();
+
+  // If the suffix is empty after trimming, it's not a valid compound suffix
+  if (!trimmedSuffix) {
+    return false;
+  }
+
   const parts =
-    suffix
+    trimmedSuffix
       .match(/(maj|min|dim|aug|sus|add|m|M|\+|°|ø|Δ)?\d*([#b♯♭]\d+)?/g)
       ?.filter(Boolean) || [];
+
+  // Check if no parts were found, which indicates an invalid suffix
+  if (parts.length === 0) {
+    return false;
+  }
 
   // Each chunk must be in the valid suffix set or be a numeric/tension extension
   return parts.every(

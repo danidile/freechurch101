@@ -1,4 +1,5 @@
 import ChordProViewComponentAlt from "@/app/components/chordProViewComponentAlt";
+import CustomizeWidget from "@/app/components/CustomizeWidget";
 import { getItalianSongById } from "@/hooks/GET/getGlobalSongById";
 
 export default async function Page({ params }: { params: Promise<any> }) {
@@ -8,6 +9,8 @@ export default async function Page({ params }: { params: Promise<any> }) {
   if (songData) {
     return (
       <div className="container-sub">
+        <CustomizeWidget />
+
         <div className="song-presentation-container">
           <ChordProViewComponentAlt
             source="italiansongs"

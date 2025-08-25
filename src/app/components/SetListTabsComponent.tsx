@@ -62,7 +62,7 @@ export default function SetListTabs({
                   </div>
                 )}
                 <TransitionLink
-                  className="setlist-list-link    max-w-full!"
+                  className={`setlist-list-link  max-w-full! ${viewMode === "preview-multiple" ? "pointer-events-none text-gray-400" : ""}`}
                   href={`/setlist/${setlist.id}`}
                 >
                   <div className="setlist-list" key={setlist.id}>

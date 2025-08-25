@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { ChevronLeft, ChevronRight, Clock, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import SetListTabs from "../components/SetListTabsComponent";
+import SetListTabs from "./SetListTabsComponent";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { Button } from "@heroui/button";
 import { FaPlus } from "react-icons/fa";
@@ -19,10 +19,12 @@ export default function CalendarView({
   months,
   eventsByDate,
   currentMonthRef,
+  viewMode,
 }: {
   months: calendarMonth[];
   eventsByDate: Map<string, setListT[]>;
   currentMonthRef?: React.RefObject<HTMLDivElement>;
+  viewMode: string;
 }) {
   const { eventTypes } = useChurchStore();
   const { userData } = useUserStore();
@@ -265,7 +267,11 @@ export default function CalendarView({
                       className={clsx(
                         "min-h-[100px] border-[0.5px] border-gray-100 p-[2px] relative align-top cursor-pointer hover:bg-gray-50 transition-colors"
                       )}
-                      onClick={() => handleDateClick(dateKey, day, month)}
+                      onClick={() => {
+                        if (viewMode !== "compact") {
+                          handleDateClick(dateKey, day, month);
+                        }
+                      }}
                     >
                       <div className="text-xs font-medium text-gray-700 absolute top-1 left-1">
                         <span

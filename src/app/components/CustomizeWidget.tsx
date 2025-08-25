@@ -13,6 +13,7 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import { FaCircle } from "react-icons/fa6";
 import { BiColor } from "react-icons/bi";
 import { useState } from "react";
+import { LuTextQuote } from "react-icons/lu";
 export const fontSizes = [
   { key: "14", label: "14" },
   { key: "15", label: "15" },
@@ -84,97 +85,116 @@ export default function CustomizeWidget() {
   };
 
   return (
-    <div className="custom-widget">
-      <Button
-        onPress={onOpen}
-        size="sm"
-        variant="shadow"
-        color="primary"
-        isIconOnly
-      >
-        <BiColor size={"20px"} className="text-2xl" />
-      </Button>
-      <Drawer
-        placement="bottom"
-        size="md"
-        className="z-50"
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-      >
-        <DrawerContent>
-          {(onClose) => (
-            <>
-              <DrawerHeader className="flex flex-col gap-1">
-                Personalizza
-              </DrawerHeader>
-              <DrawerBody>
-                <div className="container-style-list">
-                  <p>Dimensione Carattere:</p>{" "}
-                  <div className="flex gap-2">
-                    <Button isIconOnly onPress={() => updateFontSize("minus")}>
-                      <FaMinus />
-                    </Button>
-                    <Button isIconOnly onPress={() => updateFontSize("plus")}>
-                      <FaPlus />
-                    </Button>
-                  </div>
-                </div>
+    <div className="fixed bottom-4 right-1 z-50">
+      <div className="relative h-[100vh]">
+        <div className="absolute bottom-[50%] right-1">
+          <Button
+            onPress={onOpen}
+            size="sm"
+            variant="flat"
+            color="default"
+            isIconOnly
+          >
+            <LuTextQuote size={"20px"} className="text-2xl" />
+          </Button>
+          <Drawer
+            placement="bottom"
+            size="md"
+            className="z-50"
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+          >
+            <DrawerContent>
+              {(onClose) => (
+                <>
+                  <DrawerHeader className="flex flex-col gap-1 items-center">
+                    Personalizza
+                  </DrawerHeader>
+                  <DrawerBody className="flex flex-col gap-4 justify-center items-center">
+                    <div className="flex flex-col gap-4">
+                      <div className="container-style-list">
+                        <p>Dimensione Carattere:</p>{" "}
+                        <div className="flex gap-2">
+                          <Button
+                            isIconOnly
+                            onPress={() => updateFontSize("minus")}
+                          >
+                            <FaMinus />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            onPress={() => updateFontSize("plus")}
+                          >
+                            <FaPlus />
+                          </Button>
+                        </div>
+                      </div>
 
-                <div className="container-style-list">
-                  <p>Colore accordi:</p>{" "}
-                  <div className="flex gap-2">
+                      <div className="container-style-list">
+                        <p>Colore accordi:</p>{" "}
+                        <div className="flex gap-2">
+                          <Button
+                            isIconOnly
+                            className="bg-black"
+                            onPress={() => changeChordsColor("black")}
+                          >
+                            <FaCircle color="#aaaaaa" />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            color="primary"
+                            onPress={() => changeChordsColor("#006FEE")}
+                          >
+                            <FaCircle color="#b3d6ff" />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            color="danger"
+                            onPress={() =>
+                              changeChordsColor("rgb(130, 29, 29)")
+                            }
+                          >
+                            <FaCircle color="#ff9d9d" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="container-style-list">
+                        <p>Colore testo:</p>
+                        <div className="flex gap-2">
+                          <Button
+                            isIconOnly
+                            className="bg-black"
+                            onPress={() => changeBodyColor("black")}
+                          >
+                            <FaCircle color="#aaaaaa" />
+                          </Button>
+                          <Button
+                            isIconOnly
+                            color="primary"
+                            onPress={() => changeBodyColor("#006FEE")}
+                          >
+                            <FaCircle color="#b3d6ff" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </DrawerBody>
+                  <DrawerFooter className="p-1">
                     <Button
-                      isIconOnly
-                      className="bg-black"
-                      onPress={() => changeChordsColor("black")}
-                    >
-                      <FaCircle color="#aaaaaa" />
-                    </Button>
-                    <Button
-                      isIconOnly
                       color="primary"
-                      onPress={() => changeChordsColor("#006FEE")}
+                      variant="flat"
+                      className="w-full text-center"
+                      onPress={onClose}
                     >
-                      <FaCircle color="#b3d6ff" />
+                      Salva
                     </Button>
-                    <Button
-                      isIconOnly
-                      color="danger"
-                      onPress={() => changeChordsColor("rgb(130, 29, 29)")}
-                    >
-                      <FaCircle color="#ff9d9d" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="container-style-list">
-                  <p>Colore testo:</p>
-                  <div className="flex gap-2">
-                    <Button
-                      isIconOnly
-                      className="bg-black"
-                      onPress={() => changeBodyColor("black")}
-                    >
-                      <FaCircle color="#aaaaaa" />
-                    </Button>
-                    <Button
-                      isIconOnly
-                      color="primary"
-                      onPress={() => changeBodyColor("#006FEE")}
-                    >
-                      <FaCircle color="#b3d6ff" />
-                    </Button>
-                  </div>
-                </div>
-              </DrawerBody>
-              <DrawerFooter className="p-1 bg-blue-200">
-                <Button color="primary" variant="light" onPress={onClose}>
-                  Salva
-                </Button>
-              </DrawerFooter>
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
+                  </DrawerFooter>
+                </>
+              )}
+            </DrawerContent>
+          </Drawer>
+        </div>
+      </div>
     </div>
   );
 }
