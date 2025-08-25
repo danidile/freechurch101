@@ -20,8 +20,7 @@ export default function Home() {
         </div>
         <div className="py-8 px-2 max-w-(--breakpoint-lg) lg:py-16 lg:px-12 ">
           <h1 className="text-4xl md:text-7xl font-extrabold mb-6">
-            La Tua Chiesa,
-            <br /> Sempre Organizzata
+            La Tua Chiesa, Sempre Organizzata
           </h1>
           <div className="">
             <p className="text-lg mb-8 max-w-(--breakpoint-sm)">

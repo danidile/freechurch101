@@ -11,7 +11,7 @@ export default function AppIcon({ index }: { index: number }) {
       <div className="appmenucontainer">
         <IconContext.Provider
           value={{ size: "1.2rem", className: "app-menu-icons" }}
-        >
+        > 
           <FaHouse />
         </IconContext.Provider>
       </div>
