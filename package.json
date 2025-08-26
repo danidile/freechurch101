@@ -172,5 +172,8 @@
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "typescript": "^5.7.2"
+  },
+  "overrides": {
+    "@internationalized/date": "^3.8.2"
   }
 }
