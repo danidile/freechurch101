@@ -602,13 +602,17 @@ export default function UpdateSetlistForm({
                                 size="sm"
                                 variant="underlined"
                                 showMonthAndYearPickers
-                                // Convert the string from the form state to a DateValue for the component
+                                // Assert the type to satisfy the DatePicker's prop requirement
                                 value={
-                                  field.value ? parseDate(field.value) : null
+                                  field.value
+                                    ? (parseDate(field.value) as DateValue)
+                                    : null
                                 }
                                 onChange={(newDate: DateValue) => {
-                                  // The DatePicker returns a DateValue. Convert it to a string for the form field.
-                                  const newDateStr = newDate.toString();
+                                  // The DatePicker returns a DateValue. Convert it back to a string for react-hook-form.
+                                  const newDateStr = newDate
+                                    ? newDate.toString()
+                                    : "";
 
                                   const unavailable = getUnavailableMembers(
                                     newDateStr,
@@ -616,11 +620,11 @@ export default function UpdateSetlistForm({
                                   );
 
                                   if (unavailable.length > 0) {
-                                    setPreviousEventDate(newDate); // Pass the DateValue directly here
+                                    setPreviousEventDate(newDate);
                                     setIsDateConflictModalOpen(true);
-                                    setPendingDate(newDate); // Pass the DateValue directly here
+                                    setPendingDate(newDate);
                                   } else {
-                                    field.onChange(newDateStr); // Correctly update the form state with the string
+                                    field.onChange(newDateStr); // Update the form state with the string
                                   }
                                 }}
                                 disableAnimation
