@@ -9,8 +9,6 @@ export default async function Page({ params }: { params: Promise<any> }) {
   if (songData) {
     return (
       <div className="container-sub">
-        <CustomizeWidget />
-
         <div className="song-presentation-container">
           <ChordProViewComponentAlt
             source="italiansongs"

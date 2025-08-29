@@ -22,8 +22,6 @@ export default function ViewFullSetListComponent({
   });
   return (
     <>
-      <CustomizeWidget />
-
       <h6>
         <strong>{setlistData.event_title}</strong>
       </h6>

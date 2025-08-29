@@ -12,7 +12,7 @@ import {
   FaRegCheckCircle,
   FaRegClock,
 } from "react-icons/fa";
-import { LuCalendarOff } from "react-icons/lu";
+import { LuCalendarOff, LuUserRoundPlus } from "react-icons/lu";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { useChurchStore } from "@/store/useChurchStore";
 import { FaLink, FaRegCircleXmark } from "react-icons/fa6";
@@ -107,52 +107,35 @@ export default function AccountComponent() {
                 <FaLink size={25} />
                 <h5>Link veloci</h5>
               </div>{" "}
-              {userData.pending_church_confirmation && (
-                <Alert
-                  className="my-5"
-                  color="primary"
-                  description="Attendi che i responsabili della tua chiesa confermino il tuo account."
-                  title="In attesa di conferma"
-                />
-              )}
-              {pendingRequests && (
-                <Link
-                  className="dashboard-list !p-0"
-                  href="/protected/church/confirm-members"
-                >
-                  <Alert
-                    endContent={<FaExternalLinkAlt />}
-                    color="warning"
-                    description="Alcuni account sono in attesa della tua conferma."
-                    title="In attesa di conferma"
-                  />
-                </Link>
-              )}
-              {hasPermission(userData.role as Role, "read:churchmembers") && (
+              {/* {hasPermission(userData.role as Role, "read:churchmembers") && (
                 <>
-                  {churchMembers?.length <= 5 && (
-                    <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between nborder p-4 !border-blue-300 border-1">
-                      <p>Invita nuovi membri nella tua chiesa!</p>
-                      <Button
-                        color="primary"
-                        as={Link}
-                        href="/protected/church/invitemembers"
-                      >
-                        {" "}
-                        Invita nuovi membri!
-                      </Button>
-                    </div>
-                  )}
+                  {churchMembers?.length <= 5 && ( */}
+              <div className="bg-gray-50 inline-flex flex-wrap flex-row gap-5 items-center justify-between rounded-xl p-4">
+                <p>Invita nuovi membri nella tua chiesa!</p>
+                <Button
+                  startContent={<LuUserRoundPlus size={20} />}
+                  color="primary"
+                  radius="sm"
+                  className="w-[150px]"
+                  as={Link}
+                  href="/protected/church/invitemembers"
+                >
+                  Invita!
+                </Button>
+              </div>
+              {/* )}
                 </>
-              )}
-              <div className="inline-flex flex-wrap flex-row gap-5 items-center justify-between rounded-lg p-4 !border-red-200 border-1">
+              )} */}
+              <div className="bg-gray-50 inline-flex flex-wrap flex-row gap-5 items-center justify-between rounded-xl p-4">
                 <p>Blocca le date in cui non sei disponibile.</p>
                 <Button
-                  className="bg-[#ea685c] text-white"
+                  startContent={<LuCalendarOff size={20} />}
+                  radius="sm"
+                  className="bg-[#ea685c] text-white w-[150px]"
                   as={Link}
                   href="/protected/blockouts"
                 >
-                  <LuCalendarOff size={20} /> Blocca Date
+                  Blocca Date
                 </Button>
               </div>
             </div>

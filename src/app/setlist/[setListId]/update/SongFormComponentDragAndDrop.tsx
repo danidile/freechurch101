@@ -15,14 +15,15 @@ import {
 import { Input } from "@heroui/input";
 import { setListSongT, teamData, TsongNameAuthor } from "@/utils/types/types";
 import { Button } from "@heroui/button";
-import { MdMoreVert } from "react-icons/md";
+import { MdHistory, MdMoreVert } from "react-icons/md";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
 } from "@heroui/dropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getSongHistory } from "@/hooks/GET/getSongHistory";
 
 export function SongFormComponent({
   section,
@@ -41,7 +42,15 @@ export function SongFormComponent({
 }) {
   const sectionIndex = index;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const {
+    isOpen: isOpenHistory,
+    onOpen: onOpenHistory,
+    onOpenChange: onOpenChangeHistory,
+  } = useDisclosure();
   const [songs, setSongs] = useState(songsList);
+  const [history, setHistory] = useState(null);
+  const [triggerFetch, setTriggerFetch] = useState(false);
   const [searchText, setSearchText] = useState(""); // Local state for search input
   const aggiornaLista = () => {
     const filteredSongs = songsList.filter(
@@ -64,6 +73,19 @@ export function SongFormComponent({
         .map((member) => [member.profile, member]) // deduplicate by profile
     ).values()
   );
+
+  useEffect(() => {
+    if (triggerFetch) {
+      console.log("Fetching history for song:", section.song);
+      const result = getSongHistory(section.song);
+      if (result) {
+        result.then((data) => {
+          setHistory(data);
+        });
+      }
+    }
+  }, [triggerFetch]);
+
   return (
     <div
       className="setlist-section"
@@ -78,6 +100,21 @@ export function SongFormComponent({
         {section.song_title}
         {!section.song_title && <>Canzone da scegliere</>}
       </p>
+
+      {section.song && (
+        <Button
+          onPress={() => {
+            onOpenHistory();
+            setTriggerFetch(true);
+          }}
+          size="sm"
+          variant="flat"
+          isIconOnly
+        >
+          <MdHistory color="#6a6a6a" size={24} />
+        </Button>
+      )}
+
       {source === "setlist" && (
         <>
           <select
@@ -237,6 +274,8 @@ export function SongFormComponent({
 
                                 return updatedState; // Set the new state
                               });
+                              setTriggerFetch(false);
+                              setHistory(null);
                               onClose();
                             }}
                           >
@@ -260,6 +299,60 @@ export function SongFormComponent({
               <ModalFooter>
                 <Button fullWidth color="primary" onPress={onClose}>
                   Chiudi
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isOpenHistory} onOpenChange={onOpenChangeHistory}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Storico Canzone{" "}
+              </ModalHeader>
+              <ModalBody>
+                {history && (
+                  <div>
+                    <table className="atable">
+                      <thead>
+                        <tr>
+                          <th>Data</th>
+                          <th>Cantante</th>
+                          <th>Chiave</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {history.map((entry: any, index: number) => {
+                          const date = new Date(entry.setlist_id.date);
+                          const readableDate = date.toLocaleString("it-IT", {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          });
+                          return (
+                            <tr key={index} className="capitalize">
+                              <td>{readableDate}</td>
+                              <td>
+                                {entry.singer?.name} {entry.singer?.lastname}
+                              </td>
+                              <td>{entry.key}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Action
                 </Button>
               </ModalFooter>
             </>

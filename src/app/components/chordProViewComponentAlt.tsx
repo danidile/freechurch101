@@ -28,6 +28,8 @@ import { RiMusicAiFill } from "react-icons/ri";
 import { AccidentalPreference, ChordNotation } from "@/utils/music/constants";
 import { parseChordSheet } from "@/utils/music/parseChords";
 import { HeaderCL } from "./header-comp";
+import CustomizeWidget from "./CustomizeWidget";
+import CustomizeTextWidget from "./CustomizeTextWidget";
 
 export default function ChordProViewComponentAlt({
   setListSong,
@@ -406,6 +408,7 @@ export default function ChordProViewComponentAlt({
       {mode !== "preview" && (
         <>
           <div className="view-selector-container">
+            {/* <CustomizeTextWidget /> */}
             {userData &&
               hasPermission(userData.role as Role, "update:songs") && (
                 <CDropdown
