@@ -28,6 +28,7 @@ font-src https://fonts.gstatic.com;
 img-src 'self' data: blob: https://kadorwmjhklzakafowpu.supabase.co https://*.stripe.com https://churchlab.it https://*.churchlab.it;
 connect-src 'self' https://kadorwmjhklzakafowpu.supabase.co https://api.stripe.com https://webhooks.stripe.com https://hooks.stripe.com https://js.stripe.com https://churchlab.it https://*.churchlab.it;
 frame-src https://js.stripe.com https://hooks.stripe.com;
+media-src 'self' https://kadorwmjhklzakafowpu.supabase.co;
 worker-src blob: 'self';
 `.replace(/\n/g, ""),
                 },
