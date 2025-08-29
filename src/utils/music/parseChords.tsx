@@ -52,8 +52,6 @@ function normalizeAccidentals(
 // Improved function to validate if a match is actually a chord
 
 function transposeNote(note: string, semitones: number): string {
-  console.log(`Transposing note: "${note}" by ${semitones} semitones`);
-
   // Normalize semitones to 0-11 range
   semitones = ((semitones % 12) + 12) % 12;
   if (semitones === 0) return note;
@@ -61,14 +59,10 @@ function transposeNote(note: string, semitones: number): string {
   // Parse the note - handle both regular and unicode accidentals
   const match = note.match(/^([A-G])([#b♯♭]?)$/);
   if (!match) {
-    console.log(`No match found for note: "${note}"`);
     return note;
   }
 
   const [fullMatch, noteName, accidental] = match;
-  console.log(
-    `Parsed: fullMatch="${fullMatch}", noteName="${noteName}", accidental="${accidental}"`
-  );
 
   // Try direct lookup first (for notes like "C#", "Bb")
   let currentSemitone = NOTE_TO_SEMITONE[note];
@@ -77,7 +71,6 @@ function transposeNote(note: string, semitones: number): string {
     // If direct lookup fails, build it from parts
     currentSemitone = NOTE_TO_SEMITONE[noteName];
     if (currentSemitone === undefined) {
-      console.log(`Unknown note name: "${noteName}"`);
       return note;
     }
 
@@ -88,11 +81,8 @@ function transposeNote(note: string, semitones: number): string {
     }
   }
 
-  console.log(`Current semitone: ${currentSemitone}`);
-
   // Calculate new semitone
   const newSemitone = (currentSemitone + semitones) % 12;
-  console.log(`New semitone: ${newSemitone}`);
 
   // Choose the best enharmonic spelling based on the original accidental preference
   let result;
@@ -110,7 +100,6 @@ function transposeNote(note: string, semitones: number): string {
         : CHROMATIC_SCALE_SHARP[newSemitone];
   }
 
-  console.log(`Result: "${result}"`);
   return result;
 }
 function toEnglishChord(chord: string): string {
@@ -166,15 +155,10 @@ function convertChordNotation(
   }
 }
 function transposeChord(chord: string, semitones: number): string {
-  console.log(`=== TRANSPOSE CHORD START ===`);
-  console.log(`Input chord: "${chord}"`);
-  console.log(`Semitones: ${semitones}`);
-
   if (semitones === 0) return chord;
 
   const wasItalian = isItalianChord(chord);
   const englishChord = toEnglishChord(chord);
-  console.log(`English chord: "${englishChord}"`);
 
   const slashIndex = englishChord.indexOf("/");
   let main = englishChord;
@@ -183,54 +167,39 @@ function transposeChord(chord: string, semitones: number): string {
   if (slashIndex !== -1) {
     main = englishChord.slice(0, slashIndex);
     bass = englishChord.slice(slashIndex + 1);
-    console.log(`Split - Main: "${main}", Bass: "${bass}"`);
   } else {
-    console.log(`No slash found, treating as simple chord`);
   }
 
   const matchMain = main.match(/^([A-G][#b♯♭]?)(.*)/);
-  console.log(`Main chord match:`, matchMain);
 
   if (!matchMain) {
-    console.log(`Main chord match failed, returning original`);
     return chord;
   }
 
   const [, root, suffix] = matchMain;
-  console.log(`Main - Root: "${root}", Suffix: "${suffix}"`);
 
   const transposedRoot = transposeNote(root, semitones);
-  console.log(`Transposed root: "${transposedRoot}"`);
 
   let result = transposedRoot + suffix;
-  console.log(`Result after main: "${result}"`);
 
   if (bass) {
     // Only capture the note part for bass, preserve everything else
     const bassMatch = bass.match(/^([A-G][#b♯♭]?)/);
-    console.log(`Bass match:`, bassMatch);
 
     if (bassMatch) {
       const [, bassRoot] = bassMatch;
-      console.log(`Bass root: "${bassRoot}"`);
 
       const transposedBass = transposeNote(bassRoot, semitones);
-      console.log(`Transposed bass: "${transposedBass}"`);
 
       const bassRemainder = bass.slice(bassRoot.length);
-      console.log(`Bass remainder: "${bassRemainder}"`);
 
       result += "/" + transposedBass + bassRemainder;
     } else {
-      console.log(`Bass match failed, preserving original bass`);
       result += "/" + bass;
     }
   }
 
-  console.log(`Final result before Italian conversion: "${result}"`);
   const finalResult = toItalianChord(result, wasItalian);
-  console.log(`Final result: "${finalResult}"`);
-  console.log(`=== TRANSPOSE CHORD END ===`);
 
   return finalResult;
 }

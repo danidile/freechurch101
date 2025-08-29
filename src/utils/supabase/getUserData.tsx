@@ -93,6 +93,5 @@ export default async function fbasicUserData() {
       userData.teams = teamsFormatted;
     }
   }
-  console.log("userData", userData);
   return userData;
 }

@@ -9,9 +9,8 @@ import {
   useDisclosure,
 } from "@heroui/react";
 
-import { usePathname } from "next/navigation";
 import { FaPlus, FaMinus } from "react-icons/fa";
-import { MdMoreVert, MdOutlineLibraryMusic } from "react-icons/md";
+import { MdMoreVert } from "react-icons/md";
 
 import ChordSheetJS from "chordsheetjs";
 import { JSX, useEffect, useMemo, useState, useCallback } from "react";
@@ -28,8 +27,6 @@ import { RiMusicAiFill } from "react-icons/ri";
 import { AccidentalPreference, ChordNotation } from "@/utils/music/constants";
 import { parseChordSheet } from "@/utils/music/parseChords";
 import { HeaderCL } from "./header-comp";
-import CustomizeWidget from "./CustomizeWidget";
-import CustomizeTextWidget from "./CustomizeTextWidget";
 
 export default function ChordProViewComponentAlt({
   setListSong,
@@ -257,7 +254,6 @@ export default function ChordProViewComponentAlt({
           }
         }
       }
-      console.log("line", line);
       // Handle different line types
       switch (line.type) {
         case "section":
@@ -400,8 +396,6 @@ export default function ChordProViewComponentAlt({
       return true;
     });
   }, [viewChords, chordNotation]);
-  console.log("chordProState", chordProState);
-  const [zoomLevel, setZoomLevel] = useState(1); // Add this line
 
   return (
     <div className="relative">
@@ -467,36 +461,38 @@ export default function ChordProViewComponentAlt({
                 }
               }}
             />
-            {showPlayer && (
-              <div className="max-w-2xl mx-auto space-y-1 my-3">
-                {audioPaths.map((path, index) => {
-                  const trackName = path
-                    .replace(/\.[^/.]+$/, "")
-                    .replace(/-/g, " ")
-                    .replace(/\b\w/g, (l) => l.toUpperCase());
-
-                  return (
-                    <div
-                      key={index}
-                      className="my-2 border border-gray-100 rounded p-4"
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
-                          {trackName}
-                        </p>
-                      </div>
-                      <audio controls className="w-full h-8">
-                        <source
-                          src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`}
-                        />
-                        Your browser does not support the audio element.
-                      </audio>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
           </div>
+          {showPlayer && (
+            <div className="max-w-2xl mx-auto space-y-1 my-3">
+              {audioPaths.map((path, index) => {
+                const trackName = path
+                  .replace(/\.[^/.]+$/, "")
+                  .replace(/-/g, " ")
+                  .replace(/\b\w/g, (l) => l.toUpperCase());
+                console.log(
+                  `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`
+                );
+                return (
+                  <div
+                    key={index}
+                    className="my-2 border border-gray-100 rounded p-4"
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="overflow-hidden line-clamp-1 text-sm text-gray-600">
+                        {trackName}
+                      </p>
+                    </div>
+                    <audio controls className="w-full h-8">
+                      <source
+                        src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchdata/${userData?.church_id}/music/audio/${setListSong.id}/${path}`}
+                      />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       )}
       <HeaderCL

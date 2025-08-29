@@ -35,6 +35,7 @@ import { getAudioFileSongNames } from "@/hooks/GET/getAudioFileSongNames";
 import { deleteAudiosAction } from "./deleteAudiosAction";
 import ChordProViewComponentAlt from "@/app/components/chordProViewComponentAlt";
 import { useScreenSize } from "@/app/components/useScreenSize";
+import { LuAudioLines } from "react-icons/lu";
 
 export default function UpdateSongForm({
   songData,
@@ -483,11 +484,11 @@ export default function UpdateSongForm({
           </div>
           <div className="border rounded-lg">
             <button
-              type="button" // 👈 this prevents form submission
+              type="button"
               onClick={() => setAudioIsOpen(!audioIsOpen)}
               className="w-full flex items-center rounded-lg justify-between px-2 py-2 bg-white hover:bg-gray-100 transition font-medium"
             >
-              <span>🎵 Audio Files ({audioPaths.length})</span>
+              <span className="flex flex-row items-center gap-3"><LuAudioLines/>File Audio ({audioPaths.length})</span>
               {audioIsOpen ? (
                 <ChevronUp size={20} />
               ) : (

@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      pool: true, // keeps the connection alive
     });
 
     await transporter.sendMail({
