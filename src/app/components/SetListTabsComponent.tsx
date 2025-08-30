@@ -14,7 +14,6 @@ export default function SetListTabs({
   viewMode?: string;
 }) {
   const { eventTypes } = useChurchStore();
-  console.log(eventTypes);
   const currentDate = new Date();
   let nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
@@ -103,28 +102,32 @@ export default function SetListTabs({
                         {matched?.alt || matched?.label || "Evento sconosciuto"}
                       </p>
                       <div className="flex gap-1 flex-wrap leading-3 text-slate-600">
-                        {Object.values(setlist.setlistTeams).flat().length >=
-                          1 && <small className="font-semibold">Team: </small>}
-                        {Object.values(setlist.setlistTeams)
-                          .flat()
-                          .map((team, index) => {
-                            return (
-                              <small
-                                key={index}
-                                className={`${
-                                  team.profile === userData.id
-                                    ? "font-bold"
-                                    : ""
-                                } ${
-                                  team.profile === userData.id
-                                    ? "text-cyan-800"
-                                    : ""
-                                }`}
-                              >
-                                {team.name + " " + team.lastname}
-                              </small>
-                            );
-                          })}
+                        {setlist.setlistTeams &&
+                          Object.values(setlist.setlistTeams).flat().length >=
+                            1 && (
+                            <small className="font-semibold">Team: </small>
+                          )}
+                        {setlist.setlistTeams &&
+                          Object.values(setlist.setlistTeams)
+                            .flat()
+                            .map((team, index) => {
+                              return (
+                                <small
+                                  key={index}
+                                  className={`${
+                                    team.profile === userData.id
+                                      ? "font-bold"
+                                      : ""
+                                  } ${
+                                    team.profile === userData.id
+                                      ? "text-cyan-800"
+                                      : ""
+                                  }`}
+                                >
+                                  {team.name + " " + team.lastname}
+                                </small>
+                              );
+                            })}
                       </div>
                     </div>
                   </div>

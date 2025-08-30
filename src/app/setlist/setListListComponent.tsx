@@ -1,6 +1,6 @@
 "use client";
 import { getSetListsByChurch } from "@/hooks/GET/getSetListsByChurch";
-import { setListT } from "@/utils/types/types";
+import { GroupedMembers, setListT } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { TransitionLink } from "../components/TransitionLink";
 import SetListTabs from "../components/SetListTabsComponent";
@@ -19,8 +19,8 @@ import {
   LuCalendarPlus,
   LuCalendarRange,
   LuList,
-  LuMusic2,
 } from "react-icons/lu";
+import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
 
 export default function SetListListComponent() {
   const { userData, loading } = useUserStore();
@@ -36,6 +36,31 @@ export default function SetListListComponent() {
       );
     }
   }, [loading, userData]);
+  useEffect(() => {
+    if (viewMode === "list" && setlists) {
+      const today = new Date();
+
+      const fetchSetlistsFull = async () => {
+        const detailedSetlists = await Promise.all(
+          setlists.map(async (singleSetlist) => {
+            if (today > new Date(singleSetlist.date)) {
+              return singleSetlist; // Skip past events
+            }
+            const setlistTeams: GroupedMembers = await getSetListTeams(
+              singleSetlist.id
+            );
+            return {
+              ...singleSetlist,
+              setlistTeams: setlistTeams, // Add the fetched teams to the setlist object
+            };
+          })
+        );
+        setSetlists(detailedSetlists);
+        console.log(detailedSetlists);
+      };
+      fetchSetlistsFull();
+    }
+  }, [viewMode]);
 
   const [TeamLeader, setTeamLeader] = useState<boolean>(false);
   useEffect(() => {
