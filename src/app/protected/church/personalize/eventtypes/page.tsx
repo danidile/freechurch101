@@ -23,6 +23,8 @@ import { eventType } from "@/utils/types/types";
 import { useChurchStore } from "@/store/useChurchStore";
 import addEventTypesAction from "./addEventTypesAction";
 import removeEventTypesAction from "./removeEventTypesAction";
+import { HeaderCL } from "@/app/components/header-comp";
+import { LuBox, LuCalendar1 } from "react-icons/lu";
 
 export default function PersonalizeEventsModal() {
   const { fetchChurchData, eventTypes, loadingChurchData } = useChurchStore();
@@ -121,8 +123,8 @@ export default function PersonalizeEventsModal() {
     // fetchChurchData(userData.church_id, userData.role);
   };
   return (
-    <>
-      <h2>Personalizza tipi evento</h2>
+    <div className="max-w-2xl w-full p-4 rounded-lg mx-auto">
+      <HeaderCL icon={LuCalendar1} title="Personalizza tipi evento" /> <h2></h2>
       <AnimatePresence>
         {successMessage && (
           <motion.div
@@ -190,6 +192,6 @@ export default function PersonalizeEventsModal() {
           Salva
         </Button>
       )}
-    </>
+    </div>
   );
 }

@@ -14,6 +14,8 @@ import deleteRoomsAction from "./deleteRoomsAction";
 import { FiSave } from "react-icons/fi";
 import { MdOutlineEdit } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
+import { HeaderCL } from "@/app/components/header-comp";
+import { LuBox, LuCalendarOff } from "react-icons/lu";
 
 export default function PersonalizeRoomsModal() {
   const { loadingChurchData, rooms, fetchChurchData } = useChurchStore();
@@ -145,11 +147,12 @@ export default function PersonalizeRoomsModal() {
   };
 
   return (
-    <div className="w-full max-w-[500px]">
-      <h2 className="text-center"> Personalizza Stanze</h2>
-      <p className="text-sm text-gray-600 text-center">
-        Qui puoi gestire le stanze della tua chiesa.
-      </p>
+    <div className="w-full max-w-[500px] mx-auto">
+      <HeaderCL
+        icon={LuBox}
+        title="Personalizza Stanze"
+        description="Qui puoi gestire le stanze della tua chiesa."
+      />{" "}
       <AnimatePresence>
         {successMessage && (
           <motion.div
@@ -272,7 +275,6 @@ export default function PersonalizeRoomsModal() {
           </div>
         </div>
       ))}
-
       {duplicateError.status && (
         <div className="flex nborder ncard max-w-[90vw] flex-col items-start gap-2 !bg-red-100 w-[500px] ">
           <div className="flex flex-row gap-4 items-center justify-center w-full">

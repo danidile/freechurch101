@@ -162,21 +162,12 @@ export default function Home() {
           ChurchLab è progettato per semplificare la gestione dei team.
         </p>
         <Image
-          src="/images/teamscover.webp"
+          src="/images/event.webp"
           alt="Illustrazione Organizzazione"
           className="rounded-lg nborder "
           width={1000}
           height={400}
         />
-        <Button
-          as={Link}
-          href="/login"
-          color="primary"
-          className="my-4 "
-          variant="solid"
-        >
-          Prova Gratis
-        </Button>
       </div>
 
       <div className="visita-feed-section px-4 py-6">
@@ -188,7 +179,7 @@ export default function Home() {
           organizzativo armonioso.
         </p>
         <Image
-          src="/images/teamscover.webp"
+          src="/images/calendar.webp"
           alt="Illustrazione Organizzazione"
           className="rounded-lg nborder "
           width={1000}

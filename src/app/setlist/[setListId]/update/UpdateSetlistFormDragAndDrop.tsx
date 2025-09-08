@@ -7,7 +7,6 @@ import {
   ModalFooter,
   useDisclosure,
   TimeInput,
-  user,
 } from "@heroui/react";
 
 import { I18nProvider } from "@react-aria/i18n";
@@ -17,7 +16,6 @@ import {
   getLocalTimeZone,
   today,
 } from "@internationalized/date";
-import { DatePicker } from "@heroui/react";
 import { parseDate } from "@internationalized/date";
 import {
   churchMembersT,
@@ -48,6 +46,7 @@ import { useRouter } from "next/navigation";
 import { logEventClient } from "@/utils/supabase/logClient";
 import { HeaderCL } from "@/app/components/header-comp";
 import { LuCalendarRange } from "react-icons/lu";
+import DateRangePicker from "@/app/components/DataRangePicker";
 export default function UpdateSetlistForm({
   teams,
   page,
@@ -89,7 +88,17 @@ export default function UpdateSetlistForm({
   const [schedule, setSchedule] = useState<setListSongT[]>(
     setlistData?.schedule || []
   );
-
+  useEffect(() => {
+    if (setlistData?.schedule) {
+      setSchedule(setlistData.schedule);
+    }
+    if (setlistData?.event_type) {
+      setValue("event_type", setlistData.event_type);
+    }
+    if (setlistData?.teams) {
+      setTeamsState(setlistData?.teams);
+    }
+  }, [setlistData]);
   const [teamsState, setTeamsState] = useState<teamData[]>(
     (teams || []).filter((team) => team.selected.length > 0)
   );
@@ -116,7 +125,7 @@ export default function UpdateSetlistForm({
     if (setlistData) {
       getSetlistTeamLeadBySetlistAndUserId(userData.id, setlistData.id).then(
         (lead: { team_id: string; role: string }[]) => {
-          if (lead.length >= 1)
+          if (lead?.length >= 1)
             setUserData({
               ...userData,
               teams: [...userData.teams, ...lead], // ✅ creates a new array reference
@@ -127,10 +136,10 @@ export default function UpdateSetlistForm({
   }, []);
   const {
     handleSubmit,
-    register,
     control,
     watch,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors },
   } = useForm<formValues>({
     defaultValues: {
       hour: setlistData?.hour || "20:00",
@@ -579,9 +588,47 @@ export default function UpdateSetlistForm({
                         );
                       }}
                     />
-
+                    <DateRangePicker
+                      startDate={
+                        eventDate
+                          ? new Date(
+                              eventDate.year,
+                              eventDate.month - 1,
+                              eventDate.day
+                            )
+                          : null
+                      }
+                      endDate={
+                        eventDate
+                          ? new Date(
+                              eventDate.year,
+                              eventDate.month - 1,
+                              eventDate.day
+                            )
+                          : null
+                      }
+                      minDate={new Date()}
+                      mode="single"
+                      onChange={(range) => {
+                        setEventDate(
+                          parseDate(
+                            `${range.start.getFullYear()}-${String(range.start.getMonth() + 1).padStart(2, "0")}-${String(range.start.getDate()).padStart(2, "0")}`
+                          )
+                        );
+                        setValue(
+                          "eventDate",
+                          range.start
+                            ? `${range.start.getFullYear()}-${String(
+                                range.start.getMonth() + 1
+                              ).padStart(2, "0")}-${String(
+                                range.start.getDate()
+                              ).padStart(2, "0")}`
+                            : ""
+                        );
+                      }}
+                    />
                     {/* DATE */}
-                    <Controller
+                    {/* <Controller
                       name="eventDate"
                       control={control}
                       rules={{ required: "Data obbligatoria" }}
@@ -626,6 +673,7 @@ export default function UpdateSetlistForm({
                                   } else {
                                     field.onChange(newDateStr); // Update the form state with the string
                                   }
+                                  console.log("Selected date:", newDateStr);
                                 }}
                                 disableAnimation
                                 isInvalid={!!fieldState.error}
@@ -635,7 +683,7 @@ export default function UpdateSetlistForm({
                           />
                         );
                       }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </>

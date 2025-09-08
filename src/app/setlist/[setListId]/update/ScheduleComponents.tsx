@@ -4,7 +4,7 @@ import { Reorder, useDragControls } from "framer-motion";
 import { setListSongT, teamData, TsongNameAuthor } from "@/utils/types/types";
 import { MdDragIndicator } from "react-icons/md";
 
-import { RefObject } from "react";
+import { RefObject, useEffect } from "react";
 import { TitleFormComponent } from "./TitleFormComponentDragAndDrop";
 import { SongFormComponent } from "./SongFormComponentDragAndDrop";
 import { NoteFormComponent } from "./NoteFormComponentDragAndDrop";
@@ -33,7 +33,8 @@ export function ScheduleComponents({
   setSchedule: React.Dispatch<React.SetStateAction<setListSongT[]>>;
 }) {
   const controls = useDragControls();
-
+  useEffect(() => {
+}, [songsList]);
   return (
     <Reorder.Item
       key={section.id} // also necessary!

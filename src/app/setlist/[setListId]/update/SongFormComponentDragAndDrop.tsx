@@ -1,8 +1,6 @@
 "use client";
 import { keys } from "@/constants";
-
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
-import { Select, SelectItem } from "@heroui/react";
 import {
   Modal,
   ModalContent,
@@ -11,7 +9,6 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@heroui/react";
-
 import { Input } from "@heroui/input";
 import { setListSongT, teamData, TsongNameAuthor } from "@/utils/types/types";
 import { Button } from "@heroui/button";
@@ -42,35 +39,35 @@ export function SongFormComponent({
 }) {
   const sectionIndex = index;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const {
     isOpen: isOpenHistory,
     onOpen: onOpenHistory,
     onOpenChange: onOpenChangeHistory,
   } = useDisclosure();
-  const [songs, setSongs] = useState(songsList);
+
+  // Use a local state for the search filter, not for the whole list
   const [history, setHistory] = useState(null);
   const [triggerFetch, setTriggerFetch] = useState(false);
-  const [searchText, setSearchText] = useState(""); // Local state for search input
-  const aggiornaLista = () => {
-    const filteredSongs = songsList.filter(
-      (song: setListSongT) =>
+  const [searchText, setSearchText] = useState("");
+  const [filteredSongs, setFilteredSongs] =
+    useState<TsongNameAuthor[]>(songsList);
+
+  // Update the filtered list whenever the songsList prop or searchText changes
+  useEffect(() => {
+    const newFilteredSongs = songsList.filter(
+      (song: TsongNameAuthor) =>
         song.song_title?.toLowerCase().includes(searchText.toLowerCase()) ||
         song.author?.toLowerCase().includes(searchText.toLowerCase())
     );
-    setSongs(filteredSongs);
-  };
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      aggiornaLista(); // Trigger search on Enter key
-    }
-  };
+    setFilteredSongs(newFilteredSongs);
+  }, [songsList, searchText]);
+
   const worshipMembers = Array.from(
     new Map(
       worshipTeams
-        ?.filter((team) => team.is_worship) // only worship teams
-        .flatMap((team) => team.selected) // only selected members
-        .map((member) => [member.profile, member]) // deduplicate by profile
+        ?.filter((team) => team.is_worship)
+        .flatMap((team) => team.selected)
+        .map((member) => [member.profile, member])
     ).values()
   );
 
@@ -84,13 +81,10 @@ export function SongFormComponent({
         });
       }
     }
-  }, [triggerFetch]);
+  }, [triggerFetch, section.song]); // Added section.song to the dependency array
 
   return (
-    <div
-      className="setlist-section"
-      // dragConstraints={container}
-    >
+    <div className="setlist-section">
       <p
         onClick={() => {
           if (source === "setlist") onOpen();
@@ -218,28 +212,22 @@ export function SongFormComponent({
         scrollBehavior="inside"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        radius="none"
+        hideCloseButton={true}
       >
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <h6>Lista canzoni</h6>
                 <div className="songs-searchbar-form">
                   <Input
                     value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)} // Update local state
+                    onChange={(e) => setSearchText(e.target.value)}
                     color="primary"
                     type="text"
                     placeholder="Cerca canzone"
                     className="song-searchbar"
-                    onKeyDown={handleKeyDown} // Listen for Enter key
                   />
-                  <Button
-                    color="primary"
-                    variant="ghost"
-                    onPress={() => aggiornaLista()} // Handle search
-                  >
+                  <Button color="primary" variant="ghost">
                     <ManageSearchIcon />
                   </Button>
                 </div>
@@ -248,15 +236,16 @@ export function SongFormComponent({
                 <>
                   <div className="songs-header">
                     <div className="container-song-list">
-                      {songs.map((song, index) => {
+                      {/* Use the new filteredSongs state here */}
+                      {filteredSongs.map((song, mapIndex) => {
                         return (
                           <div
                             style={{ cursor: "pointer" }}
-                            key={(song.id + index).toString()}
+                            key={(song.id + mapIndex).toString()}
                             onClick={() => {
                               setSchedule((prevState) => {
                                 const index = prevState.findIndex(
-                                  (s, index) => index === sectionIndex
+                                  (s, idx) => idx === sectionIndex
                                 );
                                 const newSong = {
                                   song: song.id,
@@ -264,15 +253,15 @@ export function SongFormComponent({
                                   author: song.author,
                                   key: "A",
                                 };
-                                if (index === -1) return prevState; // No match found, return original state
+                                if (index === -1) return prevState;
 
-                                const updatedState = [...prevState]; // Create a new array (immutability)
+                                const updatedState = [...prevState];
                                 updatedState[index] = {
                                   ...updatedState[index],
                                   ...newSong,
-                                }; // Update only the found section
+                                };
 
-                                return updatedState; // Set the new state
+                                return updatedState;
                               });
                               setTriggerFetch(false);
                               setHistory(null);

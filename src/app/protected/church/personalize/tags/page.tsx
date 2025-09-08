@@ -15,6 +15,8 @@ import { IoIosClose } from "react-icons/io";
 import { MdOutlineEdit, MdOutlineEditOff } from "react-icons/md";
 import { FiSave } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { HeaderCL } from "@/app/components/header-comp";
+import { LuTags } from "react-icons/lu";
 
 export default function PersonalizeSongsTagsModal() {
   const { loadingChurchData, tags, fetchChurchData } = useChurchStore();
@@ -140,8 +142,8 @@ export default function PersonalizeSongsTagsModal() {
   };
 
   return (
-    <>
-      <h2> Personalizza Tag Canzoni</h2>
+    <div className="max-w-2xl w-full p-4 rounded-lg mx-auto">
+      <HeaderCL icon={LuTags} title=" Personalizza Tag Canzoni" />
       <AnimatePresence>
         {successMessage && (
           <motion.div
@@ -271,7 +273,6 @@ export default function PersonalizeSongsTagsModal() {
           </div>
         )}
       </>
-
       <div className="songs-searchbar-form">
         <Button
           size="sm"
@@ -295,6 +296,6 @@ export default function PersonalizeSongsTagsModal() {
           </Button>
         )}
       </div>
-    </>
+    </div>
   );
 }

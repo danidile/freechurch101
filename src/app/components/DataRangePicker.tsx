@@ -18,6 +18,7 @@ export interface DateRangePickerProps {
   minDate?: Date;
   disabledRanges?: DisabledRange[];
   blockedDates?: BlockedDate[];
+  mode?: "range" | "single"; // New prop for selection mode
 }
 
 const DateRangePicker: React.FC<DateRangePickerProps> = ({
@@ -26,6 +27,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   onChange,
   minDate = today(getLocalTimeZone()).toDate(getLocalTimeZone()), // Default to today
   disabledRanges = [],
+  mode = "range", // Default to range mode
 }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState<"start" | "end" | null>(
@@ -84,6 +86,14 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   };
 
   const handleDateClick = (date: Date): void => {
+    if (mode === "single") {
+      // Single date mode - set both start and end to the same date
+      onChange({ start: date, end: date });
+      setShowCalendar(null);
+      return;
+    }
+
+    // Range mode logic (original behavior)
     if (showCalendar === "start") {
       if (endDate && date > endDate) {
         onChange({ start: date, end: date });
@@ -103,22 +113,29 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   };
 
   const isDateInRange = (date: Date) => {
-    if (!startDate || !endDate) return false;
+    if (!startDate || !endDate || mode === "single") return false;
     return date >= startDate && date <= endDate;
   };
 
   const isDateSelected = (date: Date) => {
+    if (mode === "single") {
+      // In single mode, check if this date matches the selected date
+      return startDate && date.getTime() === startDate.getTime();
+    }
+
     return (
       (startDate && date.getTime() === startDate.getTime()) ||
       (endDate && date.getTime() === endDate.getTime())
     );
   };
+
   const isDateDisabled = (date: Date): boolean => {
     // Check if inside any disabled range
     return disabledRanges.some(
       (range) => date >= range.start && date <= range.end
     );
   };
+
   const isPast = (date: Date): boolean => {
     const todayDate = new Date();
     todayDate.setHours(0, 0, 0, 0);
@@ -126,6 +143,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     given.setHours(0, 0, 0, 0);
     return given < todayDate;
   };
+
   const navigateMonth = (direction: "prev" | "next") => {
     setCurrentMonth((prev) => {
       const newMonth = new Date(prev);
@@ -144,31 +162,64 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     year: "numeric",
   });
 
+  // Generate display text based on mode
+  const getDisplayText = () => {
+    if (mode === "single") {
+      return formatDateDisplay(startDate);
+    }
+
+    // Range mode
+    if (!startDate) return "Seleziona Data";
+    if (!endDate || formatDateDisplay(endDate) === "Seleziona Data") {
+      return formatDateDisplay(startDate);
+    }
+    return `${formatDateDisplay(startDate)} - ${formatDateDisplay(endDate)}`;
+  };
+
+  const getSelectionPrompt = () => {
+    return mode === "single"
+      ? "Seleziona data:"
+      : "Seleziona date inizio e fine:";
+  };
+
   return (
-    <div className="w-full mx-auto p-3 rounded-lg ">
+    <div className="w-full mx-auto p-2 rounded-lg ">
       {/* Date Inputs */}
       <div className="space-y-3 relative " ref={calendarRef}>
-        <p className="my-2 font-medium">Seleziona date inizio e fine:</p>
-        <div className="max-w-[300px] mx-auto">
-          <button
-            onClick={() =>
-              setShowCalendar(showCalendar === "start" ? null : "start")
-            }
-            className="flex flex-row justify-center w-full px-4 py-3 bg-gray-100 rounded-md text-left font-medium  text-gray-900 active:bg-gray-100"
-          >
-            <p>
-              {formatDateDisplay(startDate)}
-              {formatDateDisplay(endDate) === "Seleziona Data" ? (
-                ""
-              ) : (
-                <>
-                  {" - "}
-                  {formatDateDisplay(endDate)}
-                </>
-              )}
-            </p>
-          </button>
-        </div>
+        {/* <p className="my-2 font-medium">{getSelectionPrompt()}</p> */}
+        <div
+  className={`
+    mx-auto relative
+    
+    // --- Pseudo-element setup ---
+    // Create the ::after element and position it
+    after:content-[''] after:absolute after:left-0 after:bottom-0
+    
+    // --- Pseudo-element styling ---
+    // Give it a width, height, and color
+    after:w-full after:h-[2px] after:bg-black
+    
+    // --- Animation setup ---
+    // Set the transform origin and transition properties
+    after:origin-center after:transition-transform after:duration-300 after:ease-in-out
+    
+    // --- Conditional animation state ---
+    ${showCalendar === "start" ? "after:scale-x-100" : "after:scale-x-0"}
+  `}
+>
+  <small className="left-0 absolute font-semibold text-[#52525b]">
+    Data
+  </small>
+  <button
+    type="button"
+    onClick={() =>
+      setShowCalendar(showCalendar === "start" ? null : "start")
+    }
+    className="flex flex-row justify-center w-full border-b-1 px-4 py-3 border-gray-200  text-left font-medium text-gray-900 focus:outline-none"
+  >
+    <p>{getDisplayText()}</p>
+  </button>
+</div>
         {/* Calendar */}
         {showCalendar && (
           <div
@@ -178,6 +229,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             {/* Calendar Header - Make it more spacious on mobile */}
             <div className="flex items-center justify-between px-2 sm:px-4 py-3 sm:py-4 border-b border-gray-100">
               <button
+                type="button"
                 onClick={() => navigateMonth("prev")}
                 className="p-2 sm:p-1 m-1 sm:m-2 active:bg-gray-100 rounded-full"
               >
@@ -187,6 +239,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
                 {monthYear}
               </h3>
               <button
+                type="button"
                 onClick={() => navigateMonth("next")}
                 className="p-2 sm:p-1 m-1 sm:m-2 active:bg-gray-100 rounded-full"
               >
@@ -198,16 +251,14 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <div className="p-3 sm:p-4 md:p-5">
               {/* Day Headers - Fixed to show Monday-Sunday order */}
               <div className="grid grid-cols-7 mb-2 sm:mb-3">
-                {["lun", "mar", "mer", "gio", "ven", "sab", "dom"].map(
-                  (day, index) => (
-                    <div
-                      key={index}
-                      className="h-8 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-medium text-gray-400 uppercase"
-                    >
-                      {day}
-                    </div>
-                  )
-                )}
+                {["L", "M", "M", "G", "V", "S", "D"].map((day, index) => (
+                  <div
+                    key={index}
+                    className="h-8 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-medium text-gray-400 uppercase"
+                  >
+                    {day}
+                  </div>
+                ))}
               </div>
 
               {/* Calendar Days - Responsive sizing */}
@@ -243,6 +294,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
                   return (
                     <button
+                      type="button"
                       key={index}
                       onClick={() => {
                         if (!disabled && !past) handleDateClick(date);

@@ -114,6 +114,7 @@
     "@types/react": "^19.1.8",
     "@types/react-color": "^3.0.13",
     "@types/react-dom": "19.1.6",
+    "@vercel/speed-insights": "^1.2.0",
     "aws-cdk-lib": "^2.189.0",
     "chordsheetjs": "^10.3.0",
     "class-variance-authority": "^0.7.0",

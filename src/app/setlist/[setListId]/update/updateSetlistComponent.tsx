@@ -19,32 +19,29 @@ export default function UpdateSetlistComponent({
   const { userData, loading } = useUserStore();
   const [setlistData, setSetlistData] = useState<setListT | null>({});
   const [songs, setSongs] = useState<TsongNameAuthor[] | null>([]);
-  const [canEditEventData, setCanEditEventData] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [canEditEventData, setCanEditEventData] = useState<boolean>(true);
   useEffect(() => {
     const fetchSongs = async () => {
       if (!loading && userData && userData.church_id) {
-
         const fetchedSetlist: setListT = await getSetList(setListId);
-
+        setSetlistData(fetchedSetlist);
 
         const fetchedSchedule = await getSetlistSchedule(setListId);
+        fetchedSetlist.schedule = fetchedSchedule;
+        setSetlistData(fetchedSetlist);
 
         const fetchedSetlistTeams = await getSelectedChurchTeams(
           userData.church_id,
           setListId
         );
-
         fetchedSetlist.teams = fetchedSetlistTeams;
-        fetchedSetlist.schedule = fetchedSchedule;
+        setSetlistData(fetchedSetlist);
 
         const fetchedSongs: TsongNameAuthor[] = await getSongsCompact(
           userData.church_id
         );
         setSongs(fetchedSongs);
         setSetlistData(fetchedSetlist);
-
-        setIsLoading(false);
       }
       checkPermissionClient(
         userData.teams,
@@ -60,13 +57,6 @@ export default function UpdateSetlistComponent({
     fetchSongs();
   }, [loading, userData, setListId]);
 
-  if (isLoading || !setlistData || !songs) {
-    return (
-      <div className="container-sub min-h-[80vh] flex ">
-        <ChurchLabLoader />
-      </div>
-    );
-  }
   return (
     <div className="container-sub">
       <UpdateSetlistForm

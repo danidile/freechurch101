@@ -1,45 +1,37 @@
 "use client";
 import { getSongsCompact } from "@/hooks/GET/getSongsCompact";
 import UpdateSetlistForm from "../[setListId]/update/UpdateSetlistFormDragAndDrop";
-
 import { teamData, TsongNameAuthor } from "@/utils/types/types";
 import { getChurchTeams } from "@/hooks/GET/getChurchTeams";
 import { useUserStore } from "@/store/useUserStore";
 import { useEffect, useState } from "react";
-import { Spinner } from "@heroui/spinner";
 
 export default function AddSetlistComponent() {
   const { userData, loading } = useUserStore();
 
-  const [songs, setSongs] = useState<TsongNameAuthor[] | null>([]);
-  const [teams, setTeams] = useState<teamData[] | null>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [songs, setSongs] = useState<TsongNameAuthor[]>([]);
+  const [teams, setTeams] = useState<teamData[]>([]);
 
   useEffect(() => {
-    const fetchSongs = async () => {
-      if (!loading && userData && userData.church_id) {
-        const fetchedTeams = await getChurchTeams(userData.church_id);
-        setTeams(fetchedTeams);
-
-        const fetchedSongs: TsongNameAuthor[] = await getSongsCompact(
-          userData.church_id
-        );
-        setSongs(fetchedSongs);
-        setIsLoading(false);
+    const fetchAllData = async () => {
+      if (!loading && userData?.church_id) {
+        try {
+          const [fetchedTeams, fetchedSongs] = await Promise.all([
+            getChurchTeams(userData.church_id),
+            getSongsCompact(userData.church_id),
+          ]);
+          setTeams(fetchedTeams);
+          setSongs(fetchedSongs);
+        } catch (error) {
+          console.error("Failed to fetch data:", error);
+        }
       }
     };
-    fetchSongs();
+
+    fetchAllData();
   }, [loading, userData]);
 
-  if (isLoading || !songs || !teams) {
-    return (
-      <div className="container-sub">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
   const setlistData: null = null;
-  console.log("teams", teams);
 
   return (
     <div className="container-sub">

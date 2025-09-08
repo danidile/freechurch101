@@ -85,8 +85,6 @@ export default function BlockDatesComponent() {
   return (
     <div className="max-w-lg w-full mx-auto p-2 bg-white min-h-screen">
       <I18nProvider locale="it-IT-u-ca-gregory">
-        
-
         <div className="mb-6">
           {blockedDates.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg">

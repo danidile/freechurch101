@@ -3,6 +3,7 @@ import MenuBar from "./components/navbar";
 import { Viewport } from "next";
 import { ZustandProviders } from "./zustandProvider";
 import { ToastProvider } from "@heroui/toast";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import { SiderbarProvider } from "./SiderbarProvider";
 import NotificationButton from "../components/NotificationButton";
@@ -85,6 +86,7 @@ export default function RootLayout({
               }}
             />
             <SiderbarProvider> {children}</SiderbarProvider>
+            <SpeedInsights/>
           </main>
           {/* </PullToRefreshLayout> */}
         </ZustandProviders>

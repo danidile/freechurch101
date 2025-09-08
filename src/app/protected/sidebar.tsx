@@ -100,7 +100,7 @@ export default function Sidebar() {
     };
     fetchLeaderStatus();
   }, [loading, userData]);
-  const iconSize= 20;
+  const iconSize = 20;
   const navSections = {
     main: [
       {
@@ -117,13 +117,13 @@ export default function Sidebar() {
       },
       {
         href: "/protected/blockouts",
-        icon: <LuCalendarOff  size={iconSize} />,
+        icon: <LuCalendarOff size={iconSize} />,
         text: "Blocca Date",
         show: !!userData.church_id,
       },
       {
         href: "/artists",
-        icon: <MdOutlineExplore size={iconSize}  />,
+        icon: <MdOutlineExplore size={iconSize} />,
         text: "Esplora",
         show: true,
       },
@@ -131,25 +131,25 @@ export default function Sidebar() {
     church: [
       {
         href: "/setlist",
-        icon: <LuCalendarRange size={iconSize}  />,
+        icon: <LuCalendarRange size={iconSize} />,
         text: "Eventi",
         show: !!userData.church_id,
       },
       {
         href: "/songs",
-        icon: <MdOutlineLibraryMusic size={iconSize}  />,
+        icon: <MdOutlineLibraryMusic size={iconSize} />,
         text: "Canzoni",
         show: !!userData.church_id,
       },
       {
         href: "/protected/teams",
-        icon: <FaAsterisk  size={iconSize} />,
+        icon: <FaAsterisk size={iconSize} />,
         text: "Team",
         show: !!userData.church_id,
       },
       {
         href: "/protected/church",
-        icon: <PiChurch  size={iconSize} />,
+        icon: <PiChurch size={iconSize} />,
         text: "Membri Chiesa",
         show:
           !!userData.church_id &&
@@ -160,13 +160,13 @@ export default function Sidebar() {
     management: [
       {
         href: "/protected/blockouts-calendar",
-        icon: <LuCalendarClock size={iconSize}  />,
+        icon: <LuCalendarClock size={iconSize} />,
         text: "Calendario Presenze",
         show: userData.teams?.some((team) => team.role === "leader"),
       },
       {
         href: "/protected/church/personalize",
-        icon: <LuChurch size={iconSize}  />,
+        icon: <LuChurch size={iconSize} />,
         text: "Personalizza Chiesa",
         show:
           hasPermission(userData.role as Role, "personalize:church") ||
@@ -174,7 +174,7 @@ export default function Sidebar() {
       },
       {
         href: "/protected/church/stripe",
-        icon: <FaRegCreditCard size={iconSize}  />,
+        icon: <FaRegCreditCard size={iconSize} />,
         text: "Abbonamento",
         show:
           hasPermission(userData.role as Role, "personalize:church") &&
@@ -182,7 +182,7 @@ export default function Sidebar() {
       },
       {
         href: "/protected/tickets",
-        icon: <FaRegQuestionCircle size={iconSize}  />,
+        icon: <FaRegQuestionCircle size={iconSize} />,
         text: "Support Tickets",
         show: true,
       },
@@ -190,7 +190,7 @@ export default function Sidebar() {
     admin: [
       {
         href: "/admin/logs",
-        icon: <LuLogs size={iconSize}  />,
+        icon: <LuLogs size={iconSize} />,
         text: "Logs",
         show: userData.email === "danidile94@gmail.com",
       },
