@@ -190,6 +190,7 @@ export default function EventScheduleTemplate({
                           container={container}
                           worshipTeams={null} // 👈 pass only is_worship === true teams
                           updateNotesSection={updateNotesSection}
+                          schedule={[]}
                         />
                       );
                     })}

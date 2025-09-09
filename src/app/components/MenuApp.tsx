@@ -1,27 +1,13 @@
 "use client";
 import { IconContext } from "react-icons";
-import {
-  MdEventNote,
-  MdEvent,
-  MdOutlineLibraryMusic,
-  MdLibraryMusic,
-} from "react-icons/md";
-import {
-  IoSettings,
-  IoSettingsOutline,
-  IoNotificationsOutline,
-  IoNotificationsSharp,
-} from "react-icons/io5";
-import { FaRegCalendar, FaRegCalendarAlt } from "react-icons/fa";
-import { Badge } from "@heroui/badge";
+import { MdOutlineLibraryMusic } from "react-icons/md";
+import { IoSettingsOutline } from "react-icons/io5";
 import { TransitionLink } from "./TransitionLink";
 import { usePathname } from "next/navigation"; // ✅ Use this for App Router
 import { useState, useEffect } from "react";
 import { basicUserData } from "@/utils/types/userData";
-import { BiCompass, BiSolidCompass } from "react-icons/bi";
-import { LuBell, LuBellRing, LuCalendarRange, LuInbox } from "react-icons/lu";
-
-import { FaRegCalendarDays } from "react-icons/fa6";
+import { BiCompass } from "react-icons/bi";
+import { LuCalendarRange, LuInbox } from "react-icons/lu";
 
 export default function MenuApp({
   notifications,
@@ -32,7 +18,6 @@ export default function MenuApp({
 }) {
   const pathname = usePathname(); // Get the full pathname
   const [parameter, setParameter] = useState(pathname.split("/")[1] || ""); // Initialize state based on the pathname
-  const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
 
   useEffect(() => {
     // Update the parameter state when the pathname changes
