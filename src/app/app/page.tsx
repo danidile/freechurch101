@@ -321,7 +321,7 @@ export default function LandingPage() {
               Termini
             </a>
             <a
-              href="mailto:support@churchlab.com"
+              href="mailto:info@churchlab.com"
               className="hover:text-indigo-600 transition-colors"
             >
               Supporto

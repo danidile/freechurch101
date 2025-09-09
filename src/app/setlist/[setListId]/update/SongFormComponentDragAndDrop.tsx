@@ -35,7 +35,7 @@ export function SongFormComponent({
   index: number;
   songsList: TsongNameAuthor[];
   worshipTeams: teamData[];
-  setSchedule: React.Dispatch<React.SetStateAction<setListSongT[]>>;
+  setSchedule: React.Dispatch<React.SetStateAction<setListSongT[] | null>>;
 }) {
   const sectionIndex = index;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

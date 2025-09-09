@@ -1,70 +1,96 @@
 "use client";
 import { getSetList } from "@/hooks/GET/getSetList";
 import UpdateSetlistForm from "./UpdateSetlistFormDragAndDrop";
-import { setListT, TsongNameAuthor } from "@/utils/types/types";
+import {
+  GroupedMembers,
+  setListSongT,
+  setListT,
+  teamData,
+  TsongNameAuthor,
+} from "@/utils/types/types";
 import { getSongsCompact } from "@/hooks/GET/getSongsCompact";
-import { getSetListSongsCompact } from "@/hooks/GET/getSetListSongsCompact";
-
 import { getSelectedChurchTeams } from "@/hooks/GET/getSelectedChurchTeams";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
-import ChurchLabLoader from "@/app/components/churchLabSpinner";
 import { checkPermissionClient } from "@/utils/supabase/permissions/checkPermissionClient";
+import ChurchLabLoader from "@/app/components/churchLabSpinner";
 export default function UpdateSetlistComponent({
   setListId,
 }: {
   setListId: string;
 }) {
   const { userData, loading } = useUserStore();
-  const [setlistData, setSetlistData] = useState<setListT | null>({});
+  const [setlistData, setSetlistData] = useState<setListT | null>(null); // Start with null
   const [songs, setSongs] = useState<TsongNameAuthor[] | null>([]);
   const [canEditEventData, setCanEditEventData] = useState<boolean>(true);
+  const [schedule, setSchedule] = useState<setListSongT[] | null>(null); // Start with null
+  const [teams, setTeams] = useState<teamData[] | null>(null); // Start with null
+  const oldData = useRef<setListT | null>(null);
   useEffect(() => {
-    const fetchSongs = async () => {
-      if (!loading && userData && userData.church_id) {
-        const fetchedSetlist: setListT = await getSetList(setListId);
-        setSetlistData(fetchedSetlist);
+    // Only run the effect if not already loading and we have a valid church_id
+    if (!loading && userData && userData.church_id && !setlistData) {
+      const fetchSongs = async () => {
+        if (!loading && userData && userData.church_id) {
+          const fetchedSetlist: setListT = await getSetList(setListId);
+          setSetlistData(fetchedSetlist);
+          oldData.current = {
+            ...fetchedSetlist,
+          };
+          if (!schedule) {
+            const fetchedSchedule = await getSetlistSchedule(setListId);
+            setSchedule(fetchedSchedule);
+            console.log("Schedule fetched:", fetchedSchedule);
+            oldData.current = { ...oldData.current, schedule: fetchedSchedule };
+          }
 
-        const fetchedSchedule = await getSetlistSchedule(setListId);
-        fetchedSetlist.schedule = fetchedSchedule;
-        setSetlistData(fetchedSetlist);
+          const fetchedSetlistTeams = await getSelectedChurchTeams(
+            userData.church_id,
+            setListId
+          );
+          setTeams(fetchedSetlistTeams);
+          oldData.current = {
+            ...oldData.current,
+            teams: fetchedSetlistTeams,
+          };
+          console.log("teams fetched:", fetchedSetlistTeams);
+          const fetchedSongs: TsongNameAuthor[] = await getSongsCompact(
+            userData.church_id
+          );
+          setSongs(fetchedSongs);
+        }
 
-        const fetchedSetlistTeams = await getSelectedChurchTeams(
-          userData.church_id,
-          setListId
-        );
-        fetchedSetlist.teams = fetchedSetlistTeams;
-        setSetlistData(fetchedSetlist);
+        checkPermissionClient(
+          userData.teams,
+          "setlists",
+          "edit",
+          userData.id,
+          userData.role
+        ).then((result: boolean) => {
+          setCanEditEventData(result);
+        });
+      };
+      fetchSongs();
+    }
+  }, [loading, userData]); // Add setlistData to dependency array to prevent re-fetch
 
-        const fetchedSongs: TsongNameAuthor[] = await getSongsCompact(
-          userData.church_id
-        );
-        setSongs(fetchedSongs);
-        setSetlistData(fetchedSetlist);
-      }
-      checkPermissionClient(
-        userData.teams,
-        "setlists",
-        "edit",
-        userData.id,
-        userData.role
-      ).then((result: boolean) => {
-        setCanEditEventData(result);
-        console.log("canEditEventData", canEditEventData);
-      });
-    };
-    fetchSongs();
-  }, [loading, userData, setListId]);
+  if (!setlistData) {
+    return <ChurchLabLoader />;
+  }
 
   return (
     <div className="container-sub">
       <UpdateSetlistForm
-        teams={setlistData.teams}
+        teams={teams}
+        schedule={schedule}
         page="update"
         setlistData={setlistData}
         songsList={songs}
         canEditEventData={canEditEventData}
+        setSetlistData={setSetlistData}
+        setTeams={setTeams}
+        setSchedule={setSchedule}
+        oldData={oldData.current}
       />
     </div>
   );

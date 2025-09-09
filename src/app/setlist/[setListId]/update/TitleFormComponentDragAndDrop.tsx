@@ -1,10 +1,9 @@
 "use client";
 
-import { setListSongT } from "@/utils/types/types";
+import { setListSongT, setListT } from "@/utils/types/types";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
-import { Reorder } from "framer-motion";
 import { MdMoreVert } from "react-icons/md";
 
 export function TitleFormComponent({
@@ -14,7 +13,7 @@ export function TitleFormComponent({
 }: {
   section: setListSongT;
   index: number;
-  setSchedule: React.Dispatch<React.SetStateAction<setListSongT[]>>;
+  setSchedule: React.Dispatch<React.SetStateAction<setListT[]>>;
 }) {
   return (
     <div

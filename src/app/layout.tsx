@@ -3,10 +3,11 @@ import MenuBar from "./components/navbar";
 import { Viewport } from "next";
 import { ZustandProviders } from "./zustandProvider";
 import { ToastProvider } from "@heroui/toast";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { SiderbarProvider } from "./SiderbarProvider";
 import NotificationButton from "../components/NotificationButton";
+import FooterCL from "./components/footer";
 
 export const viewport: Viewport = {
   maximumScale: 1,
@@ -54,7 +55,6 @@ export default function RootLayout({
         <ZustandProviders>
           {/* <PullToRefreshLayout> */}
           <main className="pb-[120px]">
-
             <MenuBar />
             <ToastProvider
               placement="top-right"
@@ -86,10 +86,11 @@ export default function RootLayout({
               }}
             />
             <SiderbarProvider> {children}</SiderbarProvider>
-            <SpeedInsights/>
+            <SpeedInsights />
           </main>
           {/* </PullToRefreshLayout> */}
         </ZustandProviders>
+        <FooterCL />
       </body>
     </html>
   );

@@ -1,7 +1,12 @@
 "use client";
 
 import { Reorder, useDragControls } from "framer-motion";
-import { setListSongT, teamData, TsongNameAuthor } from "@/utils/types/types";
+import {
+  setListSongT,
+  setListT,
+  teamData,
+  TsongNameAuthor,
+} from "@/utils/types/types";
 import { MdDragIndicator } from "react-icons/md";
 
 import { RefObject, useEffect } from "react";
@@ -15,26 +20,25 @@ export function ScheduleComponents({
   source = "setlist",
   songsList,
   removeItemFromSchedule,
-
+  setSchedule,
   container,
   updateNotesSection,
   worshipTeams,
-  setSchedule,
+  schedule,
 }: {
   source?: string;
   section: setListSongT;
   index: number;
   songsList: TsongNameAuthor[];
   removeItemFromSchedule: (id: string) => void;
-
+  setSchedule: React.Dispatch<React.SetStateAction<setListSongT[] | null>>;
   container: RefObject<null>;
   updateNotesSection: (text: string, section: number) => void;
   worshipTeams: teamData[];
-  setSchedule: React.Dispatch<React.SetStateAction<setListSongT[]>>;
+  schedule: setListSongT[] | null;
 }) {
   const controls = useDragControls();
-  useEffect(() => {
-}, [songsList]);
+  useEffect(() => {}, [songsList]);
   return (
     <Reorder.Item
       key={section.id} // also necessary!

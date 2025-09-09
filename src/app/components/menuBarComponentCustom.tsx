@@ -130,9 +130,7 @@ export default function MenuBarComponentCustom() {
               <Link href="/" prefetch className="text-gray-800 font-medium">
                 Home
               </Link>
-              <Link href="/app" prefetch className="text-gray-800 font-medium">
-                App
-              </Link>
+
               <Link
                 href="/artists"
                 prefetch
@@ -177,16 +175,7 @@ export default function MenuBarComponentCustom() {
             Home
           </Link>
         </div>
-        <div className="block py-2 ">
-          <Link
-            prefetch
-            href="/app"
-            className="text-gray-800 font-medium text-lg no-underline"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            App
-          </Link>
-        </div>
+
         <div className="block py-2">
           <Link
             prefetch

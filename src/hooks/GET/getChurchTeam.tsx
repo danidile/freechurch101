@@ -9,15 +9,6 @@ const rolePriority = {
 };
 export const getTeamByIdFunction = async (teamId: string) => {
   const supabase = await createClient();
-  let { data: teamLeader, error: errorTeamLeader } = await supabase
-    .from("team-leaders")
-    .select("*")
-    .eq("team", teamId);
-
-  if (errorTeamLeader) {
-    console.error("Error fetching teamLeader:", errorTeamLeader);
-  }
-  const leaderProfileIds = (teamLeader || []).map((leader) => leader.profile);
 
   let { data: teamMembers, error: errorTeamMembers } = await supabase
     .from("team-members")
@@ -54,7 +45,7 @@ export const getTeamByIdFunction = async (teamId: string) => {
           lastname: profile.lastname,
           email: profile.email,
           blockouts: blockouts || [],
-          isLeader: leaderProfileIds.includes(profile.id),
+          isLeader: member?.role === "leader" ? true : false,
           role: member.role,
         };
       })
