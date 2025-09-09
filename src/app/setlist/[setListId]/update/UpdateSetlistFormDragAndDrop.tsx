@@ -214,7 +214,7 @@ export default function UpdateSetlistForm({
         (item, index): setListSongT => ({
           ...item,
           id: crypto.randomUUID(),
-          order: (setlistData.schedule?.length ?? 0) + index,
+          order: (schedule?.length ?? 0) + index,
         })
       ),
     ]);
@@ -232,9 +232,6 @@ export default function UpdateSetlistForm({
     );
   };
 
-  useEffect(() => {
-    console.log("Setlist room changed:", setlistData.room);
-  }, [setlistData.room]);
   const convertData = async () => {
     try {
       if (alreadySubmitting) return;
@@ -393,24 +390,14 @@ export default function UpdateSetlistForm({
   }, [scheduleTemplates]);
 
   const optionsTurnazioni: CDropdownOption[] = useMemo(() => {
-    return teams
-      ?.filter(
-        (team) =>
-          userData.teams
-            .filter(
-              (team) => team.role === "leader" || userData.role === "admin"
-            )
-            .some((item) => item.team_id === team.id) &&
-          !teams.some((el) => el.team_name === team.team_name)
-      )
-      .map((team) => ({
-        label: (
-          <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
-            {team.team_name}
-          </div>
-        ),
-        value: team.id,
-      }));
+    return teams?.map((team) => ({
+      label: (
+        <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
+          {team.team_name}
+        </div>
+      ),
+      value: team.id,
+    }));
   }, [teams, teams, userData]);
 
   const getRolesFromTeamMembers = (
@@ -492,7 +479,7 @@ export default function UpdateSetlistForm({
                         name="room_id" // define this in your formValues
                         control={control}
                         rules={{ required: "Devi selezionare una location" }}
-                        defaultValue={setlistData.room || ""}
+                        defaultValue={setlistData?.room || ""}
                         render={({ field, fieldState }) => (
                           <Select
                             label="Seleziona la Location"

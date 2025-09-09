@@ -45,7 +45,7 @@ export const getTeamByIdFunction = async (teamId: string) => {
           lastname: profile.lastname,
           email: profile.email,
           blockouts: blockouts || [],
-          isLeader: member?.role === "leader" ? true : false,
+          isLeader: member?.role,
           role: member.role,
         };
       })
