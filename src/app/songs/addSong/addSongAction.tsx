@@ -31,6 +31,7 @@ export const addSong = async (data: songSchema) => {
         tags: data.tags,
         church: church,
         time_signature: data.time_signature,
+        is_chordpro: data.is_chordpro,
       })
       .select()
       .single();

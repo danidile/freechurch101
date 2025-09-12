@@ -4,6 +4,7 @@ import { TransitionLink } from "./TransitionLink";
 import { setListT } from "@/utils/types/types";
 import { basicUserData } from "@/utils/types/userData";
 import { useState } from "react";
+import { LuFilter } from "react-icons/lu";
 
 export default function SetListTabs({
   setlists,
@@ -40,7 +41,8 @@ export default function SetListTabs({
           className="p-2  border-b-1 mb-1 flex items-center gap-2 transition-colors duration-200 ease-in-out"
           key="type"
         >
-          <p className="font-medium">Filtra per Tipo evento:</p>
+          <LuFilter />
+          <p className="font-medium">Filtra per Tipo:</p>
         </div>{" "}
         <div
           className="p-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 mb-1 flex items-center gap-2 transition-colors duration-200 ease-in-out"

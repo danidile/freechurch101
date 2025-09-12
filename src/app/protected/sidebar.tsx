@@ -156,14 +156,6 @@ export default function Sidebar() {
           (hasPermission(userData.role as Role, "read:churchmembers") ||
             TeamLeader),
       },
-    ],
-    management: [
-      {
-        href: "/protected/blockouts-calendar",
-        icon: <LuCalendarClock size={iconSize} />,
-        text: "Calendario Presenze",
-        show: userData.teams?.some((team) => team.role === "leader"),
-      },
       {
         href: "/protected/church/personalize",
         icon: <LuChurch size={iconSize} />,
@@ -172,14 +164,23 @@ export default function Sidebar() {
           hasPermission(userData.role as Role, "personalize:church") ||
           TeamLeader,
       },
-      {
-        href: "/protected/church/stripe",
-        icon: <FaRegCreditCard size={iconSize} />,
-        text: "Abbonamento",
-        show:
-          hasPermission(userData.role as Role, "personalize:church") &&
-          userData.email === "danidile94@gmail.com",
-      },
+    ],
+    management: [
+      // {
+      //   href: "/protected/blockouts-calendar",
+      //   icon: <LuCalendarClock size={iconSize} />,
+      //   text: "Calendario Presenze",
+      //   show: userData.teams?.some((team) => team.role === "leader"),
+      // },
+
+      // {
+      //   href: "/protected/church/stripe",
+      //   icon: <FaRegCreditCard size={iconSize} />,
+      //   text: "Abbonamento",
+      //   show:
+      //     hasPermission(userData.role as Role, "personalize:church") &&
+      //     userData.email === "danidile94@gmail.com",
+      // },
       {
         href: "/protected/tickets",
         icon: <FaRegQuestionCircle size={iconSize} />,

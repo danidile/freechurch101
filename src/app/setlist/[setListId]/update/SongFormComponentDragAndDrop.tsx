@@ -54,11 +54,13 @@ export function SongFormComponent({
 
   // Update the filtered list whenever the songsList prop or searchText changes
   useEffect(() => {
-    const newFilteredSongs = songsList.filter(
-      (song: TsongNameAuthor) =>
-        song.song_title?.toLowerCase().includes(searchText.toLowerCase()) ||
-        song.author?.toLowerCase().includes(searchText.toLowerCase())
-    );
+    const newFilteredSongs = songsList
+      ? songsList?.filter(
+          (song: TsongNameAuthor) =>
+            song.song_title?.toLowerCase().includes(searchText.toLowerCase()) ||
+            song.author?.toLowerCase().includes(searchText.toLowerCase())
+        )
+      : [];
     setFilteredSongs(newFilteredSongs);
   }, [songsList, searchText]);
 
@@ -302,8 +304,12 @@ export function SongFormComponent({
                 Storico Canzone{" "}
               </ModalHeader>
               <ModalBody>
-                {history && (
+                {history ? (
                   <div>
+                    <small>
+                      In questa tabella puoi vedere quando la canzone è stata
+                      suonata, chi ha cantato e in quale tonalità.
+                    </small>
                     <table className="atable">
                       <thead>
                         <tr>
@@ -334,6 +340,8 @@ export function SongFormComponent({
                       </tbody>
                     </table>
                   </div>
+                ) : (
+                  <p> Questa canzone non è mai stata suonata</p>
                 )}
               </ModalBody>
               <ModalFooter>

@@ -23,8 +23,10 @@ import { MdOutlineLibraryMusic } from "react-icons/md";
 
 export default function ChurchSongTableComponent({
   songs,
+  source,
 }: {
   songs: songsListType;
+  source: string;
 }) {
   const { userData } = useUserStore();
   const [songList, setSongList] = useState(songs);
@@ -62,7 +64,7 @@ export default function ChurchSongTableComponent({
         icon={MdOutlineLibraryMusic}
         titleDropDown={
           <div className="flex flex-row items-center justify-center gap-4">
-            {hasPermission(userData.role as Role, "create:songs") && (
+            {hasPermission(userData.role as Role, "create:songs") && source==="songs" && (
               <Dropdown>
                 <DropdownTrigger>
                   <Button color="default" isIconOnly variant="flat">
@@ -135,7 +137,7 @@ export default function ChurchSongTableComponent({
               {songList.map((song) => (
                 <tr key={song.id}>
                   <td className=" min-w-[200px] max-w-[200px]">
-                    <Link href={`/songs/${song.id}`}>
+                    <Link href={`/${source}/${song.id}`}>
                       <span className="font-medium line-clamp-1">
                         {song.song_title}
                       </span>

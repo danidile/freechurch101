@@ -107,12 +107,15 @@ export default function UpdateSongForm({
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<songSchema>({
     defaultValues: {
       ...songData,
     },
   });
+  const isChordPro = watch("is_chordpro") || false;
+
   const previewData = {
     time_signature: watch("time_signature"),
     bpm: watch("bpm"),
@@ -137,6 +140,7 @@ export default function UpdateSongForm({
     title: "",
     originalIndex: 0,
     audio_path: "",
+    is_chordpro: watch("is_chordpro"),
   };
   const insertBold = () => {
     const el = textAreaRef.current;
@@ -231,6 +235,7 @@ export default function UpdateSongForm({
 
   const convertIntoChordPro = () => {
     setState(toChordPro(state));
+    setValue("is_chordpro", true);
     console.log(state);
   };
 
@@ -279,7 +284,6 @@ export default function UpdateSongForm({
 
   return (
     <div className="container-sub !flex-row items-start gap-10">
-      
       <form onSubmit={handleSubmit(convertData)}>
         <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
           <div className="flex flex-wrap  md:flex-nowrap gap-2 items-center">
@@ -488,7 +492,10 @@ export default function UpdateSongForm({
               onClick={() => setAudioIsOpen(!audioIsOpen)}
               className="w-full flex items-center rounded-lg justify-between px-2 py-2 bg-white hover:bg-gray-100 transition font-medium"
             >
-              <span className="flex flex-row items-center gap-3"><LuAudioLines/>File Audio ({audioPaths.length})</span>
+              <span className="flex flex-row items-center gap-3">
+                <LuAudioLines />
+                File Audio ({audioPaths.length})
+              </span>
               {audioIsOpen ? (
                 <ChevronUp size={20} />
               ) : (
@@ -563,6 +570,15 @@ export default function UpdateSongForm({
             className="hidden"
           />
 
+          <label className="!mt-0 flex items-center space-x-2 px-3 py-1 hover:bg-gray-50 cursor-pointer transition-colors duration-150">
+            <input
+              type="checkbox"
+              checked={isChordPro}
+              onChange={(e) => setValue("is_chordpro", e.target.checked)}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 transition-colors duration-150"
+            />
+            <span className="text-sm text-gray-700">È in formato ChordPro</span>
+          </label>
           <div className="flex flex-row justify-center items-center">
             <Button
               type="button"

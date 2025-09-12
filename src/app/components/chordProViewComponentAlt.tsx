@@ -17,7 +17,6 @@ import { JSX, useEffect, useMemo, useState, useCallback } from "react";
 import { stepsBetweenKeys } from "@/utils/chordProFunctions/stepsBetweenKey";
 import { setListSongT } from "@/utils/types/types";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import isChordProFormat from "./isChordProFormat";
 import { useUserStore } from "@/store/useUserStore";
 import { deleteSong } from "../songs/[songId]/deleteSongAction";
 import { LuAudioLines } from "react-icons/lu";
@@ -41,7 +40,6 @@ export default function ChordProViewComponentAlt({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   // Check if uses chordpro format
-  const [isChordPro, setIsChordPro] = useState(false);
   const [audioPaths, setAudioPaths] = useState<string[]>([]);
   const [viewChords, setViewChords] = useState(true);
   const [showPlayer, setShowPlayer] = useState(false);
@@ -77,16 +75,19 @@ export default function ChordProViewComponentAlt({
 
   // Initialize ChordPro parsing
   const { chordProSong, chordProFormatter } = useMemo(() => {
-    if (!setListSong.lyrics)
-      return { chordProSong: null, chordProFormatter: null };
+    if (setListSong.is_chordpro) {
+      if (!setListSong.lyrics)
+        return { chordProSong: null, chordProFormatter: null };
 
-    const parser = new ChordSheetJS.ChordProParser();
-    let song = parser.parse(setListSong.lyrics);
-    const steps = stepsBetweenKeys(setListSong.upload_key, setListSong.key);
-    song = song.transpose(steps);
-    const formatter = new ChordSheetJS.TextFormatter();
+      const parser = new ChordSheetJS.ChordProParser();
+      console.log("setListSong?.lyrics", setListSong?.lyrics);
+      let song = parser.parse(setListSong?.lyrics);
+      const steps = stepsBetweenKeys(setListSong.upload_key, setListSong.key);
+      song = song.transpose(steps);
+      const formatter = new ChordSheetJS.TextFormatter();
 
-    return { chordProSong: song, chordProFormatter: formatter };
+      return { chordProSong: song, chordProFormatter: formatter };
+    } else return { chordProSong: null, chordProFormatter: null };
   }, [setListSong.lyrics, setListSong.upload_key, setListSong.key]);
 
   // Parse lyrics with improved parser
@@ -100,7 +101,9 @@ export default function ChordProViewComponentAlt({
     const keyForNashville =
       chordNotation === "nashville" ? originalKey : currentKey;
 
-    const selectedSong = isChordPro ? chordProState : setListSong.lyrics;
+    const selectedSong = setListSong.is_chordpro
+      ? chordProState
+      : setListSong.lyrics;
 
     return parseChordSheet(selectedSong, {
       transpose: transposeAmount,
@@ -113,25 +116,21 @@ export default function ChordProViewComponentAlt({
   }, [
     setListSong.lyrics,
     transpose,
-    isChordPro,
+    setListSong.is_chordpro,
     chordNotation,
     accidentalPreference,
     setListSong.key,
     setListSong.upload_key,
     chordProState,
   ]);
-  // Check ChordPro format
-  useEffect(() => {
-    setIsChordPro(isChordProFormat(setListSong.lyrics));
-  }, []);
 
   // Initialize ChordPro display
   useEffect(() => {
-    if (isChordPro && chordProSong && chordProFormatter) {
+    if (setListSong.is_chordpro && chordProSong && chordProFormatter) {
       const display = chordProFormatter.format(chordProSong);
       setChordProState(display);
     }
-  }, [isChordPro, chordProSong, chordProFormatter]);
+  }, [setListSong.is_chordpro, chordProSong, chordProFormatter]);
 
   // Load audio files
   useEffect(() => {
@@ -172,21 +171,21 @@ export default function ChordProViewComponentAlt({
       const currentIndex = keys.findIndex((key) => key === prevKey);
       return keys[(currentIndex - 1 + keys.length) % keys.length];
     });
-  }, [chordProSong, chordProFormatter, keys]);
+  }, [setListSong.is_chordpro, chordProFormatter, keys]);
 
   const handleTransposeUp = useCallback(() => {
     changeTranspose(1);
-    if (isChordPro) {
+    if (setListSong.is_chordpro) {
       transposeUp();
     }
-  }, [changeTranspose, transposeUp, isChordPro]);
+  }, [changeTranspose, transposeUp, setListSong.is_chordpro]);
 
   const handleTransposeDown = useCallback(() => {
     changeTranspose(-1);
-    if (isChordPro) {
+    if (setListSong.is_chordpro) {
       transposeDown();
     }
-  }, [changeTranspose, transposeDown, isChordPro]);
+  }, [changeTranspose, transposeDown, setListSong.is_chordpro]);
 
   const renderParsedLyrics = useCallback(() => {
     return parsedLyrics.flatMap((line, i) => {
@@ -268,7 +267,7 @@ export default function ChordProViewComponentAlt({
             lines.push(
               <p
                 key={`chords-${i}`}
-                className={`chord  ${isChordPro ? "chordpro-font" : ""}`}
+                className={`chord  ${setListSong.is_chordpro ? "chordpro-font" : ""}`}
               >
                 {line.text}
               </p>
@@ -279,7 +278,7 @@ export default function ChordProViewComponentAlt({
           lines.push(
             <p
               key={`lyrics-${i} `}
-              className={`lyrics ${isChordPro ? "chordpro-font" : ""}`}
+              className={`lyrics ${setListSong.is_chordpro ? "chordpro-font" : ""}`}
             >
               {line.text}
             </p>

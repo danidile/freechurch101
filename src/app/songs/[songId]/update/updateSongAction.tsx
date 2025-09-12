@@ -18,6 +18,7 @@ export const updateSong = async (data: songSchema) => {
       bpm: data.bpm,
       tags: data.tags,
       time_signature: data.time_signature,
+      is_chordpro: data.is_chordpro,
     })
     .eq("id", data.id)
     .select();

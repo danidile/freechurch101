@@ -269,7 +269,7 @@ export default function UpdateSetlistForm({
         console.error("❌ Data Validation Error:", errorMessage);
         throw new Error(errorMessage);
       }
-      const condensedTeams = teams.map((team) => {
+      const condensedTeams = teams?.map((team) => {
         return {
           id: team.id,
           is_worship: team.is_worship,

@@ -2,6 +2,7 @@ import { basicUserData } from "@/utils/types/userData";
 import fbasicUserData from "@/utils/supabase/getUserData";
 import ItaliansongslistComponent from "@/app/components/italiansongslistComponent";
 import { getItalianSongs } from "@/hooks/GET/getGlobalSongs";
+import ChurchSongTableComponent from "../songs/ChurchSongTableComponent";
 
 export default async function Page() {
   const italianSongs = await getItalianSongs();
@@ -9,7 +10,7 @@ export default async function Page() {
   if (italianSongs) {
     return (
       <div className="container-sub">
-        <ItaliansongslistComponent songs={italianSongs} userData={userData} />
+        <ChurchSongTableComponent source="italiansongs" songs={italianSongs} />
       </div>
     );
   } else {

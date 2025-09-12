@@ -15,6 +15,7 @@ export type songSchema = {
   type?: string;
   time_signature?: string;
   audio_path?: string;
+  is_chordpro?: boolean;
 };
 
 export type songType = {
@@ -304,6 +305,7 @@ export type setListSongT = {
   title?: string;
   originalIndex?: number;
   audio_path?: string;
+  is_chordpro?: boolean;
 };
 
 export type setListT = {

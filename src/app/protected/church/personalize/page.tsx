@@ -117,12 +117,12 @@ export default function PersonalizeChurchComponent() {
               description="Crea e gestisci tag per organizzare meglio le canzoni (es. adorazione, celebrazione, lingua, stagione)."
               href="/protected/church/personalize/tags"
             />
-            <SectionCard
+            {/* <SectionCard
               title="Lista Canzoni"
               icon={MdOutlineLibraryMusic}
               description="Visualizza e modifica tutte le canzoni caricate dalla tua chiesa"
               href="/songs"
-            />
+            /> */}
             <SectionCard
               icon={LuLayoutTemplate}
               title="Template Scalette"

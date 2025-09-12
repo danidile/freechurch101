@@ -10,7 +10,7 @@ export const getSongHistory = async (song: string) => {
   if (error) {
     console.error(error);
   } else {
-    return songs;
+    return songs.length >= 1 ? songs : null;
   }
 
   return null;
