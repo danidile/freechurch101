@@ -14,9 +14,10 @@ import { useEffect, useState } from "react";
 export default function AddSetlistComponent() {
   const { userData, loading } = useUserStore();
   const [setlistData, setSetlistData] = useState<setListT | null>(null); // Start with null
+  const [churchTeams, setChurchTeams] = useState<teamData[] | null>(null); // Start with null
 
   const [songs, setSongs] = useState<TsongNameAuthor[]>([]);
-  const [teams, setTeams] = useState<teamData[]>(null);
+  const [teams, setTeams] = useState<teamData[]>([]);
   const [schedule, setSchedule] = useState<setListSongT[] | null>([]); // Start with null
   useEffect(() => {
     const fetchAllData = async () => {
@@ -26,7 +27,7 @@ export default function AddSetlistComponent() {
             getChurchTeams(userData.church_id),
             getSongsCompact(userData.church_id),
           ]);
-          setTeams(fetchedTeams);
+          setChurchTeams(fetchedTeams);
           setSongs(fetchedSongs);
         } catch (error) {
           console.error("Failed to fetch data:", error);
@@ -49,6 +50,7 @@ export default function AddSetlistComponent() {
         setSetlistData={setSetlistData}
         setTeams={setTeams}
         setSchedule={setSchedule}
+        churchTeams={churchTeams}
       />
     </div>
   );
