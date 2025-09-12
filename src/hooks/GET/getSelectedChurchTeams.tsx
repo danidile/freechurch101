@@ -2,7 +2,6 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { teamData } from "@/utils/types/types";
-import { getChurchTeams } from "./getChurchTeams";
 
 export const getSelectedChurchTeams = async (
   churchId?: string,
@@ -10,33 +9,50 @@ export const getSelectedChurchTeams = async (
 ) => {
   const supabase = await createClient();
 
-  // Use Promise.all to wait for all async operations
-  const teamFinal: teamData[] = await getChurchTeams(churchId);
+  const teamFinal: teamData[] = [];
+  console.time(".from(event-team)");
   const { data, error: errorEventTeam } = await supabase
     .from("event-team")
-    .select("id,member(id, name, lastname),team(team_name),roles,status,lead")
+    .select(
+      "id, member(id, name, lastname), team(id, team_name), roles, status, lead"
+    )
     .eq("setlist", setListId);
+  console.timeEnd(".from(event-team)");
 
   if (errorEventTeam) {
-    console.log(errorEventTeam);
-  } else {
-    data.map((member: any) => {
-      teamFinal.map((team) => {
-        if (team.team_name === member.team.team_name) {
-          team.selected.push({
-            id: member.id,
-            team_name: member.team.team_name,
-            profile: member.member.id,
-            name: member.member.name,
-            lastname: member.member.lastname,
-            selected_roles: member.roles || null,
-            status: member.status,
-            lead: member.lead ? true : false, // Ensure lead is a boolean
-          });
-        }
-      });
-    });
+    console.error("errorEventTeam", errorEventTeam);
+    return [];
   }
+
+  if (!data) return [];
+
+  data.forEach((member: any) => {
+    // find team in the accumulator
+    let team = teamFinal.find((t) => t.id === member.team.id);
+
+    if (!team) {
+      // if team not found, create it
+      team = {
+        id: member.team.id,
+        team_name: member.team.team_name,
+        selected: [],
+      };
+      teamFinal.push(team);
+    }
+
+    // push this member into the team's selected array
+    team.selected!.push({
+      id: member.id,
+      team_name: member.team.team_name,
+      profile: member.member.id,
+      name: member.member.name,
+      lastname: member.member.lastname,
+      selected_roles: member.roles || null,
+      status: member.status,
+      lead: !!member.lead, // force boolean
+    });
+  });
+
   console.log("teamFinal", teamFinal);
   return teamFinal;
 };

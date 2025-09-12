@@ -37,10 +37,16 @@ export default function CompleteAccount() {
     reset,
   } = useForm<basicUserData>({
     resolver: zodResolver(basicUserDataSchema),
-    defaultValues: userData, // your user data with default values
+    defaultValues: {
+      name: userData.name,
+      lastname: userData.lastname,
+      email: userData.email,
+      phone: userData.phone,
+    },
   });
 
   const convertData = async (data: basicUserData) => {
+    console.log("Editing");
     if (data.church_name) {
       const index = churchesList.findIndex(
         (church) => church.churchName === data.church_name

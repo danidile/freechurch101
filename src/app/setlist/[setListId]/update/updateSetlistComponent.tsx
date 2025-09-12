@@ -15,6 +15,7 @@ import { useUserStore } from "@/store/useUserStore";
 import { getSetlistSchedule } from "@/hooks/GET/getSetlistSchedule";
 import { checkPermissionClient } from "@/utils/supabase/permissions/checkPermissionClient";
 import ChurchLabLoader from "@/app/components/churchLabSpinner";
+import { getChurchTeams } from "@/hooks/GET/getChurchTeams";
 export default function UpdateSetlistComponent({
   setListId,
 }: {
@@ -26,6 +27,7 @@ export default function UpdateSetlistComponent({
   const [canEditEventData, setCanEditEventData] = useState<boolean>(true);
   const [schedule, setSchedule] = useState<setListSongT[] | null>(null); // Start with null
   const [teams, setTeams] = useState<teamData[] | null>(null); // Start with null
+  const [churchTeams, setChurchTeams] = useState<teamData[] | null>(null); // Start with null
   const oldData = useRef<setListT | null>(null);
   useEffect(() => {
     // Only run the effect if not already loading and we have a valid church_id
@@ -49,6 +51,11 @@ export default function UpdateSetlistComponent({
             setListId
           );
           setTeams(fetchedSetlistTeams);
+
+          const fetchedChurchTeams: teamData[] = await getChurchTeams(
+            userData.church_id
+          );
+          setChurchTeams(fetchedChurchTeams);
           oldData.current = {
             ...oldData.current,
             teams: fetchedSetlistTeams,
@@ -91,6 +98,7 @@ export default function UpdateSetlistComponent({
         setTeams={setTeams}
         setSchedule={setSchedule}
         oldData={oldData.current}
+        churchTeams={churchTeams}
       />
     </div>
   );

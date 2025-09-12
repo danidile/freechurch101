@@ -32,7 +32,6 @@ export function SelectWorshipTeamMemberDrawer({
   date: DateValue;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [members, setmembers] = useState(teamMembers);
   const [searchTerm, setSearchTerm] = useState("");
 
   function isMemberUnavailable(
@@ -98,8 +97,8 @@ export function SelectWorshipTeamMemberDrawer({
                       }}
                       className="container-song-list"
                     >
-                      {members
-                        .filter(
+                      {teamMembers
+                        ?.filter(
                           (member) =>
                             !state.some((m) => m.profile === member.profile) &&
                             `${member.name} ${member.lastname}`

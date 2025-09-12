@@ -51,6 +51,7 @@ import DateRangePicker from "@/app/components/DataRangePicker";
 export default function UpdateSetlistForm({
   setTeams,
   teams,
+  churchTeams,
   page,
   songsList,
   setlistData,
@@ -64,6 +65,7 @@ export default function UpdateSetlistForm({
   page: string;
   songsList: TsongNameAuthor[];
   canEditEventData?: boolean;
+  churchTeams: teamData[] | null;
 
   setlistData: setListT;
   setSetlistData: React.Dispatch<React.SetStateAction<setListT>>;
@@ -140,9 +142,22 @@ export default function UpdateSetlistForm({
 
   const addTeam = (id: string) => {
     if (teams.some((t) => t.id === id)) return;
-    const found = teams.find((t) => t.id === id);
-    if (found) setTeams((prev) => [...prev, found]);
+    const found = churchTeams.find((t) => t.id === id);
+    if (found) setTeams((prev) => [...prev, { ...found, selected: [] }]);
   };
+
+  const optionsTurnazioni: CDropdownOption[] = useMemo(() => {
+    return churchTeams
+      ?.filter((team) => !teams.some((t) => t.id === team.id))
+      .map((team) => ({
+        label: (
+          <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
+            {team.team_name}
+          </div>
+        ),
+        value: team.id,
+      }));
+  }, [churchTeams, userData, teams]);
 
   const addMemberToTeam = (member: churchMembersT, teamId: string) => {
     setTeams((prevTeams) =>
@@ -328,13 +343,8 @@ export default function UpdateSetlistForm({
 
           stack: error.stack,
           error: error,
-          // Add any other relevant client-side data
         },
       });
-
-      // You can also display a user-facing error message here
-      // e.g., showToast(error.message);
-    } finally {
     }
   };
   const options: CDropdownOption[] = [
@@ -388,17 +398,6 @@ export default function UpdateSetlistForm({
 
     return [customOption, ...templateOptions];
   }, [scheduleTemplates]);
-
-  const optionsTurnazioni: CDropdownOption[] = useMemo(() => {
-    return teams?.map((team) => ({
-      label: (
-        <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
-          {team.team_name}
-        </div>
-      ),
-      value: team.id,
-    }));
-  }, [teams, teams, userData]);
 
   const getRolesFromTeamMembers = (
     sectionId: string,
@@ -583,63 +582,6 @@ export default function UpdateSetlistForm({
                         );
                       }}
                     />
-                    {/* DATE */}
-                    {/* <Controller
-                      name="eventDate"
-                      control={control}
-                      rules={{ required: "Data obbligatoria" }}
-                      render={({ field }) => {
-                        // Convert string (field.value) to DateValue for DatePicker, or null if empty
-                        const dateValue: DateValue | null = field.value
-                          ? parseDate(field.value)
-                          : null;
-
-                        return (
-                          <Controller
-                            name="eventDate"
-                            control={control}
-                            rules={{ required: "Data obbligatoria" }}
-                            render={({ field, fieldState }) => (
-                              <DatePicker
-                                label="Data"
-                                size="sm"
-                                variant="underlined"
-                                showMonthAndYearPickers
-                                // Assert the type to satisfy the DatePicker's prop requirement
-                                value={
-                                  field.value
-                                    ? (parseDate(field.value) as DateValue)
-                                    : null
-                                }
-                                onChange={(newDate: DateValue) => {
-                                  // The DatePicker returns a DateValue. Convert it back to a string for react-hook-form.
-                                  const newDateStr = newDate
-                                    ? newDate.toString()
-                                    : "";
-
-                                  const unavailable = getUnavailableMembers(
-                                    newDateStr,
-                                    teamsState
-                                  );
-
-                                  if (unavailable.length > 0) {
-                                    setPreviousEventDate(newDate);
-                                    setIsDateConflictModalOpen(true);
-                                    setPendingDate(newDate);
-                                  } else {
-                                    field.onChange(newDateStr); // Update the form state with the string
-                                  }
-                                  console.log("Selected date:", newDateStr);
-                                }}
-                                disableAnimation
-                                isInvalid={!!fieldState.error}
-                                errorMessage={fieldState.error?.message}
-                              />
-                            )}
-                          />
-                        );
-                      }}
-                    /> */}
                   </div>
                 </div>
               </>
@@ -778,7 +720,7 @@ export default function UpdateSetlistForm({
             <div className="w-full border-b-1 my-4"></div>
             <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
               <div className="flex flex-row justify-start gap-3 items-center">
-                {!teams && <Spinner size="sm" />}
+                {!churchTeams && <Spinner size="sm" />}
 
                 <h3 className="w-[120px]">Turnazioni</h3>
                 <Tooltip
@@ -814,200 +756,195 @@ export default function UpdateSetlistForm({
 
               <AnimatePresence>
                 {teams &&
-                  teams
-                    .filter((team) => team.selected.length > 0)
-                    .map((section) => {
-                      const canEdit =
-                        userData.teams
-                          .filter(
-                            (team) =>
-                              team.role === "leader" || team.role === "editor"
-                          )
-                          .some((item) => item.team_id === section.id) ||
-                        userData.role === "churchadmin" ||
-                        userData.role === "churchfounder";
-                      return (
-                        <div key={section.id} className="">
+                  teams.map((section) => {
+                    const canEdit =
+                      userData.teams
+                        .filter(
+                          (team) =>
+                            team.role === "leader" || team.role === "editor"
+                        )
+                        .some((item) => item.team_id === section.id) ||
+                      userData.role === "churchadmin" ||
+                      userData.role === "churchfounder";
+                    return (
+                      <div key={section.id} className="">
+                        <>
+                          <div className="flex flex-row flex-wrap items-center gap-3 my-2.5">
+                            <h5 className="font-medium">{section.team_name}</h5>
+                            {canEdit && (
+                              <SelectWorshipTeamMemberDrawer
+                                state={section.selected}
+                                type="add"
+                                teamMembers={
+                                  section.team_members ||
+                                  churchTeams?.find(
+                                    (team) => team.id === section.id
+                                  ).team_members
+                                }
+                                addMemberToTeam={addMemberToTeam} // Pass function correctly
+                                section={null}
+                                teamId={section.id}
+                                date={
+                                  watch("eventDate")
+                                    ? parseDate(watch("eventDate"))
+                                    : today(getLocalTimeZone())
+                                }
+                              />
+                            )}
+                          </div>
+                        </>
+
+                        {section.selected?.length >= 1 && (
                           <>
-                            <div className="flex flex-row flex-wrap items-center gap-3 my-2.5">
-                              <h5 className="font-medium">
-                                {section.team_name}
-                              </h5>
-                              {canEdit && (
-                                <SelectWorshipTeamMemberDrawer
-                                  state={section.selected}
-                                  type="add"
-                                  teamMembers={section.team_members}
-                                  addMemberToTeam={addMemberToTeam} // Pass function correctly
-                                  section={null}
-                                  teamId={section.id}
-                                  date={
-                                    watch("eventDate")
-                                      ? parseDate(watch("eventDate"))
-                                      : today(getLocalTimeZone())
-                                  }
-                                />
+                            {!section.selected?.some((member) => member.lead) &&
+                              canEdit && (
+                                <small className="mb-2 px-2 py-1 text-red-600">
+                                  Seleziona un leader per questo team.
+                                </small>
                               )}
-                            </div>
-                          </>
+                            <table className="w-full text-left  rounded-mdtext-sm atable">
+                              <thead className="bg-gray-50">
+                                <tr>
+                                  <th>Nome</th>
+                                  <th>Ruolo</th>
+                                  <th className=" w-[40px]"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {section.selected?.map((member, index) => {
+                                  const roles =
+                                    getRolesFromTeamMembers(
+                                      section.id,
+                                      member.profile
+                                    ) || [];
 
-                          {section.selected?.length >= 1 && (
-                            <>
-                              {!section.selected?.some(
-                                (member) => member.lead
-                              ) &&
-                                canEdit && (
-                                  <small className="mb-2 px-2 py-1 text-red-600">
-                                    Seleziona un leader per questo team.
-                                  </small>
-                                )}
-                              <table className="w-full text-left  rounded-mdtext-sm atable">
-                                <thead className="bg-gray-50">
-                                  <tr>
-                                    <th>Nome</th>
-                                    <th>Ruolo</th>
-                                    <th className=" w-[40px]"></th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {section.selected?.map((member, index) => {
-                                    const roles =
-                                      getRolesFromTeamMembers(
-                                        section.id,
-                                        member.profile
-                                      ) || [];
-
-                                    const isUnavailable =
-                                      member.blockouts?.some((b) => {
-                                        const start = new Date(b.start);
-                                        const end = new Date(b.end);
-                                        const target = new Date(
-                                          eventDate.year,
-                                          eventDate.month - 1,
-                                          eventDate.day
-                                        );
-                                        return target >= start && target <= end;
-                                      }) ?? false;
-                                    if (canEdit) {
-                                      return (
-                                        <tr key={index}>
-                                          <td>
-                                            <div className="flex items-center gap-2 flex-row">
-                                              <div className="relative inline-block group">
-                                                <input
-                                                  type="checkbox"
-                                                  className="accent-blue-600 w-4 h-4 rounded-sm border-gray-300"
-                                                  checked={!!member.lead} // force boolean: undefined → false
-                                                  onChange={(e) =>
-                                                    setTeams((prev) =>
-                                                      prev.map((team) => {
-                                                        if (
-                                                          team.id !== section.id
-                                                        )
-                                                          return team;
-                                                        return {
-                                                          ...team,
-                                                          selected:
-                                                            team.selected.map(
-                                                              (el) =>
-                                                                el.profile ===
-                                                                member.profile
-                                                                  ? {
-                                                                      ...el,
-                                                                      lead: e
-                                                                        .target
-                                                                        .checked,
-                                                                    }
-                                                                  : el
-                                                            ),
-                                                        };
-                                                      })
-                                                    )
-                                                  }
-                                                />
-                                                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
-                                                  Leader
-                                                </div>
-                                              </div>
-                                              {member.name} {member.lastname}{" "}
-                                              {isUnavailable && (
-                                                <span className="text-xs text-red-500 font-semibold ml-2">
-                                                  Non disponibile
-                                                </span>
-                                              )}
-                                            </div>
-                                          </td>
-                                          <td>
-                                            {roles.length >= 1 && (
-                                              <select
-                                                className="aselect"
-                                                defaultValue={
-                                                  roles.includes(
-                                                    member.selected_roles
-                                                  )
-                                                    ? member.selected_roles
-                                                    : ""
-                                                }
+                                  const isUnavailable =
+                                    member.blockouts?.some((b) => {
+                                      const start = new Date(b.start);
+                                      const end = new Date(b.end);
+                                      const target = new Date(
+                                        eventDate.year,
+                                        eventDate.month - 1,
+                                        eventDate.day
+                                      );
+                                      return target >= start && target <= end;
+                                    }) ?? false;
+                                  if (canEdit) {
+                                    return (
+                                      <tr key={index}>
+                                        <td>
+                                          <div className="flex items-center gap-2 flex-row">
+                                            <div className="relative inline-block group">
+                                              <input
+                                                type="checkbox"
+                                                className="accent-blue-600 w-4 h-4 rounded-sm border-gray-300"
+                                                checked={!!member.lead} // force boolean: undefined → false
                                                 onChange={(e) =>
-                                                  addRoleToMemberTeam(
-                                                    member.profile,
-                                                    section.id,
-                                                    e.target.value
+                                                  setTeams((prev) =>
+                                                    prev.map((team) => {
+                                                      if (
+                                                        team.id !== section.id
+                                                      )
+                                                        return team;
+                                                      return {
+                                                        ...team,
+                                                        selected:
+                                                          team.selected.map(
+                                                            (el) =>
+                                                              el.profile ===
+                                                              member.profile
+                                                                ? {
+                                                                    ...el,
+                                                                    lead: e
+                                                                      .target
+                                                                      .checked,
+                                                                  }
+                                                                : el
+                                                          ),
+                                                      };
+                                                    })
                                                   )
                                                 }
-                                              >
-                                                <option value="" disabled>
-                                                  Seleziona ruolo
-                                                </option>
-                                                {roles.map((role) => (
-                                                  <option
-                                                    key={role}
-                                                    value={role}
-                                                  >
-                                                    {role}
-                                                  </option>
-                                                ))}
-                                              </select>
-                                            )}
-                                          </td>
-                                          <td>
-                                            <button
-                                              type="button"
-                                              onClick={() => {
-                                                removeMemberToTeam(
-                                                  member.profile,
-                                                  section.id
-                                                );
-                                              }}
-                                              className=" text-red-500 hover:text-red-700"
-                                            >
-                                              <RiDeleteBinLine size={18} />
-                                            </button>
-                                          </td>
-                                        </tr>
-                                      );
-                                    } else {
-                                      return (
-                                        <tr key={index}>
-                                          <td>
-                                            <div className="flex items-center gap-2 flex-row">
-                                              {member.name}{" "}
-                                              {member.lastname}{" "}
+                                              />
+                                              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                                                Leader
+                                              </div>
                                             </div>
-                                          </td>
-                                          <td>{member.selected_roles}</td>
-                                          <td></td>
-                                        </tr>
-                                      );
-                                    }
-                                  })}
-                                </tbody>
-                              </table>
-                            </>
-                          )}
-                        </div>
-                      );
-                    })}
+                                            {member.name} {member.lastname}{" "}
+                                            {isUnavailable && (
+                                              <span className="text-xs text-red-500 font-semibold ml-2">
+                                                Non disponibile
+                                              </span>
+                                            )}
+                                          </div>
+                                        </td>
+                                        <td>
+                                          {roles.length >= 1 && (
+                                            <select
+                                              className="aselect"
+                                              defaultValue={
+                                                roles.includes(
+                                                  member.selected_roles
+                                                )
+                                                  ? member.selected_roles
+                                                  : ""
+                                              }
+                                              onChange={(e) =>
+                                                addRoleToMemberTeam(
+                                                  member.profile,
+                                                  section.id,
+                                                  e.target.value
+                                                )
+                                              }
+                                            >
+                                              <option value="" disabled>
+                                                Seleziona ruolo
+                                              </option>
+                                              {roles.map((role) => (
+                                                <option key={role} value={role}>
+                                                  {role}
+                                                </option>
+                                              ))}
+                                            </select>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              removeMemberToTeam(
+                                                member.profile,
+                                                section.id
+                                              );
+                                            }}
+                                            className=" text-red-500 hover:text-red-700"
+                                          >
+                                            <RiDeleteBinLine size={18} />
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    );
+                                  } else {
+                                    return (
+                                      <tr key={index}>
+                                        <td>
+                                          <div className="flex items-center gap-2 flex-row">
+                                            {member.name} {member.lastname}{" "}
+                                          </div>
+                                        </td>
+                                        <td>{member.selected_roles}</td>
+                                        <td></td>
+                                      </tr>
+                                    );
+                                  }
+                                })}
+                              </tbody>
+                            </table>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
               </AnimatePresence>
             </div>
 

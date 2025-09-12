@@ -1,4 +1,3 @@
-
 import CompleteAccount from "./CompleteAccount";
 export default async function App() {
   return (

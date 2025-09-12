@@ -1,11 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import UserDataMenu from "./userDataMenu";
 import MenuApp from "./MenuApp";
 import { useUserStore } from "@/store/useUserStore";
-import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import { FaInbox } from "react-icons/fa";
 
 export default function MenuBarComponentCustom() {
   const { userData, notifications } = useUserStore();
