@@ -10,13 +10,13 @@ import { deleteBlockoutAction } from "./deleteBlockoutsAction";
 import { getBlockoutsByUserId } from "@/hooks/GET/getBlockoutsByUserId";
 import { BlockedDate, RangeValueString } from "@/utils/types/types";
 import DateRangePicker from "@/app/components/DataRangePicker";
-import { Calendar, Clock, Trash2 } from "lucide-react";
+import { Clock, Trash2 } from "lucide-react";
 import { LuCalendarOff } from "react-icons/lu";
-import { HeaderCL } from "@/app/components/header-comp";
+import ChurchLabLoader from "@/app/components/churchLabSpinner";
 
 export default function BlockDatesComponent() {
   const { userData, loading } = useUserStore();
-  const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
+  const [blockedDates, setBlockedDates] = useState<BlockedDate[]>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [value, setValue] = useState<{ start: Date | null; end: Date | null }>({
     start: null,
@@ -86,7 +86,7 @@ export default function BlockDatesComponent() {
     <div className="max-w-lg w-full mx-auto p-2 bg-white min-h-screen">
       <I18nProvider locale="it-IT-u-ca-gregory">
         <div className="mb-6">
-          {blockedDates.length === 0 ? (
+          {blockedDates && blockedDates.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <LuCalendarOff
                 className="w-12 h-12 text-gray-800 mx-auto mb-4"
@@ -101,36 +101,40 @@ export default function BlockDatesComponent() {
             </div>
           ) : (
             <div className="text-center flex flex-col gap-2  p-2 sm:p-4 bg-gray-50 rounded-lg">
-              {blockedDates.map((date) => (
-                <div
-                  key={date.id}
-                  className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-gray-400 hidden sm:block" />
-                    <div>
-                      <p className="capitalize font-medium text-gray-900 text-left">
-                        {" "}
-                        {formatter.format(date.start)} →{" "}
-                        {formatter.format(date.end)}
-                      </p>
-                      <p className=" text-left text-sm text-gray-500">
-                        {calculateDuration(date.start, date.end)} giorn
-                        {calculateDuration(date.start, date.end) !== 1
-                          ? "i"
-                          : "o"}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => deleteBlock(date.id)}
-                    className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                    title="Elimina blocco"
+              {blockedDates ? (
+                blockedDates?.map((date) => (
+                  <div
+                    key={date.id}
+                    className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
-              ))}
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-5 h-5 text-gray-400 hidden sm:block" />
+                      <div>
+                        <p className="capitalize font-medium text-gray-900 text-left">
+                          {" "}
+                          {formatter.format(date.start)} →{" "}
+                          {formatter.format(date.end)}
+                        </p>
+                        <p className=" text-left text-sm text-gray-500">
+                          {calculateDuration(date.start, date.end)} giorn
+                          {calculateDuration(date.start, date.end) !== 1
+                            ? "i"
+                            : "o"}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => deleteBlock(date.id)}
+                      className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                      title="Elimina blocco"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <ChurchLabLoader height="300px" />
+              )}
             </div>
           )}
         </div>

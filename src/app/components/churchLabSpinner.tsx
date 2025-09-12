@@ -1,6 +1,12 @@
-export default function ChurchLabLoader() {
+export default function ChurchLabLoader({
+  height = "full",
+}: {
+  height?: string;
+}) {
   return (
-    <div className="container-sub h-[60vh]">
+    <div
+      className={`container-sub ${height === "full" ? "h-[60vh]" : `h-[${height}]`}`}
+    >
       <img
         src="/images/loader.gif"
         className="h-[30px] w-[30px]"
