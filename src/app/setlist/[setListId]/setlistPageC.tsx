@@ -1,6 +1,6 @@
 "use client";
 import { getSetList } from "@/hooks/GET/getSetList";
-import { setListT } from "@/utils/types/types";
+import { fullSetListT, setListT } from "@/utils/types/types";
 import { useUserStore } from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import { Alert, Button } from "@heroui/react";
@@ -13,56 +13,29 @@ import SetlistSchedule from "./setlistScheduleC";
 import SetlistTeams from "./setlistTeamsC";
 import SetlistHeader from "./setlistHeaderC";
 import Link from "next/link";
+import { useSetlistsStore } from "@/store/useSetlistsStore";
 
 export default function SetlistPage({ setListId }: { setListId: string }) {
   const { userData, loading } = useUserStore();
-  const [setlistData, setSetlistData] = useState<{
-    setlist: setListT | null;
-    schedule: any[] | null;
-    teams: GroupedMembers | null;
-    loading: boolean;
-  }>({
-    setlist: null,
-    schedule: null,
-    teams: null,
-    loading: true,
-  });
+  const { setlists, fetchSetlists } = useSetlistsStore();
 
-  // Fetch all setlist data
   useEffect(() => {
-    if (!loading && userData.loggedIn) {
-      const fetchSetlistData = async () => {
-        try {
-          const [setlist, schedule, teams] = await Promise.all([
-            getSetList(setListId),
-            getSetlistSchedule(setListId),
-            getSetListTeams(setListId),
-          ]);
-
-          setSetlistData({
-            setlist,
-            schedule,
-            teams,
-            loading: false,
-          });
-        } catch (error) {
-          console.error("Error fetching setlist data:", error);
-          setSetlistData((prev) => ({ ...prev, loading: false }));
-        }
-      };
-
-      fetchSetlistData();
+    if (setlists.some((s) => s.setlist.id === setListId)) {
+      console.log("Setlist is in Store");
+    } else {
+      console.log("Setlist is NOT in Store");
+      fetchSetlists(setListId);
     }
-  }, [loading, userData, setListId]);
+  }, [setlists, setListId]);
 
   // Refetch teams after email operations
   const refetchTeams = async () => {
-    try {
-      const teams = await getSetListTeams(setListId);
-      setSetlistData((prev) => ({ ...prev, teams }));
-    } catch (error) {
-      console.error("Error refetching teams:", error);
-    }
+    // try {
+    //   const teams = await getSetListTeams(setListId);
+    //   setSetlistData((prev) => ({ ...prev, teams }));
+    // } catch (error) {
+    //   console.error("Error refetching teams:", error);
+    // }
   };
 
   if (!userData.loggedIn && !loading) {
@@ -79,7 +52,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     );
   }
 
-  if (setlistData.loading || !setlistData.setlist) {
+  if (!setlists.find((s) => s.setlist.id === setListId)) {
     return <ChurchLabLoader />;
   }
 
@@ -87,14 +60,18 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     <div className="container-sub">
       <div className="w-full max-w-[600px]">
         <SetlistHeader
-          setlist={setlistData.setlist}
+          setlist={setlists.find((s) => s.setlist.id === setListId).setlist}
           setListId={setListId}
           userData={userData}
         />
 
-        {setlistData.schedule && (
+        {setlists.find((s) => s.setlist.id === setListId).schedule && (
           <>
-            <SetlistSchedule schedule={setlistData.schedule} />
+            <SetlistSchedule
+              schedule={
+                setlists.find((s) => s.setlist.id === setListId).schedule
+              }
+            />
             <div className="center- gap-3 mt-5 mb-5">
               <Link href={`/setlist/${setListId}/view`}>
                 <Button color="primary">Visualizza set completo</Button>
@@ -103,10 +80,10 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           </>
         )}
 
-        {setlistData.teams && (
+        {setlists.find((s) => s.setlist.id === setListId).teams && (
           <SetlistTeams
-            teams={setlistData.teams}
-            setlist={setlistData.setlist}
+            teams={setlists.find((s) => s.setlist.id === setListId).teams}
+            setlist={setlists.find((s) => s.setlist.id === setListId).setlist}
             setListId={setListId}
             userData={userData}
             onTeamsUpdate={refetchTeams}

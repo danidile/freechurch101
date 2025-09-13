@@ -34,7 +34,6 @@ export default function CompleteAccount() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<basicUserData>({
     resolver: zodResolver(basicUserDataSchema),
     defaultValues: {
@@ -46,7 +45,7 @@ export default function CompleteAccount() {
   });
 
   const convertData = async (data: basicUserData) => {
-    console.log("Editing");
+    console.log("Form Data:", data);
     if (data.church_name) {
       const index = churchesList.findIndex(
         (church) => church.churchName === data.church_name
@@ -163,10 +162,8 @@ export default function CompleteAccount() {
               Telefono
             </label>
             <input
-              id="phone"
               {...register("phone")}
               type="tel"
-              placeholder={userData.phone}
               className={`cinput ${
                 errors.phone ? "border-red-500" : "border-gray-300"
               }`}

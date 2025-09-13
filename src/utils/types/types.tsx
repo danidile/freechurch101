@@ -327,6 +327,12 @@ export type setListT = {
   room?: string;
   schedule?: setListSongT[];
 };
+export type fullSetListT = {
+  setlist: setListT | null;
+  schedule?: any[] | null;
+  teams?: teamData[] | null;
+  loading?: boolean;
+};
 
 export type scheduleTemplate = {
   id?: string;

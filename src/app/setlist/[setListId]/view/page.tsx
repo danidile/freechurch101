@@ -1,6 +1,5 @@
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
-import { getSetListTeams } from "@/hooks/GET/getSetListTeams";
 import { setListT, setListSongT, GroupedMembers } from "@/utils/types/types";
 import ViewFullSetListComponent from "../viewFullSetListComponent";
 

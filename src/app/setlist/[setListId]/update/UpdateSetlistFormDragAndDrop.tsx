@@ -48,6 +48,7 @@ import { logEventClient } from "@/utils/supabase/logClient";
 import { HeaderCL } from "@/app/components/header-comp";
 import { LuCalendarRange } from "react-icons/lu";
 import DateRangePicker from "@/app/components/DataRangePicker";
+import { useSetlistsStore } from "@/store/useSetlistsStore";
 export default function UpdateSetlistForm({
   setTeams,
   teams,
@@ -80,6 +81,7 @@ export default function UpdateSetlistForm({
   const { userData, setUserData } = useUserStore();
   const { eventTypes, rooms, scheduleTemplates, fetchChurchScheduleTemplates } =
     useChurchStore();
+  const { fetchSetlists } = useSetlistsStore();
 
   //DECLARE HOOKS AND STATES
 
@@ -136,7 +138,7 @@ export default function UpdateSetlistForm({
       event_type: setlistData?.event_type || "",
       eventDate: setlistData?.date
         ? setlistData.date.split("T")[0] // just the "YYYY-MM-DD" string
-        : "",
+        : today(getLocalTimeZone()).toString(),
     },
   });
 
@@ -147,8 +149,20 @@ export default function UpdateSetlistForm({
   };
 
   const optionsTurnazioni: CDropdownOption[] = useMemo(() => {
+    if (!churchTeams) return [];
+    if (!teams) {
+      return churchTeams.map((team) => ({
+        label: (
+          <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
+            {team.team_name}
+          </div>
+        ),
+        value: team.id,
+      }));
+    }
+
     return churchTeams
-      ?.filter((team) => !teams.some((t) => t.id === team.id))
+      .filter((team) => !teams.some((t) => t.id === team.id))
       .map((team) => ({
         label: (
           <div className="flex items-center gap-2 cursor-pointer hover:text-blue-500 transition duration-200">
@@ -157,7 +171,7 @@ export default function UpdateSetlistForm({
         ),
         value: team.id,
       }));
-  }, [churchTeams, userData, teams]);
+  }, [churchTeams, teams, userData]);
 
   const addMemberToTeam = (member: churchMembersT, teamId: string) => {
     setTeams((prevTeams) =>
@@ -290,7 +304,7 @@ export default function UpdateSetlistForm({
       };
       // Measure size in bytes
       setAlreadySubmitting(false);
-
+      console.log("updatedSetlist", updatedSetlist);
       let result;
       if (page === "create") {
         result = await addSetlist(updatedSetlist);
@@ -309,6 +323,7 @@ export default function UpdateSetlistForm({
 
       if (result.success) {
         console.log("✅ Operation successful:", result.message);
+        fetchSetlists(setlistData.id);
         router.push(`/setlist/${updatedSetlist.id}`);
       } else {
         console.error("❌ Operation failed:", result);
@@ -345,6 +360,7 @@ export default function UpdateSetlistForm({
           error: error,
         },
       });
+    } finally {
     }
   };
   const options: CDropdownOption[] = [
@@ -720,7 +736,7 @@ export default function UpdateSetlistForm({
             <div className="w-full border-b-1 my-4"></div>
             <div className="flex flex-col gap-2 [&>input]:mb-3 mt-4">
               <div className="flex flex-row justify-start gap-3 items-center">
-                {!churchTeams && <Spinner size="sm" />}
+                {(!churchTeams || !teams) && <Spinner size="sm" />}
 
                 <h3 className="w-[120px]">Turnazioni</h3>
                 <Tooltip

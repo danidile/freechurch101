@@ -8,19 +8,11 @@ export const completeAccountAction = async function completeAccountAction(
   const supabase = await createClient();
 
   const updateData: { name?: string; lastname?: string; phone?: string } = {};
+  updateData.name = data.name;
+  updateData.phone = data.phone;
+  updateData.lastname = data.lastname;
 
-  if (data.name && data.name.length > 2) {
-    updateData.name = data.name;
-  }
-
-  if (data.lastname && data.lastname.length > 2) {
-    updateData.lastname = data.lastname;
-  }
-  if (data.phone && data.phone.length > 8) {
-    updateData.phone = data.phone;
-  }
-
-  // Only update if there's something to update
+  console.log("phone", updateData); // Only update if there's something to update
   if (Object.keys(updateData).length > 0) {
     const { error } = await supabase
       .from("profiles")

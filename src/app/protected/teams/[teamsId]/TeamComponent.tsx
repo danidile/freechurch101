@@ -230,6 +230,7 @@ export default function TeamIdComponent({
                       setDefineLeaders={setDefineRoles}
                       teamsId={params.teamsId}
                       isWorship={churchTeam.is_worship}
+                      setRefetchTrigger={setRefetchTrigger}
                     />
                   </>
                 )}

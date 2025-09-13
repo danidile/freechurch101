@@ -3,10 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { teamData } from "@/utils/types/types";
 
-export const getSelectedChurchTeams = async (
-  churchId?: string,
-  setListId?: string
-) => {
+export const getSelectedChurchTeams = async (setListId?: string) => {
   const supabase = await createClient();
 
   const teamFinal: teamData[] = [];

@@ -34,10 +34,12 @@ export default function MoreDropdownTeams({
   teamName,
   isWorship,
   setDefineLeaders,
+  setRefetchTrigger,
 }: {
   teamsId: string;
   isWorship: boolean;
   teamName: string;
+  setRefetchTrigger: Dispatch<React.SetStateAction<boolean>>;
   setDefineLeaders: Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -71,6 +73,7 @@ export default function MoreDropdownTeams({
     };
     console.log("churchTeamUpdated", churchTeamUpdated);
     const response = await updateTeamAction(churchTeamUpdated);
+    setRefetchTrigger((prev) => !prev);
   };
 
   return (
@@ -156,7 +159,12 @@ export default function MoreDropdownTeams({
                 <h4>Aggiorna Team</h4>
               </ModalHeader>
               <ModalBody>
-                <form onSubmit={handleSubmit(convertData)}>
+                <form
+                  onSubmit={handleSubmit(() => {
+                    convertData();
+                    onClose();
+                  })}
+                >
                   <div className="flex flex-col gap-2 [&>input]:mb-3">
                     <Input
                       {...register("team_name")}

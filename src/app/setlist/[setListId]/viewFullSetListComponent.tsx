@@ -1,10 +1,8 @@
 "use client";
 
 import { Divider } from "@heroui/react";
-import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import { setListSongT, setListT } from "@/utils/types/types";
 
-import CustomizeWidget from "@/app/components/CustomizeWidget";
 import ChordProViewComponentAlt from "@/app/components/chordProViewComponentAlt";
 export default function ViewFullSetListComponent({
   setlistData,
