@@ -30,6 +30,7 @@ import {
   DropdownMenu,
   DropdownItem,
   User,
+  Badge,
 } from "@heroui/react";
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
@@ -53,10 +54,12 @@ const SidebarLink = ({
   href,
   icon,
   text,
+  notifications,
 }: {
   href: string;
   icon: React.ReactNode;
   text: string;
+  notifications?: number;
 }) => (
   <li>
     <Link
@@ -65,6 +68,13 @@ const SidebarLink = ({
     >
       {icon}
       <p>{text}</p>
+      {notifications >= 1 && (
+        <>
+          <span className="mr-auto bg-red-400 rounded-full w-5 h-5 flex justify-center items-center ">
+            <p className="text-sm font-medium text-white">{notifications}</p>
+          </span>
+        </>
+      )}
     </Link>
   </li>
 );
@@ -82,7 +92,7 @@ const SidebarSectionTitle = ({ title }: { title: string }) => (
 
 export default function Sidebar() {
   const router = useRouter();
-  const { fetchUser, userData, loading } = useUserStore();
+  const { fetchUser, userData, loading, notifications } = useUserStore();
 
   async function logouter() {
     await logoutAction();
@@ -388,15 +398,22 @@ export default function Sidebar() {
           <ul className="space-y-1">
             {navSections.main
               .filter((item) => item.show)
-              .map((item) => (
-                <SidebarLink
-                  key={item.href}
-                  {...item}
-                  icon={
-                    item.icon && <span className="w-5 h-5">{item.icon}</span>
-                  }
-                />
-              ))}
+              .map((item) => {
+                return (
+                  <SidebarLink
+                    key={item.href}
+                    notifications={
+                      item.text === "Notifiche"
+                        ? notifications?.pending?.notifications?.length
+                        : null
+                    }
+                    {...item}
+                    icon={
+                      item.icon && <span className="w-5 h-5">{item.icon}</span>
+                    }
+                  />
+                );
+              })}
           </ul>
 
           {navSections.church.some((item) => item.show) && (

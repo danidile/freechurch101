@@ -11,7 +11,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { confirmAction } from "./confirmAction";
 import { denyAction } from "./denyAction";
 import { useChurchStore } from "@/store/useChurchStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { set } from "zod";
 
 type Props = {
   details: notificationDetails;

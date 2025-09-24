@@ -20,6 +20,7 @@ import { FaPlus } from "react-icons/fa";
 import { useUserStore } from "@/store/useUserStore";
 import { HeaderCL } from "../components/header-comp";
 import { MdOutlineLibraryMusic } from "react-icons/md";
+import { LuAudioLines } from "react-icons/lu";
 
 export default function ChurchSongTableComponent({
   songs,
@@ -90,6 +91,7 @@ export default function ChurchSongTableComponent({
                   >
                     Importa da ChurchLab
                   </DropdownItem>
+              
                 </DropdownMenu>
               </Dropdown>
             )}
@@ -128,7 +130,7 @@ export default function ChurchSongTableComponent({
           >
             <thead>
               <tr>
-                <th className="w-full min-w-[200px]">Title</th>
+                <th className="w-full min-w-[200px]">Titolo</th>
                 <th className="w-3/12">Autore</th>
                 <th className="w-3/12">Tag</th>
               </tr>
@@ -139,7 +141,7 @@ export default function ChurchSongTableComponent({
                   <td className=" min-w-[200px] max-w-[200px]">
                     <Link href={`/${source}/${song.id}`}>
                       <span className="font-medium line-clamp-1">
-                        {song.song_title}
+                        {song.song_title} {song.audio_path && <LuAudioLines className=" ml-2 inline mb-1 text-blue-500" />}
                       </span>
                     </Link>
                   </td>

@@ -34,6 +34,7 @@ export type songType = {
   church?: string;
   tags?: string;
   bpm?: string;
+  audio_path?: boolean;
 };
 
 export type roomsType = {

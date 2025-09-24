@@ -74,6 +74,15 @@ export default function SongsPageClient() {
                   >
                     Importa da ChurchLab
                   </DropdownItem>
+                  <DropdownItem
+                    as={Link}
+                    href="/importsongs"
+                    key="import"
+                    color="primary"
+                    variant="flat"
+                  >
+                    Importa da Planning Center
+                  </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             )}

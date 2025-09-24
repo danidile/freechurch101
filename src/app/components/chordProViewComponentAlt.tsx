@@ -434,7 +434,7 @@ export default function ChordProViewComponentAlt({
                 onPress={() => setShowPlayer((prev) => !prev)}
                 variant="flat"
               >
-                <LuAudioLines />
+                <LuAudioLines className="text-blue-500" />
               </Button>
             )}
             <CDropdown
