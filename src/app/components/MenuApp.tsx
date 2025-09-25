@@ -8,13 +8,15 @@ import { useState, useEffect } from "react";
 import { basicUserData } from "@/utils/types/userData";
 import { BiCompass } from "react-icons/bi";
 import { LuCalendarRange, LuInbox } from "react-icons/lu";
+import { useUserStore } from "@/store/useUserStore";
+import { GroupedNotificationsT } from "@/utils/types/types";
 
 export default function MenuApp({
   notifications,
   userdata,
 }: {
   userdata: basicUserData;
-  notifications: number;
+  notifications: GroupedNotificationsT;
 }) {
   const pathname = usePathname(); // Get the full pathname
   const [parameter, setParameter] = useState(pathname.split("/")[1] || ""); // Initialize state based on the pathname
@@ -92,13 +94,18 @@ export default function MenuApp({
                 />
 
                 <small
-                  className={
-                    parameter === "notifications"
-                      ? "text-black"
-                      : "text-gray-500"
-                  }
+                  className={`relative ${parameter === "notifications" ? "text-black" : "text-gray-500"}`}
                 >
                   Notifiche
+                  {notifications?.pending?.notifications?.length >= 1 && (
+                    <div className="absolute top-[-30px] right-1">
+                      <span className=" bg-red-400 rounded-full w-5 h-5 flex justify-center items-center">
+                        <p className="text-sm font-medium text-white">
+                          {notifications?.pending?.notifications?.length}
+                        </p>
+                      </span>
+                    </div>
+                  )}
                 </small>
               </TransitionLink>
             </>

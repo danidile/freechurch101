@@ -41,10 +41,7 @@ export default function MenuBarComponentCustom() {
   // Render PWA menu if in standalone mode
   if (isStandalone) {
     return (
-      <MenuApp
-        userdata={userData || null}
-        notifications={notifications?.pending?.notifications?.length}
-      />
+      <MenuApp userdata={userData || null} notifications={notifications} />
     );
   }
 
@@ -193,12 +190,10 @@ export default function MenuBarComponentCustom() {
             Canzoni
           </Link>
         </div>
-        <Link
-          prefetch
-          href="/login"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <p className="my-18 w-full bg-black p-3 text-white text-lg text-center rounded-lg">Accedi</p>
+        <Link prefetch href="/login" onClick={() => setIsMenuOpen(false)}>
+          <p className="my-18 w-full bg-black p-3 text-white text-lg text-center rounded-lg">
+            Accedi
+          </p>
         </Link>
       </div>
     </>

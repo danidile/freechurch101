@@ -78,7 +78,7 @@ export default function UpdateSetlistForm({
   setSchedule: React.Dispatch<React.SetStateAction<setListSongT[] | null>>;
 }) {
   // GET STORES
-  const { userData, setUserData } = useUserStore();
+  const { userData, setUserData, fetchNotifications } = useUserStore();
   const { eventTypes, rooms, scheduleTemplates, fetchChurchScheduleTemplates } =
     useChurchStore();
   const { fetchSetlists } = useSetlistsStore();
@@ -324,6 +324,8 @@ export default function UpdateSetlistForm({
       if (result.success) {
         console.log("✅ Operation successful:", result.message);
         fetchSetlists(setlistData.id);
+        fetchNotifications(userData.id);
+
         router.push(`/setlist/${updatedSetlist.id}`);
       } else {
         console.error("❌ Operation failed:", result);

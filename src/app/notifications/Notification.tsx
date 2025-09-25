@@ -13,6 +13,7 @@ import { denyAction } from "./denyAction";
 import { useChurchStore } from "@/store/useChurchStore";
 import { useEffect, useState } from "react";
 import { set } from "zod";
+import { useUserStore } from "@/store/useUserStore";
 
 type Props = {
   details: notificationDetails;
@@ -38,7 +39,7 @@ export default function NotificationElement({
   setExpanded,
 }: Props) {
   const { eventTypes } = useChurchStore();
-
+  const { userData, fetchNotifications } = useUserStore();
   const date = new Date(notification.setlist.date);
   const isUpcoming = nextDate <= date;
 
@@ -129,6 +130,7 @@ export default function NotificationElement({
                       () => setExpanded(null),
                       "denied"
                     );
+                    fetchNotifications(userData.id);
                   }}
                 >
                   Rifiuta
@@ -144,6 +146,7 @@ export default function NotificationElement({
                       () => setExpanded(null),
                       "confirmed"
                     );
+                    fetchNotifications(userData.id);
                   }}
                 >
                   Conferma

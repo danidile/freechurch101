@@ -3,7 +3,6 @@ import fbasicUserData from "@/utils/supabase/getUserData";
 import { basicUserData } from "@/utils/types/userData";
 import { GroupedNotificationsT, isLeaderT } from "@/utils/types/types";
 import { getNotificationsById } from "@/hooks/GET/getNotificationsById";
-import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 
 type UserStore = {
   userData: basicUserData | null;
@@ -13,6 +12,7 @@ type UserStore = {
 
   notifications: GroupedNotificationsT;
   fetchUser: () => Promise<void>;
+  fetchNotifications: (userId: string) => Promise<void>;
 };
 
 export const useUserStore = create<UserStore>((set) => ({
@@ -39,5 +39,17 @@ export const useUserStore = create<UserStore>((set) => ({
       set({ error: err.message || "Unknown error", loading: false });
     }
   },
-  
+  fetchNotifications: async (userId) => {
+    set({ error: null });
+
+    try {
+      if (userId) {
+        const fetchedNotifications = await getNotificationsById(userId);
+        set({ notifications: fetchedNotifications });
+      }
+    } catch (err: any) {
+      console.error("Error in fetchNotifications:", err);
+      set({ error: err.message || "Unknown error" });
+    }
+  },
 }));
