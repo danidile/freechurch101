@@ -724,7 +724,7 @@ export default function UpdateSetlistForm({
                           container={container}
                           worshipTeams={teams?.filter(
                             (team) => team.is_worship
-                          )} // 👈 pass only is_worship === true teams
+                          )}
                           updateNotesSection={updateNotesSection}
                         />
                       );

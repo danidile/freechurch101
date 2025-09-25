@@ -39,4 +39,5 @@ export const useUserStore = create<UserStore>((set) => ({
       set({ error: err.message || "Unknown error", loading: false });
     }
   },
+  
 }));

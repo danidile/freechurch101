@@ -11,7 +11,7 @@ export const getSelectedChurchTeams = async (setListId?: string) => {
   const { data, error: errorEventTeam } = await supabase
     .from("event-team")
     .select(
-      "id, member(id, name, lastname), team(id, team_name), roles, status, lead"
+      "id, member(id, name, lastname), team(id, team_name,is_worship), roles, status, lead"
     )
     .eq("setlist", setListId);
   console.timeEnd(".from(event-team)");
@@ -33,6 +33,7 @@ export const getSelectedChurchTeams = async (setListId?: string) => {
         id: member.team.id,
         team_name: member.team.team_name,
         selected: [],
+        is_worship: member.team.is_worship,
       };
       teamFinal.push(team);
     }

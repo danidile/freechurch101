@@ -345,11 +345,13 @@ export function SongFormComponent({
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
+                <Button
+                  fullWidth
+                  color="primary"
+                  variant="light"
+                  onPress={onClose}
+                >
+                  Chiudi
                 </Button>
               </ModalFooter>
             </>
