@@ -47,7 +47,7 @@ const checkInvitesAction = async (
       }
 
       if (pending) {
-        return { ...member, error: "Questa Email ha già ricevuto un invito." };
+        return { ...member, error: "Questa Email ha già ricevuto un invito ma non ha ancora accettato" };
       }
 
       // If no duplicates, return member unchanged

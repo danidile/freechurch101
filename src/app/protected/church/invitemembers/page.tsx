@@ -16,6 +16,7 @@ import {
   PopoverContent,
   Chip,
   ModalFooter,
+  Spinner,
 } from "@heroui/react";
 import sendInvitesAction from "../personalize/sendInvitesAction";
 import sendInviteEmail from "../personalize/sendInviteEmail";
@@ -39,6 +40,7 @@ export default function InviteUsersModalComponent() {
   const [invitesSent, setInvitesSent] = useState<newMember[]>([]);
   const [emailPerson, setEmailPerson] = useState(null);
   const [refetchTrigger, setRefetchTrigger] = useState(false);
+  const [sending, setSending] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | "all">("all");
 
@@ -120,6 +122,8 @@ export default function InviteUsersModalComponent() {
             context: "sendInvitesAction",
           },
         });
+      } finally {
+        setMembers([{ name: "", lastname: "", email: "" }]);
       }
     }
   };
@@ -153,7 +157,6 @@ export default function InviteUsersModalComponent() {
           seenEmails.add(newMember.email);
           return result;
         }
-
         return {
           email: newMember.email,
           name: newMember.name,
@@ -484,9 +487,11 @@ export default function InviteUsersModalComponent() {
               </ModalHeader>
               <ModalBody>
                 <small>
-                  Le email il box rosso non verranno invitate in o già
-                  possiedono un account o hanno già ricevuto un invito dalla tua
-                  chiesa.
+                  <strong className="underline text-red-900">
+                    Le email il box rosso non verranno invitate
+                  </strong>{" "}
+                  in quanto già possiedono un account o hanno già ricevuto un
+                  invito dalla tua chiesa.
                 </small>
                 {checkedMembers.length >= 1 ? (
                   <div className="flex flex-col  gap-2">
@@ -512,7 +517,7 @@ export default function InviteUsersModalComponent() {
                     })}
                   </div>
                 ) : (
-                  <ChurchLabLoader></ChurchLabLoader>
+                  <ChurchLabLoader height="auto" />
                 )}
               </ModalBody>
               <ModalFooter>
@@ -521,19 +526,29 @@ export default function InviteUsersModalComponent() {
                   fullWidth
                   variant="light"
                   onPress={onClose}
+                  disabled={sending}
                 >
-                  Annulla
+                  {sending ? "" : "Annulla"}
                 </Button>
                 {checkedMembers.filter((m) => !m.error).length >= 1 && (
                   <Button
                     color="primary"
                     fullWidth
-                    onPress={() => {
+                    disabled={sending}
+                    onPress={async () => {
+                      setSending(true);
+                      await sendInvites();
+                      setSending(false);
+
                       onClose();
-                      sendInvites();
+                      setActiveTab("sent-invites");
                     }}
                   >
-                    Invia inviti
+                    {sending ? (
+                      <Spinner size="sm" color="white"></Spinner>
+                    ) : (
+                      "Invia inviti"
+                    )}
                   </Button>
                 )}
               </ModalFooter>

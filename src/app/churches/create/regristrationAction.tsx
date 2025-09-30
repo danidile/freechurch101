@@ -104,7 +104,7 @@ export const regristrationAction = async (formData: TauthSchema) => {
     const { data: roomData, error: errorRoom } = await supabase
       .from("rooms")
       .insert({
-        name: formData.room_name,
+        name: "sala principale",
         church: newChurchId,
         address: formData.address,
         comune: formData.comune,

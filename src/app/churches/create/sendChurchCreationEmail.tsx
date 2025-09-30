@@ -1,17 +1,29 @@
 "use client";
-import { Button } from "@heroui/button";
 
-export default function EmailSenderC() {
-  const churchName = "newLife";
-  const firstName = "Daniele";
-  const lastName = "Di Lecce";
+import { registrationData } from "@/utils/types/types"; // Assuming this type includes churchName, adminName, adminEmail
 
-  async function sendTestEmail() {
-    const response = await fetch("/api/send-email", {
+/**
+ * Sends a welcome email to the church administrator confirming the account creation.
+ *
+ * @param registration The registration data for the newly created church account.
+ * @returns The response data from the email sending API.
+ */
+export default async function sendChurchCreationConfirmationEmail(registration: {
+  churchName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}) {
+  const { churchName, firstName, lastName, email } = registration;
+
+  console.log(email);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`,
+    {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        to: "danidile94@gmail.com",
+        to: email,
         subject: `🎉 Benvenuto su ChurchLab - Account ${churchName} creato!`,
         text: `Benvenuto su ChurchLab, la piattaforma per organizzare il tuo team di lode. Il tuo account per la chiesa ${churchName} è stato creato.`,
         html: `
@@ -59,11 +71,10 @@ export default function EmailSenderC() {
 
     `,
       }),
-    });
+    }
+  );
 
-    const data = await response.json();
-    console.log(data);
-  }
-
-  return <Button onPress={sendTestEmail}>Cliccami</Button>;
+  const data = await response.json();
+  console.log(data);
+  return data;
 }

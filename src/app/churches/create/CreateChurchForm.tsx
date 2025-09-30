@@ -13,6 +13,8 @@ import { regristrationAction } from "./regristrationAction";
 import { addToast } from "@heroui/react"; // If you want native toast, you can replace this
 import { AutocompleteInput } from "./AutocompleteInput";
 import { GrCircleAlert } from "react-icons/gr";
+import sendChurchCreationConfirmationEmail from "./sendChurchCreationEmail";
+import { IoIosSend } from "react-icons/io";
 
 export default function CreateChurch() {
   const router = useRouter();
@@ -35,7 +37,9 @@ export default function CreateChurch() {
   } = useForm<TauthSchema>({
     resolver: zodResolver(authSchema),
   });
-
+  useEffect(() => {
+    console.log("Errors:", errors);
+  }, [errors]);
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible((v) => !v);
 
@@ -47,10 +51,40 @@ export default function CreateChurch() {
     setSending(true);
     const response = await regristrationAction(data);
     if (response.success) {
-      router.push("/protected/dashboard/account");
+      try {
+        const data = {
+          firstName: `${getValues("firstname")} `,
+          lastName: getValues("lastname"),
+          email: getValues("email"),
+          churchName: getValues("churchname"),
+        };
+        const response = await sendChurchCreationConfirmationEmail(data);
+
+        if (response.error) {
+          addToast({
+            title: `Errore nell'invio della mail a ${data.firstName}`,
+            description: response.error,
+            icon: <IoIosSend />,
+            color: "danger",
+          });
+        } else {
+          addToast({
+            title: `Email Inviata con successo a ${data.firstName}`,
+            description: response.message,
+            icon: <IoIosSend />,
+            color: "success",
+          });
+        }
+      } catch (error) {
+        console.error("Error sending email:", error);
+      } finally {
+      }
       await fetchUser();
+
+      router.push("/protected/dashboard/account");
     } else {
       setError(response.error);
+      setSending(false);
     }
   };
 
@@ -68,7 +102,6 @@ export default function CreateChurch() {
 
   const [comuni, setComuni] = useState<Comune[]>([]);
   const [filteredComuni, setFilteredComuni] = useState<Comune[]>([]);
-  const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
@@ -331,32 +364,8 @@ export default function CreateChurch() {
 
             {/* Room Info */}
             <section className=" mt-4">
-              <small className="text-gray-600">Crea sala</small>
+              <small className="text-gray-600">Indirizzo Chiesa</small>
               <hr className="border-gray-300" />
-              <div className="flex flex-wrap gap-6 justify-center">
-                <div className="flex flex-col w-full">
-                  <label htmlFor="room_name" className=" font-medium">
-                    Nome stanza
-                  </label>
-                  <input
-                    id="room_name"
-                    type="text"
-                    placeholder="Sala culto"
-                    {...register("room_name")}
-                    className={`cinput ${errors.room_name ? "border-red-500" : "border-gray-300"}`}
-                    aria-invalid={!!errors.room_name}
-                    aria-describedby="room_name-error"
-                  />
-                  {errors.room_name && (
-                    <p
-                      id="room_name-error"
-                      className="text-red-600 text-sm mt-1"
-                    >
-                      {errors.room_name.message}
-                    </p>
-                  )}
-                </div>
-              </div>
 
               <div className="flex flex-wrap gap-6 justify-center">
                 <div className="flex flex-col w-full sm:w-72 relative">

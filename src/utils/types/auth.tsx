@@ -7,15 +7,10 @@ export const authSchema = z.object({
   password: z.string().min(8, "La password deve avere almeno 8 caratteri"),
   churchname: z.string().min(2, "Nome chiesa obbligatorio"),
   pastor: z.string().min(2, "Nome pastore obbligatorio"),
-  website: z
-    .string()
-    .regex(/^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/[\w-./?%&=]*)?$/, {
-      message: "Inserisci un URL valido",
-    }),
+  website: z.string().optional(),
   ighandle: z.string().optional().or(z.literal("")),
-  room_name: z.string().min(1, "Nome stanza obbligatorio"),
   provincia: z.string().min(1, "Provincia richiesta"),
-  comune: z.string().optional(),
+  comune: z.string().min(1, "Comune richiesto"),
   address: z.string().min(2, "Indirizzo obbligatorio"),
 });
 export type TauthSchema = z.infer<typeof authSchema>;

@@ -107,9 +107,9 @@ export default function AccountComponent() {
                 <FaLink size={25} />
                 <h5>Link veloci</h5>
               </div>{" "}
-              {/* {hasPermission(userData.role as Role, "read:churchmembers") && (
+              {hasPermission(userData.role as Role, "read:churchmembers") && (
                 <>
-                  {churchMembers?.length <= 5 && ( */}
+                  {churchMembers?.length <= 10 && (
               <div className="bg-gray-50 inline-flex flex-wrap flex-row gap-5 items-center justify-between rounded-xl p-4">
                 <p>Invita nuovi membri nella tua chiesa!</p>
                 <Button
@@ -123,9 +123,9 @@ export default function AccountComponent() {
                   Invita!
                 </Button>
               </div>
-              {/* )}
+              )}
                 </>
-              )} */}
+              )}
               <div className="bg-gray-50 inline-flex flex-wrap flex-row gap-5 items-center justify-between rounded-xl p-4">
                 <p>Blocca le date in cui non sei disponibile.</p>
                 <Button
