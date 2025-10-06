@@ -4,6 +4,7 @@ import { Divider } from "@heroui/react";
 import { setListSongT, setListT } from "@/utils/types/types";
 
 import ChordProViewComponentAlt from "@/app/components/chordProViewComponentAlt";
+import CustomizeWidget from "@/app/components/CustomizeWidget";
 export default function ViewFullSetListComponent({
   setlistData,
   setlistsongs,
@@ -25,6 +26,9 @@ export default function ViewFullSetListComponent({
       </h6>
       <p className="capitalize">{readableDate}</p>
       <div className="song-presentation-container">
+        <div className="fixed top-[50%]  right-1 sm:right-12">
+          <CustomizeWidget></CustomizeWidget>
+        </div>
         {setlistsongs
           .sort((a, b) => a.order - b.order)
           .map((song: setListSongT, index) => {

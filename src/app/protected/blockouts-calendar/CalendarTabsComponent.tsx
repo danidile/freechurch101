@@ -102,7 +102,7 @@ export default function BlockoutsCalendarTabs({
                   return (
                     <div
                       key={dateKey}
-                      className={`calendar-date overflow-y-auto ${isToday ? "bg-gray-100!" : ""} ${isPast ? "opacity-65 select-none" : ""}`}
+                      className={`w-full calendar-date overflow-y-auto ${isToday ? "bg-gray-100!" : ""} ${isPast ? "opacity-65 select-none" : ""}`}
                     >
                       <p
                         className={`calendar-number ${isToday ? "font-bold! text-black!" : ""}`}

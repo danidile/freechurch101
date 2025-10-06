@@ -34,7 +34,12 @@ import { updateSetlist } from "./updateSetlist";
 import { SelectWorshipTeamMemberDrawer } from "@/app/protected/teams/SelectWorshipTeamMemberDrawer";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { AnimatePresence, motion, Reorder } from "framer-motion";
-import { FaArrowDown, FaPlus, FaRegCalendarAlt } from "react-icons/fa";
+import {
+  FaArrowDown,
+  FaPlus,
+  FaRegCalendarAlt,
+  FaRegCalendarTimes,
+} from "react-icons/fa";
 import { ScheduleComponents } from "./ScheduleComponents";
 import { useChurchStore } from "@/store/useChurchStore";
 import { MdEditNote, MdOutlineTitle } from "react-icons/md";
@@ -46,7 +51,7 @@ import { getSetlistTeamLeadBySetlistAndUserId } from "@/hooks/GET/getSetlistTeam
 import { useRouter } from "next/navigation";
 import { logEventClient } from "@/utils/supabase/logClient";
 import { HeaderCL } from "@/app/components/header-comp";
-import { LuCalendarRange } from "react-icons/lu";
+import { LuCalendarRange, LuCalendarX } from "react-icons/lu";
 import DateRangePicker from "@/app/components/DataRangePicker";
 import { useSetlistsStore } from "@/store/useSetlistsStore";
 export default function UpdateSetlistForm({
@@ -770,6 +775,9 @@ export default function UpdateSetlistForm({
                     }}
                   />
                 )}
+                <Button radius="sm" variant="light" isIconOnly onPress={onOpen}>
+                  <FaRegCalendarTimes />
+                </Button>
               </div>
 
               <AnimatePresence>

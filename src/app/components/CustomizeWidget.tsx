@@ -11,9 +11,7 @@ import {
 import { FaPlus, FaMinus } from "react-icons/fa";
 
 import { FaCircle } from "react-icons/fa6";
-import { BiColor } from "react-icons/bi";
 import { useState } from "react";
-import { LuTextQuote } from "react-icons/lu";
 import { RiFontSize } from "react-icons/ri";
 export const fontSizes = [
   { key: "14", label: "14" },

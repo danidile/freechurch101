@@ -3,6 +3,7 @@ import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
 import { Divider } from "@heroui/react";
 import ChordProViewComponent from "@/app/components/chordProViewComponent";
 import { setListSongT, setListT } from "@/utils/types/types";
+import CustomizeWidget from "@/app/components/CustomizeWidget";
 export default async function Page({
   params,
 }: {
@@ -25,11 +26,13 @@ export default async function Page({
     <div className="container-sub">
       <div className="w-full">
         <div className="song-presentation-container">
+          <div className="absolute top-[50%] right-0">
+            <CustomizeWidget></CustomizeWidget>
+          </div>{" "}
           <h6>
             <strong>{setlistData.event_title}</strong>
           </h6>
           <p>{readableDate}</p>
-
           {setlistsongs
             .sort((a, b) => a.order - b.order)
             .map((song: setListSongT, index) => {

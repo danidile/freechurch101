@@ -11,6 +11,9 @@ export default async function Page({ params }: { params: Promise<any> }) {
     return (
       <div className="container-sub">
         <div className="song-presentation-container">
+          <div className="absolute top-[50%] right-0">
+            <CustomizeWidget></CustomizeWidget>
+          </div>
           <ChordProViewComponentAlt source="songs" setListSong={songData} />
         </div>
       </div>

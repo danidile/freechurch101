@@ -277,7 +277,43 @@ export const fetchMostPlayedSongs = async (
     return [];
   }
 };
+export async function fetchAllChurchesData() {
+  // 1. Fetch all churches
+  const supabase = await createClient();
 
+  const { data: churches, error } = await supabase.from("churches").select("*");
+
+  if (error) throw error;
+
+  // 2. For each church, fetch members + events counts
+  const churchesWithCounts = await Promise.all(
+    churches.map(async (church) => {
+      // count members from profiles
+      const { count: membersCount, error: membersError } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .eq("church", church.id);
+
+      if (membersError) throw membersError;
+
+      // count events from setlists
+      const { count: eventsCount, error: eventsError } = await supabase
+        .from("setlist")
+        .select("*", { count: "exact", head: true })
+        .eq("church", church.id);
+
+      if (eventsError) throw eventsError;
+
+      return {
+        ...church,
+        membersCount: membersCount ?? 0,
+        eventsCount: eventsCount ?? 0,
+      };
+    })
+  );
+
+  return churchesWithCounts;
+}
 /**
  * Fetches the top serving members for a specific church within a time range.
  */
