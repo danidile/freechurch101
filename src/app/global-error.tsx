@@ -1,7 +1,6 @@
 "use client";
 
 import { logEventClient } from "@/utils/supabase/logClient";
-import NextError from "next/error";
 import Link from "next/link";
 import { useEffect } from "react";
 

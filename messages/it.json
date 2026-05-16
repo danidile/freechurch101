@@ -1,0 +1,51 @@
+{
+  "home": {
+    "hero": {
+      "title": "La Tua Chiesa, Sempre Organizzata",
+      "sub": "Una piattaforma completa per pianificare servizi, gestire team, archiviare canti e coordinare i volontari, tutto in cloud!",
+      "imageAlt": "Illustrazione Organizzazione"
+    },
+    "artists": {
+      "title": "Artisti Italiani",
+      "cta": "Testi e Accordi",
+      "items": {
+        "sdvworship": "SDV Worship",
+        "mirkoegiorgia": "Mirko & Giorgia",
+        "soundsmusicitalia": "Sounds Music Italia",
+        "nicobattaglia": "Nico Battaglia",
+        "truedevotion": "True Devotion"
+      }
+    },
+    "team": {
+      "title": "Uno spazio unico per tutti i team.",
+      "sub": "ChurchLab è progettato per semplificare la gestione dei team.",
+      "imageAlt": "Illustrazione Organizzazione"
+    },
+    "features": {
+      "title": "Una Piattaforma Progettata per Te",
+      "sub": "Semplifica la gestione della tua comunità con strumenti potenti e facili da usare.",
+      "items": [
+        { "title": "Pianificazione Intuitiva", "desc": "Crea e condividi scalette dettagliate per ogni servizio in pochi minuti." },
+        { "title": "Archivio Canti Centralizzato", "desc": "Gestisci testi e accordi. Trasponi le tonalità con un solo click." },
+        { "title": "Gestione Semplice dei Team", "desc": "Organizza i turni dei volontari e invia promemoria automatici." },
+        { "title": "Ruoli e Squadre Definiti", "desc": "Assegna responsabilità chiare per una collaborazione impeccabile." },
+        { "title": "Accesso Cloud Ovunque", "desc": "Sincronizza i dati e accedi alla piattaforma da qualsiasi dispositivo." },
+        { "title": "Design Facile e Pulito", "desc": "Un'interfaccia che non richiede formazione, pensata per essere usata subito." }
+      ]
+    },
+    "steps": {
+      "title": "Inizia in 3 Semplici Passi",
+      "sub": "Passare a ChurchLab è un processo rapido e intuitivo.",
+      "items": [
+        { "title": "Crea il Tuo Account", "body": "Registrati gratuitamente in meno di un minuto. Nessuna carta di credito richiesta." },
+        { "title": "Invita il Tuo Team", "body": "Aggiungi i tuoi pastori, musicisti e volontari per iniziare a collaborare da subito." },
+        { "title": "Inizia a Pianificare", "body": "Crea il tuo primo servizio, aggiungi canti e assegna ruoli. È davvero così semplice." }
+      ]
+    },
+    "calendar": {
+      "title": "Un sistema scalabile che si adatta alle tue necessità.",
+      "sub": "Crea turni, assegna ruoli, invia promemoria e costruisci un flusso organizzativo armonioso.",
+      "imageAlt": "Illustrazione Organizzazione"
+    }
+  }
+}

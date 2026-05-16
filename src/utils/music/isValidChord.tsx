@@ -3,7 +3,7 @@ import { VALID_CHORD_SUFFIXES } from "./constants";
 export function isValidChord(match: string): boolean {
   // Parse root, accidental, suffix
   const chordMatch = match.match(
-    /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(maj|min|dim|aug|sus|add|m|M|\+|°|ø|Δ)?(\d{0,2})?([#b♯♭]?\d{0,2})?(\/([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?))?$/i
+    /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(maj|min|dim|aug|sus|add|m|M|-|\+|°|ø|Δ)?(\d{0,2})?([#b♯♭]?\d{0,2})?(\/([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?))?$/i,
   );
   if (!chordMatch) return false;
 
@@ -25,11 +25,14 @@ export function isValidChord(match: string): boolean {
     return true;
   }
 
+  // "-" alone means minor — always valid
+  if (suffix === "-") return true;
+
   // Check for slash chords
   if (suffix.includes("/")) {
     const [mainSuffix, bassPart] = suffix.split("/");
     const bassMatch = bassPart.match(
-      /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(.*)$/i
+      /^([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)(.*)$/i,
     );
     return (
       bassMatch !== null &&
@@ -38,7 +41,7 @@ export function isValidChord(match: string): boolean {
     );
   }
 
-  // Allow compound suffixes like m7b5b9, 13b9, maj7#11, etc.
+  // Allow compound suffixes like m7b5b9, 13b9, maj7#11, -7, -9 etc.
   if (isCompoundSuffixValid(suffix)) {
     return true;
   }
@@ -55,9 +58,6 @@ export function isValidChord(match: string): boolean {
 /**
  * Checks if a suffix is made up of multiple valid suffix tokens.
  */
-/**
- * Checks if a suffix is made up of multiple valid suffix tokens.
- */
 function isCompoundSuffixValid(suffix: string): boolean {
   // Trim the suffix to handle leading/trailing spaces
   const trimmedSuffix = suffix.trim();
@@ -67,9 +67,12 @@ function isCompoundSuffixValid(suffix: string): boolean {
     return false;
   }
 
+  // "-" alone is valid minor suffix
+  if (trimmedSuffix === "-") return true;
+
   const parts =
     trimmedSuffix
-      .match(/(maj|min|dim|aug|sus|add|m|M|\+|°|ø|Δ)?\d*([#b♯♭]\d+)?/g)
+      .match(/(maj|min|dim|aug|sus|add|m|M|-|\+|°|ø|Δ)?\d*([#b♯♭]\d+)?/g)
       ?.filter(Boolean) || [];
 
   // Check if no parts were found, which indicates an invalid suffix
@@ -82,6 +85,6 @@ function isCompoundSuffixValid(suffix: string): boolean {
     (part) =>
       VALID_CHORD_SUFFIXES.has(part) ||
       VALID_CHORD_SUFFIXES.has(part.toLowerCase()) ||
-      /^([#b♯♭]?\d+)$/.test(part)
+      /^([#b♯♭]?\d+)$/.test(part),
   );
 }

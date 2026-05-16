@@ -2,7 +2,7 @@
 
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import LoginPage from "@/app/(auth-pages)/login/page";
+import LoginPage from "@/app/[locale]/(auth-pages)/login/page";
 
 // Mock the Next.js Image component for the test environment
 jest.mock("next/image", () => ({
@@ -35,7 +35,9 @@ describe("Login Page", () => {
     // The welcome message and logo have the "hidden" class by default and "lg:block".
     // In Jest's default environment, they should not be in the document.
     // We use `queryBy` because it returns `null` instead of throwing an error if the element is not found.
-    const heading = screen.queryByRole("heading", { name: /Benvenuto su ChurchLab/i });
+    const heading = screen.queryByRole("heading", {
+      name: /Benvenuto su ChurchLab/i,
+    });
     const logo = screen.queryByAltText("Logo ChurchLab");
 
     expect(heading).not.toBeInTheDocument();

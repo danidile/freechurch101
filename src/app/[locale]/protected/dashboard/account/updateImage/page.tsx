@@ -1,0 +1,10 @@
+import ImageUploader from "@/app/[locale]/protected/dashboard/account/updateImage/ImageUploader";
+
+export default function ImageUploaderComponent() {
+  return (
+    <div className="max-w-lg mx-auto mt-10">
+      <h1 className="text-2xl font-semibold mb-4">Carica foto profilo</h1>
+      <ImageUploader type="profilepicture" />
+    </div>
+  );
+}

@@ -2,9 +2,8 @@
 
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { TauthSchema, TlostPasswordSchema } from "@/utils/types/auth";
+import { TauthSchema } from "@/utils/types/auth";
 import { TresetPasswordSchema } from "@/utils/types/auth";
 import { translateSupabaseError } from "@/utils/supabase/translateSupabaseError";
 
@@ -28,13 +27,13 @@ export const signUpAction = async (data: TauthSchema) => {
     return encodedRedirect(
       "error",
       "/sign-up",
-      translateSupabaseError(error.message)
+      translateSupabaseError(error.message),
     );
   } else {
     return encodedRedirect(
       "success",
       "/login",
-      "Registrazione effettuata con successo! Controlla la tua mail per il link di verifica. "
+      "Registrazione effettuata con successo! Controlla la tua mail per il link di verifica. ",
     );
   }
 };

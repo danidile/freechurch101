@@ -16,8 +16,7 @@ export const semitoneToNashville: Record<number, string> = {
 
 // Improved chord regex - more strict and specific
 export const chordRegex =
-  /\b([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M|\+|°|ø)?(?:\d+)?(?:[#b♯♭]\d+)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)[#b♯♭]?)?)(?=\s|$)/gi;
-
+  /\b([A-G]|Do|Re|Mi|Fa|Sol|La|Si)([#b♯♭]?)((?:maj|min|dim|aug|sus|add|m|M|-|\+|°|ø)?(?:\d+)?(?:[#b♯♭]\d+)?(?:\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)[#b♯♭]?)?)(?=\s|$)/gi;
 export type ParsedLine =
   | { type: "section"; text: string }
   | { type: "chords"; text: string }

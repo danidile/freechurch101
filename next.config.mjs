@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 import path from "path";
 import { fileURLToPath } from "url";
+import createNextIntlPlugin from "next-intl/plugin";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -10,7 +14,6 @@ const nextConfig = {
     return [
       {
         source: "/(.*)",
-
         headers: [
           {
             key: "Strict-Transport-Security",
@@ -52,7 +55,6 @@ worker-src blob: 'self';
           },
         ],
       },
-      // 🔹 SW-specific header
       {
         source: "/sw.js",
         headers: [
@@ -78,4 +80,4 @@ worker-src blob: 'self';
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

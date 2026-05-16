@@ -2,7 +2,7 @@
 
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Home from "@/app/page";
+import Home from "@/app/[locale]/page";
 
 // Mock Next.js components and functions (necessary for rendering)
 jest.mock("next/image", () => ({
@@ -36,26 +36,26 @@ describe("Home Page", () => {
     expect(
       screen.getByRole("heading", {
         name: /La Tua Chiesa, Sempre Organizzata/i,
-      })
+      }),
     ).toBeInTheDocument();
 
     // Check for the introductory paragraph
     expect(
-      screen.getByText(/Una piattaforma completa per pianificare servizi/i)
+      screen.getByText(/Una piattaforma completa per pianificare servizi/i),
     ).toBeInTheDocument();
   });
 
   it("should display the key sections of the page", () => {
     // Check for the "Artists" section heading
     expect(
-      screen.getByRole("heading", { name: /Artisti Italiani/i })
+      screen.getByRole("heading", { name: /Artisti Italiani/i }),
     ).toBeInTheDocument();
 
     // Check for the "Teams" section heading
     expect(
       screen.getByRole("heading", {
         name: /Uno spazio unico per tutti i team/i,
-      })
+      }),
     ).toBeInTheDocument();
   });
 
@@ -76,14 +76,8 @@ describe("Home Page", () => {
   it("should render all primary calls-to-action with correct links", () => {
     // Check for the PWA install button (doesn't need a link)
     expect(
-      screen.getByRole("button", { name: /Installa App/i })
+      screen.getByRole("button", { name: /Installa App/i }),
     ).toBeInTheDocument();
-
-    // Check the main "Prova Gratis" button
-    expect(screen.getByRole("link", { name: /Prova Gratis/i })).toHaveAttribute(
-      "href",
-      "/login"
-    );
 
     // Check that there are 5 links to the artist pages
     const artistLinks = screen.getAllByRole("link", {

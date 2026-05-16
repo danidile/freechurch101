@@ -1,0 +1,79 @@
+{
+  "home": {
+    "hero": {
+      "title": "Your Church, Always Organized",
+      "sub": "A complete platform to plan services, manage teams, archive songs and coordinate volunteers — all in the cloud!",
+      "imageAlt": "Organization Illustration"
+    },
+    "artists": {
+      "title": "Italian Artists",
+      "cta": "Lyrics & Chords",
+      "items": {
+        "sdvworship": "SDV Worship",
+        "mirkoegiorgia": "Mirko & Giorgia",
+        "soundsmusicitalia": "Sounds Music Italia",
+        "nicobattaglia": "Nico Battaglia",
+        "truedevotion": "True Devotion"
+      }
+    },
+    "team": {
+      "title": "One space for all your teams.",
+      "sub": "ChurchLab is designed to simplify team management.",
+      "imageAlt": "Organization Illustration"
+    },
+    "features": {
+      "title": "A Platform Designed for You",
+      "sub": "Simplify your community management with powerful, easy-to-use tools.",
+      "items": [
+        {
+          "title": "Intuitive Planning",
+          "desc": "Create and share detailed runsheets for every service in minutes."
+        },
+        {
+          "title": "Centralized Song Archive",
+          "desc": "Manage lyrics and chords. Transpose keys with a single click."
+        },
+        {
+          "title": "Simple Team Management",
+          "desc": "Organize volunteer shifts and send automatic reminders."
+        },
+        {
+          "title": "Defined Roles & Teams",
+          "desc": "Assign clear responsibilities for seamless collaboration."
+        },
+        {
+          "title": "Cloud Access Anywhere",
+          "desc": "Sync your data and access the platform from any device."
+        },
+        {
+          "title": "Clean & Easy Design",
+          "desc": "An interface that needs no training, ready to use immediately."
+        }
+      ]
+    },
+    "steps": {
+      "title": "Get Started in 3 Simple Steps",
+      "sub": "Switching to ChurchLab is a quick and intuitive process.",
+      "items": [
+        {
+          "title": "Create Your Account",
+          "body": "Sign up for free in less than a minute. No credit card required."
+        },
+        {
+          "title": "Invite Your Team",
+          "body": "Add your pastors, musicians and volunteers to start collaborating right away."
+        },
+        {
+          "title": "Start Planning",
+          "body": "Create your first service, add songs and assign roles. It really is that simple."
+        }
+      ]
+    },
+    "calendar": {
+      "title": "A scalable system that adapts to your needs.",
+      "sub": "Create shifts, assign roles, send reminders and build a harmonious organizational flow.",
+      "imageAlt": "Organization Illustration"
+    }
+  }
+}
+    
