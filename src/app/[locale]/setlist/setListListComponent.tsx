@@ -32,7 +32,7 @@ export default function SetListListComponent() {
       getSetListsByChurch(userData.church_id).then(
         (fetchedSetLists: setListT[]) => {
           setSetlists(fetchedSetLists);
-        }
+        },
       );
     }
   }, [loading, userData]);
@@ -47,13 +47,13 @@ export default function SetListListComponent() {
               return singleSetlist; // Skip past events
             }
             const setlistTeams: GroupedMembers = await getSetListTeams(
-              singleSetlist.id
+              singleSetlist.id,
             );
             return {
               ...singleSetlist,
               setlistTeams: setlistTeams, // Add the fetched teams to the setlist object
             };
-          })
+          }),
         );
         setSetlists(detailedSetlists);
         console.log(detailedSetlists);
@@ -80,23 +80,8 @@ export default function SetListListComponent() {
           icon={LuCalendarRange}
           content={
             <div className="flex flex-row justify-start items-center gap-2">
-              <p>Modalità visualizzazione:</p>
-              <Button
-                isIconOnly
-                color="default"
-                variant="flat"
-                onPress={() => setViewMode("list")}
-              >
-                <LuList size={18} />
-              </Button>
-              <Button
-                isIconOnly
-                color="default"
-                variant="flat"
-                onPress={() => setViewMode("calendar")}
-              >
-                <LuCalendarDays size={18} />
-              </Button>
+              <p>Crea nuovo evento:</p>
+
               {(hasPermission(userData.role as Role, "create:setlists") ||
                 TeamLeader) && (
                 <Button
@@ -113,7 +98,25 @@ export default function SetListListComponent() {
           }
           title="Prossimi eventi"
         />{" "}
-        <h5 className="text-center m-2"></h5>
+        <div className="flex flex-row justify-end items-center gap-2 w-full max-w-[1100px]">
+          <p>Modalità visualizzazione:</p>
+          <Button
+            isIconOnly
+            color="default"
+            variant="light"
+            onPress={() => setViewMode("list")}
+          >
+            <LuList size={18} />
+          </Button>
+          <Button
+            isIconOnly
+            color="default"
+            variant="light"
+            onPress={() => setViewMode("calendar")}
+          >
+            <LuCalendarDays size={18} />
+          </Button>
+        </div>
         {viewMode === "list" && (
           <SetListTabs userData={userData} setlists={setlists} />
         )}

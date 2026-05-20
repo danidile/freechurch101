@@ -4,7 +4,7 @@ import { useUserStore } from "@/store/useUserStore";
 import LogsComponent from "./LogsComponent";
 import { FaLock } from "react-icons/fa";
 
-export default function Page() {
+export default function LogsPage() {
   const { userData } = useUserStore();
 
   if (!userData) {

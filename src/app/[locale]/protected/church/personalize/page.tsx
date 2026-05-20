@@ -3,7 +3,8 @@
 import { useUserStore } from "@/store/useUserStore";
 import { useState } from "react";
 import { AiOutlineLink } from "react-icons/ai";
-
+import { Switch } from "@heroui/react";
+import { LuUsers } from "react-icons/lu";
 import {
   Modal,
   ModalContent,
@@ -16,9 +17,9 @@ import {
 
 import ImageUploader from "../../dashboard/account/updateImage/ImageUploader";
 import CreateMultipleEventsForm from "@/app/[locale]/protected/church/personalize/addmultipleevents/UpdateMultipleEventsForm";
+import { updateChurchField } from "./churchSignupsStatusActions";
 
 import { Link } from "@/i18n/navigation";
-import { HeaderCL } from "@/app/[locale]/components/header-comp";
 import {
   LuAtom,
   LuBox,
@@ -30,66 +31,75 @@ import {
 } from "react-icons/lu";
 import { IconType } from "react-icons";
 import React from "react";
-import { MdOutlineLibraryMusic } from "react-icons/md";
 
 type Category = "personalizzazione" | "musica";
 
-const categoryLabels: Record<Category, string> = {
-  personalizzazione: "Personalizzazione",
-  musica: "Musica",
-};
-interface ChurchSettingsProps {
-  userData: {
-    church_logo: string | null;
-  };
-  updateLogo: boolean;
-  setUpdateLogo: (value: boolean) => void;
-}
 export default function PersonalizeChurchComponent() {
   const { userData } = useUserStore();
   const [updateLogo, setUpdateLogo] = useState(false);
+  const [signupsLoading, setSignupsLoading] = useState(false);
+  const handleToggleSignups = async (value: boolean) => {
+    setSignupsLoading(true);
+    try {
+      await updateChurchField(userData.church_id, "accepting_signups", value);
+      useUserStore.setState((state) => ({
+        userData: { ...state.userData, accepting_signups: value },
+      }));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSignupsLoading(false);
+    }
+  };
   const {
     isOpen: isOpenMultipleEventsModal,
     onOpen: onOpenMultipleEventsModal,
     onOpenChange: onOpenChangeMultipleEventsModal,
   } = useDisclosure();
-  const [selectedCategory, setSelectedCategory] =
-    useState<Category>("personalizzazione");
 
   return (
     <div className="container-sub">
-      <HeaderCL icon={LuChurch} title="Personalizza Chiesa" />
-
       <div>
-        <div className="max-w-4xl mx-auto py-4 space-y-6">
-          {/* Pulsanti categoria */}
-
+        <div className="w-full mx-auto py-4 space-y-6">
           {/* Sezioni filtrate */}
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <SectionCard
-              title="Logo della chiesa"
-              icon={LuAtom}
-              description="Carica il logo ufficiale della tua chiesa: verrà mostrato in tutta la piattaforma per una presenza visiva coerente e riconoscibile."
+              icon={LuUsers}
+              title="Iscrizioni aperte"
+              description="Se attivo, i membri possono iscriversi agli eventi tramite il link pubblico. Se disattivo, il link non funzionerà."
             >
-              {userData.church_logo && !updateLogo ? (
+              <Switch
+                isSelected={userData.accepting_signups ?? false}
+                isDisabled={signupsLoading}
+                onValueChange={handleToggleSignups}
+                size="sm"
+                color="success"
+              >
+                <span className="text-sm text-gray-600">
+                  {userData.accepting_signups
+                    ? "Iscrizioni aperte"
+                    : "Iscrizioni chiuse"}
+                </span>
+              </Switch>
+              {userData.accepting_signups && (
                 <div
-                  className="relative mx-auto my-2 w-full max-w-xs h-48 bg-center bg-contain bg-no-repeat group"
-                  style={{
-                    backgroundImage: `url(https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo}?t=${Date.now()})`,
-                  }}
+                  className="mt-2 flex items-center gap-1 cursor-pointer group"
+                  onClick={() =>
+                    navigator.clipboard.writeText(
+                      `https://www.churchlab.it/it/signup/${userData.church_id}`,
+                    )
+                  }
                 >
-                  <button
-                    onClick={() => setUpdateLogo(true)}
-                    className="absolute inset-0 bg-white/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
-                  >
-                    Aggiorna
-                  </button>
+                  <span className="text-sm text-gray-500 truncate group-hover:text-blue-600 transition">
+                    https://www.churchlab.it/it/signup/{userData.church_id}
+                  </span>
+                  <AiOutlineLink
+                    size={14}
+                    className="text-gray-400 group-hover:text-blue-600 transition shrink-0"
+                  />
                 </div>
-              ) : (
-                <ImageUploader closeState={setUpdateLogo} type="churchlogo" />
               )}
             </SectionCard>
-
             <SectionCard
               title="Tipi di evento"
               icon={LuCalendar1}
@@ -129,6 +139,30 @@ export default function PersonalizeChurchComponent() {
               description="Crea e modifica modelli predefiniti per le tue scalette."
               href="/protected/church/personalize/schedule-template"
             />
+
+            <SectionCard
+              title="Logo della chiesa"
+              icon={LuAtom}
+              description="Carica il logo ufficiale della tua chiesa: verrà mostrato in tutta la piattaforma per una presenza visiva coerente e riconoscibile."
+            >
+              {userData.church_logo && !updateLogo ? (
+                <div
+                  className="relative mx-auto my-2 w-full max-w-xs h-48 bg-center bg-contain bg-no-repeat group"
+                  style={{
+                    backgroundImage: `url(https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${userData.church_logo}?t=${Date.now()})`,
+                  }}
+                >
+                  <button
+                    onClick={() => setUpdateLogo(true)}
+                    className="absolute inset-0 bg-white/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                  >
+                    Aggiorna
+                  </button>
+                </div>
+              ) : (
+                <ImageUploader closeState={setUpdateLogo} type="churchlogo" />
+              )}
+            </SectionCard>
           </div>
         </div>
       </div>
@@ -184,7 +218,7 @@ const SectionCard = ({
   icon,
 }: SectionCardProps) => {
   return (
-    <div className=" p-2 border-b-1 last:border-b-0">
+    <div className="p-2 bg-gray-50 rounded-lg">
       <div className="flex flex-row items-center gap-2">
         {icon && <span>{React.createElement(icon)}</span>}
         <h3 className="text-base font-semibold">{title}</h3>

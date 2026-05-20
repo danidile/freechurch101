@@ -117,13 +117,13 @@ export default function TicketSystem() {
 
   const handleStatusUpdate = async (
     ticketId: string,
-    status: Ticket["status"]
+    status: Ticket["status"],
   ) => {
     if (!isAdmin) return;
     try {
       await updateTicketStatus(ticketId, status);
       setTickets((prevTickets) =>
-        prevTickets.map((t) => (t.id === ticketId ? { ...t, status } : t))
+        prevTickets.map((t) => (t.id === ticketId ? { ...t, status } : t)),
       );
       if (selectedTicket?.id === ticketId) {
         setSelectedTicket((prev) => (prev ? { ...prev, status } : null));
@@ -142,14 +142,6 @@ export default function TicketSystem() {
       <div className="flex h-screen flex-col font-sans">
         <header className="p-4">
           <div className="mx-auto flex-wrap flex max-w-7xl items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">
-                {isAdmin ? "Admin Dashboard" : "Support Center"}
-              </h1>
-              <p className="text-sm text-gray-500">
-                Benvenuto, {userData.name}
-              </p>
-            </div>
             {!isAdmin && (
               <button
                 onClick={() => setShowCreateForm(true)}
@@ -468,7 +460,7 @@ const CreateTicketModal: FC<CreateTicketModalProps> = ({
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setTicketData((prev) => ({

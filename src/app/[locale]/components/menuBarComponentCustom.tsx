@@ -5,6 +5,19 @@ import MenuApp from "./MenuApp";
 import { useUserStore } from "@/store/useUserStore";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { MdOutlineLogout } from "react-icons/md";
+import logoutAction from "./logOutAction";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/dropdown";
+import { PiPasswordBold } from "react-icons/pi";
+import { FaUserCircle } from "react-icons/fa";
+import { User } from "@heroui/user";
+import { IoSettingsOutline } from "react-icons/io5";
+import { FiUser } from "react-icons/fi";
 
 export default function MenuBarComponentCustom() {
   const { userData, notifications } = useUserStore();
@@ -45,8 +58,11 @@ export default function MenuBarComponentCustom() {
     );
   }
 
-  if (userData?.loggedIn) return null;
-
+  async function logouter() {
+    await logoutAction();
+    await fetchUser();
+    router.push("/protected/dashboard/account");
+  }
   // the toggle button, reused in both desktop and mobile
   const LangToggle = () => (
     <button
@@ -127,11 +143,94 @@ export default function MenuBarComponentCustom() {
               <Link
                 href="/login"
                 prefetch
-                className="text-blue-800 font-medium"
+                className="text-gray-800 font-medium"
               >
                 {locale === "it" ? "Accedi" : "Login"}
               </Link>
               {userData.email == "danidile94@gmail.com" && <LangToggle />}
+            </>
+          )}
+          {userData.loggedIn && (
+            <>
+              <Link
+                href="/setlist"
+                prefetch
+                className="text-gray-800 font-medium"
+              >
+                {locale === "it" ? "Eventi" : "Events"}
+              </Link>
+              <Link
+                href="/songs"
+                prefetch
+                className="text-gray-800 font-medium"
+              >
+                {locale === "it" ? "Canzoni" : "Songs"}
+              </Link>
+
+              <Link
+                href="/protected/church"
+                prefetch
+                className="text-gray-800 font-medium"
+              >
+                {locale === "it" ? "Membri Chiesa" : "People"}
+              </Link>
+              {userData.email == "danidile94@gmail.com" && <LangToggle />}
+
+              <Dropdown placement="bottom-start">
+                <DropdownTrigger>
+                  <button className="">
+                    <User
+                      name={``}
+                      description={``}
+                      // You can use a generic avatar or a real one if you have it
+                      avatarProps={{
+                        src: userData.avatar_url
+                          ? `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}?t=${Date.now()}`
+                          : "/images/userAvatarDefault.jpg",
+
+                        fallback: (
+                          <FaUserCircle className="w-6 h-6 text-zinc-500" />
+                        ),
+                      }}
+                    />
+                  </button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="User Actions">
+                  <DropdownItem
+                    key="profile"
+                    as={Link}
+                    href="/protected/dashboard/account"
+                    startContent={<FiUser />}
+                  >
+                    Profilo
+                  </DropdownItem>
+                  <DropdownItem
+                    key="update_profile"
+                    as={Link}
+                    href="/protected/dashboard/account/completeAccount"
+                    startContent={<IoSettingsOutline />}
+                  >
+                    Aggiorna Profilo
+                  </DropdownItem>
+                  <DropdownItem
+                    key="reset_password"
+                    as={Link}
+                    href="/protected/reset-password"
+                    startContent={<PiPasswordBold />}
+                  >
+                    Cambia Password
+                  </DropdownItem>
+                  <DropdownItem
+                    key="logout"
+                    color="danger"
+                    className="text-danger"
+                    onClick={logouter}
+                    startContent={<MdOutlineLogout />}
+                  >
+                    Esci
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </>
           )}
         </div>

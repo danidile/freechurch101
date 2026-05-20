@@ -6,11 +6,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
 
   if (!locale || !routing.locales.includes(locale as any)) {
+    // read from x-next-url or x-invoke-path header
     const headersList = await headers();
-    const headerLocale = headersList.get("x-next-intl-locale");
+    const pathname = headersList.get("x-pathname") || "";
+    const segments = pathname.split("/").filter(Boolean);
+    const urlLocale = segments[0];
 
-    if (headerLocale && routing.locales.includes(headerLocale as any)) {
-      locale = headerLocale;
+    if (urlLocale && routing.locales.includes(urlLocale as any)) {
+      locale = urlLocale;
     } else {
       locale = routing.defaultLocale;
     }

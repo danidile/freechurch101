@@ -10,7 +10,6 @@ export default async function Page({
   params: Promise<{ setListId: string }>;
 }) {
   const awaitedParams = await params;
-
   const setlistData: setListT = await getSetList(awaitedParams.setListId);
   const setlistsongs: setListSongT[] = await getSetListSongs(
     awaitedParams.setListId,
@@ -26,9 +25,9 @@ export default async function Page({
     <div className="container-sub">
       <div className="w-full">
         <div className="song-presentation-container">
-          <div className="absolute top-[50%] right-0">
-            <CustomizeWidget></CustomizeWidget>
-          </div>{" "}
+          <div className="fixed bottom-24 right-4 z-[9999]">
+            <CustomizeWidget />
+          </div>
           <h6>
             <strong>{setlistData.event_title}</strong>
           </h6>

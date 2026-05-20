@@ -209,7 +209,7 @@ export default function LogsComponent() {
   const updateMetaFilter = (
     index: number,
     field: keyof MetaFilter,
-    value: string
+    value: string,
   ) => {
     const newFilters = [...metaFilters];
     newFilters[index] = { ...newFilters[index], [field]: value };
@@ -282,7 +282,7 @@ export default function LogsComponent() {
             "text-xs font-semibold px-2 py-1 rounded-full",
             log.level === "info" && "bg-blue-100 text-blue-800",
             log.level === "warn" && "bg-yellow-100 text-yellow-800",
-            log.level === "error" && "bg-red-100 text-red-800"
+            log.level === "error" && "bg-red-100 text-red-800",
           )}
         >
           {log.level}
@@ -304,7 +304,7 @@ export default function LogsComponent() {
             "text-xs font-semibold px-2 py-1 rounded-full",
             log.level === "info" && "bg-blue-100 text-blue-800",
             log.level === "warn" && "bg-yellow-100 text-yellow-800",
-            log.level === "error" && "bg-red-100 text-red-800"
+            log.level === "error" && "bg-red-100 text-red-800",
           )}
         >
           {log.level}
@@ -341,13 +341,11 @@ export default function LogsComponent() {
 
   const groupedLogs = groupLogsByDay(logs);
   const sortedDates = Object.keys(groupedLogs).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+    (a, b) => new Date(b).getTime() - new Date(a).getTime(),
   );
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 sm:py-10">
-      <h1 className="text-2xl font-bold mb-6">Logs Dashboard</h1>
-
       {/* Basic Filters */}
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <select

@@ -25,21 +25,6 @@ export default function TeamsPageComponent() {
 
   return (
     <div className="container-sub">
-      <HeaderCL
-        icon={FaAsterisk}
-        title="Teams"
-        titleDropDown={
-          hasPermission(userData.role as Role, "create:team") && (
-            <Link href="/protected/teams/create-team">
-              <Button size="sm" className="gap-2">
-                <FaPlus />
-                Crea nuovo team
-              </Button>
-            </Link>
-          )
-        }
-      />
-
       {/* --- Team List --- */}
       {churchTeams && churchTeams.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-4 py-12 text-gray-500">

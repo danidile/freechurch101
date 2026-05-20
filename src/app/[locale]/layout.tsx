@@ -61,7 +61,8 @@ export default async function LocaleLayout({
               ),
             }}
           />
-          <SiderbarProvider>{children}</SiderbarProvider>
+          {children}
+          {/* <SiderbarProvider></SiderbarProvider> */}
           <SpeedInsights />
         </main>
         <FooterCL />
