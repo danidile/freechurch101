@@ -25,17 +25,16 @@ export default function MenuBarComponentCustom() {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+  const [isStandalone, setIsStandalone] = useState(false);
 
   const toggleLocale = () => {
     const next = locale === "it" ? "en" : "it";
     router.replace(pathname, { locale: next });
   };
-
-  const isStandalone =
-    typeof window !== "undefined" &&
-    window.matchMedia("(display-mode: standalone)").matches;
-
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  useEffect(() => {
+    setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "";

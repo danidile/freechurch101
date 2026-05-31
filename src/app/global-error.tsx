@@ -1,8 +1,8 @@
 "use client";
 
 import { logEventClient } from "@/utils/supabase/logClient";
-import Link from "next/link";
 import { useEffect } from "react";
+import { Link } from "@/i18n/navigation";
 
 export default function GlobalError({
   error,
