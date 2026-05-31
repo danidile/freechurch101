@@ -1,16 +1,22 @@
 import { getChurchLogo } from "@/hooks/GET/getChurchLogo";
 import SignupForm from "./signupForm";
 import Image from "next/image";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function SignupPage({
   params,
 }: {
-  params: Promise<{ churchId: string }>;
+  params: Promise<{ locale: string; churchId: string }>;
 }) {
-  const { churchId } = await params;
+  const { churchId, locale } = await params;
 
-  const churchData = await getChurchLogo(churchId);
-  console.log("churchData:", churchData);
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) redirect(`/${locale}/protected/dashboard/account`);
   if (!churchId) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-75px)] w-full">
@@ -25,6 +31,7 @@ export default async function SignupPage({
       </div>
     );
   }
+  const churchData = await getChurchLogo(churchId);
 
   return (
     <div className="flex flex-row h-[calc(100vh-75px)] w-full">

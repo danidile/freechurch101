@@ -72,7 +72,7 @@ export default function ChurchComponent() {
   useEffect(() => {
     if (
       !loading &&
-      userData.loggedIn &&
+      userData?.loggedIn &&
       hasPermission(userData.role as Role, "read:churchmembers")
     ) {
       getProfilesByChurch(userData.church_id).then(
@@ -93,7 +93,7 @@ export default function ChurchComponent() {
     <div className="flex flex-col gap-4 justify-center items-center w-full p-2">
       <HeaderCL
         icon={PiChurch}
-        title={userData.church_name}
+        title={userData?.church_name}
         titleDropDown={
           <Link
             href="/protected/church/invitemembers"

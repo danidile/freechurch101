@@ -51,13 +51,7 @@ type Section =
 
 export default function AccountPage() {
   const { userData, loading, fetchUser } = useUserStore();
-
-  if (loading || !userData)
-    return (
-      <div className="container-sub">
-        <Spinner size="lg" />
-      </div>
-    );
+  console.log("AccountPage userData:", userData); // ✅ Log userData to verify it's being fetched correctly
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
@@ -151,6 +145,13 @@ export default function AccountPage() {
   const churchLogoSrc = userData?.church_logo
     ? `${SUPABASE_URL}/churchlogo/${userData.church_logo}?t=${Date.now()}`
     : null;
+
+  if (loading || !userData)
+    return (
+      <div className="container-sub">
+        <Spinner size="lg" />
+      </div>
+    );
   return (
     <div className="w-full mx-auto px-4 p-2 sm:p-12">
       {/* Header */}
@@ -232,44 +233,70 @@ export default function AccountPage() {
               onCancel={handleCancel}
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field
-                  label="Nome"
-                  name="name"
-                  value={form.name}
-                  isEditing={isEditing}
-                  onChange={handleChange}
-                  icon={<LuUser size={14} />}
-                />
-                <Field
-                  label="Cognome"
-                  name="lastname"
-                  value={form.lastname}
-                  isEditing={isEditing}
-                  onChange={handleChange}
-                  icon={<LuUser size={14} />}
-                />
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                    Nome:
+                  </label>
+
+                  <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
+                    <span className="text-gray-400">
+                      <LuUser size={14} />
+                    </span>
+                    <span>
+                      {}
+                      {userData.name} {userData.lastname}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                    Cognome:
+                  </label>
+
+                  <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
+                    <span className="text-gray-400">
+                      <LuUser size={14} />
+                    </span>
+                    <span>
+                      {}
+                      {userData.lastname}
+                    </span>
+                  </div>
+                </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field
-                  label="Email"
-                  name="email"
-                  value={form.email}
-                  isEditing={isEditing}
-                  onChange={handleChange}
-                  icon={<LuMail size={14} />}
-                  type="email"
-                  hint="Cambiare l'email richiede una verifica."
-                />
-                <Field
-                  label="Telefono"
-                  name="phone"
-                  value={form.phone}
-                  isEditing={isEditing}
-                  onChange={handleChange}
-                  icon={<LuPhone size={14} />}
-                  type="tel"
-                />
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                    Email:
+                  </label>
+
+                  <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
+                    <span className="text-gray-400">
+                      <LuMail size={14} />
+                    </span>
+                    <span>
+                      {}
+                      {userData.email}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+                    Telefono:
+                  </label>
+
+                  <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
+                    <span className="text-gray-400">
+                      <LuPhone size={14} />
+                    </span>
+                    <span>
+                      {}
+                      {userData.phone}
+                    </span>
+                  </div>
+                </div>
               </div>
+
               {error && <ErrorBanner message={error} />}
               {success && (
                 <SuccessBanner message="Profilo aggiornato con successo." />
@@ -282,7 +309,6 @@ export default function AccountPage() {
               title="Famiglia"
               description="Gestisci le informazioni relative alla tua famiglia."
               icon={MdFamilyRestroom}
-              
             >
               <div className="w-full max-w-[1100px] mx-auto">
                 {" "}
@@ -473,51 +499,6 @@ function SectionCard({
         <HeaderCL icon={icon} title={title} description={description} />
       </div>
       {children}
-    </div>
-  );
-}
-
-function Field({
-  label,
-  name,
-  value,
-  isEditing,
-  onChange,
-  icon,
-  type = "text",
-  hint,
-}: {
-  label: string;
-  name: string;
-  value: string;
-  isEditing: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  icon?: React.ReactNode;
-  type?: string;
-  hint?: string;
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
-        {label}
-      </label>
-      {isEditing ? (
-        <>
-          <input
-            name={name}
-            type={type}
-            value={value}
-            onChange={onChange}
-            className="cinput"
-          />
-          {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
-        </>
-      ) : (
-        <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
-          {icon && <span className="text-gray-400">{icon}</span>}
-          <span>{value || <span className="text-gray-300">—</span>}</span>
-        </div>
-      )}
     </div>
   );
 }

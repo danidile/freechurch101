@@ -20,7 +20,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 
 export default function MenuBarComponentCustom() {
-  const { userData, notifications } = useUserStore();
+  const { userData, fetchUser, notifications } = useUserStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const locale = useLocale();
   const pathname = usePathname();
@@ -112,7 +112,7 @@ export default function MenuBarComponentCustom() {
               />
             </Link>
           </div>
-          {userData.email == "danidile94@gmail.com" && (
+          {userData?.email == "danidile94@gmail.com" && (
             <div className="block sm:hidden">
               <LangToggle />
             </div>
@@ -147,10 +147,10 @@ export default function MenuBarComponentCustom() {
               >
                 {locale === "it" ? "Accedi" : "Login"}
               </Link>
-              {userData.email == "danidile94@gmail.com" && <LangToggle />}
+              {userData?.email == "danidile94@gmail.com" && <LangToggle />}
             </>
           )}
-          {userData.loggedIn && (
+          {userData?.loggedIn && (
             <>
               <Link
                 href="/setlist"
@@ -279,7 +279,7 @@ export default function MenuBarComponentCustom() {
             {locale === "it" ? "Accedi" : "Login"}
           </p>
         </Link>
-        {userData.email === "danidile94@gmail.com" && (
+        {userData?.email === "danidile94@gmail.com" && (
           <div className="mt-4 pt-4 border-t border-gray-100">
             <LangToggle />
           </div>

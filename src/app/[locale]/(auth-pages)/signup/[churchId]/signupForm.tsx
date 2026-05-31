@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { GrCircleAlert } from "react-icons/gr";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { signupAction } from "./signupAction";
 
 const signupSchema = z.object({
@@ -36,12 +36,10 @@ const signupSchema = z.object({
 
 type TSignupSchema = z.infer<typeof signupSchema>;
 
-export default function SignupForm({ churchData }: { churchData: string }) {
-  const router = useRouter();
+export default function SignupForm({ churchData }: { churchData: any }) {
   const [isVisible, setIsVisible] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const {
@@ -61,7 +59,7 @@ export default function SignupForm({ churchData }: { churchData: string }) {
         password: data.password,
         phone: data.phone,
         birthdate: new Date(data.birthdate),
-        churchId,
+        churchId: churchData.id,
       });
 
       if (response.success) {
@@ -94,19 +92,22 @@ export default function SignupForm({ churchData }: { churchData: string }) {
       </div>
     );
   }
-
   return (
     <div className="w-full max-w-md mx-auto p-4">
-      {churchData.church_logo && (
+      {churchData.logo && (
         <>
           <img
-            className="max-w-[125px] mx-auto mb-8"
-            src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${churchData.church_logo}?t=${Date.now()}`}
+            className="max-w-[275px] mx-auto mb-8"
+            src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${churchData.logo}?t=${Date.now()}`}
             alt=""
           />
         </>
       )}
-      <h2 className="text-xl font-semibold mb-2">Crea un account</h2>
+      <h2 className="text-2xl font-semibold mb-2 text-center">
+        Crea un account con
+        <br />
+        <span className="underline">{churchData.church_name}</span>
+      </h2>
       <p className="text-sm text-gray-600 mb-6">
         Hai già un account?{" "}
         <Link href="/login" className="text-sm text-blue-600 underline">

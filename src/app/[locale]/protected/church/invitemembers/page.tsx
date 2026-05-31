@@ -45,7 +45,7 @@ export default function InviteUsersModalComponent() {
   const [statusFilter, setStatusFilter] = useState<string | "all">("all");
 
   useEffect(() => {
-    if (!loading && userData.loggedIn) {
+    if (!loading && userData?.loggedIn) {
       getInvitesByChurch(userData.church_id).then((fetchedEventTypes) => {
         console.log("fetchedEventTypes", fetchedEventTypes);
         setInvitesSent(fetchedEventTypes);

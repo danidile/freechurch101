@@ -32,8 +32,6 @@ import {
 import { IconType } from "react-icons";
 import React from "react";
 
-type Category = "personalizzazione" | "musica";
-
 export default function PersonalizeChurchComponent() {
   const { userData } = useUserStore();
   const [updateLogo, setUpdateLogo] = useState(false);

@@ -9,5 +9,5 @@ export const getChurchLogo = async (churchId: string) => {
     .select("*")
     .eq("id", churchId);
 
-  return church;
+  return church[0] || null;
 };
