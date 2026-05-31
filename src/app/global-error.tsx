@@ -40,7 +40,7 @@ export default function GlobalError({
         generic error message. */}
         <div className="container-sub">
           <p>Errore</p>
-          <Link href={"/"}>Clicca qui per ritornare alla Homepage</Link>
+          <Link  href={"/it/"}>Clicca qui per ritornare alla Homepage</Link>
         </div>
         {/* <NextError statusCode={0} /> */}
       </body>

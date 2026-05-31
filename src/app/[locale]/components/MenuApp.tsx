@@ -33,7 +33,7 @@ export default function MenuApp({
         value={{ size: "1.2rem", className: "app-menu-icons" }}
       >
         <div className="app-menu">
-          {userdata.loggedIn && (
+          {userdata?.loggedIn && (
             <>
               <TransitionLink href="/songs" className="pwaiconsmenu">
                 <MdOutlineLibraryMusic
@@ -51,7 +51,7 @@ export default function MenuApp({
             </>
           )}
 
-          {!userdata.loggedIn && (
+          {!userdata?.loggedIn && (
             <>
               <TransitionLink href="/italiansongs" className="pwaiconsmenu">
                 <MdOutlineLibraryMusic
@@ -70,7 +70,7 @@ export default function MenuApp({
               </TransitionLink>
             </>
           )}
-          {userdata.loggedIn && (
+          {userdata?.loggedIn && (
             <TransitionLink href="/setlist" className="pwaiconsmenu">
               <LuCalendarRange
                 color={parameter === "setlist" ? "black" : "#888888"}
@@ -86,7 +86,7 @@ export default function MenuApp({
             </TransitionLink>
           )}
 
-          {userdata.loggedIn && (
+          {userdata?.loggedIn && (
             <>
               <TransitionLink href="/notifications" className="pwaiconsmenu">
                 <LuInbox
@@ -110,7 +110,7 @@ export default function MenuApp({
               </TransitionLink>
             </>
           )}
-          {!userdata.loggedIn && (
+          {!userdata?.loggedIn && (
             <>
               <TransitionLink href="/" className="pwaiconsmenu">
                 <BiCompass color={parameter === "" ? "black" : "#888888"} />
