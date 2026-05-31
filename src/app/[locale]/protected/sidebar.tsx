@@ -103,7 +103,7 @@ export default function Sidebar() {
   const [TeamLeader, setTeamLeader] = useState<boolean>(false);
   useEffect(() => {
     const fetchLeaderStatus = async () => {
-      if (!loading && userData.loggedIn) {
+      if (!loading && userData?.loggedIn) {
         const leaderStatus = await isTeamLeaderClient();
         setTeamLeader(leaderStatus.isLeader);
       }
@@ -129,7 +129,7 @@ export default function Sidebar() {
         href: "/protected/blockouts",
         icon: <LuCalendarOff size={iconSize} />,
         text: "Blocca Date",
-        show: !!userData.church_id,
+        show: !!userData?.church_id,
       },
       {
         href: "/artists",
@@ -143,27 +143,27 @@ export default function Sidebar() {
         href: "/setlist",
         icon: <LuCalendarRange size={iconSize} />,
         text: "Eventi",
-        show: !!userData.church_id,
+        show: !!userData?.church_id,
       },
       {
         href: "/songs",
         icon: <MdOutlineLibraryMusic size={iconSize} />,
         text: "Canzoni",
-        show: !!userData.church_id,
+        show: !!userData?.church_id,
       },
       {
         href: "/protected/teams",
         icon: <FaAsterisk size={iconSize} />,
         text: "Team",
-        show: !!userData.church_id,
+        show: !!userData?.church_id,
       },
       {
         href: "/protected/church",
         icon: <PiChurch size={iconSize} />,
         text: "Membri Chiesa",
         show:
-          !!userData.church_id &&
-          (hasPermission(userData.role as Role, "read:churchmembers") ||
+          !!userData?.church_id &&
+          (hasPermission(userData?.role as Role, "read:churchmembers") ||
             TeamLeader),
       },
       {
@@ -171,7 +171,7 @@ export default function Sidebar() {
         icon: <LuChurch size={iconSize} />,
         text: "Personalizza Chiesa",
         show:
-          hasPermission(userData.role as Role, "personalize:church") ||
+          hasPermission(userData?.role as Role, "personalize:church") ||
           TeamLeader,
       },
     ],
@@ -203,14 +203,14 @@ export default function Sidebar() {
         href: "/admin/logs",
         icon: <LuLogs size={iconSize} />,
         text: "Logs",
-        show: userData.email === "danidile94@gmail.com",
+        show: userData?.email === "danidile94@gmail.com",
       },
     ],
   };
   return (
     <>
       <div className="sidebar-ul">
-        {userData.church_logo && (
+        {userData?.church_logo && (
           <>
             <img
               className="max-w-[125px] mx-auto mb-8"
@@ -224,11 +224,11 @@ export default function Sidebar() {
             <DropdownTrigger>
               <button className="w-full text-left p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
                 <User
-                  name={`${userData.name} ${userData.lastname}`}
-                  description={userData.email}
+                  name={`${userData?.name} ${userData?.lastname}`}
+                  description={userData?.email}
                   // You can use a generic avatar or a real one if you have it
                   avatarProps={{
-                    src: userData.avatar_url
+                    src: userData?.avatar_url
                       ? `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}?t=${Date.now()}`
                       : "/images/userAvatarDefault.jpg",
 
