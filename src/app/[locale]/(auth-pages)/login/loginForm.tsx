@@ -82,6 +82,7 @@ export default function LoginForm() {
           </label>
           <input
             {...register("email")}
+            autoComplete="email"
             required
             type="email"
             id="email"
@@ -102,6 +103,7 @@ export default function LoginForm() {
               required
               type={isVisible ? "text" : "password"}
               id="password"
+              autoComplete="current-password"
               name="password"
               placeholder="password..."
               minLength={8}

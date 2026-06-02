@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { updateAccountAction } from "./updateAccountAction";
 import { GrCircleAlert } from "react-icons/gr";
+import { useRouter } from "@/i18n/navigation";
+
 import {
   FaAsterisk,
   FaCheck,
@@ -27,7 +29,7 @@ import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 import { Spinner } from "@heroui/spinner";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@heroui/button";
-import { MdFamilyRestroom } from "react-icons/md";
+import { MdFamilyRestroom, MdOutlineLogout } from "react-icons/md";
 import NotificationPage from "@/app/[locale]/notifications/page";
 import { HeaderCL } from "@/app/[locale]/components/header-comp";
 import TeamsPageComponent from "../../teams/TeamsPageComponent";
@@ -36,6 +38,7 @@ import PersonalizeChurchComponent from "../../church/personalize/page";
 import TicketSystem from "../../tickets/page";
 import LogsPage from "@/app/[locale]/admin/logs/page";
 import FamilyPage from "../family/page";
+import logoutAction from "@/app/[locale]/components/logOutAction";
 
 type Section =
   | "personal"
@@ -47,7 +50,8 @@ type Section =
   | "personalize"
   | "tickets"
   | "logs"
-  | "teams";
+  | "teams"
+  | "logout";
 
 export default function AccountPage() {
   const { userData, loading, fetchUser } = useUserStore();
@@ -55,6 +59,7 @@ export default function AccountPage() {
   const currentDate = new Date();
   const nextDate = new Date(currentDate);
   nextDate.setDate(currentDate.getDate() - 1);
+  const router = useRouter();
 
   const [activeSection, setActiveSection] = useState<Section>("personal");
   const [isEditing, setIsEditing] = useState(false);
@@ -105,8 +110,18 @@ export default function AccountPage() {
     setIsEditing(false);
     setError("");
   };
+  async function logouter() {
+    await logoutAction();
+    await fetchUser();
+    router.push("/protected/dashboard/account");
+  }
 
-  const navItems: { key: Section; label: string; icon: React.ReactNode }[] = [
+  const navItems: {
+    key: Section;
+    label: string;
+    icon: React.ReactNode;
+    action?: () => void;
+  }[] = [
     {
       key: "personal",
       label: "Info personali",
@@ -131,6 +146,12 @@ export default function AccountPage() {
       key: "tickets",
       label: "Support Tickets",
       icon: <FaRegQuestionCircle size={16} />,
+    },
+    {
+      key: "logout",
+      label: "Esci",
+      icon: <MdOutlineLogout size={16} />,
+      action: logouter, // ← was: () => { console.log(...) }
     },
   ];
   const initials =
@@ -202,10 +223,14 @@ export default function AccountPage() {
                 <button
                   key={item.key}
                   onClick={() => {
-                    setActiveSection(item.key);
-                    setIsEditing(false);
-                    setError("");
-                    setSuccess(false);
+                    if (item.action) {
+                      item.action();
+                    } else {
+                      setActiveSection(item.key);
+                      setIsEditing(false);
+                      setError("");
+                      setSuccess(false);
+                    }
                   }}
                   className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium flex-shrink-0 transition-colors ${
                     activeSection === item.key
@@ -232,10 +257,14 @@ export default function AccountPage() {
                 <button
                   key={item.key}
                   onClick={() => {
-                    setActiveSection(item.key);
-                    setIsEditing(false);
-                    setError("");
-                    setSuccess(false);
+                    if (item.action) {
+                      item.action();
+                    } else {
+                      setActiveSection(item.key);
+                      setIsEditing(false);
+                      setError("");
+                      setSuccess(false);
+                    }
                   }}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-left transition-colors ${
                     activeSection === item.key
