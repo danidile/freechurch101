@@ -40,9 +40,9 @@ import LogsPage from "@/app/[locale]/admin/logs/page";
 import FamilyPage from "../family/page";
 import logoutAction from "@/app/[locale]/components/logOutAction";
 
+// "personal" | "family" | "notifications" collapsed into "profile"
 type Section =
-  | "personal"
-  | "family"
+  | "profile"
   | "church"
   | "security"
   | "notifications"
@@ -55,13 +55,9 @@ type Section =
 
 export default function AccountPage() {
   const { userData, loading, fetchUser } = useUserStore();
-  console.log("AccountPage userData:", userData); // ✅ Log userData to verify it's being fetched correctly
-  const currentDate = new Date();
-  const nextDate = new Date(currentDate);
-  nextDate.setDate(currentDate.getDate() - 1);
   const router = useRouter();
 
-  const [activeSection, setActiveSection] = useState<Section>("personal");
+  const [activeSection, setActiveSection] = useState<Section>("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -110,6 +106,7 @@ export default function AccountPage() {
     setIsEditing(false);
     setError("");
   };
+
   async function logouter() {
     await logoutAction();
     await fetchUser();
@@ -123,12 +120,10 @@ export default function AccountPage() {
     action?: () => void;
   }[] = [
     {
-      key: "personal",
-      label: "Info personali",
+      key: "profile",
+      label: "Profilo",
       icon: <LuUser size={16} />,
     },
-    { key: "family", label: "Famiglia", icon: <MdFamilyRestroom size={16} /> },
-    { key: "notifications", label: "Notifiche", icon: <LuInbox size={16} /> },
     { key: "teams", label: "Teams", icon: <FaAsterisk size={16} /> },
     {
       key: "blockouts",
@@ -151,9 +146,10 @@ export default function AccountPage() {
       key: "logout",
       label: "Esci",
       icon: <MdOutlineLogout size={16} />,
-      action: logouter, // ← was: () => { console.log(...) }
+      action: logouter,
     },
   ];
+
   const initials =
     `${userData?.name?.[0] || ""}${userData?.lastname?.[0] || ""}`.toUpperCase();
   const SUPABASE_URL =
@@ -173,6 +169,7 @@ export default function AccountPage() {
         <Spinner size="lg" />
       </div>
     );
+
   return (
     <div className="w-full mx-auto px-4 p-2 sm:p-12">
       {/* Header */}
@@ -194,7 +191,10 @@ export default function AccountPage() {
           <h1 className="text-xl font-semibold text-gray-900">
             {userData?.name} {userData?.lastname}
           </h1>
-          <p className="text-sm text-gray-500">{userData?.email}</p>
+          <div className="flex items-center gap-4 mt-1">
+            <p className="text-sm text-gray-500">{userData?.email}</p>
+            <p className="text-sm text-gray-500">{userData?.phone}</p>
+          </div>
           <div className="flex items-center gap-2 mt-1">
             <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600">
               {userData?.role || "Membro"}
@@ -212,7 +212,7 @@ export default function AccountPage() {
         {/* Sidebar nav */}
         <aside className="md:w-52 flex-shrink-0 bg-gray-50 rounded-xl p-1 overflow-hidden">
           {/* Mobile: horizontal scrollable pills */}
-          <nav className="flex md:hidden gap-1 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 bg-gra">
+          <nav className="flex md:hidden gap-1 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
             {navItems.map((item) => {
               if (
                 item.key === "logs" &&
@@ -282,114 +282,33 @@ export default function AccountPage() {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          {/* ── PERSONAL ── */}
-          {activeSection === "personal" && (
-            <SectionCard
-              title="Informazioni personali"
-              isEditing={isEditing}
-              saving={saving}
-              onEdit={() => setIsEditing(true)}
-              onSave={handleSave}
-              onCancel={handleCancel}
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
-                    Nome:
-                  </label>
-
-                  <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
-                    <span className="text-gray-400">
-                      <LuUser size={14} />
-                    </span>
-                    <span>
-                      {}
-                      {userData.name} {userData.lastname}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
-                    Cognome:
-                  </label>
-
-                  <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
-                    <span className="text-gray-400">
-                      <LuUser size={14} />
-                    </span>
-                    <span>
-                      {}
-                      {userData.lastname}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
-                    Email:
-                  </label>
-
-                  <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
-                    <span className="text-gray-400">
-                      <LuMail size={14} />
-                    </span>
-                    <span>
-                      {}
-                      {userData.email}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
-                    Telefono:
-                  </label>
-
-                  <div className="flex items-center gap-2 text-sm text-gray-800 py-1.5">
-                    <span className="text-gray-400">
-                      <LuPhone size={14} />
-                    </span>
-                    <span>
-                      {}
-                      {userData.phone}
-                    </span>
-                  </div>
-                </div>
+          {/* ── PROFILE (personal + family + notifications) ── */}
+          {activeSection === "profile" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              {/* Left column: notifications */}
+              <div className="flex flex-col gap-6">
+                <SectionCard
+                  title="Notifiche"
+                  description="Tutti gli aggiornamenti e gli avvisi che riguardano la tua attività."
+                  icon={LuInbox}
+                >
+                  <NotificationPage />
+                </SectionCard>
               </div>
 
-              {error && <ErrorBanner message={error} />}
-              {success && (
-                <SuccessBanner message="Profilo aggiornato con successo." />
-              )}
-            </SectionCard>
+              {/* Right column: family */}
+              <SectionCard
+                title="Famiglia"
+                description="Gestisci le informazioni relative alla tua famiglia."
+                icon={MdFamilyRestroom}
+              >
+                <div className="w-full mx-auto">
+                  <FamilyPage />
+                </div>
+              </SectionCard>
+            </div>
           )}
-          {/* ── Family ── */}
-          {activeSection === "family" && (
-            <SectionCard
-              title="Famiglia"
-              description="Gestisci le informazioni relative alla tua famiglia."
-              icon={MdFamilyRestroom}
-            >
-              <div className="w-full max-w-[1100px] mx-auto">
-                {" "}
-                <FamilyPage />
-              </div>
-            </SectionCard>
-          )}
-          {/* ── Notifications ── */}
-          {activeSection === "notifications" && (
-            <SectionCard
-              title="Notifiche"
-              description="Tutti gli aggiornamenti e gli avvisi che riguardano la tua attività."
-              icon={LuInbox}
-            >
-              <NotificationPage />
-              {error && <ErrorBanner message={error} />}
-              {success && (
-                <SuccessBanner message="Contatti aggiornati con successo." />
-              )}
-            </SectionCard>
-          )}
+
           {/* ── Blockouts ── */}
           {activeSection === "blockouts" && (
             <SectionCard
@@ -398,27 +317,21 @@ export default function AccountPage() {
               icon={LuCalendarOff}
             >
               <BlockDatesComponent />
-              {error && <ErrorBanner message={error} />}
-              {success && (
-                <SuccessBanner message="Contatti aggiornati con successo." />
-              )}
             </SectionCard>
           )}
 
-          {/* ── Blockouts ── */}
+          {/* ── Personalize ── */}
           {activeSection === "personalize" && (
             <SectionCard
               title="Personalizza Chiesa"
-              description="Gestisci i periodi in cui non sarai disponibile per le turnazioni."
+              description="Gestisci le impostazioni visive della tua chiesa."
               icon={LuChurch}
             >
               <PersonalizeChurchComponent />
-              {error && <ErrorBanner message={error} />}
-              {success && (
-                <SuccessBanner message="Contatti aggiornati con successo." />
-              )}
             </SectionCard>
           )}
+
+          {/* ── Teams ── */}
           {activeSection === "teams" && (
             <SectionCard
               title="Teams"
@@ -434,13 +347,10 @@ export default function AccountPage() {
                 </Link>
               )}
               <TeamsPageComponent />
-              {error && <ErrorBanner message={error} />}
-              {success && (
-                <SuccessBanner message="Contatti aggiornati con successo." />
-              )}
             </SectionCard>
           )}
-          {/* ── CHURCH ── */}
+
+          {/* ── Church ── */}
           {activeSection === "church" && (
             <SectionCard title="Chiesa" hideActions>
               <div className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50">
@@ -472,18 +382,10 @@ export default function AccountPage() {
                   </span>
                 )}
               </div>
-
-              {userData?.teams && userData.teams.length > 0 && (
-                <div className="mt-5">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                    Team
-                  </p>
-                  <div className="flex flex-col gap-2"></div>
-                </div>
-              )}
             </SectionCard>
           )}
-          {/* ── SECURITY ── */}
+
+          {/* ── Security ── */}
           {activeSection === "security" && (
             <SectionCard title="Sicurezza" hideActions>
               <div className="flex flex-col gap-3">
@@ -509,17 +411,13 @@ export default function AccountPage() {
           {activeSection === "logs" && (
             <SectionCard title="Logs Dashboard" icon={LuLogs}>
               <LogsPage />
-              {error && <ErrorBanner message={error} />}
-              {success && (
-                <SuccessBanner message="Contatti aggiornati con successo." />
-              )}
             </SectionCard>
           )}
 
           {/* ── Tickets ── */}
           {activeSection === "tickets" && (
             <SectionCard
-              title="Admin Dashboard"
+              title="Support Tickets"
               description={`Benvenuto, ${userData.name}`}
               icon={FaRegQuestionCircle}
             >
@@ -538,13 +436,11 @@ function SectionCard({
   title,
   icon,
   description,
-
   children,
 }: {
   title: string;
   icon?: IconType;
   description?: string;
-
   children: React.ReactNode;
   isEditing?: boolean;
   saving?: boolean;
@@ -590,24 +486,6 @@ function SecurityRow({
           {action}
         </a>
       )}
-    </div>
-  );
-}
-
-function ErrorBanner({ message }: { message: string }) {
-  return (
-    <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-100 mt-4">
-      <GrCircleAlert size={14} />
-      <p>{message}</p>
-    </div>
-  );
-}
-
-function SuccessBanner({ message }: { message: string }) {
-  return (
-    <div className="flex items-center gap-2 rounded-lg bg-green-50 p-3 text-sm text-green-700 border border-green-100 mt-4">
-      <FaCheck size={12} />
-      <p>{message}</p>
     </div>
   );
 }
