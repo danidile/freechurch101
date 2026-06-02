@@ -1,6 +1,13 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 export default function FooterCL() {
+  const [isStandalone, setIsStandalone] = useState(false);
+  useEffect(() => {
+    setIsStandalone(window.matchMedia("(display-mode: standalone)").matches);
+  }, []);
+  if (isStandalone) return null;
   return (
     <footer className="bg-white w-full">
       <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left border-t border-slate-200">
@@ -16,13 +23,13 @@ export default function FooterCL() {
             <p>Privacy</p>
           </a>
           <a href="/terms" className="hover:text-indigo-600 transition-colors">
-             <p>Termini</p>
+            <p>Termini</p>
           </a>
           <a
             href="mailto:info@churchlab.com"
             className="hover:text-indigo-600 transition-colors"
           >
-             <p>Supporto</p>
+            <p>Supporto</p>
           </a>
         </div>
       </div>

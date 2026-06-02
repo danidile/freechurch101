@@ -173,7 +173,7 @@ export default function AccountPage() {
   return (
     <div className="w-full mx-auto px-4 p-2 sm:p-12">
       {/* Header */}
-      <div className="flex items-center gap-5 mb-8 pb-8 border-b border-gray-100">
+      <div className="flex items-center gap-5 mb-8 mt-4 pb-8 border-b border-gray-100">
         <div className="relative">
           {avatarSrc ? (
             <img
@@ -210,7 +210,7 @@ export default function AccountPage() {
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar nav */}
-        <aside className="md:w-52 flex-shrink-0 bg-gray-50 rounded-xl p-1 overflow-hidden">
+        <aside className="md:w-52 flex-shrink-0 rounded-xl p-1 overflow-hidden">
           {/* Mobile: horizontal scrollable pills */}
           <nav className="flex md:hidden gap-1 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
             {navItems.map((item) => {
