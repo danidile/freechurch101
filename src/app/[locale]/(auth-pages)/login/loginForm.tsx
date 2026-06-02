@@ -31,7 +31,7 @@ export default function LoginForm() {
   });
 
   useEffect(() => {
-    if (!loading && userData.loggedIn && userData.fetched) {
+    if (!loading && userData && userData?.loggedIn && userData?.fetched) {
       router.push("/protected/dashboard/account");
     }
   }, [loading, userData]);

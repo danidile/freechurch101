@@ -20,6 +20,7 @@ import { statusColorMap, statusMap } from "@/constants";
 import { Chip } from "@heroui/chip";
 import { FaRegCheckCircle, FaRegClock } from "react-icons/fa";
 import { FaRegCircleXmark } from "react-icons/fa6";
+import { Link } from "@/i18n/navigation";
 
 export default function PeopleIdComponent({
   params,
@@ -164,15 +165,14 @@ export default function PeopleIdComponent({
                     <p className="text-gray-800 mb-4 capitalize">
                       Team: {setlist.team_name}
                     </p>
-                    <a
+                    <Link
                       href={`/setlist/${setlist.setlist_id}`}
                       className="text-blue-600 font-semibold hover:underline"
-                      target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Vai alla pagina evento ${setlist.event_title}`}
                     >
                       Pagina evento →
-                    </a>
+                    </Link>
                   </li>
                 );
               })}

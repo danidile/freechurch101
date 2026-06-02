@@ -26,8 +26,8 @@ export default function ViewFullSetListComponent({
       </h6>
       <p className="capitalize">{readableDate}</p>
       <div className="song-presentation-container">
-        <div className="fixed top-[50%]  right-1 sm:right-12">
-          <CustomizeWidget></CustomizeWidget>
+        <div className="fixed bottom-24 right-4 z-[9999]">
+          <CustomizeWidget />
         </div>
         {setlistsongs
           .sort((a, b) => a.order - b.order)

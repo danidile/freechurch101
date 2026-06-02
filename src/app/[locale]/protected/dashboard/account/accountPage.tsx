@@ -554,7 +554,7 @@ function SectionCard({
   hideActions?: boolean;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6">
+    <div className="bg-white rounded-xl md:border md:border-gray-100 md:p-6">
       <div className="flex items-center justify-between">
         <HeaderCL icon={icon} title={title} description={description} />
       </div>

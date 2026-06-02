@@ -28,7 +28,7 @@ export default function SetListListComponent() {
   const [viewMode, setViewMode] = useState<string>("calendar");
   const [setlists, setSetlists] = useState<any[] | null>(null);
   useEffect(() => {
-    if (!loading && userData.loggedIn) {
+    if (!loading && userData?.loggedIn) {
       getSetListsByChurch(userData.church_id).then(
         (fetchedSetLists: setListT[]) => {
           setSetlists(fetchedSetLists);
@@ -82,7 +82,7 @@ export default function SetListListComponent() {
             <div className="flex flex-row justify-start items-center gap-2">
               <p>Crea nuovo evento:</p>
 
-              {(hasPermission(userData.role as Role, "create:setlists") ||
+              {(hasPermission(userData?.role as Role, "create:setlists") ||
                 TeamLeader) && (
                 <Button
                   isIconOnly

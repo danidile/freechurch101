@@ -1,29 +1,43 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { I18nProvider } from "@react-aria/i18n";
-import { getLocalTimeZone, today, parseDate } from "@internationalized/date";
-import { FaRegTrashAlt } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa6";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { useUserStore } from "@/store/useUserStore";
 import { addBlockoutAction } from "./addBlockoutsAction";
 import { deleteBlockoutAction } from "./deleteBlockoutsAction";
 import { getBlockoutsByUserId } from "@/hooks/GET/getBlockoutsByUserId";
 import { BlockedDate, RangeValueString } from "@/utils/types/types";
 import DateRangePicker from "@/app/[locale]/components/DataRangePicker";
-import { Clock, Trash2 } from "lucide-react";
+import { Button, Chip } from "@heroui/react";
+import { FiPlus } from "react-icons/fi";
 import { LuCalendarOff } from "react-icons/lu";
+import { TbTrash } from "react-icons/tb";
 import ChurchLabLoader from "@/app/[locale]/components/churchLabSpinner";
+
+const formatter = new Intl.DateTimeFormat("it-IT", {
+  weekday: "short",
+  day: "2-digit",
+  month: "long",
+});
+
+function formatDateLocal(date: Date): string {
+  return date.toLocaleDateString("sv-SE");
+}
+
+function calculateDuration(start: Date, end: Date): number {
+  return Math.ceil(Math.abs(end.getTime() - start.getTime()) / 86400000) + 1;
+}
 
 export default function BlockDatesComponent() {
   const { userData, loading } = useUserStore();
-  const [blockedDates, setBlockedDates] = useState<BlockedDate[]>(null);
+  const [blockedDates, setBlockedDates] = useState<BlockedDate[] | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [value, setValue] = useState<{ start: Date | null; end: Date | null }>({
     start: null,
     end: null,
   });
   const [showPicker, setShowPicker] = useState(false);
-  const [alreadySubmitting, setAlreadySubmitting] = useState<boolean>(false);
+  const [alreadySubmitting, setAlreadySubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchEverything() {
@@ -42,30 +56,13 @@ export default function BlockDatesComponent() {
     fetchEverything();
   }, [userData.loggedIn, loading, refreshKey]);
 
-  const formatter = new Intl.DateTimeFormat("it-IT", {
-    weekday: "short",
-    day: "2-digit",
-    month: "long",
-  });
-  function formatDateLocal(date: Date): string {
-    return date.toLocaleDateString("sv-SE"); // Outputs in YYYY-MM-DD format
-  }
   const addBlock = async () => {
     setAlreadySubmitting(true);
-    console.log(value.start, value.end);
     if (value.start && value.end) {
-      const newBlock: BlockedDate = {
-        id: crypto.randomUUID(),
-        start: value.start,
-        end: value.end,
-      };
-
       const sanitized: RangeValueString = {
-        start: formatDateLocal(newBlock.start),
-        end: formatDateLocal(newBlock.end),
+        start: formatDateLocal(value.start),
+        end: formatDateLocal(value.end),
       };
-      console.log("sanitized", sanitized);
-
       await addBlockoutAction({ blockedDates: sanitized });
       setRefreshKey((prev) => prev + 1);
     }
@@ -74,86 +71,120 @@ export default function BlockDatesComponent() {
 
   const deleteBlock = async (blockId: string) => {
     await deleteBlockoutAction({ blockId });
-    setBlockedDates((prev) => prev.filter((d) => d.id !== blockId));
+    setBlockedDates((prev) => prev?.filter((d) => d.id !== blockId) ?? null);
     setRefreshKey((prev) => prev + 1);
   };
-  const calculateDuration = (start: Date, end: Date) => {
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    return diffDays;
-  };
+
+  const todayStr = formatDateLocal(new Date()); // YYYY-MM-DD in local time
+
+  const upcomingDates =
+    blockedDates?.filter((b) => formatDateLocal(b.end) >= todayStr) ?? null;
+
+  const totalDays =
+    upcomingDates?.reduce(
+      (sum, b) => sum + calculateDuration(b.start, b.end),
+      0,
+    ) ?? 0;
+
   return (
-    <div className="max-w-lg w-full mx-auto p-2 bg-white min-h-screen">
+    <div className="flex flex-col gap-4 w-full p-2 max-w-xl mx-auto">
       <I18nProvider locale="it-IT-u-ca-gregory">
-        <div className="mb-6">
-          {blockedDates && blockedDates.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <LuCalendarOff
-                className="w-12 h-12 text-gray-800 mx-auto mb-4"
-                strokeWidth={1}
-              />
-              <h3 className="text-lg font-medium text-gray-700 mb-2">
+        {/* Stats Row */}
+        {upcomingDates && (
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-default-100 rounded-xl p-3">
+              <p className="text-xs text-default-500 mb-1">Blocchi attivi</p>
+              <p className="text-2xl font-medium">{upcomingDates.length}</p>
+            </div>
+            <div className="bg-default-100 rounded-xl p-3">
+              <p className="text-xs text-default-500 mb-1">Giorni bloccati</p>
+              <p className="text-2xl font-medium">{totalDays}</p>
+            </div>
+          </div>
+        )}
+
+        {/* List */}
+        {!blockedDates ? (
+          <ChurchLabLoader height="200px" />
+        ) : upcomingDates!.length === 0 && !showPicker ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-14 text-default-400 border border-divider rounded-xl">
+            <LuCalendarOff size={30} strokeWidth={1.2} />
+            <div className="text-center">
+              <p className="text-sm font-medium text-default-600">
                 Nessuna data bloccata
-              </h3>
-              <p className="text-gray-500">
+              </p>
+              <p className="text-xs text-default-400 mt-1">
                 Aggiungi il tuo primo blocco di date
               </p>
             </div>
-          ) : (
-            <div className="text-center flex flex-col gap-2  p-2 sm:p-4 bg-gray-50 rounded-lg">
-              {blockedDates ? (
-                blockedDates?.map((date) => (
+          </div>
+        ) : (
+          upcomingDates!.length > 0 && (
+            <div className="border border-divider rounded-xl overflow-hidden">
+              {upcomingDates!.map((date, idx) => {
+                const dur = calculateDuration(date.start, date.end);
+                return (
                   <div
                     key={date.id}
-                    className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    className={`flex items-center justify-between px-4 py-3 hover:bg-default-50 transition-colors ${
+                      idx < upcomingDates!.length - 1
+                        ? "border-b border-divider"
+                        : ""
+                    }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Clock className="w-5 h-5 text-gray-400 hidden sm:block" />
-                      <div>
-                        <p className="capitalize font-medium text-gray-900 text-left">
-                          {" "}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center bg-danger-50 text-danger-700">
+                        <LuCalendarOff size={16} strokeWidth={1.5} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-default-900 capitalize truncate">
                           {formatter.format(date.start)} →{" "}
                           {formatter.format(date.end)}
                         </p>
-                        <p className=" text-left text-sm text-gray-500">
-                          {calculateDuration(date.start, date.end)} giorn
-                          {calculateDuration(date.start, date.end) !== 1
-                            ? "i"
-                            : "o"}
+                        <p className="text-xs text-default-500 mt-0.5">
+                          {dur} giorn{dur !== 1 ? "i" : "o"}
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={() => deleteBlock(date.id)}
-                      className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                      className="w-8 h-8 rounded-lg border border-divider flex items-center justify-center text-default-400 hover:bg-danger-50 hover:text-danger-600 hover:border-danger-200 transition-colors flex-shrink-0"
                       title="Elimina blocco"
+                      aria-label={`Elimina blocco dal ${formatter.format(date.start)}`}
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <TbTrash size={15} />
                     </button>
                   </div>
-                ))
-              ) : (
-                <ChurchLabLoader height="300px" />
-              )}
-            </div>
-          )}
-        </div>
+                );
+              })}
 
-        {!showPicker && (
-          <div className="flex justify-center items-center">
-            <button
-              onClick={() => setShowPicker(true)}
-              className="mt-4 bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-lg"
-              disabled={showPicker}
-            >
-              <FaPlus className="inline-block mr-2" />
-              Aggiungi blocco
-            </button>
-          </div>
+              <div className="px-4 py-2 bg-default-50 border-t border-divider text-xs text-default-400">
+                {upcomingDates!.length} blocch
+                {upcomingDates!.length !== 1 ? "i" : "o"} attiv
+                {upcomingDates!.length !== 1 ? "i" : "o"}
+              </div>
+            </div>
+          )
         )}
-        {/* DateRangePicker & Save Button */}
-        {showPicker && (
-          <div className="mx-auto mt-1 text-center w-[500px] max-w-[95vw] ">
+
+        {/* Add Button / Picker */}
+        {!showPicker ? (
+          <div className="flex justify-start">
+            <Button
+              size="sm"
+              variant="flat"
+              color="default"
+              startContent={<FiPlus size={13} />}
+              onPress={() => setShowPicker(true)}
+            >
+              Aggiungi blocco
+            </Button>
+          </div>
+        ) : (
+          <div className="border border-divider rounded-xl p-4">
+            <p className="text-xs font-medium text-default-500 uppercase tracking-wide mb-3">
+              Nuovo blocco date
+            </p>
             <DateRangePicker
               startDate={value.start}
               endDate={value.end}
@@ -164,25 +195,32 @@ export default function BlockDatesComponent() {
               minDate={today(getLocalTimeZone()).toDate(getLocalTimeZone())}
               disabledRanges={blockedDates}
             />
-            {value.start && (
-              <button
-                onClick={async () => {
-                  await addBlock();
-                  setShowPicker(false); // hide picker after save
+            <div className="flex gap-2 justify-end mt-3">
+              <Button
+                size="sm"
+                variant="flat"
+                color="default"
+                onPress={() => {
+                  setShowPicker(false);
+                  setValue({ start: null, end: null });
                 }}
-                className={`max-w-[300px] mx-auto button-style w-full ${alreadySubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
-                disabled={alreadySubmitting}
               >
-                {alreadySubmitting ? (
-                  <div
-                    className="h-6 mx-auto w-6 animate-spin rounded-full border-4 border-black border-t-gray-200"
-                    aria-label="Loading..."
-                  />
-                ) : (
-                  <> Salva</>
-                )}
-              </button>
-            )}
+                Annulla
+              </Button>
+              <Button
+                size="sm"
+                variant="solid"
+                color="primary"
+                isDisabled={!value.start || !value.end || alreadySubmitting}
+                isLoading={alreadySubmitting}
+                onPress={async () => {
+                  await addBlock();
+                  setShowPicker(false);
+                }}
+              >
+                Salva blocco
+              </Button>
+            </div>
           </div>
         )}
       </I18nProvider>

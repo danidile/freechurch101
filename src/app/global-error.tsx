@@ -2,7 +2,7 @@
 
 import { logEventClient } from "@/utils/supabase/logClient";
 import { useEffect } from "react";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
 
 export default function GlobalError({
   error,
@@ -40,7 +40,7 @@ export default function GlobalError({
         generic error message. */}
         <div className="container-sub">
           <p>Errore</p>
-          <Link  href={"/it/"}>Clicca qui per ritornare alla Homepage</Link>
+          <Link href={"/"}>Clicca qui per ritornare alla Homepage</Link>
         </div>
         {/* <NextError statusCode={0} /> */}
       </body>

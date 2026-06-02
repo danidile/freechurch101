@@ -373,7 +373,6 @@ function ProfileSearch({
           Cerca per nome
         </label>
         <div className="relative">
-          
           <input
             value={query}
             onChange={(e) => {
@@ -786,7 +785,7 @@ export default function FamilySection() {
     <div className="flex flex-col gap-1">
       {/* Family name row */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {editingName ? (
             <>
               <input
@@ -814,40 +813,29 @@ export default function FamilySection() {
             </>
           ) : (
             <>
-              <span className="text-sm font-semibold text-gray-800">
-                {family.name}
-              </span>
+              <div className="flex items-center gap-2 bg-gray-100 px-2 py-1 rounded-lg">
+                <span className="text-sm font-semibold text-gray-800">
+                  {family.name}
+                </span>
+                {isOwner && (
+                  <button
+                    onClick={() => setEditingName(true)}
+                    className="p-1 rounded-md text-gray-300 hover:text-gray-500 hover:bg-gray-100 transition-colors"
+                  >
+                    <LuPencil size={12} />
+                  </button>
+                )}
+              </div>
               <span className="text-xs text-gray-400">
                 {family.members.length}{" "}
                 {family.members.length === 1 ? "membro" : "membri"}
               </span>
-              {isOwner && (
-                <button
-                  onClick={() => setEditingName(true)}
-                  className="p-1 rounded-md text-gray-300 hover:text-gray-500 hover:bg-gray-100 transition-colors"
-                >
-                  <LuPencil size={12} />
-                </button>
-              )}
             </>
           )}
         </div>
-        {isOwner && !showAdd && (
-          <button
-            onClick={() => {
-              setShowAdd(true);
-              setEditMember(null);
-            }}
-            className=" bg-white flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            <FiUserPlus size={13} /> Aggiungi membro
-          </button>
-        )}
-      </div>
-
+      </div>{" "}
       {error && <ErrorBanner message={error} />}
       {success && <SuccessBanner message="Modifiche salvate con successo." />}
-
       {/* Add drawer */}
       {showAdd && (
         <AddMemberDrawer
@@ -859,7 +847,6 @@ export default function FamilySection() {
           onCancel={() => setShowAdd(false)}
         />
       )}
-
       {/* Edit drawer */}
       {editMember && (
         <EditMemberDrawer
@@ -869,10 +856,8 @@ export default function FamilySection() {
           saving={saving}
         />
       )}
-
       {/* Divider */}
       <div className="border-t border-gray-50 my-2" />
-
       {/* Members */}
       <div className="flex flex-col">
         {head && (
@@ -904,6 +889,19 @@ export default function FamilySection() {
             Nessun membro aggiunto.
           </p>
         )}
+        <div className="flex items-center gap-2 flex-wrap">
+          {isOwner && !showAdd && (
+            <button
+              onClick={() => {
+                setShowAdd(true);
+                setEditMember(null);
+              }}
+              className=" bg-white flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              <FiUserPlus size={13} /> Aggiungi membro
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

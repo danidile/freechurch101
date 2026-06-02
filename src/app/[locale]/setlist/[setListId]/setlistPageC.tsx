@@ -38,7 +38,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     // }
   };
 
-  if (!userData.loggedIn && !loading) {
+  if (!userData?.loggedIn && !loading) {
     return (
       <div className="container-sub">
         <Alert
@@ -55,7 +55,8 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
   if (!setlists.find((s) => s.setlist.id === setListId)) {
     return <ChurchLabLoader />;
   }
-
+  console.log("Setlist data for rendering:");
+  console.log(setlists.find((s) => s.setlist.id === setListId));
   return (
     <div className="container-sub">
       <div className="w-full max-w-[600px]">
@@ -65,20 +66,22 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
           userData={userData}
         />
 
-        {setlists.find((s) => s.setlist.id === setListId).schedule && (
-          <>
-            <SetlistSchedule
-              schedule={
-                setlists.find((s) => s.setlist.id === setListId).schedule
-              }
-            />
-            <div className="center- gap-3 mt-5 mb-5">
-              <Link href={`/setlist/${setListId}/view`}>
-                <Button color="primary">Visualizza set completo</Button>
-              </Link>
-            </div>
-          </>
-        )}
+        {setlists.find((s) => s.setlist.id === setListId).schedule &&
+          setlists.find((s) => s.setlist.id === setListId).schedule.length >
+            0 && (
+            <>
+              <SetlistSchedule
+                schedule={
+                  setlists.find((s) => s.setlist.id === setListId).schedule
+                }
+              />
+              <div className="center- gap-3 mt-5 mb-5">
+                <Link href={`/setlist/${setListId}/view`}>
+                  <Button color="primary">Visualizza set completo</Button>
+                </Link>
+              </div>
+            </>
+          )}
 
         {setlists.find((s) => s.setlist.id === setListId).teams && (
           <SetlistTeams

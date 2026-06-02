@@ -25,7 +25,7 @@ export default function SetlistHeader({
 
   useEffect(() => {
     const fetchLeaderStatus = async () => {
-      if (userData.loggedIn) {
+      if (userData?.loggedIn) {
         const leaderStatus = await isTeamLeaderClient();
         setIsTeamLeader(leaderStatus.isLeader);
       }

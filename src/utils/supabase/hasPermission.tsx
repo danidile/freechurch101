@@ -153,7 +153,7 @@ const ROLES = {
     "send:emails",
 
     // TEAMS
-    "create:team",
+    "create:teams",
     "view:teams",
     "update:teams",
     "delete:teams",

@@ -1,8 +1,7 @@
 import { getSetList } from "@/hooks/GET/getSetList";
 import { getSetListSongs } from "@/hooks/GET/getSetListSongs";
-import { setListT, setListSongT, GroupedMembers } from "@/utils/types/types";
+import { setListT, setListSongT } from "@/utils/types/types";
 import ViewFullSetListComponent from "../viewFullSetListComponent";
-import CustomizeWidget from "@/app/[locale]/components/CustomizeWidget";
 
 export default async function Page({ params }: { params: Promise<any> }) {
   const awaitedParams = await params;

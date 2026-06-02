@@ -23,7 +23,7 @@ export default function SetlistTeams({
 }: SetlistTeamsProps) {
   const [contactMode, setContactMode] = useState(false);
 
-  const showEmail = hasPermission(userData.role as Role, "send:emails");
+  const showEmail = hasPermission(userData?.role as Role, "send:emails");
 
   const date = new Date(setlist.date);
   const readableDate = date.toLocaleString("it-IT", {
