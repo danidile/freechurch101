@@ -122,7 +122,7 @@ export default function MenuApp({
               </TransitionLink>
             </>
           )}
-          <TransitionLink href="/protected/dashboard" className="pwaiconsmenu">
+          <TransitionLink href="/protected/dashboard/account" className="pwaiconsmenu">
             <IoSettingsOutline
               color={parameter === "protected" ? "black" : "#888888"}
             />

@@ -1,4 +1,4 @@
-import AccountPage from "../accountpage/accountPage";
+import AccountPage from "./accountPage";
 import AccountComponent from "./accountComponent";
 
 export default async function Page() {

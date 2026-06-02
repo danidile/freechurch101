@@ -109,7 +109,7 @@ export default function AccountPage() {
   const navItems: { key: Section; label: string; icon: React.ReactNode }[] = [
     {
       key: "personal",
-      label: "Informazioni personali",
+      label: "Info personali",
       icon: <LuUser size={16} />,
     },
     { key: "family", label: "Famiglia", icon: <MdFamilyRestroom size={16} /> },
@@ -189,12 +189,43 @@ export default function AccountPage() {
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar nav */}
-        <aside className="md:w-52 flex-shrink-0">
-          <nav className="flex flex-col gap-1">
+        <aside className="md:w-52 flex-shrink-0 bg-gray-50 rounded-xl p-1 overflow-hidden">
+          {/* Mobile: horizontal scrollable pills */}
+          <nav className="flex md:hidden gap-1 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 bg-gra">
             {navItems.map((item) => {
               if (
                 item.key === "logs" &&
-                userData?.email != "danidile94@gmail.com"
+                userData?.email !== "danidile94@gmail.com"
+              )
+                return null;
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => {
+                    setActiveSection(item.key);
+                    setIsEditing(false);
+                    setError("");
+                    setSuccess(false);
+                  }}
+                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium flex-shrink-0 transition-colors ${
+                    activeSection === item.key
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                  }`}
+                >
+                  {item.icon}
+                  <span className="whitespace-nowrap">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Desktop: vertical sidebar */}
+          <nav className="hidden md:flex flex-col gap-1">
+            {navItems.map((item) => {
+              if (
+                item.key === "logs" &&
+                userData?.email !== "danidile94@gmail.com"
               )
                 return null;
               return (
