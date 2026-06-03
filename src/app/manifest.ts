@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Church Lab",
     short_name: "Church Lab",
     description: "A Progressive Web App built with Next.js",
-    start_url: "/it/protected/dashboard",
+    start_url: "/it/protected/dashboard/account",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#ffffff",
