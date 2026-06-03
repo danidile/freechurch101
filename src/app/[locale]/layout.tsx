@@ -9,7 +9,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiderbarProvider } from "../SiderbarProvider";
 import MenuBar from "./components/navbar";
 import FooterCL from "./components/footer";
-
+import { Analytics } from "@vercel/analytics/next";
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -63,9 +63,11 @@ export default async function LocaleLayout({
           {children}
           {/* <SiderbarProvider></SiderbarProvider> */}
           <SpeedInsights />
+          <Analytics />
         </main>
         <FooterCL />
       </ZustandProviders>
+      <Analytics />
     </NextIntlClientProvider>
   );
 }
