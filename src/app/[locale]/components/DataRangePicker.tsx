@@ -52,7 +52,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   }, []);
 
   const formatDateDisplay = (date: Date | null) => {
-    if (!date) return "Seleziona Data";
+    if (!date) return "Aggiungi blocco";
     return date.toLocaleDateString("it-IT", {
       month: "short",
       day: "numeric",
@@ -169,18 +169,13 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     }
 
     // Range mode
-    if (!startDate) return "Seleziona Data";
+    if (!startDate) return "Aggiungi blocco";
     if (!endDate || formatDateDisplay(endDate) === "Seleziona Data") {
       return formatDateDisplay(startDate);
     }
     return `${formatDateDisplay(startDate)} - ${formatDateDisplay(endDate)}`;
   };
 
-  const getSelectionPrompt = () => {
-    return mode === "single"
-      ? "Seleziona data:"
-      : "Seleziona date inizio e fine:";
-  };
 
   return (
     <div className="w-full mx-auto p-2 rounded-lg ">
@@ -207,15 +202,13 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
     ${showCalendar === "start" ? "after:scale-x-100" : "after:scale-x-0"}
   `}
 >
-  <small className="left-0 absolute font-semibold text-[#52525b]">
-    Data
-  </small>
+
   <button
     type="button"
     onClick={() =>
       setShowCalendar(showCalendar === "start" ? null : "start")
     }
-    className="flex flex-row justify-center w-full border-b-1 px-4 py-3 border-gray-200  text-left font-medium text-gray-900 focus:outline-none"
+    className="flex flex-row justify-left w-full  px-1 py-2 border-gray-200  text-left  focus:outline-none"
   >
     <p>{getDisplayText()}</p>
   </button>
@@ -227,7 +220,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             style={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
           >
             {/* Calendar Header - Make it more spacious on mobile */}
-            <div className="flex items-center justify-between px-2 sm:px-4 py-3 sm:py-4 border-b border-gray-100">
+            <div className="flex items-center justify-between px-2 sm:px-4 sm:py-4 border-b border-gray-100">
               <button
                 type="button"
                 onClick={() => navigateMonth("prev")}

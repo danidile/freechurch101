@@ -6,29 +6,13 @@ import { routing } from "@/i18n/routing";
 const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
-  // extract locale from pathname
-  const pathname = request.nextUrl.pathname;
-  const localeFromPath = pathname.split("/")[1];
-  const locale = routing.locales.includes(localeFromPath as any)
-    ? localeFromPath
-    : routing.defaultLocale;
-
-  // clone the request and add locale header so request.ts can read it
-  const requestWithLocale = new NextRequest(request.url, {
-    headers: new Headers({
-      ...Object.fromEntries(request.headers.entries()),
-      "x-next-intl-locale": locale,
-    }),
-    method: request.method,
-  });
-
-  const intlResponse = intlMiddleware(requestWithLocale);
+  const intlResponse = intlMiddleware(request);
 
   if (intlResponse.status !== 200) {
     return intlResponse;
   }
 
-  const supabaseResponse = await updateSession(requestWithLocale);
+  const supabaseResponse = await updateSession(request);
 
   if (supabaseResponse.status !== 200) {
     return supabaseResponse;

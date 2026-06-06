@@ -2,7 +2,7 @@
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { FiSearch } from "react-icons/fi";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaUserPlus } from "react-icons/fa";
 import { TbChevronRight, TbCrown } from "react-icons/tb";
 import { useUserStore } from "@/store/useUserStore";
 import { Button, Input, Chip } from "@heroui/react";
@@ -112,24 +112,6 @@ export default function TeamsPageComponent() {
 
   return (
     <div className="flex flex-col gap-4 w-full p-2 max-w-4xl mx-auto">
-      {/* Stats Row */}
-      {churchTeams && (
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-default-100 rounded-xl p-3">
-            <p className="text-xs text-default-500 mb-1">Team totali</p>
-            <p className="text-2xl font-medium">{churchTeams.length}</p>
-          </div>
-          <div className="bg-default-100 rounded-xl p-3">
-            <p className="text-xs text-default-500 mb-1">Worship team</p>
-            <p className="text-2xl font-medium">{worshipCount}</p>
-          </div>
-          <div className="bg-default-100 rounded-xl p-3">
-            <p className="text-xs text-default-500 mb-1">Membri totali</p>
-            <p className="text-2xl font-medium">{totalMembers}</p>
-          </div>
-        </div>
-      )}
-
       {/* Search + Filter Toolbar */}
       <div className="flex flex-wrap items-center gap-2">
         <Input
@@ -240,7 +222,38 @@ export default function TeamsPageComponent() {
               </Link>
             );
           })}
+          {hasPermission(userData.role as Role, "create:team") && (
+            <Link
+              href="/protected/teams/create-team"
+              className={`group bg-gray-100 flex items-center justify-between px-4 py-3 transition-colors hover:bg-default-50 
+            border-b border-divider`}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div
+                  className={`w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center bg-gray-200`}
+                  aria-hidden="true"
+                >
+                  <FaUserPlus size={17} />
+                </div>
 
+                <div className="min-w-0">
+                  {/* Name + badge */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-medium text-default-900 group-hover:text-primary transition-colors">
+                      Crea nuovo Team
+                    </span>
+                  </div>
+
+                  {/* Member avatars */}
+                </div>
+              </div>
+
+              <TbChevronRight
+                size={16}
+                className="text-default-300 group-hover:text-primary flex-shrink-0 transition-colors"
+              />
+            </Link>
+          )}
           {/* Footer */}
           <div className="px-4 py-2 bg-default-50 border-t border-divider text-xs text-default-400">
             {filteredTeams.length} di {churchTeams?.length ?? 0} team mostrati

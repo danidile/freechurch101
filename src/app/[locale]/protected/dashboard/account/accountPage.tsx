@@ -58,10 +58,6 @@ export default function AccountPage() {
   const router = useRouter();
 
   const [activeSection, setActiveSection] = useState<Section>("profile");
-  const [isEditing, setIsEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
   const [form, setForm] = useState({
     name: userData?.name || "",
@@ -69,43 +65,6 @@ export default function AccountPage() {
     phone: userData?.phone || "",
     email: userData?.email || "",
   });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setError("");
-    setSuccess(false);
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    setError("");
-    setSuccess(false);
-    try {
-      const res = await updateAccountAction(form);
-      if (res.success) {
-        setSuccess(true);
-        setIsEditing(false);
-        await fetchUser();
-      } else {
-        setError(res.error || "Errore durante il salvataggio.");
-      }
-    } catch {
-      setError("Errore inaspettato.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleCancel = () => {
-    setForm({
-      name: userData?.name || "",
-      lastname: userData?.lastname || "",
-      phone: userData?.phone || "",
-      email: userData?.email || "",
-    });
-    setIsEditing(false);
-    setError("");
-  };
 
   async function logouter() {
     await logoutAction();
@@ -227,9 +186,6 @@ export default function AccountPage() {
                       item.action();
                     } else {
                       setActiveSection(item.key);
-                      setIsEditing(false);
-                      setError("");
-                      setSuccess(false);
                     }
                   }}
                   className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium flex-shrink-0 transition-colors ${
@@ -261,9 +217,6 @@ export default function AccountPage() {
                       item.action();
                     } else {
                       setActiveSection(item.key);
-                      setIsEditing(false);
-                      setError("");
-                      setSuccess(false);
                     }
                   }}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-left transition-colors ${
@@ -338,14 +291,6 @@ export default function AccountPage() {
               description="Tutti gli aggiornamenti e gli avvisi che riguardano la tua attività."
               icon={FaAsterisk}
             >
-              {hasPermission(userData.role as Role, "create:team") && (
-                <Link href="/protected/teams/create-team">
-                  <Button size="sm" className="gap-2">
-                    <FaPlus />
-                    Crea nuovo team
-                  </Button>
-                </Link>
-              )}
               <TeamsPageComponent />
             </SectionCard>
           )}

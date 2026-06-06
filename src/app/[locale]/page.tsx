@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import {
   LuAppWindow,
   LuCalendarRange,
@@ -11,10 +11,13 @@ import { FaAsterisk } from "react-icons/fa";
 import ArtistCards from "./components/ArtistCards";
 import PWAInstallButton from "./components/PWAInstallButton";
 
-export default function Home() {
-  const t = useTranslations("home");
-
-  console.log("hero title:", t("hero.title"));
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
 
   const allFeatures = [
     {

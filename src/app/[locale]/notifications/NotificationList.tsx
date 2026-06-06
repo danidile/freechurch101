@@ -86,8 +86,8 @@ export default function NotificationList() {
     )
   ) {
     return (
-      <div className="text-center text-gray-500 py-10">
-        Nessuna notifica al momento.
+      <div className="text-center  py-2">
+        <p className="text-gray-600"> Nessuna notifica al momento.</p>
       </div>
     );
   }
