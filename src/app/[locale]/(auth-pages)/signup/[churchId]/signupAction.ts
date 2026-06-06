@@ -44,19 +44,22 @@ export async function signupAction(data: {
     };
   }
 
-  const { error: memberError } = await supabase
-    .from("church_members")
-    .insert({
-      user_id: authData.user.id,
-      church_id: data.churchId,
-      status: "pending",
-    });
+  const { data: profileData, error: profileDataError } = await supabase
+    .from("profiles")
+    .update({
+      church: data.churchId,
+      name: data.name,
+      lastname: data.lastname,
+    })
+    .eq("id", authData.user.id)
+    .select();
 
-  if (memberError) {
+  if (profileDataError) {
     return {
       success: false,
       error: "Errore durante l'associazione alla chiesa.",
     };
+    
   }
 
   return { success: true, error: null };
