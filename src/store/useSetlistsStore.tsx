@@ -29,12 +29,12 @@ export const useSetlistsStore = create<SetlistsStore>((set) => ({
 
       set((state) => {
         //CHECK IF THE SETLIST IS ALREADY PRESENT IN THE STATE
-        const exists = state.setlists.some((s) => s.setlist.id === setlist.id);
+        const exists = state.setlists.some((s) => s.setlist?.id === setlist?.id);
 
         if (exists) {
           return {
             setlists: state.setlists.map((s) =>
-              s.setlist.id === setlist.id
+              s.setlist?.id === setlist?.id
                 ? { ...s, setlist } // update only that one
                 : s
             ),
@@ -57,14 +57,14 @@ export const useSetlistsStore = create<SetlistsStore>((set) => ({
       const schedule = await getSetlistSchedule(setListId);
       set((state) => ({
         setlists: state.setlists.map((s) =>
-          s.setlist.id === setlist.id ? { ...s, schedule } : s
+          s.setlist?.id === setlist?.id ? { ...s, schedule } : s
         ),
       }));
       // 3. Fetch teams
       const teams = await getSelectedChurchTeams(setListId);
       set((state) => ({
         setlists: state.setlists.map((s) =>
-          s.setlist.id === setlist.id ? { ...s, teams } : s
+          s.setlist?.id === setlist?.id ? { ...s, teams } : s
         ),
         loading: false,
       }));

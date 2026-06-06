@@ -20,7 +20,7 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
   const { setlists, fetchSetlists } = useSetlistsStore();
 
   useEffect(() => {
-    if (setlists.some((s) => s.setlist.id === setListId)) {
+    if (setlists.some((s) => s.setlist?.id === setListId)) {
       console.log("Setlist is in Store");
     } else {
       console.log("Setlist is NOT in Store");
@@ -52,16 +52,15 @@ export default function SetlistPage({ setListId }: { setListId: string }) {
     );
   }
 
-  if (!setlists.find((s) => s.setlist.id === setListId)) {
+  if (!setlists.find((s) => s.setlist?.id === setListId)) {
     return <ChurchLabLoader />;
   }
   console.log("Setlist data for rendering:");
-  console.log(setlists.find((s) => s.setlist.id === setListId));
   return (
     <div className="container-sub">
       <div className="w-full max-w-[600px]">
         <SetlistHeader
-          setlist={setlists.find((s) => s.setlist.id === setListId).setlist}
+          setlist={setlists.find((s) => s.setlist?.id === setListId).setlist}
           setListId={setListId}
           userData={userData}
         />
