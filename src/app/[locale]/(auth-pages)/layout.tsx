@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { userData, loading } = useUserStore();
 
   useEffect(() => {
-    if (!loading && userData.loggedIn && userData.fetched) {
+    if (!loading && userData?.loggedIn && userData?.fetched) {
       router.push("/protected/dashboard/account"); // Or wherever you want to redirect
     }
   }, [loading, userData]);

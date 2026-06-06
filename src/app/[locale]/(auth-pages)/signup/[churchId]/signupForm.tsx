@@ -98,7 +98,7 @@ export default function SignupForm({ churchData }: { churchData: any }) {
         <>
           <img
             className="max-w-[275px] mx-auto mb-8"
-            src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${churchData.logo}?t=${Date.now()}`}
+            src={`https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/churchlogo/${churchData.logo}`}
             alt=""
           />
         </>
