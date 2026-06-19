@@ -1,0 +1,15 @@
+{
+  "name": "@churchlab/ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ChurchLab UI — kit di componenti React/Tailwind (stile Oltremare).",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "sideEffects": ["*.css"],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "next": ">=14",
+    "tailwindcss": ">=3.4"
+  }
+}

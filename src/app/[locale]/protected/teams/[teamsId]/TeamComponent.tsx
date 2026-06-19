@@ -100,6 +100,7 @@ export default function TeamIdComponent({
       // Set isLeader if user is one of the leaders
       if (leaderIds.includes(userData?.id)) {
         setIsLeader(true);
+        console.log("User is a team leader");
       }
 
       console.log(leaderIds);

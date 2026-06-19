@@ -87,11 +87,9 @@ export default async function fbasicUserData() {
         console.log("Error fetching profile:", teamError.message);
         return userData;
       }
-      const teamsFormatted = teams
-        .filter((team) => team.role === "leader")
-        .map((team) => {
-          return { team_id: team.team_id, role: "leader" };
-        });
+      const teamsFormatted = (teams ?? []).map((team) => {
+        return { team_id: team.team_id, role: team.role };
+      });
       userData.teams = teamsFormatted;
     }
   }

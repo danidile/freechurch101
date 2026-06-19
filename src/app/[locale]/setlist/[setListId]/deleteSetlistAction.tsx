@@ -2,16 +2,11 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
-
-interface Setlist {
-  id: string;
-  church: { church_name: string }[]; // nested object from the `church` table
-  date: Date; // or `Date` if it's a date object
-}
+import { getLocale } from "next-intl/server";
 
 export const deleteSetList = async (setlistId: string) => {
   const supabase = await createClient();
-  console.log(setlistId);
+  const locale = await getLocale();
 
   const { error: setlistSongsError } = await supabase
     .from("setlist-songs")
@@ -29,8 +24,8 @@ export const deleteSetList = async (setlistId: string) => {
     console.log("Rows deleted successfully");
     return encodedRedirect(
       "success",
-      "/setlist",
-      "SetList eliminata con successo!"
+      `/${locale}/setlist`,
+      "SetList eliminata con successo!",
     );
   }
 };

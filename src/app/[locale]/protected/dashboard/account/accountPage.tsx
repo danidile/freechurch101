@@ -56,55 +56,70 @@ type Section =
 export default function AccountPage() {
   const { userData, loading, fetchUser } = useUserStore();
   const router = useRouter();
-
+  console.log(userData);
   const [activeSection, setActiveSection] = useState<Section>("profile");
-
-  const [form, setForm] = useState({
-    name: userData?.name || "",
-    lastname: userData?.lastname || "",
-    phone: userData?.phone || "",
-    email: userData?.email || "",
-  });
-
   async function logouter() {
     await logoutAction();
     await fetchUser();
     router.push("/protected/dashboard/account");
   }
-
+  const isAdmin = hasPermission(userData?.role as Role, "personalize:church");
+  const hasTeam = !!userData?.teams?.length;
+  const isLeader = !!userData?.teams?.some((team) => team.role === "leader");
   const navItems: {
     key: Section;
     label: string;
     icon: React.ReactNode;
+    show: boolean;
     action?: () => void;
   }[] = [
     {
       key: "profile",
       label: "Profilo",
       icon: <LuUser size={16} />,
+      show: true,
     },
-    { key: "teams", label: "Teams", icon: <FaAsterisk size={16} /> },
+    {
+      key: "teams",
+      label: "Teams",
+      icon: <FaAsterisk size={16} />,
+      show: hasTeam || isLeader || isAdmin,
+    },
     {
       key: "blockouts",
       label: "Blocca Date",
       icon: <LuCalendarOff size={16} />,
+      show: !!userData?.church_id,
     },
     {
       key: "personalize",
       label: "Personalizza Chiesa",
       icon: <LuChurch size={16} />,
+      show: isAdmin,
     },
-    { key: "security", label: "Sicurezza", icon: <LuShield size={16} /> },
-    { key: "logs", label: "Logs", icon: <LuLogs size={16} /> },
+    {
+      key: "security",
+      label: "Sicurezza",
+      icon: <LuShield size={16} />,
+      show: true,
+    },
+    {
+      key: "logs",
+      label: "Logs",
+      icon: <LuLogs size={16} />,
+      show: userData?.email === "danidile94@gmail.com",
+    },
     {
       key: "tickets",
       label: "Support Tickets",
       icon: <FaRegQuestionCircle size={16} />,
+      show: true,
     },
     {
       key: "logout",
       label: "Esci",
       icon: <MdOutlineLogout size={16} />,
+      show: true,
       action: logouter,
     },
   ];
@@ -172,64 +187,58 @@ export default function AccountPage() {
         <aside className="md:w-52 flex-shrink-0 rounded-xl p-1 overflow-hidden">
           {/* Mobile: horizontal scrollable pills */}
           <nav className="flex md:hidden gap-1 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
-            {navItems.map((item) => {
-              if (
-                item.key === "logs" &&
-                userData?.email !== "danidile94@gmail.com"
-              )
-                return null;
-              return (
-                <button
-                  key={item.key}
-                  onClick={() => {
-                    if (item.action) {
-                      item.action();
-                    } else {
-                      setActiveSection(item.key);
-                    }
-                  }}
-                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium flex-shrink-0 transition-colors ${
-                    activeSection === item.key
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                  }`}
-                >
-                  {item.icon}
-                  <span className="whitespace-nowrap">{item.label}</span>
-                </button>
-              );
-            })}
+            {navItems
+              .filter((item) => item.show)
+              .map((item) => {
+                return (
+                  <button
+                    key={item.key}
+                    onClick={() => {
+                      if (item.action) {
+                        item.action();
+                      } else {
+                        setActiveSection(item.key);
+                      }
+                    }}
+                    className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium flex-shrink-0 transition-colors ${
+                      activeSection === item.key
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                    }`}
+                  >
+                    {item.icon}
+                    <span className="whitespace-nowrap">{item.label}</span>
+                  </button>
+                );
+              })}
           </nav>
 
           {/* Desktop: vertical sidebar */}
           <nav className="hidden md:flex flex-col gap-1">
-            {navItems.map((item) => {
-              if (
-                item.key === "logs" &&
-                userData?.email !== "danidile94@gmail.com"
-              )
-                return null;
-              return (
-                <button
-                  key={item.key}
-                  onClick={() => {
-                    if (item.action) {
-                      item.action();
-                    } else {
-                      setActiveSection(item.key);
-                    }
-                  }}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-left transition-colors ${
-                    activeSection === item.key
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                  }`}
-                >
-                  {item.icon}
-                  {item.label}
-                </button>
-              );
-            })}
+            {navItems
+              .filter((item) => item.show)
+              .map((item) => {
+                return (
+                  <button
+                    key={item.key}
+                    onClick={() => {
+                      if (item.action) {
+                        item.action();
+                      } else {
+                        setActiveSection(item.key);
+                      }
+                    }}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-left transition-colors ${
+                      activeSection === item.key
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                    }`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </button>
+                );
+              })}
           </nav>
         </aside>
 

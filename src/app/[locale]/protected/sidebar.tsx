@@ -1,41 +1,25 @@
 "use client";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
-import {
-  FaUserCircle,
-  FaCalendarTimes,
-  FaRegCalendarAlt,
-  FaQuestion,
-  FaAsterisk,
-  FaRegQuestionCircle,
-} from "react-icons/fa";
-import {
-  MdOutlineContactSupport,
-  MdOutlineEventNote,
-  MdOutlineExplore,
-  MdOutlineLibraryMusic,
-} from "react-icons/md";
-import { FaRegCreditCard } from "react-icons/fa6";
+import { FaUserCircle, FaAsterisk, FaRegQuestionCircle } from "react-icons/fa";
+import { MdOutlineExplore, MdOutlineLibraryMusic } from "react-icons/md";
 
-import { HiUserGroup } from "react-icons/hi2";
-import { IoNotificationsSharp, IoSettingsOutline } from "react-icons/io5";
+import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import logoutAction from "../components/logOutAction";
 import { useRouter } from "@/i18n/navigation";
 import { useUserStore } from "@/store/useUserStore";
-import { PiChurch, PiChurchFill, PiPasswordBold } from "react-icons/pi";
+import { PiChurch, PiPasswordBold } from "react-icons/pi";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   User,
-  Badge,
 } from "@heroui/react";
 import isTeamLeaderClient from "@/utils/supabase/isTeamLeaderClient";
 import { hasPermission, Role } from "@/utils/supabase/hasPermission";
-import { FaCompass } from "react-icons/fa6";
-import LogsComponent from "../admin/logs/LogsComponent";
+
 import {
   LuCalendarClock,
   LuCalendarOff,
@@ -45,9 +29,6 @@ import {
   LuLayoutDashboard,
   LuLogs,
 } from "react-icons/lu";
-import NotificationButton from "@/components/NotificationButton";
-import TestNotificationButton from "@/components/testNotificationButton";
-import { BiNotification } from "react-icons/bi";
 
 // A reusable sidebar link component for consistency
 const SidebarLink = ({
@@ -111,6 +92,7 @@ export default function Sidebar() {
     fetchLeaderStatus();
   }, [loading, userData]);
   const iconSize = 20;
+
   const navSections = {
     main: [
       {
@@ -155,7 +137,10 @@ export default function Sidebar() {
         href: "/protected/teams",
         icon: <FaAsterisk size={iconSize} />,
         text: "Team",
-        show: !!userData?.church_id,
+        show:
+          !!userData?.teams?.length ||
+          TeamLeader ||
+          hasPermission(userData?.role as Role, "personalize:church"),
       },
       {
         href: "/protected/church",
@@ -170,9 +155,7 @@ export default function Sidebar() {
         href: "/protected/church/personalize",
         icon: <LuChurch size={iconSize} />,
         text: "Personalizza Chiesa",
-        show:
-          hasPermission(userData?.role as Role, "personalize:church") ||
-          TeamLeader,
+        show: hasPermission(userData?.role as Role, "personalize:church"),
       },
     ],
     management: [

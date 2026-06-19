@@ -1,0 +1,19 @@
+churchlab-ui/
+├── index.ts          ← importa tutto da qui: import { Button } from '@/churchlab-ui'
+├── preset.ts         ← Tailwind preset (presets: [churchlab])
+├── styles.css        ← CSS variables / token (import in globals.css)
+├── fonts.ts          ← next/font (display, sans, mono)
+├── cn.ts             ← helper classi (co-locato, nessuna dipendenza)
+├── examples.tsx      ← pagina anteprima -> /ui
+├── package.json      ← metadati (opzionale)
+├── README.md
+│
+├── Button.tsx
+├── Typography.tsx    ← Display, H2, Dot, SectionLabel, NumTag
+├── Field.tsx  Input.tsx  Select.tsx  Textarea.tsx
+├── Checkbox.tsx  Toggle.tsx  SearchInput.tsx
+├── Badge.tsx  Chip.tsx
+├── Card.tsx  Avatar.tsx  ListItem.tsx  Table.tsx
+├── Tabs.tsx  Accordion.tsx
+├── Modal.tsx  Toast.tsx
+└── EmptyState.tsx  Skeleton.tsx

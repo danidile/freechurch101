@@ -1,0 +1,24 @@
+/* ============================================================
+   ChurchLab UI — token runtime (Oltremare)
+   Importa UNA volta, in cima a app/globals.css:
+     @import '../churchlab-ui/styles.css';
+   (le keyframes/animazioni arrivano dal preset Tailwind)
+   ============================================================ */
+:root {
+  --nero: #111113;
+  --grigio: #6b6b70;
+  --grigio-chiaro: #a3a3a8;
+  --panna: #fafafa;
+  --filo: #ececee;
+
+  /* Accento — cambialo qui, tutto il resto segue */
+  --accento: #2742e0;
+  --accento-scuro: #1d33b8;
+  --accento-tenue: #eef0fc;
+
+  --ok: #1e6b5e;
+  --attesa: #c2922e;
+  --errore: #d6402f;
+}
+
+::selection { background: var(--accento); color: #fff; }

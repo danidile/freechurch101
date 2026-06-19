@@ -68,7 +68,7 @@ export default function SongsPageClient() {
                   <DropdownItem
                     as={Link}
                     href="/artists"
-                    key="import"
+                    key="importcl"
                     color="primary"
                     variant="flat"
                   >
