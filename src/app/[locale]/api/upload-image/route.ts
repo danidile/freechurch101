@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     console.error("Failed to create Supabase client:", err);
     return NextResponse.json(
       { success: false, error: "Database connection failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -22,14 +22,18 @@ export async function POST(request: NextRequest) {
       data: { user },
       error: authError,
     } = await supabase.auth.getUser();
-
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("auth_id", user?.id)
+      .single();
     try {
       await logEvent({
         event: "upload_debug_auth_check",
         level: "info",
         meta: {
           hasUser: !!user,
-          userId: user?.id,
+          userId: profile?.id,
           authError: authError?.message,
           environment: process.env.NODE_ENV,
         },
@@ -42,11 +46,11 @@ export async function POST(request: NextRequest) {
       await logEvent({
         event: "upload_image_action_unauthorized",
         level: "error",
-        meta: { authError: authError?.message, hasUser: !!user },
+        meta: { authError: authError?.message, hasUser: !!profile },
       });
       return NextResponse.json(
         { success: false, error: "Unauthorized - no valid session" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -76,7 +80,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -89,7 +93,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json(
         { success: false, error: "User ID mismatch" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -102,7 +106,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json(
         { success: false, error: "File too large. Maximum size is 2MB." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -118,7 +122,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "Invalid file type. Only images are allowed.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -158,7 +162,7 @@ export async function POST(request: NextRequest) {
             success: false,
             error: `Upload error (avatar): ${avatarErr.message}`,
           },
-          { status: 500 }
+          { status: 500 },
         );
       }
 
@@ -187,7 +191,7 @@ export async function POST(request: NextRequest) {
         });
         return NextResponse.json(
           { success: false, error: `DB update error: ${dbErr.message}` },
-          { status: 500 }
+          { status: 500 },
         );
       }
 
@@ -231,7 +235,7 @@ export async function POST(request: NextRequest) {
         });
         return NextResponse.json(
           { success: false, error: "Profile or church not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -267,7 +271,7 @@ export async function POST(request: NextRequest) {
             success: false,
             error: `Upload error (churchlogo): ${uploadErr.message}`,
           },
-          { status: 500 }
+          { status: 500 },
         );
       }
 
@@ -289,7 +293,7 @@ export async function POST(request: NextRequest) {
         });
         return NextResponse.json(
           { success: false, error: `DB update error: ${dbErr.message}` },
-          { status: 500 }
+          { status: 500 },
         );
       }
 
@@ -309,7 +313,7 @@ export async function POST(request: NextRequest) {
     });
     return NextResponse.json(
       { success: false, error: "Unsupported upload type" },
-      { status: 400 }
+      { status: 400 },
     );
   } catch (err) {
     const error = err as Error;
@@ -331,7 +335,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

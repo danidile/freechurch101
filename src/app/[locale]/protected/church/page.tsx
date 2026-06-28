@@ -70,12 +70,10 @@ export default function ChurchComponent() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
   useEffect(() => {
-    if (
-      !loading &&
-      userData?.loggedIn &&
-      hasPermission(userData.role as Role, "read:churchmembers")
-    ) {
-      getProfilesByChurch(userData.church_id).then(
+    console.log(userData?.role, "userROLE");
+    if (hasPermission(userData?.role as Role, "read:churchmembers")) {
+      console.log("Fetching profiles for church:", userData?.church_id);
+      getProfilesByChurch(userData?.church_id).then(
         (fetchedPeople: profileT[]) => {
           setProfiles(fetchedPeople ?? []);
         },

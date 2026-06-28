@@ -2,6 +2,8 @@ import { createClient } from "@/utils/supabase/server";
 import { basicUserData } from "@/utils/types/userData";
 
 type ProfileData = {
+  id: string;
+  email: string;
   name: string;
   lastname: string;
   phone?: string;
@@ -44,12 +46,12 @@ export default async function userDataServer() {
       .select(
         "name, lastname,avatar_url, role(role_name), church(id,church_name,logo),phone"
       )
-      .eq("id", user.id) // Filter by the user's id
+      .eq("auth_id", user.id) // Filter by the user's id
       .single()) as unknown as SupabaseResponse; // Use the full SupabaseResponse type
     userData = {
       loggedIn: true,
-      id: user?.id || null,
-      email: user?.email || null,
+      id: data?.id || null,
+      email: data?.email || null,
       phone: data?.phone || null,
       name: data?.name || null,
       role: data?.role?.role_name || "user", // No array, safe access
@@ -70,7 +72,7 @@ export default async function userDataServer() {
       let { data: churchMembershipRequest } = await supabase
         .from("church-membership-request")
         .select("*")
-        .eq("profile", user.id);
+        .eq("profile", data.id);
       console.log("churchMembershipRequest");
       console.log(churchMembershipRequest);
       if (churchMembershipRequest.length > 0) {
@@ -81,12 +83,12 @@ export default async function userDataServer() {
     let { data: teams, error: teamError } = await supabase
       .from("team-members")
       .select("team_id,role")
-      .eq("profile", user.id);
+      .eq("profile", data.id);
     if (error) {
       console.log("Error fetching profile:", error.message);
       return userData;
     }
-    const teamsFormatted = teams.map((team) => {
+    const teamsFormatted = teams?.map((team) => {
       return { team_id: team.team_id, role: "leader" };
     });
     userData.teams = teamsFormatted;

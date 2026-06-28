@@ -22,10 +22,10 @@ export default function CreateChurch() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!loading && userData.loggedIn && userData.fetched) {
+    if (!loading && userData?.loggedIn && userData?.fetched) {
       router.push("/protected/dashboard/account");
     }
-  }, [loading, userData.loggedIn, userData.fetched]);
+  }, [loading, userData?.loggedIn, userData?.fetched]);
 
   const {
     register,
@@ -53,7 +53,7 @@ export default function CreateChurch() {
     if (response.success) {
       try {
         const data = {
-          firstName: `${getValues("firstname")} `,
+          firstName: `${getValues("name")} `,
           lastName: getValues("lastname"),
           email: getValues("email"),
           churchName: getValues("churchname"),
@@ -117,7 +117,7 @@ export default function CreateChurch() {
     if (inputValue.length > 1) {
       const filtered = comuni
         .filter((comune) =>
-          comune.nome.toLowerCase().startsWith(inputValue.toLowerCase())
+          comune.nome.toLowerCase().startsWith(inputValue.toLowerCase()),
         )
         .slice(0, 10);
       setFilteredComuni(filtered);
@@ -156,24 +156,24 @@ export default function CreateChurch() {
               <hr className="border-gray-300 my-2" />
               <div className="flex flex-wrap gap-6 justify-center">
                 <div className="flex flex-col w-full sm:w-72">
-                  <label htmlFor="firstname" className="  font-medium">
+                  <label htmlFor="name" className="  font-medium">
                     Nome
                   </label>
                   <input
-                    id="firstname"
+                    id="name"
                     type="text"
                     placeholder="Marco"
-                    {...register("firstname")}
-                    className={`cinput ${errors.firstname ? "border-red-500" : "border-gray-300"}`}
-                    aria-invalid={!!errors.firstname}
-                    aria-describedby="firstname-error"
+                    {...register("name")}
+                    className={`cinput ${errors.name ? "border-red-500" : "border-gray-300"}`}
+                    aria-invalid={!!errors.name}
+                    aria-describedby="name-error"
                   />
-                  {errors.firstname && (
+                  {errors.name && (
                     <p
-                      id="firstname-error"
+                      id="name-error"
                       className="text-red-600 text-sm mt-1"
                     >
-                      {errors.firstname.message}
+                      {errors.name.message}
                     </p>
                   )}
                 </div>
@@ -261,6 +261,50 @@ export default function CreateChurch() {
                       className="text-red-600 text-sm mt-1"
                     >
                       {errors.password.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-6 justify-center">
+                <div className="flex flex-col w-full sm:w-72">
+                  <label htmlFor="phone" className="  font-medium">
+                    Telefono
+                  </label>
+                  <input
+                    id="phone"
+                    type="text"
+                    placeholder="349..."
+                    {...register("phone")}
+                    className={`cinput ${errors.phone ? "border-red-500" : "border-gray-300"}`}
+                    aria-invalid={!!errors.phone}
+                    aria-describedby="phone-error"
+                  />
+                  {errors.phone && (
+                    <p id="phone-error" className="text-red-600 text-sm mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-col w-full sm:w-72">
+                  <label htmlFor="birthday" className="font-medium">
+                    Data di nascita
+                  </label>
+                  <input
+                    id="birthday"
+                    type="date"
+                    max={new Date().toISOString().split("T")[0]} // no future dates
+                    {...register("birthday")}
+                    className={`cinput ${errors.birthday ? "border-red-500" : "border-gray-300"}`}
+                    aria-invalid={!!errors.birthday}
+                    aria-describedby="birthdate-error"
+                  />
+                  {errors.birthday && (
+                    <p
+                      id="birthday-error"
+                      className="text-red-600 text-sm mt-1"
+                    >
+                      {errors.birthday.message}
                     </p>
                   )}
                 </div>

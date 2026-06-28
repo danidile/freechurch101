@@ -7,9 +7,11 @@ import { TauthSchema } from "@/utils/types/auth";
 
 export const regristrationAction = async (formData: TauthSchema) => {
   const supabase = await createClient();
-
-  const { email, password, firstname, lastname } = formData;
-
+  const { email, password, name, lastname, birthday, phone } = formData;
+  console.log("formData", formData);
+  if (!email || !password || !name || !lastname || !birthday || !phone) {
+    return { error: "Tutti i campi sono obbligatori." };
+  }
   if (password.length <= 7) {
     return { error: "Password troppo corta." };
   }
@@ -19,8 +21,10 @@ export const regristrationAction = async (formData: TauthSchema) => {
     password,
     options: {
       data: {
-        firstname,
+        name,
         lastname,
+        birthday,
+        phone,
       },
     },
   });
@@ -38,7 +42,6 @@ export const regristrationAction = async (formData: TauthSchema) => {
 
   if (data?.user?.id) {
     // Update profile
-
     // Create new church
     const { data: newChurch, error: newChurchError } = await supabase
       .from("churches")
@@ -51,7 +54,7 @@ export const regristrationAction = async (formData: TauthSchema) => {
           ig_handle: formData.ighandle,
           provincia: formData.provincia,
           comune: formData.comune,
-          creator: data.user.id,
+          creator_auth_id: data?.user?.id,
         },
       ])
       .select();
@@ -77,12 +80,10 @@ export const regristrationAction = async (formData: TauthSchema) => {
     const { data: profileData, error: profileDataError } = await supabase
       .from("profiles")
       .update({
-        name: firstname,
-        lastname: lastname,
         church: newChurchId,
         role: 1,
       })
-      .eq("id", data.user.id)
+      .eq("auth_id", data?.user?.id)
       .select();
 
     if (profileDataError) {

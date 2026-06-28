@@ -10,7 +10,7 @@ const ROLES = {
     "delete:songs",
     "create:team",
     "send:emails",
-        //SUBSXRIPTION
+    //SUBSXRIPTION
 
     "manage:subscription",
     // GLOBALSONGS
@@ -70,7 +70,7 @@ const ROLES = {
     "send:emails",
 
     // TEAMS
-    "create:team",
+    "create:teams",
     "view:teams",
     "update:teams",
 
@@ -92,10 +92,9 @@ const ROLES = {
     "read:albums",
     //ROLES
     "update:role",
-        //SUBSXRIPTION
+    //SUBSXRIPTION
 
-        "manage:subscription",
-
+    "manage:subscription",
   ],
   churchadmin: [
     // SONGS
@@ -135,8 +134,7 @@ const ROLES = {
     "update:role",
     //SUBSXRIPTION
 
-        "manage:subscription",
-
+    "manage:subscription",
   ],
   teamleader: [
     // SONGS
@@ -159,6 +157,7 @@ const ROLES = {
     "delete:teams",
 
     // CHURCHMEMBERSHIPS /Requests
+
     "read:churchmembers",
     "update:churchmembers",
     "delete:churchmembers",
@@ -169,7 +168,7 @@ const ROLES = {
     // ALBUMS
     "read:albums",
   ],
-  churchmember: ["view:songs"],
+  churchmember: ["view:songs", "view:setlists", "view:teams", "read:churchmembers"],
   user: ["view:songs", "view:songs", "view:songs"],
 } as const;
 

@@ -32,12 +32,10 @@ export default function UpdateSetlistComponent({
   const oldData = useRef<setListT | null>(null);
   const { setlists, fetchSetlists } = useSetlistsStore();
 
-  const fetchChurchTeams = async () => {
-    const fetchedChurchTeams: teamData[] = await getChurchTeams(
-      userData.church_id,
-    );
-    setChurchTeams(fetchedChurchTeams);
-  };
+  useEffect(() => {
+    if (!userData?.church_id) return;
+    getChurchTeams(userData.church_id).then(setChurchTeams);
+  }, [userData?.church_id]);
   useEffect(() => {
     if (setlists.some((s) => s.setlist.id === setListId)) {
       if (
@@ -68,7 +66,6 @@ export default function UpdateSetlistComponent({
           teams: setlists.find((s) => s.setlist.id === setListId)?.teams,
         };
       }
-      fetchChurchTeams();
     } else {
       fetchSetlists(setListId);
     }
@@ -98,7 +95,7 @@ export default function UpdateSetlistComponent({
     }
   }, [loading, userData]); // Add setlistData to dependency array to prevent re-fetch
 
-  if (!setlistData) {
+  if (!setlistData || loading) {
     return <ChurchLabLoader />;
   }
 

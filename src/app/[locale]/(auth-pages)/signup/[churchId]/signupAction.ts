@@ -28,38 +28,21 @@ export async function signupAction(data: {
     password: data.password,
     options: {
       data: {
-        full_name: `${data.name} ${data.lastname}`,
-        first_name: data.name,
-        last_name: data.lastname,
+        name: data.name,
+        lastname: data.lastname,
         phone: data.phone,
-        birthdate: data.birthdate.toISOString().split("T")[0],
+        birthday: data.birthdate.toISOString().split("T")[0],
+        church: data.churchId,
       },
     },
   });
 
   if (authError || !authData.user) {
+    console.error("Signup error:", authError);
     return {
       success: false,
       error: authError?.message || "Errore durante la registrazione.",
     };
-  }
-
-  const { data: profileData, error: profileDataError } = await supabase
-    .from("profiles")
-    .update({
-      church: data.churchId,
-      name: data.name,
-      lastname: data.lastname,
-    })
-    .eq("id", authData.user.id)
-    .select();
-
-  if (profileDataError) {
-    return {
-      success: false,
-      error: "Errore durante l'associazione alla chiesa.",
-    };
-    
   }
 
   return { success: true, error: null };

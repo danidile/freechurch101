@@ -21,7 +21,7 @@ export const getChurchCustomerId = async (): Promise<string | null> => {
   const { data, error } = (await supabase
     .from("profiles")
     .select("church(stripe_customer_id)")
-    .eq("id", user.id)
+    .eq("auth_id", user?.id)
     .single()) as unknown as SupabaseResponse;
 
   if (error) {

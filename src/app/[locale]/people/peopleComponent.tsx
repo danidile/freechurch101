@@ -36,7 +36,9 @@ export default function PeopleComponent() {
 
   // Step 2: Once user is available, fetch songs
   useEffect(() => {
+    console.log("UEFFECTSSFR$");
     if (
+      
       !loading &&
       userData.loggedIn &&
       hasPermission(userData.role as Role, "read:churchmembers")

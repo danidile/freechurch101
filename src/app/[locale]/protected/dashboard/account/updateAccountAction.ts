@@ -26,7 +26,7 @@ export async function updateAccountAction(data: {
       lastname: data.lastname,
       phone: data.phone,
     })
-    .eq("id", user.id);
+    .eq("auth_id", user?.id)
 
   if (profileError) {
     return { success: false, error: profileError.message };

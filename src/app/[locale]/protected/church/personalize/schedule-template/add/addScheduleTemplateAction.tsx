@@ -18,7 +18,7 @@ export const addScheduleTemplate = async (formData: scheduleTemplate) => {
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user?.id)
+    .eq("auth_id", user?.id)
     .single();
   const church: string = profile.church;
 
@@ -37,7 +37,7 @@ export const addScheduleTemplate = async (formData: scheduleTemplate) => {
     await logEvent({
       event: "add_schedule_template_error",
       level: "error",
-      user_id: user?.id ?? null,
+      user_id: profile?.id ?? null,
       meta: {
         message: error.message,
         code: error.code,
@@ -81,7 +81,7 @@ export const addScheduleTemplate = async (formData: scheduleTemplate) => {
       await logEvent({
         event: "add_setlist_error",
         level: "error",
-        user_id: user?.id ?? null,
+        user_id: profile?.id ?? null,
         meta: {
           message: error.message,
           code: error.code,
@@ -100,7 +100,7 @@ export const addScheduleTemplate = async (formData: scheduleTemplate) => {
     return encodedRedirect(
       "success",
       `/protected/church/personalize/schedule-template/${templateId}`,
-      "SetList Registrata con successo!"
+      "SetList Registrata con successo!",
     );
   }
 };

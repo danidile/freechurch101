@@ -10,7 +10,11 @@ export const getPendingNotificationsById = async () => {
   if (!user) return 0; // Safeguard for null user
 
   const today = new Date().toISOString().split("T")[0]; // Get today's date in "YYYY-MM-DD"
-
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("auth_id", user?.id)
+    .single();
   let { data: notifications, error } = await supabase
     .from("event-team")
     .select(
@@ -18,7 +22,7 @@ export const getPendingNotificationsById = async () => {
        setlist(date, event_title), 
        team(team_name),status`
     )
-    .eq("member", user.id)
+    .eq("member", profile.id)
     .eq("status", "pending")
     .gte("setlist.date", today);
 

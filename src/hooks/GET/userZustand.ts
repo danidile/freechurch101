@@ -32,10 +32,15 @@ export async function fetchUserFromServer() {
   }
 
   if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("auth_id", user?.id)
+      .single();
     const { data, error } = (await supabase
       .from("profiles")
       .select("name, lastname, role:role!inner(role_name), church")
-      .eq("id", user.id) // Filter by the user's id
+      .eq("id", profile.id) // Filter by the user's id
       .single()) as unknown as SupabaseResponse; // Use the full SupabaseResponse type
 
     // Now, TypeScript knows that 'error' exists in the response object
@@ -45,8 +50,8 @@ export async function fetchUserFromServer() {
 
     userData = {
       loggedIn: true,
-      id: user?.id || null,
-      email: user?.email || null,
+      id: profile?.id || null,
+      email: profile?.email || null,
       name: data?.name || "Unknown",
       role: data?.role?.role_name || "user", // No array, safe access
       lastname: data?.lastname || "",

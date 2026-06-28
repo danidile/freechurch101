@@ -21,7 +21,7 @@ const importItalianSongIntoChurchAction = async (
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user?.id)
+    .eq("auth_id", user?.id)
     .single();
   if (profile.church) {
     const church: string = profile.church;

@@ -3,6 +3,7 @@ import SignupForm from "./signupForm";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { getChurchData } from "@/hooks/GET/getChurchData";
 
 export default async function SignupPage({
   params,
@@ -15,6 +16,15 @@ export default async function SignupPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const churchData = await getChurchData({ churchId });
+  console.log(churchData?.accepting_signups);
+  if (churchData && !churchData?.accepting_signups) {
+    return (
+      <div>
+        <p>This church is not accepting signups</p>
+      </div>
+    );
+  }
 
   if (user) redirect(`/${locale}/protected/dashboard/account`);
   if (!churchId) {
@@ -31,7 +41,7 @@ export default async function SignupPage({
       </div>
     );
   }
-  const churchData = await getChurchLogo(churchId);
+  const churchLogo = await getChurchLogo(churchId);
 
   return (
     <div className="flex flex-row h-[calc(100vh-75px)] w-full">
@@ -61,7 +71,7 @@ export default async function SignupPage({
         </div>
       </div>
       <div className="flex flex-col h-full items-center justify-center w-full lg:max-w-[40vw] p-4 overflow-y-auto">
-        <SignupForm churchData={churchData} />
+        <SignupForm churchData={churchLogo} />
       </div>
     </div>
   );

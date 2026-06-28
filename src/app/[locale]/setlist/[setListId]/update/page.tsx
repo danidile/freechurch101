@@ -2,6 +2,7 @@ import userDataServer from "@/utils/supabase/getUserDataServer";
 import UpdateSetlistComponent from "./updateSetlistComponent";
 
 import { checkPermission } from "@/utils/supabase/permissions/checkPermission";
+import { hasPermission, Role } from "@/utils/supabase/hasPermission";
 export default async function songs({
   params,
 }: {
@@ -9,15 +10,19 @@ export default async function songs({
 }) {
   const awaitedParams = await params;
   const userData = await userDataServer();
-
-  const allowed = await checkPermission(
-    userData.teams,
-    "setlists",
-    "edit",
-    userData.id,
-    userData.role,
-    awaitedParams.setListId
-  );
+  let allowed = false;
+  if (hasPermission(userData.role as Role, "update:setlists")) {
+    allowed = true;
+  } else {
+    allowed = await checkPermission(
+      userData.teams,
+      "setlists",
+      "edit",
+      userData.id,
+      userData.role,
+      awaitedParams.setListId,
+    );
+  }
 
   if (allowed) {
     return (

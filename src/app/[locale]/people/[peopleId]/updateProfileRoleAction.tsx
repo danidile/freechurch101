@@ -39,7 +39,7 @@ export const updateProfileRole = async (profile: profileT, newRole: string) => {
     const { data, error } = (await supabase
       .from("profiles")
       .select("name, lastname, role(role_name), church(id,church_name)")
-      .eq("id", user.id) // Filter by the user's id
+      .eq("auth_id", user?.id)
       .single()) as unknown as SupabaseResponse; // Use the full SupabaseResponse type
     userData = {
       loggedIn: true,

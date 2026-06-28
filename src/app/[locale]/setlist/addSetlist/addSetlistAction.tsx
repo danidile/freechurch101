@@ -1,6 +1,8 @@
 "use server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "@/i18n/navigation"; // NOT next/navigation
+import { getLocale } from "next-intl/server";
 import {
   expandedTeamT,
   setListSongT,
@@ -19,7 +21,7 @@ export const addSetlist = async (formData: setListT) => {
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user?.id)
+    .eq("auth_id", user?.id)
     .single();
   const church: string = profile.church;
 
@@ -30,7 +32,7 @@ export const addSetlist = async (formData: setListT) => {
     .insert({
       id: formData.id,
       church: church,
-      created_by: user?.id,
+      created_by: profile?.id,
       date: formData.date,
       room: formData.room,
       hour: formData.hour,
@@ -44,7 +46,7 @@ export const addSetlist = async (formData: setListT) => {
     await logEvent({
       event: "add_setlist_error",
       level: "error",
-      user_id: user?.id ?? null,
+      user_id: profile?.id ?? null,
       meta: {
         message: error.message,
         code: error.code,
@@ -85,7 +87,7 @@ export const addSetlist = async (formData: setListT) => {
     await logEvent({
       event: "add_setlist_error_event_team",
       level: "error",
-      user_id: user?.id ?? null,
+      user_id: profile?.id ?? null,
       meta: {
         message: errorTeam.message,
         code: errorTeam.code,
@@ -128,7 +130,7 @@ export const addSetlist = async (formData: setListT) => {
       await logEvent({
         event: "add_setlist_error",
         level: "error",
-        user_id: user?.id ?? null,
+        user_id: profile?.id ?? null,
         meta: {
           message: error.message,
           code: error.code,
@@ -157,7 +159,7 @@ export const addSetlist = async (formData: setListT) => {
       await logEvent({
         event: "add_setlist_error",
         level: "error",
-        user_id: user?.id ?? null,
+        user_id: profile?.id ?? null,
         meta: {
           message: error.message,
           code: error.code,
@@ -188,7 +190,7 @@ export const addSetlist = async (formData: setListT) => {
       await logEvent({
         event: "add_setlist_error",
         level: "error",
-        user_id: user?.id ?? null,
+        user_id: profile?.id ?? null,
         meta: {
           message: error.message,
           code: error.code,
@@ -204,10 +206,7 @@ export const addSetlist = async (formData: setListT) => {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
-    return encodedRedirect(
-      "success",
-      `/setlist/${sectionId}`,
-      "SetList Registrata con successo!"
-    );
+    const locale = await getLocale();
+    redirect({ href: `/setlist/${sectionId}`, locale });
   }
 };

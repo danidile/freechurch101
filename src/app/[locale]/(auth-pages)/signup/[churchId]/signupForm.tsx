@@ -6,8 +6,10 @@ import { z } from "zod";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { GrCircleAlert } from "react-icons/gr";
-import { Link } from "@/i18n/navigation";
+import { Link, redirect, useRouter } from "@/i18n/navigation";
 import { signupAction } from "./signupAction";
+import { useUserStore } from "@/store/useUserStore";
+import sendSignupConfirmationEmail from "./sendSignupConfirmationEmail";
 
 const signupSchema = z.object({
   name: z.string().min(2, "Il nome deve avere almeno 2 caratteri"),
@@ -37,10 +39,12 @@ const signupSchema = z.object({
 type TSignupSchema = z.infer<typeof signupSchema>;
 
 export default function SignupForm({ churchData }: { churchData: any }) {
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const { fetchUser } = useUserStore();
 
   const {
     register,
@@ -64,6 +68,21 @@ export default function SignupForm({ churchData }: { churchData: any }) {
 
       if (response.success) {
         setSuccess(true);
+
+        try {
+          await sendSignupConfirmationEmail({
+            firstName: data.name,
+            lastName: data.lastname,
+            email: data.email,
+            churchName: churchData.church_name,
+          });
+        } catch (emailError) {
+          console.error("Error sending signup email:", emailError);
+        }
+
+        await fetchUser(); // client refetch
+
+        router.push("/protected/dashboard/account");
       } else {
         setError(response.error || "Errore durante la registrazione.");
       }

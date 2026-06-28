@@ -10,7 +10,7 @@ export const createTeam = async (formData: teamData) => {
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user?.id)
+    .eq("auth_id", user?.id)
     .single();
 
   const church: string = profile.church;

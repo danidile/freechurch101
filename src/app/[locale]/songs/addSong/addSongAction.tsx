@@ -14,7 +14,7 @@ export const addSong = async (data: songSchema) => {
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user?.id)
+    .eq("auth_id", user?.id)
     .single();
 
   const church: string = profile?.church;
@@ -42,7 +42,7 @@ export const addSong = async (data: songSchema) => {
       await logEvent({
         event: "add_song_error",
         level: "error",
-        user_id: user?.id || null,
+        user_id: profile?.id || null,
         meta: {
           message: error.message,
           code: error.code,
@@ -59,7 +59,7 @@ export const addSong = async (data: songSchema) => {
     await logEvent({
       event: "add_song_error",
       level: "error",
-      user_id: user?.id || null,
+      user_id: profile?.id || null,
       meta: {
         message: "Profilo non trovato.",
       },

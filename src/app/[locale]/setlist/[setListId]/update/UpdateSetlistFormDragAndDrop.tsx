@@ -105,7 +105,14 @@ export default function UpdateSetlistForm({
   const [eventDate, setEventDate] = useState<DateValue>(() =>
     parseSetlistDate(setlistData?.date),
   );
-
+  // Auto-select the room when the church has exactly one
+  useEffect(() => {
+    if (churchRooms.length === 1 && !setlistData?.room) {
+      const onlyRoomId = churchRooms[0].id;
+      setSetlistData((prev) => ({ ...prev, room: onlyRoomId }));
+      setValue("room_id", onlyRoomId);
+    }
+  }, [churchRooms, setlistData?.room, setSetlistData]);
   useEffect(() => {
     if (rooms) {
       setChurchRooms(rooms);
@@ -120,19 +127,21 @@ export default function UpdateSetlistForm({
 
   const [alreadySubmitting, setAlreadySubmitting] = useState<boolean>(false);
   useEffect(() => {
-    fetchChurchScheduleTemplates(userData.church_id);
-    if (setlistData) {
-      getSetlistTeamLeadBySetlistAndUserId(userData.id, setlistData.id).then(
-        (lead: { team_id: string; role: string }[]) => {
-          if (lead?.length >= 1)
-            setUserData({
-              ...userData,
-              teams: [...userData.teams, ...lead], // ✅ creates a new array reference
-            });
-        },
-      );
+    if (userData?.church_id) {
+      fetchChurchScheduleTemplates(userData?.church_id);
+      if (setlistData) {
+        getSetlistTeamLeadBySetlistAndUserId(userData.id, setlistData.id).then(
+          (lead: { team_id: string; role: string }[]) => {
+            if (lead?.length >= 1)
+              setUserData({
+                ...userData,
+                teams: [...userData.teams, ...lead], // ✅ creates a new array reference
+              });
+          },
+        );
+      }
     }
-  }, []);
+  }, [userData]);
   const {
     handleSubmit,
     control,
@@ -146,6 +155,7 @@ export default function UpdateSetlistForm({
       eventDate: setlistData?.date
         ? setlistData.date.split("T")[0] // just the "YYYY-MM-DD" string
         : today(getLocalTimeZone()).toString(),
+      room_id: setlistData?.room || "", // Add this line for room_id
     },
   });
 
@@ -283,7 +293,7 @@ export default function UpdateSetlistForm({
         const missingFields = [];
         if (!watchAllFields.eventDate) missingFields.push("Event Date");
         if (!watchAllFields.event_type) missingFields.push("Event Type");
-        if (!setlistData.room) missingFields.push("Room");
+        if (!setlistData?.room) missingFields.push("Room");
 
         const errorMessage = `Missing required fields: ${missingFields.join(", ")}. Please complete the form.`;
 
@@ -311,13 +321,10 @@ export default function UpdateSetlistForm({
       };
       // Measure size in bytes
       setAlreadySubmitting(false);
-      console.log("updatedSetlist", updatedSetlist);
       let result;
       if (page === "create") {
         result = await addSetlist(updatedSetlist);
       } else if (page === "update") {
-        console.log("Old Setlist Data:", oldData);
-        console.log("New Setlist Data:", updatedSetlist);
         result = await updateSetlist(updatedSetlist, oldData);
       } else {
         throw new Error("Invalid page mode: 'create' or 'update' expected.");
@@ -428,14 +435,16 @@ export default function UpdateSetlistForm({
     sectionId: string,
     memberProfile: string | undefined,
   ): string[] | undefined => {
-    if (!teams) return undefined;
+    // `teams` (from getSelectedChurchTeams) only carries `selected`, not
+    // `team_members`. Fall back to `churchTeams`, which always includes
+    // each team's members and their available roles.
+    const teamMembers =
+      teams?.find((t) => t.id === sectionId)?.team_members ??
+      churchTeams?.find((t) => t.id === sectionId)?.team_members;
 
-    const team = teams.find((t) => t.id === sectionId);
-    if (!team || !team.team_members) return undefined;
+    if (!teamMembers) return undefined;
 
-    const teamMember = team.team_members.find(
-      (tm) => tm.profile === memberProfile,
-    );
+    const teamMember = teamMembers.find((tm) => tm.profile === memberProfile);
 
     return teamMember?.roles;
   };
@@ -450,7 +459,7 @@ export default function UpdateSetlistForm({
       <I18nProvider locale="it-IT-u-ca-gregory">
         <div className=" crea-setlist-container">
           <form onSubmit={handleSubmit(convertData)}>
-            {canEditEventData ? (
+            {userData?.id && canEditEventData ? (
               <>
                 <div className="flex flex-col gap-2 mt-8">
                   {/* EVENT TYPE */}
@@ -465,7 +474,7 @@ export default function UpdateSetlistForm({
                           <Select
                             {...field}
                             fullWidth
-                            items={eventTypes}
+                            items={eventTypes ?? []}
                             label="Tipo di evento"
                             size="sm"
                             variant="underlined"
@@ -619,7 +628,7 @@ export default function UpdateSetlistForm({
                       {" "}
                       <strong>Evento:</strong>{" "}
                       {
-                        eventTypes.find(
+                        eventTypes?.find(
                           (event) => event.key === setlistData?.event_type,
                         )?.label
                       }
@@ -715,7 +724,7 @@ export default function UpdateSetlistForm({
                       const reordered = newOrderIds.map((id) =>
                         schedule.find((s) => s.id === id),
                       );
-                      setSetlistData(reordered as setListT);
+                      setSchedule(reordered as setListSongT[]);
                     }}
                     ref={container}
                   >
@@ -845,7 +854,6 @@ export default function UpdateSetlistForm({
                                       section.id,
                                       member.profile,
                                     ) || [];
-
                                   const isUnavailable =
                                     member.blockouts?.some((b) => {
                                       const start = new Date(b.start);

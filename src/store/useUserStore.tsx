@@ -19,7 +19,6 @@ export const useUserStore = create<UserStore>((set) => ({
   userData: null,
   loading: false,
   error: null,
-
   notifications: {},
   setUserData: (newData: basicUserData) => set({ userData: newData }),
 

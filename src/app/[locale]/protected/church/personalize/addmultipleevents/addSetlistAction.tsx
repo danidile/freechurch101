@@ -12,7 +12,7 @@ export const addSetlist = async (formData: setListT) => {
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user?.id)
+    .eq("auth_id", user?.id)
     .single();
   const church: string = profile.church;
 
@@ -23,7 +23,7 @@ export const addSetlist = async (formData: setListT) => {
     .insert({
       id: formData.id,
       church: church,
-      created_by: user?.id,
+      created_by: profile?.id,
       date: formData.date,
       event_title: formData.event_title,
     })

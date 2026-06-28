@@ -22,6 +22,5 @@ export const getProfilesByChurch = async (churchId: unknown) => {
     // Then by name alphabetically
     return a.name.localeCompare(b.name);
   });
-
   return sortedProfiles;
 };

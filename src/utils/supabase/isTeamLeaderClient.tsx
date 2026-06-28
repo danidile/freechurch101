@@ -18,10 +18,16 @@ export default async function isTeamLeaderClient() {
   }
 
   if (user) {
+      const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("auth_id", user?.id)
+    .single();
+
     const { data: teamLeader, error: teamLeaderError } = await supabase
       .from("team-members")
       .select("*")
-      .eq("profile", user.id)
+      .eq("profile", profile.id)
       .eq("role", "leader");
 
     if (teamLeaderError) {

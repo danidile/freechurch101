@@ -137,10 +137,10 @@ export default function TeamsPageComponent() {
             </Button>
           ))}
         </div>
-        {hasPermission(userData?.role as Role, "create:teams") && (
+        {userData.role && hasPermission(userData?.role as Role, "create:teams") && (
           <Button
             as={Link}
-            href="/protected/teams/new"
+            href="/protected/teams/create-team"
             size="sm"
             variant="flat"
             color="primary"

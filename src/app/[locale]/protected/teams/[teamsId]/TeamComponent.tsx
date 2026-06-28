@@ -93,7 +93,7 @@ export default function TeamIdComponent({
       const team: teamData = await getChurchTeam(params.teamsId);
       setChurchTeam(team);
       setUneditedChurchTeam(team);
-      const leaderIds = team.team_members
+      const leaderIds = team?.team_members
         .filter((member) => member.isLeader)
         .map((member) => member.profile);
 

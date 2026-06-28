@@ -35,7 +35,7 @@ export default function NotificationList() {
   const moveNotification = (
     id: string,
     onClose: () => void,
-    destination: keyof GroupedNotificationsT
+    destination: keyof GroupedNotificationsT,
   ) => {
     setNotifications((prev) => {
       if (!prev) return prev;
@@ -82,7 +82,7 @@ export default function NotificationList() {
   if (
     !notifications ||
     Object.values(notifications).every(
-      (group) => group.notifications.length === 0
+      (group) => group?.notifications?.length === 0,
     )
   ) {
     return (
@@ -98,25 +98,24 @@ export default function NotificationList() {
   return (
     <div className="w-full max-w-md space-y-10 px-4 py-2">
       {Object.entries(notifications).map(([key, group]) => {
-        if (group.notifications.length === 0) return null;
+        if (group?.notifications?.length === 0) return null;
 
         return (
           <div key={key}>
             <div className="sticky top-0 z-10 bg-white/80 backdrop-blur py-2 mb-2">
               <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                {group.details.title}
+                {group?.details?.title}
               </h2>
             </div>
             <div className="space-y-4">
               <AnimatePresence>
-                {group.notifications.map((n) => (
+                {group?.notifications?.map((n) => (
                   <motion.div
                     key={n.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-
                     className="border-b-1"
                   >
                     <NotificationElement
@@ -128,7 +127,7 @@ export default function NotificationList() {
                       isExpanded={expandedNotificationId === n.id} // <-- new prop
                       setExpanded={(id: string) =>
                         setExpandedNotificationId((currentId) =>
-                          currentId === id ? null : id
+                          currentId === id ? null : id,
                         )
                       } // <-- new prop
                     />

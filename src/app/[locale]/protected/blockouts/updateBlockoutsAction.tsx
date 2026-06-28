@@ -18,11 +18,15 @@ export const updateBlockoutsAction = async ({
     console.error("No user found", userError);
     return;
   }
-
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("auth_id", user?.id)
+    .single();
   // Prepare upsert data
   const upsertDates: RangeValueString[] = blockedDates.map((date) => ({
     ...(date.id ? { id: date.id } : { id: crypto.randomUUID() }),
-    profile: date.profile ? date.profile : user.id,
+    profile: date.profile ? date.profile : profile.id,
     start: date.start,
     end: date.end,
   }));

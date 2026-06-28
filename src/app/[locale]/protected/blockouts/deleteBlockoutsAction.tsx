@@ -27,6 +27,11 @@ export const deleteBlockoutAction = async ({
     });
     return;
   }
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("auth_id", user?.id)
+    .single();
 
   const { error } = await supabase.from("blockouts").delete().eq("id", blockId);
 
@@ -35,7 +40,7 @@ export const deleteBlockoutAction = async ({
     await logEvent({
       event: "delete_blockout_error",
       level: "error",
-      user_id: user.id,
+      user_id: profile.id,
       meta: {
         message: error.message,
         code: error.code,

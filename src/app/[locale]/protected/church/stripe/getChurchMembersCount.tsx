@@ -21,7 +21,7 @@ export const getChurchMembersCount = async (): Promise<number | null> => {
   const { data, error } = (await supabase
     .from("profiles")
     .select("church")
-    .eq("id", user.id)
+    .eq("auth_id", user?.id)
     .single()) as unknown as SupabaseResponse;
 
   if (error) {

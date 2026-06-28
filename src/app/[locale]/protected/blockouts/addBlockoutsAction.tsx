@@ -14,7 +14,11 @@ export const addBlockoutAction = async ({
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("auth_id", user?.id)
+    .single();
   if (!user) {
     console.error("No user found", userError);
     await logEvent({
@@ -29,7 +33,7 @@ export const addBlockoutAction = async ({
     return;
   }
 
-  blockedDates.profile = user.id;
+  blockedDates.profile = profile.id;
 
   const { error: insertError } = await supabase
     .from("blockouts")
@@ -41,7 +45,7 @@ export const addBlockoutAction = async ({
     await logEvent({
       event: "add_blockout_error",
       level: "error",
-      user_id: user.id,
+      user_id: profile.id,
       meta: {
         message: insertError.message,
         code: insertError.code,

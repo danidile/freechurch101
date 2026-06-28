@@ -16,14 +16,18 @@ export async function uploadImageAction(formData: FormData) {
   try {
     // 1. First check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+      const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("auth_id", user?.id)
+    .single();
     try {
       await logEvent({
         event: "upload_debug_auth_check",
         level: "info",
         meta: { 
-          hasUser: !!user,
-          userId: user?.id,
+          hasUser: !!profile,
+          userId: profile?.id,
           authError: authError?.message,
           environment: process.env.NODE_ENV
         },
@@ -32,11 +36,11 @@ export async function uploadImageAction(formData: FormData) {
       console.error("Failed to log auth check:", logErr);
     }
 
-    if (authError || !user) {
+    if (authError || !profile) {
       await logEvent({
         event: "upload_image_action_unauthorized",
         level: "error",
-        meta: { authError: authError?.message, hasUser: !!user },
+        meta: { authError: authError?.message, hasUser: !!profile },
       });
       return { success: false, error: "Unauthorized - no valid session" };
     }
@@ -53,7 +57,7 @@ export async function uploadImageAction(formData: FormData) {
         type, 
         fileName: file?.name,
         fileSize: file?.size,
-        authenticatedUserId: user.id
+        authenticatedUserId: profile.id
       },
     });
 
@@ -67,11 +71,11 @@ export async function uploadImageAction(formData: FormData) {
     }
 
     // Verify the userId matches the authenticated user
-    if (userId !== user.id) {
+    if (userId !== profile.id) {
       await logEvent({
         event: "upload_image_action_user_mismatch",
         level: "error",
-        meta: { providedUserId: userId, authenticatedUserId: user.id },
+        meta: { providedUserId: userId, authenticatedUserId: profile.id },
       });
       return { success: false, error: "User ID mismatch" };
     }

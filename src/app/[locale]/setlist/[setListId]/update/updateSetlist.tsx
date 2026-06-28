@@ -3,8 +3,8 @@ import { setListSongT, setListT } from "@/utils/types/types";
 import { createClient } from "@/utils/supabase/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { logEvent } from "@/utils/supabase/log";
-import { getAuthHeader } from "@/utils/services/authHeader";
-
+import { redirect } from "@/i18n/navigation"; // NOT next/navigation
+import { getLocale } from "next-intl/server";
 // Error tracking type
 type ErrorDetail = {
   operation: string;
@@ -23,7 +23,7 @@ type UpdateResult = {
 function diffById<T extends { id?: string }>(
   newItems: T[],
   oldItems: T[],
-  compareFn: (a: T, b: T) => boolean
+  compareFn: (a: T, b: T) => boolean,
 ) {
   const oldMap = new Map(oldItems.map((item) => [item.id, item]));
   const newMap = new Map(newItems.map((item) => [item.id, item]));
@@ -41,7 +41,7 @@ function diffById<T extends { id?: string }>(
 // Assuming updatedSetlist.schedule and setlistData.schedule are both available
 function prepareScheduleDiff(
   updatedSchedule: setListSongT[],
-  oldSchedule: setListSongT[]
+  oldSchedule: setListSongT[],
 ) {
   const withIndex = (list: setListSongT[]) =>
     list.map((item, i) => ({ ...item, originalIndex: i }));
@@ -88,7 +88,7 @@ export const updateSetlistData = async (
   updatedSetlist: setListT,
   setlistData: setListT,
   supabase: SupabaseClient<any, any, any>,
-  user_id?: string
+  user_id?: string,
 ): Promise<ErrorDetail[]> => {
   const errors: ErrorDetail[] = [];
   let hasChanged: boolean = false;
@@ -156,13 +156,13 @@ export const updateSetlistSchedule = async (
   updatedSetlist: setListT,
   setlistData: setListT,
   supabase: SupabaseClient<any, any, any>,
-  user_id?: string
+  user_id?: string,
 ): Promise<ErrorDetail[]> => {
   const errors: ErrorDetail[] = [];
 
   const diff = prepareScheduleDiff(
     updatedSetlist.schedule,
-    setlistData.schedule
+    setlistData.schedule,
   );
 
   console.log("Songs to insert:", diff.songs.inserted);
@@ -467,7 +467,7 @@ function flattenTeams(setlist: setListT): FlattenedMember[] {
           roles: member.selected_roles!,
           status: member.status || "pending",
           lead: member.lead ? true : false, // Ensure lead is a boolean
-        })) ?? []
+        })) ?? [],
     ) ?? []
   );
 }
@@ -485,7 +485,7 @@ export const updateSetlistTeam = async (
   updatedSetlist: setListT,
   setlistData: setListT,
   supabase: SupabaseClient<any, any, any>,
-  user_id?: string
+  user_id?: string,
 ): Promise<ErrorDetail[]> => {
   const errors: ErrorDetail[] = [];
 
@@ -495,7 +495,7 @@ export const updateSetlistTeam = async (
   const { inserted, deleted, updated } = diffById(
     newMembers,
     oldMembers,
-    compareTeamMembers
+    compareTeamMembers,
   );
 
   console.log("⚙️ Team Members inserted", inserted);
@@ -592,7 +592,7 @@ export const updateSetlistTeam = async (
           .eq("id", id)
           .select()
           .then(({ error }) => ({ error, id }));
-      })
+      }),
     );
 
     const failedUpdates = updateResults.filter((r) => r.error);
@@ -634,7 +634,7 @@ export const updateSetlistTeam = async (
 export const updateSetlist = async (
   updatedSetlist: setListT,
   setlistData: setListT,
-  user_id?: string
+  user_id?: string,
 ): Promise<UpdateResult> => {
   const supabase = await createClient();
   const allErrors: ErrorDetail[] = [];
@@ -685,19 +685,19 @@ export const updateSetlist = async (
       updatedSetlist,
       setlistData,
       supabase,
-      user_id
+      user_id,
     );
     const scheduleErrors = await updateSetlistSchedule(
       updatedSetlist,
       setlistData,
       supabase,
-      user_id
+      user_id,
     );
     const teamErrors = await updateSetlistTeam(
       updatedSetlist,
       setlistData,
       supabase,
-      user_id
+      user_id,
     );
 
     // Combine all errors
@@ -718,15 +718,12 @@ export const updateSetlist = async (
     }
 
     console.log("✅ Setlist updated successfully with no errors");
-    return {
-      success: true,
-      errors: [],
-      message: "Setlist aggiornata con successo!",
-    };
+    const locale = await getLocale();
+    redirect({ href: `/setlist/${setlistData.id}`, locale });
   } catch (unexpectedError: any) {
     console.error(
       "🔥 Unexpected error during setlist update:",
-      unexpectedError
+      unexpectedError,
     );
 
     const criticalError: ErrorDetail = {

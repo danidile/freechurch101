@@ -7,11 +7,15 @@ export const getBlockoutsByUserId = async () => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("auth_id", user?.id)
+    .single();
   const { data: blockouts, error } = await supabase
     .from("blockouts")
     .select("id,profile,start,end")
-    .eq("profile", user.id)
+    .eq("profile", profile.id)
     .order("start", { ascending: true });
 
   if (error) {

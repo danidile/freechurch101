@@ -9,11 +9,6 @@ export async function updateChurchField(
 ) {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  console.log("auth user:", user?.id); // 👈 check this is not null
-
   const { data, error } = await supabase
     .from("churches") // 👈 fixed: your table is "churches" not "church"
     .update({ [field]: value })

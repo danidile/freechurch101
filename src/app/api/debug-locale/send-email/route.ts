@@ -1,9 +1,19 @@
+"use server";
+
 const nodemailer = require("nodemailer");
 import type { NextRequest } from "next/server";
 import { logEvent } from "@/utils/supabase/log"; // adjust if needed
 import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: NextRequest) {
+  await logEvent({
+    event: "send_email",
+    level: "info",
+    meta: {
+      message: "Missing SMTP credentials.",
+      context: "email sending",
+    },
+  });
   try {
     const { to, subject, text, html } = await req.json();
 

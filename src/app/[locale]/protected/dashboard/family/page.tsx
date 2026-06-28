@@ -22,6 +22,7 @@ import {
   createFamily,
   addFamilyMember,
   updateUnlinkedMember,
+  updateMemberRole,
   removeFamilyMember,
   updateFamilyName,
   searchProfiles,
@@ -129,7 +130,7 @@ function MemberRow({
   onRemove: () => void;
 }) {
   const fullName = `${member.name} ${member.lastname}`;
-  const isHead = member.role === "head";
+  const isHead = member.family_role === "head";
 
   return (
     <div className="flex items-center gap-3 px-2 py-3 rounded-lg bg-white hover:bg-gray-100 transition-colors group">
@@ -139,9 +140,9 @@ function MemberRow({
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-medium text-gray-800">{fullName}</span>
           <span
-            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${ROLE_STYLE[member.role]}`}
+            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${ROLE_STYLE[member.family_role]}`}
           >
-            {ROLES.find((r) => r.value === member.role)?.label}
+            {ROLES.find((r) => r.value === member.family_role)?.label}
           </span>
           {member.has_account && (
             <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">
@@ -156,9 +157,9 @@ function MemberRow({
           {member.phone && (
             <span className="text-xs text-gray-400">{member.phone}</span>
           )}
-          {member.birthdate && (
+          {member.birthday && (
             <span className="text-xs text-gray-400">
-              {new Date(member.birthdate).toLocaleDateString("it-IT", {
+              {new Date(member.birthday).toLocaleDateString("it-IT", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
@@ -210,7 +211,7 @@ function UnlinkedMemberForm({
     lastname: "",
     email: "",
     phone: "",
-    birthdate: "",
+    birthday: "",
     role: "other",
     ...initial,
   });
@@ -275,8 +276,8 @@ function UnlinkedMemberForm({
           </label>
           <input
             type="date"
-            value={form.birthdate ?? ""}
-            onChange={(e) => set("birthdate", e.target.value)}
+            value={form.birthday ?? ""}
+            onChange={(e) => set("birthday", e.target.value)}
             className="cinput"
           />
         </div>
@@ -337,7 +338,7 @@ function ProfileSearch({
       id: string;
       name: string;
       lastname: string;
-      email: string;
+      email: string | null;
       avatar_url: string | null;
     }>
   >([]);
@@ -474,11 +475,7 @@ function AddMemberDrawer({
     try {
       onAdded(await addFamilyMember(familyId, { profile_id: profileId, role }));
     } catch (e: any) {
-      setError(
-        e.message.includes("unique")
-          ? "Questa persona è già in una famiglia."
-          : e.message,
-      );
+      setError(e.message);
     } finally {
       setSaving(false);
     }
@@ -550,14 +547,18 @@ function AddMemberDrawer({
 function EditMemberDrawer({
   member,
   onSave,
+  onSaveRole,
   onCancel,
   saving,
 }: {
   member: ResolvedMember;
   onSave: (data: UnlinkedMemberInput) => void;
+  onSaveRole: (role: FamilyRole) => void;
   onCancel: () => void;
   saving: boolean;
 }) {
+  const [role, setRole] = useState<FamilyRole>(member.family_role);
+
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-5 mt-4">
       <div className="flex items-center justify-between mb-4">
@@ -572,11 +573,45 @@ function EditMemberDrawer({
         </button>
       </div>
       {member.has_account ? (
-        <p className="text-sm text-gray-400 py-2">
-          Le informazioni di{" "}
-          <span className="font-medium text-gray-600">{member.name}</span> sono
-          gestite nel suo profilo personale. Puoi cambiare solo il ruolo.
-        </p>
+        <div className="flex flex-col gap-4 pt-1">
+          <p className="text-sm text-gray-400">
+            Le informazioni di{" "}
+            <span className="font-medium text-gray-600">{member.name}</span>{" "}
+            sono gestite nel suo profilo personale. Puoi cambiare solo il ruolo
+            in famiglia.
+          </p>
+          <div>
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">
+              Ruolo in famiglia
+            </label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as FamilyRole)}
+              className="cinput bg-white"
+            >
+              {ROLES.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex justify-end gap-2 pt-1">
+            <button
+              onClick={onCancel}
+              className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Annulla
+            </button>
+            <button
+              onClick={() => onSaveRole(role)}
+              disabled={saving || role === member.family_role}
+              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            >
+              {saving ? "Salvataggio…" : "Salva ruolo"}
+            </button>
+          </div>
+        </div>
       ) : (
         <UnlinkedMemberForm
           initial={{
@@ -584,8 +619,8 @@ function EditMemberDrawer({
             lastname: member.lastname,
             email: member.email ?? "",
             phone: member.phone ?? "",
-            birthdate: member.birthdate ?? "",
-            role: member.role,
+            birthday: member.birthday ?? "",
+            role: member.family_role,
           }}
           onSave={onSave}
           onCancel={onCancel}
@@ -687,14 +722,39 @@ export default function FamilySection() {
     }
   }
 
-  async function handleRemove(memberId: string) {
+  async function handleSaveRole(role: FamilyRole) {
+    if (!editMember) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const updated = await updateMemberRole(editMember.id, role);
+      setFamily((f) =>
+        f
+          ? {
+              ...f,
+              members: f.members.map((m) =>
+                m.id === updated.id ? updated : m,
+              ),
+            }
+          : f,
+      );
+      setEditMember(null);
+      setSuccess(true);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleRemove(member: ResolvedMember) {
     if (!confirm("Rimuovere questo membro dalla famiglia?")) return;
     setSaving(true);
     setError(null);
     try {
-      await removeFamilyMember(memberId);
+      await removeFamilyMember(member.id, member.has_account);
       setFamily((f) =>
-        f ? { ...f, members: f.members.filter((m) => m.id !== memberId) } : f,
+        f ? { ...f, members: f.members.filter((m) => m.id !== member.id) } : f,
       );
     } catch (e: any) {
       setError(e.message);
@@ -777,9 +837,9 @@ export default function FamilySection() {
 
   // ── Family exists ─────────────────────────────────────────────────────────
 
-  const head = family.members.find((m) => m.role === "head");
-  const rest = family.members.filter((m) => m.role !== "head");
-  const isOwner = true; // replace with: currentUserId === family.created_by
+  const head = family.members.find((m) => m.family_role === "head");
+  const rest = family.members.filter((m) => m.family_role !== "head");
+  const isOwner = family.isOwner;
 
   return (
     <div className="flex flex-col gap-1">
@@ -852,6 +912,7 @@ export default function FamilySection() {
         <EditMemberDrawer
           member={editMember}
           onSave={handleSaveEdit}
+          onSaveRole={handleSaveRole}
           onCancel={() => setEditMember(null)}
           saving={saving}
         />
@@ -869,7 +930,7 @@ export default function FamilySection() {
               setEditMember(head);
               setShowAdd(false);
             }}
-            onRemove={() => handleRemove(head.id)}
+            onRemove={() => handleRemove(head)}
           />
         )}
         {rest.map((m) => (
@@ -881,7 +942,7 @@ export default function FamilySection() {
               setEditMember(m);
               setShowAdd(false);
             }}
-            onRemove={() => handleRemove(m.id)}
+            onRemove={() => handleRemove(m)}
           />
         ))}
         {family.members.length === 0 && (

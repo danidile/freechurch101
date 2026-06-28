@@ -12,7 +12,7 @@ export const confirmBelongingAction = async (profileId: string) => {
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
-    .eq("id", user?.id)
+    .eq("auth_id", user?.id)
     .single();
 
   const { data, error } = await supabase
@@ -37,6 +37,6 @@ export const confirmBelongingAction = async (profileId: string) => {
   return encodedRedirect(
     "success",
     "/protected/dashboard/account",
-    "Profilo aggiunto con successo"
+    "Profilo aggiunto con successo",
   );
 };
