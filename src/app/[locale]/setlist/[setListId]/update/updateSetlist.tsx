@@ -719,7 +719,11 @@ export const updateSetlist = async (
 
     console.log("✅ Setlist updated successfully with no errors");
     const locale = await getLocale();
-    redirect({ href: `/setlist/${setlistData.id}`, locale });
+    return {
+      success: true,
+      errors: [],
+      message: "Setlist updated successfully.",
+    };
   } catch (unexpectedError: any) {
     console.error(
       "🔥 Unexpected error during setlist update:",

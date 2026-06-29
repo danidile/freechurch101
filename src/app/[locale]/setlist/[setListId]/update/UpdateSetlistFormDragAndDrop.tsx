@@ -339,7 +339,6 @@ export default function UpdateSetlistForm({
         console.log("✅ Operation successful:", result.message);
         fetchSetlists(setlistData.id);
         fetchNotifications(userData.id);
-
         router.push(`/setlist/${updatedSetlist.id}`);
       } else {
         console.error("❌ Operation failed:", result);
