@@ -112,45 +112,6 @@ export default function TeamsPageComponent() {
 
   return (
     <div className="flex flex-col gap-4 w-full p-2 max-w-4xl mx-auto">
-      {/* Search + Filter Toolbar */}
-      <div className="flex flex-wrap items-center gap-2">
-        <Input
-          className="flex-1 min-w-[180px]"
-          placeholder="Cerca team…"
-          size="sm"
-          startContent={<FiSearch className="text-default-400" />}
-          value={searchQuery}
-          onValueChange={setSearchQuery}
-          isClearable
-          onClear={() => setSearchQuery("")}
-        />
-        <div className="flex gap-1">
-          {filterButtons.map(({ label, value }) => (
-            <Button
-              key={value}
-              size="sm"
-              variant={activeFilter === value ? "solid" : "flat"}
-              color={activeFilter === value ? "primary" : "default"}
-              onPress={() => setActiveFilter(value)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-        {userData.role && hasPermission(userData?.role as Role, "create:teams") && (
-          <Button
-            as={Link}
-            href="/protected/teams/create-team"
-            size="sm"
-            variant="flat"
-            color="primary"
-            startContent={<FaPlus size={11} />}
-          >
-            Nuovo team
-          </Button>
-        )}
-      </div>
-
       {/* Teams List */}
       {!filteredTeams ? (
         <ChurchLabLoader height="300px" />

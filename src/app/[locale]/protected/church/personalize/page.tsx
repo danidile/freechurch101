@@ -216,7 +216,7 @@ const SectionCard = ({
   icon,
 }: SectionCardProps) => {
   return (
-    <div className="p-2 bg-gray-50 rounded-lg">
+    <div className="p-4 bg-gray-50 rounded-lg rounded-xl border border-divider sm:p-5">
       <div className="flex flex-row items-center gap-2">
         {icon && <span>{React.createElement(icon)}</span>}
         <h3 className="text-base font-semibold">{title}</h3>

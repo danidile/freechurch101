@@ -165,7 +165,7 @@ export default function ImageUploader({
 
       if (result?.success) {
         // Give a moment to show 100% completion
-        closeState(false);
+        closeState?.(false);
         if (type === "churchlogo")
           fetchChurchData(userData.church_id, userData.role);
         if (type === "profilepicture") fetchUser();

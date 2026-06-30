@@ -37,10 +37,10 @@ export default function CompleteAccount() {
   } = useForm<basicUserData>({
     resolver: zodResolver(basicUserDataSchema),
     defaultValues: {
-      name: userData.name,
-      lastname: userData.lastname,
-      email: userData.email,
-      phone: userData.phone,
+      name: userData?.name,
+      lastname: userData?.lastname,
+      email: userData?.email,
+      phone: userData?.phone,
     },
   });
 
@@ -76,7 +76,7 @@ export default function CompleteAccount() {
                 size="lg"
                 className="transition-transform "
                 src={
-                  `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData.avatar_url}?t=${Date.now()}` ||
+                  `https://kadorwmjhklzakafowpu.supabase.co/storage/v1/object/public/avatars/${userData?.avatar_url}?t=${Date.now()}` ||
                   "/images/userAvatarDefault.jpg"
                 }
               />
@@ -105,7 +105,7 @@ export default function CompleteAccount() {
                 id="name"
                 {...register("name")}
                 type="text"
-                placeholder={userData.name}
+                placeholder={userData?.name}
                 className={`cinput ${
                   errors.name ? "border-red-500" : "border-gray-300"
                 }`}
@@ -125,7 +125,7 @@ export default function CompleteAccount() {
                 id="lastname"
                 {...register("lastname")}
                 type="text"
-                placeholder={userData.lastname}
+                placeholder={userData?.lastname}
                 className={`cinput ${
                   errors.lastname ? "border-red-500" : "border-gray-300"
                 }`}
@@ -138,9 +138,9 @@ export default function CompleteAccount() {
             </div>
           </div>
 
-          {userData.church_id && (
+          {userData?.church_id && (
             <p>
-              La mia chiesa: <strong>{userData.church_name}</strong>
+              La mia chiesa: <strong>{userData?.church_name}</strong>
             </p>
           )}
 
@@ -151,7 +151,7 @@ export default function CompleteAccount() {
             <input
               id="email"
               type="email"
-              value={userData.email || ""}
+              value={userData?.email || ""}
               disabled
               className="cinput cursor-not-allowed"
             />
@@ -180,7 +180,7 @@ export default function CompleteAccount() {
             {...register("id")}
             id="id"
             type="hidden"
-            value={userData.id}
+            value={userData?.id}
           />
 
           <button

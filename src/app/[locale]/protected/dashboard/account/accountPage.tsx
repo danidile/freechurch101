@@ -35,7 +35,6 @@ import logoutAction from "@/app/[locale]/components/logOutAction";
 type Section =
   | "profile"
   | "church"
-  | "security"
   | "notifications"
   | "blockouts"
   | "personalize"
@@ -94,13 +93,7 @@ export default function AccountPage() {
       color: "bg-amber-100 text-amber-700",
       show: isAdmin,
     },
-    {
-      key: "security",
-      label: "Sicurezza",
-      icon: <LuShield size={16} />,
-      color: "bg-green-100 text-green-700",
-      show: true,
-    },
+
     {
       key: "logs",
       label: "Logs",
@@ -292,29 +285,46 @@ export default function AccountPage() {
 
               {/* Notifications + Family */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                <SectionCard
-                  title="Notifiche"
-                  description="Tutti gli aggiornamenti e gli avvisi che riguardano la tua attività."
-                  icon={LuInbox}
-                  iconColor="bg-blue-100 text-blue-700"
-                >
-                  <NotificationPage />
-                </SectionCard>
-
-                <SectionCard
-                  title="Famiglia"
-                  description="Gestisci le informazioni relative alla tua famiglia."
-                  icon={MdFamilyRestroom}
-                  iconColor="bg-pink-100 text-pink-700"
-                >
-                  <div className="w-full mx-auto">
-                    <FamilyPage />
-                  </div>
-                </SectionCard>
+                <div className="rounded-xl border border-divider p-4 sm:p-5">
+                  <SectionCard
+                    title="Notifiche"
+                    description="Tutti gli aggiornamenti e gli avvisi che riguardano la tua attività."
+                    icon={LuInbox}
+                    border={false}
+                    iconColor="bg-blue-100 text-blue-700"
+                  >
+                    <NotificationPage />
+                  </SectionCard>
+                </div>
+                <div className="rounded-xl border border-divider p-4 sm:p-5">
+                  <SectionCard
+                    title="Famiglia"
+                    border={false}
+                    description="Gestisci le informazioni relative alla tua famiglia."
+                    icon={MdFamilyRestroom}
+                    iconColor="bg-pink-100 text-pink-700"
+                  >
+                    <div className="w-full mx-auto">
+                      <FamilyPage />
+                    </div>
+                  </SectionCard>
+                </div>
               </div>
             </div>
           )}
 
+          {/* ── Teams ── */}
+          {activeSection === "teams" && (
+            <SectionCard
+              border={false}
+              title="Teams"
+              description="Gestisci i team della tua chiesa."
+              icon={FaAsterisk}
+              iconColor="bg-teal-100 text-teal-700"
+            >
+              <TeamsPageComponent />
+            </SectionCard>
+          )}
           {/* ── Blockouts ── */}
           {activeSection === "blockouts" && (
             <SectionCard
@@ -334,22 +344,10 @@ export default function AccountPage() {
               title="Personalizza Chiesa"
               description="Gestisci le impostazioni visive della tua chiesa."
               icon={LuChurch}
+              border={false}
               iconColor="bg-amber-100 text-amber-700"
             >
               <PersonalizeChurchComponent />
-            </SectionCard>
-          )}
-
-          {/* ── Teams ── */}
-          {activeSection === "teams" && (
-            <SectionCard
-              border={false}
-              title="Teams"
-              description="Gestisci i team della tua chiesa."
-              icon={FaAsterisk}
-              iconColor="bg-teal-100 text-teal-700"
-            >
-              <TeamsPageComponent />
             </SectionCard>
           )}
 
@@ -397,36 +395,12 @@ export default function AccountPage() {
             </SectionCard>
           )}
 
-          {/* ── Security ── */}
-          {activeSection === "security" && (
-            <SectionCard
-              border={false}
-              title="Sicurezza"
-              description="Gestisci le credenziali del tuo account."
-              icon={LuShield}
-              iconColor="bg-green-100 text-green-700"
-            >
-              <div className="rounded-xl border border-divider overflow-hidden">
-                <SecurityRow
-                  label="Password"
-                  value="••••••••••••"
-                  action="Cambia password"
-                  href="/protected/reset-password"
-                />
-                <SecurityRow
-                  label="Email di accesso"
-                  value={userData?.email || "—"}
-                  last
-                />
-              </div>
-            </SectionCard>
-          )}
-
           {/* ── Logs ── */}
           {activeSection === "logs" && (
             <SectionCard
               title="Logs Dashboard"
               icon={LuLogs}
+              border={false}
               iconColor="bg-default-200 text-default-600"
             >
               <LogsPage />
@@ -470,7 +444,7 @@ function SectionCard({
 }) {
   return (
     <div
-      className={`bg-content1 rounded-xl  border-divider p-4 sm:p-6 ${border ? "border" : ""}`}
+      className={`bg-content1 rounded-xl border-divider  ${border ? "border" : ""}`}
     >
       <div className="flex items-start gap-3 mb-5">
         {Icon && (
